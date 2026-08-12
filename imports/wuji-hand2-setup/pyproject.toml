@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wuji-hand2-setup"
+version = "0.1.0"
+description = "MuJoCo and ROS 2 setup for Wuji Hand 2"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+authors = [{ name = "Terry Um" }]
+dependencies = [
+    "mujoco==3.11.0",
+    "mujoco-ros2-core",
+    "numpy==2.5.2",
+]
+
+[project.scripts]
+wuji-hand2-inspect = "wuji_hand2_setup.inspect:main"
+
+[dependency-groups]
+dev = ["pytest>=9,<10"]
+
+[tool.uv.sources]
+mujoco-ros2-core = { path = "deps/mujoco-ros2-core", editable = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
