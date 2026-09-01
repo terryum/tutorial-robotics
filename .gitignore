@@ -1,6 +1,7 @@
 .DS_Store
 .venv/
 .pytest_cache/
+.cache/
 .ruff_cache/
 .mypy_cache/
 .local/
@@ -12,7 +13,7 @@ datasets/
 bags/
 *.pyc
 __pycache__/
+*.egg-info/
 ros2_ws/build/
 ros2_ws/install/
 ros2_ws/log/
-

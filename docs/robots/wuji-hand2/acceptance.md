@@ -420,7 +420,7 @@ uv run python -m wuji_hand2_motion.scripts.train \
 
 1. `mujoco-ros2-core`의 `uv run pytest`
 2. `tutorial-robotics` Wuji setup component의 오른손 `joint_sweep`
-3. `wuji-hand2-setup/ros2_ws`의 `build`, `test-backend`, `mujoco-right`, `command-right`
+3. `tutorial-robotics/ros2_ws`의 `build`, `test-backend`, `mujoco-right`, `command-right`
 4. `tutorial-robotics` Wuji motion component의 `uv run pytest`
 5. 오른손 gesture replay
 6. cube-yaw smoke training과 replay
