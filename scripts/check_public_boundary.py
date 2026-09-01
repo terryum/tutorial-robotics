@@ -18,7 +18,12 @@ BLOCKED = re.compile(r"friday|flexiv|cosmax|pai_private_lab|tutorial-robotics-pr
 def main() -> int:
     failures: list[str] = []
     for path in ROOT.rglob("*"):
-        if not path.is_file() or ".git" in path.parts or path in ALLOWED:
+        relative = path.relative_to(ROOT)
+        if (
+            not path.is_file()
+            or path in ALLOWED
+            or any(part in {".git", ".venv", "deps", "assets"} for part in relative.parts)
+        ):
             continue
         if path.suffix.lower() not in {".md", ".py", ".toml", ".yaml", ".yml", ".json", ".txt"}:
             continue
