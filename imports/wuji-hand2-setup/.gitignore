@@ -1,0 +1,15 @@
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.cache/
+MUJOCO_LOG.TXT
+ros2_ws/.pixi/
+ros2_ws/.ros/
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+*.bag
+*.mcap

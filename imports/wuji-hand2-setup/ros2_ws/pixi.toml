@@ -1,0 +1,34 @@
+[workspace]
+name = "wuji_hand2_ros2_ws"
+description = "ROS 2 Jazzy workspace for Wuji Hand 2 simulation"
+channels = [
+  "https://prefix.dev/robostack-jazzy",
+  "https://prefix.dev/conda-forge",
+]
+platforms = ["osx-arm64", "linux-64"]
+
+[dependencies]
+mujoco = "*"
+ros-jazzy-desktop = "*"
+ros-jazzy-joint-state-publisher-gui = "*"
+ros-dev-tools = "*"
+
+[activation.env]
+ROS_LOG_DIR = ".ros/log"
+ROS_AUTOMATIC_DISCOVERY_RANGE = "LOCALHOST"
+RMW_IMPLEMENTATION = "rmw_cyclonedds_cpp"
+ROS_DOMAIN_ID = "72"
+PYTHONPATH = "../src:../deps/mujoco-ros2-core/src"
+
+[tasks]
+build = "colcon build --base-paths src ../assets/vendor/wuji-description/hand2/hand2_beta1/body"
+test-backend = "bash -c 'source install/setup.bash && PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q src/wuji_hand2_tutorial/test/test_backend.py'"
+display-left = "bash -c 'source install/setup.bash && ros2 launch wuji_hand2_tutorial display.launch.py side:=left'"
+display-right = "bash -c 'source install/setup.bash && ros2 launch wuji_hand2_tutorial display.launch.py side:=right'"
+mujoco-left = "bash -c 'source install/setup.bash && mjpython -m wuji_hand2_tutorial.mujoco_robot_node --ros-args -p side:=left -p show_viewer:=true'"
+mujoco-right = "bash -c 'source install/setup.bash && mjpython -m wuji_hand2_tutorial.mujoco_robot_node --ros-args -p side:=right -p show_viewer:=true'"
+mujoco-rviz-left = "bash -c 'source install/setup.bash && ros2 launch wuji_hand2_tutorial mujoco_rviz.launch.py side:=left'"
+mujoco-rviz-right = "bash -c 'source install/setup.bash && ros2 launch wuji_hand2_tutorial mujoco_rviz.launch.py side:=right'"
+command-left = "bash -c 'source install/setup.bash && ros2 run wuji_hand2_tutorial verification_command_publisher --ros-args -p side:=left'"
+command-right = "bash -c 'source install/setup.bash && ros2 run wuji_hand2_tutorial verification_command_publisher --ros-args -p side:=right'"
+dual-mujoco = "bash -c 'source install/setup.bash && ros2 launch wuji_hand2_tutorial dual_mujoco.launch.py'"

@@ -1,0 +1,7 @@
+Wuji Hand 2 Setup
+Copyright 2026 Terry Um
+
+This project depends on the unmodified wuji-technology/wuji-description
+repository, distributed separately as a pinned Git submodule under its MIT
+license. Wuji Hand names and model assets remain the property of their
+respective owners.
