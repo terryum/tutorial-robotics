@@ -4,3 +4,4 @@
 [submodule "deps/mujoco-ros2-core"]
 	path = deps/mujoco-ros2-core
 	url = https://github.com/terryum/mujoco-ros2-core.git
+

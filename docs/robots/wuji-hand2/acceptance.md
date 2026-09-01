@@ -3,8 +3,8 @@
 이 문서는 Wuji Hand 2 관련 세 저장소를 다음 순서로 검증하기 위한 체크리스트다.
 
 1. `mujoco-ros2-core`: 공통 MuJoCo backend
-2. `wuji-hand2-setup`: Wuji Hand 2 모델과 ROS 2 연동
-3. `wuji-hand2-motion-baselines`: 제스처와 PPO baseline
+2. `tutorial-robotics` Wuji setup component: Wuji Hand 2 모델과 ROS 2 연동
+3. `tutorial-robotics` Wuji motion component: 제스처와 PPO baseline
 
 실제 Wuji Hand 2 하드웨어는 연결하지 않는다. 이 문서의 테스트 범위는 MuJoCo와 ROS 2 시뮬레이션까지다.
 
@@ -52,12 +52,12 @@ uv run pytest
 
 > 이 저장소는 수정하지 말고 `uv sync --group dev`와 전체 테스트를 실행해줘. 실패하면 먼저 원인을 진단하고 결과를 설명해줘.
 
-## 2. wuji-hand2-setup
+## 2. Wuji Hand 2 setup component
 
 ### 2.1 submodule, Python 환경 및 모델 검사
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup
+cd ~/Codes/robotics/tutorial-robotics
 git submodule update --init --recursive
 uv sync --group dev
 uv run wuji-hand2-inspect --side right
@@ -83,7 +83,7 @@ uv run pytest
 오른손부터 실행한다.
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup
+cd ~/Codes/robotics/tutorial-robotics
 uv run mjpython sim/scripts/joint_sweep.py --side right
 ```
 
@@ -108,7 +108,7 @@ uv run mjpython sim/scripts/joint_sweep.py --side left
 ### 2.3 ROS 2 workspace 설치 및 빌드
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup/ros2_ws
+cd ~/Codes/robotics/tutorial-robotics/ros2_ws
 pixi install
 pixi run build
 pixi run test-backend
@@ -136,14 +136,14 @@ pixi install --tls-root-certs system
 Terminal A에서 simulator를 실행하고 계속 켜둔다.
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup/ros2_ws
+cd ~/Codes/robotics/tutorial-robotics/ros2_ws
 pixi run mujoco-right
 ```
 
 Terminal B를 새로 열어 verification command를 전송한다.
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup/ros2_ws
+cd ~/Codes/robotics/tutorial-robotics/ros2_ws
 pixi run command-right
 ```
 
@@ -163,7 +163,7 @@ pixi run command-right
 Simulator가 실행 중인 상태에서 별도 terminal로 확인한다.
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup/ros2_ws
+cd ~/Codes/robotics/tutorial-robotics/ros2_ws
 
 pixi run bash -c \
   'source install/setup.bash && ros2 topic list'
@@ -210,14 +210,14 @@ pixi run bash -c \
 Terminal A:
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup/ros2_ws
+cd ~/Codes/robotics/tutorial-robotics/ros2_ws
 pixi run mujoco-left
 ```
 
 Terminal B:
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup/ros2_ws
+cd ~/Codes/robotics/tutorial-robotics/ros2_ws
 pixi run command-left
 ```
 
@@ -244,7 +244,7 @@ pixi run dual-mujoco
 기존 simulator를 `Ctrl-C`로 종료한 뒤 실행한다.
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-setup/ros2_ws
+cd ~/Codes/robotics/tutorial-robotics/ros2_ws
 pixi run mujoco-rviz-right
 ```
 
@@ -268,12 +268,12 @@ pixi run mujoco-rviz-left
 
 > 이 저장소를 수정하지 말고 오른손 ROS 2 acceptance test를 진행해줘. 모델 검사와 pytest, ROS build와 backend test를 먼저 실행하고, `mujoco-right`를 background session으로 유지한 뒤 `command-right`, joint state, reset service를 확인해줘. GUI 실행에 승인이 필요하면 요청해줘. 각 단계의 정상 여부를 표로 정리해줘.
 
-## 3. wuji-hand2-motion-baselines
+## 3. Wuji Hand 2 motion component
 
 ### 3.1 설치 및 단위 테스트
 
 ```bash
-cd ~/Codes/robotics/wuji-hand2-motion-baselines
+cd ~/Codes/robotics/tutorial-robotics
 git submodule update --init --recursive
 uv sync --group dev
 uv run pytest
@@ -419,9 +419,9 @@ uv run python -m wuji_hand2_motion.scripts.train \
 시간이 부족하면 다음 항목만 먼저 확인한다.
 
 1. `mujoco-ros2-core`의 `uv run pytest`
-2. `wuji-hand2-setup`의 오른손 `joint_sweep`
+2. `tutorial-robotics` Wuji setup component의 오른손 `joint_sweep`
 3. `wuji-hand2-setup/ros2_ws`의 `build`, `test-backend`, `mujoco-right`, `command-right`
-4. `wuji-hand2-motion-baselines`의 `uv run pytest`
+4. `tutorial-robotics` Wuji motion component의 `uv run pytest`
 5. 오른손 gesture replay
 6. cube-yaw smoke training과 replay
 
