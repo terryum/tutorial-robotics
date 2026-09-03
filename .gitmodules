@@ -1,7 +1,3 @@
 [submodule "assets/vendor/wuji-description"]
 	path = assets/vendor/wuji-description
 	url = https://github.com/wuji-technology/wuji-description.git
-[submodule "deps/mujoco-ros2-core"]
-	path = deps/mujoco-ros2-core
-	url = https://github.com/terryum/mujoco-ros2-core.git
-

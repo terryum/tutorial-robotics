@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
-import re
-
 
 ROOT = Path(__file__).resolve().parents[2]
 TUTORIAL_ROOT = ROOT / "tutorials"
@@ -18,12 +17,19 @@ class Tutorial:
     title: str
     robot: str
     prerequisites: tuple[str, ...]
+    mode: str
+    requirements: tuple[str, ...]
     path: Path
 
 
 def _field(block: str, name: str) -> str:
     match = re.search(rf"^{re.escape(name)}:\s*[\"']?([^\n\"']*)", block, re.MULTILINE)
     return match.group(1).strip() if match else ""
+
+
+def _list_field(block: str, name: str) -> tuple[str, ...]:
+    raw = _field(block, name).strip("[]")
+    return tuple(item.strip() for item in raw.split(",") if item.strip())
 
 
 def discover() -> tuple[Tutorial, ...]:
@@ -36,10 +42,34 @@ def discover() -> tuple[Tutorial, ...]:
         block = match.group(1)
         tutorial_id = _field(block, "id")
         title = _field(block, "title")
-        raw = _field(block, "prerequisites").strip("[]")
-        prerequisites = tuple(item.strip() for item in raw.split(",") if item.strip())
-        tutorials.append(Tutorial(tutorial_id, title, path.parent.name, prerequisites, path))
-    return tuple(tutorials)
+        tutorials.append(
+            Tutorial(
+                tutorial_id=tutorial_id,
+                title=title,
+                robot=path.parent.name,
+                prerequisites=_list_field(block, "prerequisites"),
+                mode=_field(block, "mode") or "development",
+                requirements=_list_field(block, "requires"),
+                path=path,
+            )
+        )
+    def sort_key(tutorial: Tutorial) -> tuple[int, str]:
+        match = re.match(r"T(\d+)(.*)", tutorial.tutorial_id)
+        return (int(match.group(1)), match.group(2)) if match else (9999, tutorial.tutorial_id)
+
+    return tuple(sorted(tutorials, key=sort_key))
+
+
+def progress() -> dict[str, str]:
+    path = ROOT / "state" / "PROGRESS.md"
+    statuses: dict[str, str] = {}
+    if not path.exists():
+        return statuses
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^\|\s*(T\w+)\s*\|.*?\|\s*([^| ]+)\s*\|", line)
+        if match:
+            statuses[match.group(1)] = match.group(2)
+    return statuses
 
 
 def validate_graph() -> list[str]:
@@ -55,4 +85,3 @@ def validate_graph() -> list[str]:
                     f"{tutorial.tutorial_id}: unknown prerequisite {prerequisite}"
                 )
     return errors
-

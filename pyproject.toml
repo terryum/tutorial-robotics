@@ -12,9 +12,11 @@ license = "Apache-2.0"
 authors = [{ name = "Terry Um" }]
 dependencies = [
     "gymnasium>=1.2,<2",
+    "matplotlib>=3.10,<4",
     "mujoco>=3.3,<4",
     "mujoco-ros2-core",
     "numpy>=2,<3",
+    "scipy>=1.16,<2",
 ]
 
 [project.optional-dependencies]
@@ -32,10 +34,14 @@ wuji-hand2-inspect = "wuji_hand2_setup.inspect:main"
 wuji-hand2 = "pai_lab.robots.wuji_hand2:plugin"
 
 [dependency-groups]
-dev = ["pytest>=9,<10"]
+dev = [
+    "mypy>=1.18,<2",
+    "pytest>=9,<10",
+    "ruff>=0.13,<1",
+]
 
 [tool.uv.sources]
-mujoco-ros2-core = { path = "deps/mujoco-ros2-core", editable = true }
+mujoco-ros2-core = { path = "../mujoco-ros2-core", editable = true }
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -43,4 +49,3 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
-
