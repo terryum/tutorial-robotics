@@ -2,7 +2,9 @@
 id: T33
 title: "Import public robot assets into Isaac Sim"
 phase: "Isaac"
-host: "ws2-sim-train"
+mode: "development"
+requires: [dev_core, ubuntu_24_04_x86_64, nvidia_cuda, isaac_sim_supported]
+preferred_execution: "full-gpu-linux-host"
 prerequisites: [T04]
 gpu: "required"
 hardware: "none"

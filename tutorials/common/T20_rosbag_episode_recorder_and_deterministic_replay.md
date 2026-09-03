@@ -2,7 +2,9 @@
 id: T20
 title: "Rosbag episode recorder and deterministic replay"
 phase: "Data"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported, ros2_core_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T19]
 gpu: "none"
 hardware: "none"

@@ -2,7 +2,9 @@
 id: T27
 title: "Wuji in-hand PPO on NVIDIA workstation"
 phase: "Dexterous RL"
-host: "ws2-sim-train"
+mode: "development"
+requires: [dev_core, ubuntu_24_04_x86_64, nvidia_cuda, mjlab_supported]
+preferred_execution: "full-gpu-linux-host"
 prerequisites: [T15, T23]
 gpu: "required"
 hardware: "none"

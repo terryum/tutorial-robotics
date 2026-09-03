@@ -2,7 +2,9 @@
 id: T01
 title: "MuJoCo hello world: pendulum state and timestep"
 phase: "MuJoCo Basics"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T00]
 gpu: "none"
 hardware: "none"

@@ -2,7 +2,9 @@
 id: T04
 title: "Unified viewer and deterministic renderer"
 phase: "Visualization"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported, rendering_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T03]
 gpu: "none"
 hardware: "none"

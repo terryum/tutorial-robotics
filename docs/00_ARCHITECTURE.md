@@ -1,114 +1,56 @@
-# System Architecture
+# Architecture — One Repository, Multiple Backends and Hosts
 
-## 1. Host architecture
-
-```text
-┌───────────────────────────────────────────────────────────┐
-│ MacBook Pro M4 Pro                                        │
-│ Codex · Git · Jupyter · MuJoCo · ROS 2 concepts · client │
-└──────────────────────┬────────────────────────────────────┘
-                       │ same Git repo / SSH / outputs
-                       ▼
-┌───────────────────────────────────────────────────────────┐
-│ WS2 — Primary Simulation and Training                     │
-│ Ubuntu 24.04.x · ROS 2 Jazzy cells · RTX                  │
-│ mjlab · Isaac · ACT/VLA · synthetic data · model select  │
-└──────────────────────┬────────────────────────────────────┘
-                       │ deployment bundle + verified tag
-                       ▼
-┌───────────────────────────────────────────────────────────┐
-│ WS1 — Default Real Robot Runtime                          │
-│ Ubuntu 24.04.x · ROS 2 Jazzy · vendor drivers · safety   │
-│ teleop · recorder · inference · gated autonomy            │
-└──────────────────────┬────────────────────────────────────┘
-                       ▼
-```
-
-Allowed alternative:
+## 1. Runtime-independent stack
 
 ```text
-WS2 → exclusive HARDWARE mode → real robots
+Task / Evaluator / Policy
+├─ Gymnasium adapter      PPO/RL
+├─ LeRobot adapter        BC/ACT/VLA
+└─ ROS 2 adapter          recorder and real robot
+             │
+        RobotBackend
+   ┌─────────┼──────────┐
+MuJoCo    Isaac Sim   Hardware
 ```
 
-In that mode, WS2 becomes the sole active command host. WS1 must be disabled or read-only for the same robot.
+Host selection does not change this architecture. MacBook and WS2 operate on the same reusable modules and schemas.
 
-## 2. Target and reference embodiments
+## 2. Capability-first execution
 
 ```text
-Reference learning models             Real target platforms
-G1 ────── whole-body concepts only ───→ system-level reasoning
-Sharpa ── dexterous/tactile comparison → Wuji Hand 2
-
+Git repository + shared progress
+       │
+       ├─ MacBook: portable subset
+       ├─ WS2: portable subset + CUDA/Isaac/mjlab
+       └─ WS1/isolated WS2: robot runtime
 ```
 
-Reference models are not dynamically equivalent to the targets. Transfer occurs through common task, observation, action, evaluator, dataset, and deployment interfaces—not by blindly copying gains or policies.
+The same tutorial may be completed on either development host. Only simulator/vendor/hardware capability constrains placement.
 
-## 3. Runtime layers
+## 3. Model truth separation
 
-```text
-[Native assets]
-URDF / MJCF / USD / meshes / vendor metadata
-        ↓
-[Asset adapters]
-path resolution, wrappers, joint maps, frame maps
-        ↓
-[Backends]
-MuJoCo | Isaac Lab | ROS 2 fake | ROS 2 real | vendor SDK
-        ↓
-[Embodiment API]
-reset / observe / step / stop / capabilities
-        ↓
-[Tasks]
-reach, pick-place, carton pack, handover, reorientation
-        ↓
-[Policies]
-scripted | PID/impedance | PPO | BC | ACT | VLA
-        ↓
-[Evaluation]
-success, tracking error, force, cycle time, retries, safety
-```
+- URDF/Xacro: ROS tree, frames, joint limits and kinematics
+- MJCF: MuJoCo dynamics, contact, actuators and sensors
+- USD + Isaac config: scene composition, PhysX, camera and synthetic data
+- hardware measurement: final dynamics, latency, calibration and noise evidence
 
-## 4. Generated source layout
+Never declare automatic format conversion physically equivalent without cross-format and real validation.
 
-```text
-src/pai_lab/
-├── assets/
-├── backends/
-├── control/
-├── embodiments/
-├── tasks/
-├── data/
-├── rl/
-├── il/
-├── vla/
-└── visualization/
-```
+## 4. Shared versus local state
 
-## 5. Host handoff boundary
+Committed:
 
-WS2 does not send a bare checkpoint to the runtime host. The deployment artifact contains:
+- code, tests, configs, reports
+- tutorial progress/gates
+- source/model pins
+- environment specs and hashes
+- small deterministic evidence
 
-- checkpoint and rollback checkpoint
-- model/policy config
-- normalization statistics
-- camera set/order
-- state/action dimension and units
-- policy/action frequency and horizon
-- preprocessing/postprocessing code revision
-- robot asset revision
-- calibration requirement/version
-- dataset manifest
-- Git commit/tag
-- environment lock/container digest
-- simulation/sim-to-sim results
-- expected test vectors and abort conditions
+Local only:
 
-## 6. Important boundaries
+- virtual environments and caches
+- absolute paths
+- active host capability file
+- secrets and robot network details
 
-- Asset conversion does not imply physical equivalence.
-- A policy action rate does not replace a high-rate servo controller.
-- ROS 2 message compatibility does not imply identical actuator semantics.
-- A visually correct mesh does not imply correct inertia or contact.
-- A training success curve does not imply manufacturing readiness.
-- A network-reachable host does not automatically have command authority.
-- A previous motion approval does not approve a new trajectory.
+Large artifacts live outside normal Git and are referenced by manifest/hash.

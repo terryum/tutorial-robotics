@@ -2,7 +2,9 @@
 id: T16A
 title: "Wuji/Sharpa hand retargeting and demonstration recording"
 phase: "Dexterous Data"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported, small_ml_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T14, T16, T28, T30]
 gpu: "optional"
 hardware: "none"

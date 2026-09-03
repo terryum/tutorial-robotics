@@ -2,7 +2,9 @@
 id: T32C
 title: "SmolVLA fine-tuning and policy server on WS2"
 phase: "VLA"
-host: "ws2-sim-train"
+mode: "development"
+requires: [dev_core, ubuntu_24_04_x86_64, nvidia_cuda, lerobot_gpu_supported]
+preferred_execution: "full-gpu-linux-host"
 prerequisites: [T32A]
 gpu: "required"
 hardware: "none"

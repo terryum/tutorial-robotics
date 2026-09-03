@@ -2,7 +2,9 @@
 id: T25
 title: "Unitree G1 model playback and motion-data pipeline"
 phase: "Humanoid"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T03, T04]
 gpu: "none"
 hardware: "none"

@@ -14,7 +14,7 @@ Codex creates the source layout only after the host audit.
 
 ## Machine-local contract
 
-Create `.local/` through `$bootstrap-machine`; never commit host profile, local paths, device network details, or secrets. Shared tutorial progress remains under `state/`.
+Create `.local/` through `$bootstrap-host`; never commit host profile, local paths, device network details, or secrets. Shared tutorial progress remains under `state/`.
 
 ## Initial CLI contract
 

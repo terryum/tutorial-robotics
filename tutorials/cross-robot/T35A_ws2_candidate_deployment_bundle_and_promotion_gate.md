@@ -2,7 +2,9 @@
 id: T35A
 title: "WS2 candidate deployment bundle and promotion gate"
 phase: "Handoff"
-host: "ws2-sim-train"
+mode: "development"
+requires: [dev_core, ubuntu_24_04_x86_64, nvidia_cuda]
+preferred_execution: "full-gpu-linux-host"
 prerequisites: [T26, T27, T32C, T34, T35]
 gpu: "required-for-validation"
 hardware: "none"

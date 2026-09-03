@@ -2,7 +2,9 @@
 id: T21
 title: "Common embodiment API across simulation and ROS 2"
 phase: "Architecture"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported, ros2_core_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T15, T19]
 gpu: "none"
 hardware: "none"

@@ -2,7 +2,9 @@
 id: T10
 title: "Contact and friction laboratory with cosmetic objects"
 phase: "Contact"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T09]
 gpu: "none"
 hardware: "none"

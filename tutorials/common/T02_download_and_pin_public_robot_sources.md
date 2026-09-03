@@ -2,7 +2,9 @@
 id: T02
 title: "Download and pin the public robot sources"
 phase: "Assets"
-host: "either"
+mode: "development"
+requires: [dev_core, internet]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T00]
 gpu: "none"
 hardware: "none"

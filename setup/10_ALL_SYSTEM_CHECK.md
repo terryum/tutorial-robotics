@@ -1,39 +1,32 @@
 # Whole-System Check
 
-Create one report per machine plus one shared phase-gate summary.
+Create one report per host capability set plus one shared milestone summary.
 
-## MacBook
+## Portable/core development evidence
 
-| Capability | Expected evidence | Status |
-|---|---|---|
-| model registry | 7 active entries + H2 watchlist | |
-| control | PD/gravity/IK/OSC outputs | |
-| ROS 2 | pub/sub/TF/rosbag and MuJoCo bridge | |
-| RL/IL | small PPO, BC, ACT smoke | |
-| VLA protocol | T32A mock/client validation | |
-| remote cockpit | SSH aliases and remote artifact access | |
+- MuJoCo model load/render
+- model registry and source pins
+- PD/gravity/FK/IK/OSC
+- ROS 2 fundamentals/bridge where supported
+- small PPO/BC/ACT and VLA protocol
 
-## WS2 SIM_TRAIN
+This evidence may be produced on MacBook, WS2, or a combination.
 
-| Capability | Expected evidence | Status |
-|---|---|---|
-| G1 PPO | official play + small train + metrics | |
-| Wuji PPO | official play + small train + metrics | |
-| ACT scale-up |  checkpoint/evaluation | |
-| SmolVLA | T32C actual model/server | |
-| synthetic data | calibrated metadata/labels | |
-| sim-to-sim | MuJoCo–Isaac comparison | |
-| promotion | T35A deployment bundle | |
+## Full GPU development evidence
 
-## Runtime — WS1 or WS2 integration
+- native Ubuntu/Jazzy vendor fake hardware
+- G1 and Wuji GPU PPO
+- ACT/SmolVLA scale-up
+- Isaac assets and synthetic data
+- MuJoCo–Isaac sim-to-sim
+- candidate deployment bundle
 
-| Capability | Expected evidence | Status |
-|---|---|---|
-| target rebuild | bundle manifest/hash and deterministic test | |
-| offline replay | expected versus runtime output | |
-| command sink shadow | no real command path | |
-| read-only hardware | robot-specific T36 evidence | |
-| low-risk motion | explicit approved run card | |
-| rollback/stop | verified path | |
+## Robot runtime evidence
 
-Do not mark an unavailable future host as failed. Mark it `not-present` or `pending-host` with the required next action.
+- target runtime rebuild and bundle hash
+- offline replay and command sink
+- read-only hardware gate
+- explicitly approved low-risk action
+- rollback and stop path
+
+Do not mark an unavailable capability as failed. Record it locally and leave dependent tutorials globally pending.

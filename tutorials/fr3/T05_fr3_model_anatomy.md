@@ -2,7 +2,9 @@
 id: T05
 title: "FR3 model anatomy"
 phase: "Manipulator Control"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T04]
 gpu: "none"
 hardware: "none"

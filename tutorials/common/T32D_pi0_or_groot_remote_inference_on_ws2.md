@@ -2,7 +2,9 @@
 id: T32D
 title: "Optional π₀ or GR00T remote inference on WS2"
 phase: "VLA Advanced"
-host: "ws2-sim-train"
+mode: "development"
+requires: [dev_core, ubuntu_24_04_x86_64, nvidia_cuda, policy_gpu_supported]
+preferred_execution: "full-gpu-linux-host"
 prerequisites: [T32C]
 gpu: "required"
 hardware: "none"

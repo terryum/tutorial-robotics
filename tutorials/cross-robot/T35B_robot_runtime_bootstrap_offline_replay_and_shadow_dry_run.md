@@ -2,7 +2,9 @@
 id: T35B
 title: "Robot runtime bootstrap, offline replay, and shadow dry-run"
 phase: "Runtime Handoff"
-host: "ws1-robot-runtime/ws2-robot-integration"
+mode: "robot-runtime"
+requires: [robot_runtime_supported]
+preferred_execution: "robot-runtime-host"
 prerequisites: [T35A]
 gpu: "optional-for-inference"
 hardware: "none-or-read-only"

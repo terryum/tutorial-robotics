@@ -1,18 +1,16 @@
 # Shared Environment Status
 
-> Local paths, local caches and active profile belong in `.local/`. This committed file records desired/shared locks and non-secret validation summaries only.
+> Local paths, activation state and caches remain under `.local/`. This file records semantic environment roles, committed specs and non-secret validation evidence.
 
-| Environment | Logical host/profile | Status | Exact version/lock | Validation evidence | Notes |
+| Environment role | Supported host class | Status | Exact lock/digest | Validation evidence | Notes |
 |---|---|---|---|---|---|
-| mac-core | MACBOOK / MACBOOK_FOUNDATION | not-created | — | — | MuJoCo/control/Gym |
-| mac-ros2 | MACBOOK / MACBOOK_FOUNDATION | not-created | — | — | Pixi/RoboStack Jazzy |
-| mac-lerobot | MACBOOK / MACBOOK_FOUNDATION | not-created | — | — | BC/ACT/VLA protocol |
-| ws2-ros2-sim | WS2 / WS2_SIM_TRAIN | host-not-present | — | — | fake hardware/deployment parity |
-| ws2-isaac-vendor | WS2 / WS2_SIM_TRAIN | host-not-present | — | — | vendor-compatible |
-| ws2-isaac-modern | WS2 / WS2_SIM_TRAIN | host-not-present | — | — | modern research isolated |
-| ws2-mjlab | WS2 / WS2_SIM_TRAIN | host-not-present | — | — | G1/Wuji PPO |
-| ws2-lerobot | WS2 / WS2_SIM_TRAIN | host-not-present | — | — | ACT/VLA scale-up/server |
-| ws2-robot-runtime | WS2 / WS2_ROBOT_INTEGRATION | inactive | — | — | no simultaneous training |
-| ws1-robot-runtime | WS1 / WS1_ROBOT_RUNTIME | host-not-present | — | — | stable robot runtime |
+| `core-dev` | MacBook or Linux development host | not-created | — | — | MuJoCo/control/Gym; per-platform lock allowed |
+| `ros2-dev` | MacBook RoboStack or Ubuntu Jazzy | not-created | — | — | core ROS concepts and bridge |
+| `lerobot-dev` | MacBook or Linux development host | not-created | — | — | dataset/BC/ACT/small VLA |
+| `gpu-mjlab` | Linux NVIDIA CUDA | not-created | — | — | G1/Wuji PPO |
+| `gpu-isaac-vendor` | Linux NVIDIA CUDA | not-created | — | — | vendor-compatible pair |
+| `gpu-isaac-modern` | Linux NVIDIA CUDA | not-created | — | — | custom USD/synthetic data |
+| `gpu-lerobot` | Linux NVIDIA CUDA | not-created | — | — | ACT/VLA scale-up/server |
+| `robot-runtime` | isolated WS1 or WS2 | not-created | — | — | no concurrent development batch |
 
-Codex records actual resolved versions and commit/container digests. It must not treat a desired baseline as verified installation.
+A tutorial completion is shared; environment readiness is local. Never copy a virtual environment between hosts.

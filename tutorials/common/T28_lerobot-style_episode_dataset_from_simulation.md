@@ -2,7 +2,9 @@
 id: T28
 title: "LeRobot-style episode dataset from simulation"
 phase: "Imitation Learning"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, small_ml_supported, lerobot_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T20, T21]
 gpu: "optional"
 hardware: "none"

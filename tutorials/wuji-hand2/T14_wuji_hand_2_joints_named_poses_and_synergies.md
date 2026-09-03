@@ -2,7 +2,9 @@
 id: T14
 title: "Wuji Hand 2 joints, named poses, and synergies"
 phase: "Dexterous Hand"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T04]
 gpu: "none"
 hardware: "none"

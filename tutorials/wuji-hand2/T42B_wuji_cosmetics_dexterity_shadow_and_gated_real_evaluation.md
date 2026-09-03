@@ -2,7 +2,9 @@
 id: T42B
 title: "Wuji cosmetics dexterity shadow and gated real evaluation"
 phase: "Manufacturing Deployment"
-host: "ws2-robot-integration/ws1-robot-runtime"
+mode: "robot-runtime"
+requires: [robot_runtime_supported, isolated_robot_network, wuji_hardware]
+preferred_execution: "robot-runtime-host"
 prerequisites: [T38, T42A]
 gpu: "optional"
 hardware: "motion-approval"

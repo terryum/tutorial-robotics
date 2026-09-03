@@ -2,7 +2,9 @@
 id: T29
 title: "Behavioral cloning baseline"
 phase: "Imitation Learning"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, small_ml_supported, lerobot_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T28]
 gpu: "optional"
 hardware: "none"

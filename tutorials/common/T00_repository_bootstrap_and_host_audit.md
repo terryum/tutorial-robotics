@@ -2,8 +2,10 @@
 id: T00
 title: "Repository bootstrap and host audit"
 phase: "Foundation"
-host: "registered-profile"
+mode: "any"
 prerequisites: []
+requires: [dev_core]
+preferred_execution: "portable-or-full-development-host"
 gpu: "none"
 hardware: "none"
 ---
@@ -17,10 +19,10 @@ hardware: "none"
 ## Prerequisites
 
 - Tutorial status: none
-- Host profile: explicit `MACBOOK_FOUNDATION`, `WS2_SIM_TRAIN`, `WS2_ROBOT_INTEGRATION`, or `WS1_ROBOT_RUNTIME`
+- Required capabilities: see front matter
 - GPU: `none`
 - Hardware access: `none`
-- Read first: `MACHINE_SEQUENCE.md`, matching runbook, `setup/00_HOST_AUDIT.md`, `setup/01_REPO_BOOTSTRAP.md`, `setup/11_MACHINE_LOCAL_STATE.md`
+- Read first: `EXECUTION_MODEL.md`, `runbooks/DEVELOPMENT_HOST.md` or `runbooks/ROBOT_RUNTIME.md`, `setup/00_HOST_AUDIT.md`, `setup/01_REPO_BOOTSTRAP.md`, `setup/11_MACHINE_LOCAL_STATE.md`
 
 ## Concepts to explain
 
@@ -34,14 +36,14 @@ hardware: "none"
 - `src/pai_lab/cli.py`
 - `src/pai_lab/doctor.py`
 - `tests/T00/test_doctor.py`
-- `.local/HOST_PROFILE.md` and `.local/CAPABILITIES.md`
+- `.local/HOST_CAPABILITIES.md` and `.local/CAPABILITIES.md`
 - shared non-secret environment summary in `state/ENVIRONMENTS.md`
 
 Codex may adjust filenames after inspecting the repository, but it must preserve the same separation of reusable module, thin example, test, output, and report.
 
 ## Execution procedure
 
-1. `$bootstrap-machine`으로 등록된 logical host/profile을 확인한다
+1. `$bootstrap-host`으로 등록된 logical host label, execution mode and capability set을 확인한다
 2. read-only host audit를 수행한다
 3. Git 상태를 확인하고 필요한 디렉터리와 `.local/` ignore 규칙을 만든다
 4. `pal doctor`, `pal tutorial list`, `pal tutorial status`를 구현한다
@@ -70,13 +72,13 @@ The report must cover:
 3. source-code flow by file and symbol
 4. one controlled parameter modification and the observed result, unless the lesson is pure setup
 5. limitations and what cannot be inferred from simulation
-6. direct relevance to FR3, Unitree G1, Wuji Hand 2, Sharpa Wave, or ALOHA
+6. direct relevance to one or more public tutorial robots
 
 ## Acceptance criteria
 
 - [ ] global Python을 변경하지 않는다
-- [ ] `pal doctor`가 logical host/profile과 실제 OS/architecture를 정확히 보고한다
-- [ ] profile/gate/state를 읽고 이 machine에서 다음 eligible tutorial을 표시한다
+- [ ] `pal doctor`가 logical host label, execution mode and capability set과 실제 OS/architecture를 정확히 보고한다
+- [ ] capability/gate/state를 읽고 이 machine에서 다음 eligible tutorial을 표시한다
 - [ ] `.local/`이 Git에서 제외된다
 - [ ] Tests or smoke tests pass.
 - [ ] Actual execution is verified.
@@ -85,7 +87,7 @@ The report must cover:
 
 ## Failure handling
 
-Do not mark the tutorial complete when a dependency, GUI, GPU, or hardware is absent. Record the exact blocker and either leave it `pending-host` or mark it `blocked-retry`. Preserve partial code and failed output only when it helps reproduce the issue.
+Do not mark the tutorial complete when a required dependency, GUI, GPU, or hardware capability is absent. Keep the shared status `pending`, record the local capability mismatch under `.local/`, and continue scanning for another eligible tutorial. Use `blocked-retry` only when this host should support the tutorial but a reproducible execution fault remains.
 
 ## Completion note
 

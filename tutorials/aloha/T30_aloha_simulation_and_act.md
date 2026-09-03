@@ -2,7 +2,9 @@
 id: T30
 title: "ALOHA simulation and ACT"
 phase: "Imitation Learning"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, small_ml_supported, lerobot_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T28, T29]
 gpu: "optional"
 hardware: "none"

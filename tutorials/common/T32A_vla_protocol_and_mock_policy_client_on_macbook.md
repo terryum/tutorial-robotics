@@ -2,7 +2,9 @@
 id: T32A
 title: "VLA protocol, small SmolVLA experiment, and policy client on MacBook"
 phase: "VLA Foundation"
-host: "macbook"
+mode: "development"
+requires: [dev_core, small_ml_supported, lerobot_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T28]
 gpu: "optional-mps"
 hardware: "none"

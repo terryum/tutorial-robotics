@@ -13,9 +13,10 @@ Use a separate Python 3.12 environment. Do not install LeRobot into `mac-core` o
 - pin a release or commit after reading the current official installation guide
 - install only required extras: dataset/viz/training, then `aloha`, then `smolvla` when needed
 - record PyTorch, torchvision, device, and video codec versions
-- test both CPU and MPS execution for a tiny deterministic inference
-- use CPU fallback when MPS produces unsupported operators or inconsistent results
+- always test a tiny deterministic CPU inference
+- on Apple Silicon, additionally test MPS and keep CPU fallback for unsupported or inconsistent operators
+- on an NVIDIA host, additionally test CUDA and record GPU/VRAM/package versions
 
-## Mac expectations
+## Host expectations
 
-The Mac is appropriate for dataset inspection, small BC/ACT smoke tests, and policy-client code. Large training belongs on the NVIDIA workstation.
+MacBook is appropriate for dataset inspection, small BC/ACT smoke tests, and policy-client code. A CUDA host such as WS2 can perform all of those tasks and also scale training. Device-specific results must be stored under distinct run IDs.

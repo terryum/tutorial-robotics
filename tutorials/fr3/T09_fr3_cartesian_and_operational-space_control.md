@@ -2,7 +2,9 @@
 id: T09
 title: "FR3 Cartesian and operational-space control"
 phase: "Manipulator Control"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T08]
 gpu: "none"
 hardware: "none"

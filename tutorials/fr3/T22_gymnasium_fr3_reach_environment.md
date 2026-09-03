@@ -2,7 +2,9 @@
 id: T22
 title: "Gymnasium FR3 reach environment"
 phase: "RL"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T08, T21]
 gpu: "none"
 hardware: "none"

@@ -2,7 +2,9 @@
 id: T36
 title: "Real-hardware read-only integration gate"
 phase: "Hardware"
-host: "ws1-robot-runtime/ws2-robot-integration"
+mode: "robot-runtime"
+requires: [robot_runtime_supported, isolated_robot_network]
+preferred_execution: "robot-runtime-host"
 prerequisites: [T35B]
 gpu: "none"
 hardware: "read-only"

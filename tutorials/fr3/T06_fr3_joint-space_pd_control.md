@@ -2,7 +2,9 @@
 id: T06
 title: "FR3 joint-space PD control"
 phase: "Manipulator Control"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T05]
 gpu: "none"
 hardware: "none"

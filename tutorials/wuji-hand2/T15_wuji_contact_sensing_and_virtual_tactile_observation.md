@@ -2,7 +2,9 @@
 id: T15
 title: "Wuji contact sensing and virtual tactile observation"
 phase: "Dexterous Hand"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T10, T14]
 gpu: "none"
 hardware: "none"

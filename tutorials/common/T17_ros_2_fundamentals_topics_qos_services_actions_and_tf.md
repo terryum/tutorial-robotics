@@ -2,7 +2,9 @@
 id: T17
 title: "ROS 2 fundamentals: communication, parameters, lifecycle, URDF, and TF"
 phase: "ROS 2"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, ros2_core_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T00, T02]
 gpu: "none"
 hardware: "none"

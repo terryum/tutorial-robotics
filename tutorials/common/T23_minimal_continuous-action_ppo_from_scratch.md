@@ -2,7 +2,9 @@
 id: T23
 title: "Minimal continuous-action PPO from scratch"
 phase: "RL"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, small_ml_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T22]
 gpu: "none"
 hardware: "none"

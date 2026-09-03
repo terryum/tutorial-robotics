@@ -2,7 +2,9 @@
 id: T16
 title: "Wuji versus Sharpa model comparison"
 phase: "Dexterous Hand"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T14]
 gpu: "none"
 hardware: "none"

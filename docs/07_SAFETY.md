@@ -9,8 +9,8 @@ A policy stable in MuJoCo or Isaac may fail because of wrong inertia, friction, 
 Real-hardware work cannot start from tutorial code alone.
 
 ```text
-WS2_SIM_TRAIN_COMPLETE
-→ WS2_DEPLOYMENT_BUNDLE_READY
+GPU_CURRICULUM_READY
+→ CANDIDATE_DEPLOYMENT_BUNDLE_READY
 → RUNTIME_OFFLINE_VALIDATED
 → robot-specific READ_ONLY_VALIDATED
 → separately approved low-energy command
@@ -66,9 +66,9 @@ Requires a separate approval.
 
 ## Machine rules
 
-- `WS2_SIM_TRAIN`: no real hardware command.
-- `WS2_ROBOT_INTEGRATION`: all training/Isaac batch processes stopped; one robot at a time.
-- `WS1_ROBOT_RUNTIME`: validated bundle only; no large retraining.
+- `DEVELOPMENT`: no real hardware command.
+- `ROBOT_RUNTIME`: all training/Isaac batch processes stopped; one robot at a time.
+- `ROBOT_RUNTIME`: validated bundle only; no large retraining.
 - MacBook remote access does not bypass the hardware gate.
 
 ## Prohibited autonomous actions

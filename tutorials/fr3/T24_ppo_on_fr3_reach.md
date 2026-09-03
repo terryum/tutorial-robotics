@@ -2,7 +2,9 @@
 id: T24
 title: "PPO on FR3 reach"
 phase: "RL"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported, small_ml_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T23]
 gpu: "none"
 hardware: "none"

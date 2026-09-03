@@ -2,7 +2,9 @@
 id: T38
 title: "Wuji Hand 2 Beta 2 hardware adapter and tactile calibration"
 phase: "Hardware"
-host: "ws2-robot-integration/ws1-robot-runtime"
+mode: "robot-runtime"
+requires: [robot_runtime_supported, isolated_robot_network, wuji_hardware]
+preferred_execution: "robot-runtime-host"
 prerequisites: [T15, T27, T36]
 gpu: "optional"
 hardware: "motion-approval"

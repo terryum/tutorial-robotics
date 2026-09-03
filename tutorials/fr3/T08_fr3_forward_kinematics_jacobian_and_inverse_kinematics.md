@@ -2,7 +2,9 @@
 id: T08
 title: "FR3 forward kinematics, Jacobian, and inverse kinematics"
 phase: "Manipulator Control"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T07]
 gpu: "none"
 hardware: "none"

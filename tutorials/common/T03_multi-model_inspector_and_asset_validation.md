@@ -2,7 +2,9 @@
 id: T03
 title: "Multi-model inspector and asset validation"
 phase: "Assets"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T01, T02]
 gpu: "none"
 hardware: "none"

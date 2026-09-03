@@ -2,7 +2,9 @@
 id: T07
 title: "Gravity compensation and feedforward"
 phase: "Manipulator Control"
-host: "mac/either"
+mode: "development"
+requires: [dev_core, mujoco_supported]
+preferred_execution: "portable-or-full-development-host"
 prerequisites: [T06]
 gpu: "none"
 hardware: "none"

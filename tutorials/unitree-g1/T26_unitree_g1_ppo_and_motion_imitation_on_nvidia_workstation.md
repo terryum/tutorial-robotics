@@ -2,7 +2,9 @@
 id: T26
 title: "Unitree G1 PPO and motion imitation on NVIDIA workstation"
 phase: "Humanoid"
-host: "ws2-sim-train"
+mode: "development"
+requires: [dev_core, ubuntu_24_04_x86_64, nvidia_cuda, mjlab_supported]
+preferred_execution: "full-gpu-linux-host"
 prerequisites: [T25]
 gpu: "required"
 hardware: "none"
