@@ -13,11 +13,12 @@ FR3, Unitree G1, Wuji Hand 2, Sharpa Wave, ALOHA의 공개 생태계로 제어·
 3. `docs/11_SOURCE_CURRICULUM_ALIGNMENT.md`
 4. `.local/HOST_CAPABILITIES.md` if present
 5. `state/HOST_CAPABILITY_MODEL.md`
-6. `state/PHASE_GATES.md`
-7. `state/PROGRESS.md`
-8. `state/CURRENT_TUTORIAL.md`
-9. `tutorials/INDEX.md`
-10. current mode runbook
+6. `state/HOST_STATUS.md`
+7. `state/PHASE_GATES.md`
+8. `state/PROGRESS.md`
+9. `state/CURRENT_TUTORIAL.md`
+10. `tutorials/INDEX.md`
+11. current mode runbook
 
 ## No mandatory MacBook → WS2 sequence
 
@@ -96,16 +97,25 @@ Process exit alone is not success; inspect numeric and visual artifacts.
 Before editing:
 
 1. inspect `git status`
-2. do not overwrite uncommitted work
-3. confirm shared progress and source pins
+2. pull/rebase the current branch when the worktree is clean
+3. read `state/HOST_STATUS.md`; preserve every other host's newer row
+4. do not overwrite uncommitted work
+5. confirm shared progress and source pins
 
 After one tutorial:
 
 - prepare a focused commit containing code, tests, small artifacts, report and shared state
+- update the current host's row in `state/HOST_STATUS.md` whenever a tutorial,
+  installation/environment result, portability verification, blocker, handoff,
+  mode change, lock, or source pin will be pushed
+- for a tutorial result, commit `state/PROGRESS.md` and `state/HOST_STATUS.md`
+  with the implementation and evidence; installation-only work updates host
+  status without falsely changing tutorial progress
 - do not auto-push unless explicitly requested
 - never commit virtual environments, caches, secrets or large raw artifacts
 - large checkpoints/datasets use Git LFS, DVC, NAS or object storage; commit manifest and SHA-256
 - one active writer per shared branch is the default
+- after an authorized push, verify the branch is clean and not ahead/behind its upstream
 
 ## Real hardware safety
 

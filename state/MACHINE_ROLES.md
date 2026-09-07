@@ -1,8 +1,13 @@
 # Machine Roles
 
-| Logical host ID | Default profile | OS baseline | Primary responsibilities | Status |
-|---|---|---|---|---|
-| `MACBOOK` | `MACBOOK_FOUNDATION` | macOS arm64 | MuJoCo/control/ROS concepts/small RL-IL/cockpit | unregistered |
-| `WS2` | `WS2_SIM_TRAIN` | Windows 11 + Ubuntu 24.04.x/Jazzy | Isaac, MJX/mjlab, PPO, ACT/VLA, synthetic data | unregistered |
+| Logical host ID | Default mode | OS baseline | Primary responsibilities |
+|---|---|---|---|
+| `MACBOOK` | `DEVELOPMENT` | macOS arm64 | Portable MuJoCo/control/ROS concepts/small RL-IL and remote cockpit |
+| `WS2_WINDOWS` | host-management layer | Windows 11 | WSL2/driver/display lifecycle; do not conflate with Ubuntu readiness |
+| `WS2_UBUNTU` | `DEVELOPMENT` | Ubuntu 24.04.x/Jazzy | Portable curriculum plus Isaac, MJX/mjlab, PPO, ACT/VLA and synthetic data |
+| `WS1_UBUNTU` | `ROBOT_RUNTIME` | Ubuntu/vendor-supported | Rebuilt candidate bundle, offline replay, read-only and explicitly gated hardware work |
 
-Each machine creates `.local/HOST_PROFILE.md` through `$bootstrap-machine`. The `.local/` directory is machine-local and must be ignored by Git.
+Each OS layer creates ignored host-local capability/environment state through
+`$bootstrap-host`. Current non-secret handoff status is recorded in
+`state/HOST_STATUS.md`; the `.local/` directory remains machine-local and must
+not be committed.

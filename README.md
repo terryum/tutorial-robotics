@@ -82,6 +82,15 @@ WS2는 위 개발 tutorial 전체를 수행할 수 있다. MacBook은 capability
 
 큰 artifact는 Git LFS, DVC, NAS 또는 object storage에 두고 hash/manifest를 Git에 기록한다. 자세한 절차는 [`runbooks/GIT_SYNC.md`](runbooks/GIT_SYNC.md)다.
 
+### 호스트별 진행 현황
+
+MacBook, WS2 Windows, WS2 Ubuntu/WSL2, WS1 Ubuntu는
+[`state/HOST_STATUS.md`](state/HOST_STATUS.md)를 공통 조정판으로 사용한다.
+작업을 시작할 때 이 파일과 `state/PROGRESS.md`를 읽고, tutorial 또는 설치
+결과를 push할 때 현재 host 행도 같은 commit에서 갱신한다. 다른 host의 행을
+덮어쓰거나 hostname, IP, 계정, serial, credential 같은 machine-local 정보를
+기록하지 않는다.
+
 ## 6. 완료 정의
 
 - reusable code와 thin tutorial entry point

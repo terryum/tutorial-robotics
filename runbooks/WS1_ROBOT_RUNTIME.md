@@ -8,7 +8,7 @@ WS1은 연구용 대규모 training 장비가 아니다. package와 driver는 pi
 ## 최초 Codex 명령
 
 ```text
-이 컴퓨터는 WS1이다. MACHINE_SEQUENCE.md와 runbooks/WS1_ROBOT_RUNTIME.md를 우선 읽고, $bootstrap-machine을 사용해 profile을 WS1_ROBOT_RUNTIME으로 등록해줘. WS2_DEPLOYMENT_BUNDLE_READY gate와 bundle manifest/hash를 확인하고, 이 target runtime에서 dependencies를 재구축한 뒤 T35B offline replay와 no-motion shadow dry-run까지만 실행해. retraining과 실제 motion command는 금지하고 완료 후 멈춰줘.
+이 컴퓨터는 WS1 Ubuntu이며 ROBOT_RUNTIME mode다. git pull 이후 EXECUTION_MODEL.md, AGENTS.md, state/HOST_STATUS.md와 state/PROGRESS.md를 읽고 $bootstrap-host로 실제 capability를 등록해줘. candidate bundle manifest/hash를 확인하고 이 target runtime에서 dependencies를 재구축한 뒤 T35B offline replay와 no-motion shadow dry-run까지만 실행해. 결과를 push할 때 WS1_UBUNTU 행을 non-secret summary로 갱신하고 retraining과 실제 motion command는 실행하지 마.
 ```
 
 ## T36 read-only

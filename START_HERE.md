@@ -14,10 +14,13 @@ WS2는 core와 GPU tutorial을 모두 실행할 수 있고, MacBook은 이동 �
 
 ## 2. 저장소를 처음 열었을 때
 
-1. ZIP을 풀고 Git repository로 만든다.
-2. `EXECUTION_MODEL.md`, `AGENTS.md`, `tutorials/INDEX.md`를 읽힌다.
-3. `$bootstrap-host`로 OS/architecture/GPU/ROS/Isaac capability를 기록한다.
-4. T00 또는 shared progress상 다음 eligible tutorial 하나를 실행한다.
+1. GitHub repository를 clone하거나 기존 checkout에서 `git pull --rebase`한다.
+2. `EXECUTION_MODEL.md`, `AGENTS.md`, `state/HOST_STATUS.md`,
+   `state/PROGRESS.md`, `tutorials/INDEX.md`를 읽힌다.
+3. Git을 pull한 뒤 `state/HOST_STATUS.md`에서 이 host의 마지막 보고와 다른
+   host의 최신 handoff를 확인한다.
+4. `$bootstrap-host`로 OS/architecture/GPU/ROS/Isaac capability를 기록한다.
+5. T00 또는 shared progress상 다음 eligible tutorial 하나를 실행한다.
 
 ## 3. WS2에서 처음부터 시작하는 명령
 
@@ -36,13 +39,13 @@ WS2는 core와 GPU tutorial을 모두 실행할 수 있고, MacBook은 이동 �
 이전 host:
 
 ```text
-현재 tutorial의 acceptance를 audit하고 source·test·small output·report·shared state를 commit할 준비를 해줘. 큰 artifact는 manifest/hash만 commit 대상으로 두고, 정확한 git status/add/commit/push 명령을 제시해줘. 자동 push는 하지 마.
+현재 tutorial의 acceptance를 audit하고 source·test·small output·report·shared state와 state/HOST_STATUS.md의 현재 host 행을 함께 갱신해줘. 큰 artifact는 manifest/hash만 commit 대상으로 두고, 정확한 git status/add/commit/push 명령을 제시해줘. 내가 push까지 요청한 경우에만 같은 범위의 commit을 push해.
 ```
 
 새 host:
 
 ```text
-git pull 이후 이 checkout을 계속 사용한다. local virtual environment를 다른 host에서 복사하지 말고, committed lock/source pins로 필요한 environment와 model asset을 재구성해. shared progress는 유지하고 현재 capability로 실행 가능한 다음 tutorial 하나를 알려줘.
+git pull 이후 state/HOST_STATUS.md와 state/PROGRESS.md를 먼저 읽고 이 checkout을 계속 사용한다. local virtual environment를 다른 host에서 복사하지 말고, committed lock/source pins로 필요한 environment와 model asset을 재구성해. shared progress는 유지하고 현재 capability로 실행 가능한 다음 tutorial 하나를 알려줘.
 ```
 
 ## 6. 완료된 tutorial을 다른 host에서 다시 확인

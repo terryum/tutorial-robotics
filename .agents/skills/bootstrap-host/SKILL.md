@@ -14,5 +14,10 @@ Read `EXECUTION_MODEL.md`, `setup/00_HOST_AUDIT.md`, `setup/01_REPO_BOOTSTRAP.md
 5. Install only the named semantic environment role. Do not install ROS, CUDA, Isaac, LeRobot, drivers, or vendor SDKs implicitly.
 6. Never change system Python. Prefer repository lockfiles and sibling repository paths.
 7. Report exact verification commands, deferred capabilities, and whether T00 remains pending.
+8. Read `state/HOST_STATUS.md` before provisioning. When an installation,
+   upgrade, failure, or verified environment result will be committed/pushed,
+   update only the current host's row with a non-secret summary and work base.
+   Do not change `state/PROGRESS.md` unless the T00 acceptance contract was
+   actually completed.
 
 On Windows, treat native Windows setup and WSL2 Ubuntu setup as separate approval steps. Keep repositories in the Linux home directory, not `/mnt/c`.

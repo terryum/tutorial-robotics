@@ -8,6 +8,7 @@
 ```text
 한 개의 Git repository
 + 한 개의 shared tutorial progress
++ 한 개의 non-secret cross-host status ledger
 + 호스트마다 별도의 local environment/capability
 ```
 
@@ -15,6 +16,9 @@
 - **MacBook은 이동형 continuation host**다. 현재 capability로 실행 가능한 튜토리얼을 계속하고, CUDA/Isaac/Ubuntu-vendor 전용 튜토리얼은 shared status를 바꾸지 않은 채 건너뛴다.
 - 튜토리얼 완료는 어느 컴퓨터에서 했는지가 아니라 **코드·테스트·실행 결과·리포트가 Git history에 존재하는가**로 판단한다.
 - 같은 튜토리얼을 다른 호스트에서 다시 검증하고 싶으면 global progress를 되돌리지 않고 `local verification`으로 실행한다.
+- 각 host가 마지막으로 확인한 commit, non-secret readiness, 현재 작업과 다음
+  행동은 `state/HOST_STATUS.md`에 기록하고 tutorial/설치 결과를 push할 때
+  해당 host 행을 함께 갱신한다.
 
 ## 2. 실행 mode와 host capability를 구분한다
 

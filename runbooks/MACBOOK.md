@@ -7,7 +7,7 @@ MacBook은 학습과 운영의 cockpit이다. MuJoCo, robotics math/control, ROS
 ## 최초 명령
 
 ```text
-이 컴퓨터는 MACBOOK이다. MACHINE_SEQUENCE.md, references/00_USER_BASELINE_2026-08-31.md, docs/11_SOURCE_CURRICULUM_ALIGNMENT.md를 읽고 $bootstrap-machine으로 MACBOOK_FOUNDATION을 등록해줘. T00 하나만 실행하고 test/output/report/state까지 완료한 뒤 멈춰줘.
+이 컴퓨터는 MACBOOK이며 DEVELOPMENT mode다. git pull 이후 EXECUTION_MODEL.md, AGENTS.md, state/HOST_STATUS.md와 state/PROGRESS.md를 읽고 $bootstrap-host로 실제 capability를 등록해줘. 현재 capability로 실행 가능한 tutorial 하나만 test/output/report/state까지 완료하고, 결과를 push할 때 MACBOOK 행도 같은 commit에서 갱신해줘.
 ```
 
 ## 반복 명령
