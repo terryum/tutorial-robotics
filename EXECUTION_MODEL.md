@@ -24,7 +24,7 @@
 
 ### `DEVELOPMENT`
 
-MacBook과 WS2 모두 사용한다.
+MacBook·WS2와 실물 연결 이전의 WS1 오프라인 checkout에서 사용한다. WS1도 capability가 맞으면 공통 설치·MuJoCo·ROS 검증을 수행한다. 장비 이름은 명령 권한이 아니다.
 
 - model download/inspection
 - MuJoCo and control

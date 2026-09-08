@@ -1,6 +1,6 @@
 # Runbook — Any Development Host
 
-MacBook and WS2 share this runbook. The host capability audit decides the runnable subset.
+MacBook, WS2, and an offline WS1 development checkout share this runbook. The host capability audit decides the runnable subset.
 
 ## Start
 

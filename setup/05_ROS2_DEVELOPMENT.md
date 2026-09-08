@@ -8,3 +8,5 @@ ROS 2 fundamentals may run on either:
 Use semantic environment role `ros2-dev`. Vendor drivers/fake hardware that officially require Ubuntu must declare `ubuntu_24_04_x86_64` and `ros2_jazzy_native` capabilities.
 
 Prefer CycloneDDS on Mac when Fast DDS/RViz compatibility is unstable. Core code and message contracts must remain portable.
+
+The executable native Ubuntu package path and system-Python rules are in [Ubuntu offline setup](13_UBUNTU_OFFLINE.md). Use a separate system-Python venv for ROS bridges and keep Ubuntu build/install output separate from Mac Pixi output.

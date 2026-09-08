@@ -57,3 +57,7 @@ T38로 Beta 2 hardware/tactile calibration과 named pose를 검증한다. 제조
 - exact deployed bundle hash
 
 실물 데이터를 WS1에서 직접 재학습하지 않고 WS2로 전달한다.
+
+## 실물 연결 이전의 공통 설치
+
+WS1 Ubuntu의 오프라인 `DEVELOPMENT` checkout은 [Ubuntu 공통 설치](../setup/13_UBUNTU_OFFLINE.md)를 먼저 수행할 수 있다. 이 설치에는 학습된 후보 bundle이 필요하지 않다. `ROBOT_RUNTIME` 전환과 실물 접근에는 기존 bundle·안전 gate를 적용한다.

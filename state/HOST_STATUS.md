@@ -19,7 +19,8 @@ this file records what each host has actually observed and verified.
 | `MACBOOK` | macOS 26.6.2 arm64 / `DEVELOPMENT` | public `e88c618`; private `c44686e`; core `b525d62` | Python 3.12 `.venv` present. Public doctor passed; public tests 3 passed and 12 skipped because the pinned Wuji model has not been fetched; private overlay tests 4 passed and pin preflight passed; core tests 8 passed. Host-local capability file has not been registered. | Run `$bootstrap-host`, keep T00 pending until its full acceptance contract is executed, then commit T00 evidence plus this row. | 2026-09-07 17:19 KST |
 | `WS2_WINDOWS` | Windows native / `DEVELOPMENT` | public `5ced2a3`; core `b525d62` | Isaac Sim 6.0.1 distribution, bundled Python 3.12.13 and RTX 5090 driver 616.64 verified by commands; prior compatibility PASSED and Hello World logs inspected. Scoped installer scan found none; no installation restarted. See [verification](../docs/WS2_WINDOWS_INSTALLATION_STATUS.md). | **in-progress**: installed software verified; interactive device setup incomplete. Last success: version/log audit. Next: resume hardware guide and verify connections/calibration. Blocker: user hardware tests deferred. No Ubuntu/WSL2 or tutorial completion claimed. | 2026-09-07 18:05 KST |
 | `WS2_UBUNTU` | Ubuntu/WSL2 development layer / not reported | not reported | No committed clone, capability, environment, CUDA, ROS 2, or tutorial evidence yet. | Clone/pull in the Linux home directory, run `$bootstrap-host`, reproduce the committed checks, and report the result in this row before selecting T00. | not reported |
-| `WS1_UBUNTU` | Ubuntu robot-runtime layer / not reported | not reported | No committed runtime readiness evidence yet. No hardware authority is implied by this row. | Pull the promoted commit only when a candidate bundle exists; audit offline/read-only readiness and update this row without exposing robot or network identifiers. | not reported |
+| `WS1_WINDOWS` | Windows native / not audited | not reported | User confirms Windows is installed; no local device or software verification recorded. | Audit installed tools, then independently verify pairing, calibration and input streaming. | user-confirmed plan, 2026-09-08 |
+| `WS1_UBUNTU` | Ubuntu 24.04.5 native / offline `DEVELOPMENT` | public `9d314bf`; core `b525d62` | Python 3.12.3, uv 0.12.10 and locked MuJoCo 3.12.0 installed. Public 3 passed/12 asset skips; core 8 passed; dependency checks passed. Deterministic pendulum/EGL, native Jazzy/CycloneDDS communication, RViz and MCAP verified. NVIDIA 595.84 retained. See [installation evidence](../setup/13_UBUNTU_OFFLINE.md). | A0–A7 common installation verified. Keep T00 pending; implement actual capability/mode selection and execute its full acceptance before changing progress. | 2026-09-08 KST |
 
 `Last pulled work base` is the commit checked out before the reported work. The
 commit containing this file is the immutable revision of the resulting report;
@@ -77,3 +78,7 @@ that authorization for the scoped result.
 
 When concurrent host edits conflict, merge by host row. Never resolve a conflict
 by replacing the whole ledger with one host's copy.
+
+The current operating plan identifies WS2 Ubuntu as a **native dual-boot installation**,
+confirmed by the user. Its older Ubuntu/WSL2 ledger wording above is preserved as a historical
+report pending a direct host audit; it is not evidence that native Ubuntu is absent.

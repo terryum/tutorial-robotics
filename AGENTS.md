@@ -44,7 +44,7 @@ Do not infer permission from the name WS1/WS2. Detect and record actual OS, arch
 
 Execution modes:
 
-- `DEVELOPMENT`: simulation, code, learning, training; MacBook or WS2
+- `DEVELOPMENT`: simulation, code, learning, training; MacBook, WS2, or an offline WS1 checkout (WS1 foundation setup does not grant hardware authority)
 - `ROBOT_RUNTIME`: isolated real-robot runtime; WS1 or isolated WS2
 
 Changing a WS2 checkout from `DEVELOPMENT` to `ROBOT_RUNTIME` requires process, environment, NIC and command-authority audit.
