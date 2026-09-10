@@ -8,12 +8,11 @@ from pathlib import Path
 from typing import Protocol
 
 import numpy as np
+import torch
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
-import torch
 
 from wuji_hand2_motion.envs import WujiHand2CubeYawEnv, WujiHand2JointReachEnv
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 

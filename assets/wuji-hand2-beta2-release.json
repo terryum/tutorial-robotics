@@ -1,0 +1,26 @@
+{
+  "model_family": "Wuji Hand 2",
+  "hardware_revision": "Beta 2",
+  "firmware": "v2.6.0",
+  "sdk": "v2026.8.31",
+  "description_release": "v2026.8.19",
+  "description_commit": "b13f7d52b23cb79e35357303c72b7f61f1d2fda2",
+  "power_voltage_v": {"minimum": 11.0, "maximum": 13.0},
+  "read_rate_hz_maximum": 100,
+  "publish_rate_hz_maximum": 1000,
+  "initial_current_cap_a": 0.5,
+  "error_codes": {
+    "v2.6.0": {
+      "0x2115": {
+        "meaning": "firmware-specific actuator protection fault; confirm against the pinned vendor release notes",
+        "stop_action": "disable commands, preserve diagnostics, and require operator inspection"
+      }
+    }
+  },
+  "topic_units": {
+    "joint_states": "radian",
+    "joint_diagnostics": "vendor diagnostic code",
+    "effort": "ampere"
+  },
+  "documentation_precedence": ["release-notes", "version-compatibility", "product-page"]
+}

@@ -7,16 +7,20 @@ this file records what each host has actually observed and verified.
 
 ## Shared snapshot
 
-- Public tutorial progress: **0/40 done**
-- Next prerequisite-eligible tutorial: **T00**
+- Public curriculum structure: **49/49 catalog/doc/entrypoint/smoke contracts implemented**
+- Learner progress and next lesson: **host-local via `pal course status/next`**
 - Canonical branch: `main`
 - Large/local state is not synchronized here; see `runbooks/GIT_SYNC.md`.
 
 ## Host ledger
 
+The rows below are retained as pre-v1 installation evidence. Their T00 next-step
+text is historical; current learner selection comes only from `.local/` and
+`pal course next`.
+
 | Host ID | OS / mode | Last pulled work base | Local readiness and last verification | Current work / next action | Last reported |
 |---|---|---|---|---|---|
-| `MACBOOK` | macOS 26.6.2 arm64 / `DEVELOPMENT` | public `e88c618`; private `c44686e`; core `b525d62` | Python 3.12 `.venv` present. Public doctor passed; public tests 3 passed and 12 skipped because the pinned Wuji model has not been fetched; private overlay tests 4 passed and pin preflight passed; core tests 8 passed. Host-local capability file has not been registered. | Run `$bootstrap-host`, keep T00 pending until its full acceptance contract is executed, then commit T00 evidence plus this row. | 2026-09-07 17:19 KST |
+| `MACBOOK` | macOS arm64 / `DEVELOPMENT` | public base `0880cd2`; core pin `b525d62` | v1 worktree: standalone frozen base install passed without sibling/submodule; all 25 Core lessons completed headlessly in the clean copy; public tests, Ruff, mypy, repository/release/boundary validators, and strict MkDocs build passed. No vendor asset or hardware result claimed. | Commit the v1 implementation, update the private overlay's exact public pin, then obtain reader/GPU/hardware evidence before a v1.0.0 release. | 2026-09-11 KST |
 | `WS2_WINDOWS` | Windows native / `DEVELOPMENT` | public `5ced2a3`; core `b525d62` | Isaac Sim 6.0.1 distribution, bundled Python 3.12.13 and RTX 5090 driver 616.64 verified by commands; prior compatibility PASSED and Hello World logs inspected. Scoped installer scan found none; no installation restarted. See [verification](../docs/WS2_WINDOWS_INSTALLATION_STATUS.md). | **in-progress**: installed software verified; interactive device setup incomplete. Last success: version/log audit. Next: resume hardware guide and verify connections/calibration. Blocker: user hardware tests deferred. No Ubuntu/WSL2 or tutorial completion claimed. | 2026-09-07 18:05 KST |
 | `WS2_UBUNTU` | Ubuntu 24.04.5 native / `DEVELOPMENT` | public `a6b9257`; core `b525d62` | RTX 5090 driver 595.84; locked core, native Jazzy/RViz/MCAP, Docker/NVIDIA runtime, learning, LeRobot, mjlab, and Isaac Sim/Lab environments installed. Public 15 and core 8 tests passed; EGL, ROS record/replay, CUDA tensors, container GPU, and Isaac compatibility passed. See [installation status](../docs/WS2_UBUNTU_INSTALLATION_STATUS.md). | Installation verified. Keep T00 pending. User must accept the Isaac EULA before first launch/example; hardware pairing, isolated robot networking, and motion remain separate gates. | 2026-09-10 KST |
 | `WS1_WINDOWS` | Windows native / not audited | not reported | User confirms Windows is installed; no local device or software verification recorded. | Audit installed tools, then independently verify pairing, calibration and input streaming. | user-confirmed plan, 2026-09-08 |

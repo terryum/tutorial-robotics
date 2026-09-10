@@ -5,7 +5,7 @@
 
 ## 강제 조건
 
-- `WS2_DEPLOYMENT_BUNDLE_READY` gate
+- `CANDIDATE_DEPLOYMENT_BUNDLE_READY` gate for the selected robot/task
 - 모든 GPU training/Isaac batch job 종료
 - `ws2-robot-runtime` 환경만 활성화
 - robot 전용 유선 NIC
@@ -32,7 +32,9 @@ $hardware-gate를 사용해 <|T38|>의 승인 전 checklist와 dry-run을 먼저
 
 ## 권장 robot 배치
 
-- Wuji: T36 → T38 → T42B
+- Wuji: `hw-common-02` → `hw-wuji-01` → `hw-wuji-02`
+- Enlight: `hw-common-02` → `hw-enlight-01` and only then its selected follow-up
+- FR3: `hw-common-02` → `hw-fr3-01`
 
 ## SIM_TRAIN 복귀
 

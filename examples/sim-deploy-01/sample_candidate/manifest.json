@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "lesson_id": "sim-deploy-01",
+  "candidate_id": "linear-sample-v1",
+  "policy": {
+    "path": "policy.json",
+    "sha256": "6b011b2060eb58ca21204bf5c819d8c0c23faa9235f3f55ffcaec5d2b4426190"
+  },
+  "processor": "identity-normalized-state-v1",
+  "normalization": {"mean": [0.0, 0.0], "std": [1.0, 1.0]},
+  "observation_order": ["joint_0_rad", "joint_1_rad"],
+  "action_order": ["joint_0_delta_rad", "joint_1_delta_rad"],
+  "units": {"position": "rad", "action": "rad"},
+  "frame": "sample_base",
+  "rates_hz": {"observation": 50, "policy": 10, "command": 50},
+  "horizon": 4,
+  "assets": [],
+  "calibration": "not-applicable-synthetic-sample",
+  "source_commit": "repository-worktree-sample",
+  "lock_sha256": "9a25da7c1b1e100bf793ab5c37a8982e93ed650a483b731c2331758f3f820eee",
+  "simulation_result": {"mean_absolute_error_max": 0.1},
+  "deterministic_vector": {"input": [0.2, -0.4], "expected_action": [0.09, -0.07]},
+  "tolerances": {"absolute": 1e-9},
+  "rollback": "disable candidate and restore command sink"
+}

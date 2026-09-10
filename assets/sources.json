@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "bundles": {
+    "wuji-description-beta2": {
+      "kind": "git",
+      "url": "https://github.com/wuji-technology/wuji-description.git",
+      "revision": "b13f7d52b23cb79e35357303c72b7f61f1d2fda2",
+      "release": "v2026.8.19",
+      "license": "vendor repository license",
+      "destination": "wuji-description",
+      "canonical_paths": [
+        "hand2/hand2_beta2/body",
+        "wuji_hand2_beta2_description",
+        "wujihand2_beta2.usd"
+      ]
+    },
+    "flexiv-description": {
+      "kind": "git",
+      "url": "https://github.com/flexivrobotics/flexiv_description.git",
+      "revision": "jazzy-v3.1",
+      "release": "jazzy-v3.1",
+      "license": "Apache-2.0",
+      "destination": "flexiv-description"
+    },
+    "flexiv-ros2": {
+      "kind": "git",
+      "url": "https://github.com/flexivrobotics/flexiv_ros2.git",
+      "revision": "jazzy-v2.1",
+      "release": "jazzy-v2.1",
+      "license": "Apache-2.0",
+      "destination": "flexiv-ros2"
+    },
+    "flexiv-rdk": {
+      "kind": "git",
+      "url": "https://github.com/flexivrobotics/flexiv_rdk.git",
+      "revision": "v2.2",
+      "release": "v2.2",
+      "license": "vendor repository license",
+      "destination": "flexiv-rdk"
+    },
+    "isaac-sim-ws": {
+      "kind": "git",
+      "url": "https://github.com/isaac-sim/IsaacSim-ros_workspaces.git",
+      "revision": "c3300357e9342bf4ee11f671d7086a64751e2b14",
+      "release": "pinned commit",
+      "license": "Apache-2.0",
+      "destination": "isaac-sim-ws"
+    },
+    "flexiv-hub-download": {
+      "kind": "manual",
+      "url": "https://hub.flexiv.com/login",
+      "revision": "user-supplied",
+      "release": "user-supplied",
+      "license": "redistribution not established",
+      "destination": "manual/flexiv-hub"
+    }
+  }
+}

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pai-lab"
-version = "0.1.0"
+version = "1.0.0.dev0"
 description = "Public, robot-oriented physical AI tutorials and experiments"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
@@ -14,12 +14,18 @@ dependencies = [
     "gymnasium>=1.2,<2",
     "matplotlib>=3.10,<4",
     "mujoco>=3.3,<4",
-    "mujoco-ros2-core",
     "numpy>=2,<3",
     "scipy>=1.16,<2",
 ]
 
 [project.optional-dependencies]
+ros = [
+    "mujoco-ros2-core @ git+https://github.com/terryum/mujoco-ros2-core.git@b525d62f6bace3444fe22ce1dcfe65985b124a70",
+]
+hardware = []
+docs = [
+    "mkdocs>=1.6,<2",
+]
 learning = [
     "stable-baselines3>=2.7,<3",
     "tensorboard>=2.20,<3",
@@ -31,7 +37,8 @@ pal = "pai_lab.cli:main"
 wuji-hand2-inspect = "wuji_hand2_setup.inspect:main"
 
 [project.entry-points."pai_lab.robot_plugins"]
-wuji-hand2 = "pai_lab.robots.wuji_hand2:plugin"
+wuji = "pai_lab.robots.wuji_hand2:plugin"
+enlight = "pai_lab.robots.enlight:plugin"
 
 [dependency-groups]
 dev = [
@@ -40,12 +47,25 @@ dev = [
     "ruff>=0.13,<1",
 ]
 
-[tool.uv.sources]
-mujoco-ros2-core = { path = "../mujoco-ros2-core", editable = true }
-
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+exclude = ["examples/", "tests/"]
+
+[[tool.mypy.overrides]]
+module = [
+    "pai_lab.installation_smoke",
+    "wuji_hand2_motion.*",
+    "wuji_hand2_setup.*",
+]
+ignore_errors = true

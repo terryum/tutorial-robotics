@@ -1,6 +1,6 @@
 # Official Sources and Baseline Snapshot
 
-> Snapshot date: 2026-09-01. Codex must re-audit current sources before applying upgrades.
+> Snapshot date: 2026-09-10. `pal sources check` validates pins but never upgrades them automatically.
 
 ## Codex workflow
 
@@ -39,7 +39,12 @@
 
 ## Robot repositories
 
-- [Wuji Hand description](https://github.com/wuji-technology/wuji-hand-description)
+- [Wuji release notes](https://docs.wuji.tech/docs/en/release-notes/)
+- [Wuji version compatibility](https://docs.wuji.tech/docs/en/wuji-hand/latest/version-compatibility/)
+- [Wuji model integration](https://docs.wuji.tech/docs/en/wuji-description/latest/integration/)
+- [Wuji control guide](https://docs.wuji.tech/docs/en/wuji-hand/latest/control-guide/)
+- [Wuji user notice](https://docs.wuji.tech/docs/en/wuji-hand/latest/user-notice/)
+- [Wuji description](https://github.com/wuji-technology/wuji-description)
 - [Wuji minimal MuJoCo example](https://github.com/wuji-technology/mujoco-sim)
 - [Wuji Isaac example](https://github.com/wuji-technology/isaaclab-sim)
 - [Wuji MJLab](https://github.com/wuji-technology/wuji-mjlab)
@@ -49,3 +54,6 @@
 - [Sharpa model assets](https://github.com/sharpa-robotics/sharpa-urdf-usd-xml)
 - [Sharpa RL Lab](https://github.com/sharpa-robotics/sharpa-rl-lab)
 - [Franka ROS 2 Jazzy documentation](https://frankarobotics.github.io/docs/doc/franka_ros2_jazzy/docs/index.html)
+- [Flexiv description](https://github.com/flexivrobotics/flexiv_description)
+- [Flexiv RDK](https://github.com/flexivrobotics/flexiv_rdk)
+- [Flexiv ROS 2](https://github.com/flexivrobotics/flexiv_ros2)

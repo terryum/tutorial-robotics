@@ -2,19 +2,18 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
 import gymnasium as gym
-from gymnasium import spaces
 import numpy as np
-
+from gymnasium import spaces
 from mujoco_ros2_core import MujocoPositionActuatorBackend
 
 from wuji_hand2_motion.model import joint_names, model_path, validate_side
 
 
 class WujiHand2JointReachEnv(gym.Env[np.ndarray, np.ndarray]):
-    metadata = {"render_modes": []}
+    metadata: ClassVar[dict[str, list[str]]] = {"render_modes": []}
 
     def __init__(
         self,

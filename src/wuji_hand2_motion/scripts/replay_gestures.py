@@ -6,7 +6,6 @@ import argparse
 import time
 
 import mujoco.viewer
-
 from mujoco_ros2_core import MujocoPositionActuatorBackend, validate_trajectory
 
 from wuji_hand2_motion.gestures import GESTURE_NAMES, gesture_trajectory

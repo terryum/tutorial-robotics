@@ -2,6 +2,7 @@
 .venv/
 .pytest_cache/
 .cache/
+assets/vendor/
 .ruff_cache/
 .mypy_cache/
 .local/

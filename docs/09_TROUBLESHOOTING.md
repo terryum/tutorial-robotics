@@ -23,7 +23,7 @@ For any failure:
 ## Frequent model issues
 
 - relative mesh paths broken after copying only the XML
-- missing Git submodules
+- missing on-demand asset bundles (`pal assets fetch BUNDLE`)
 - duplicated body/joint/site names after composition
 - freejoint/base assumption mismatched
 - actuator count differs from controllable joint count

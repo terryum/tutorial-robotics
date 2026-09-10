@@ -1,46 +1,5 @@
-# Tutorial Progress
+# Learner progress moved to `.local/`
 
-Shared public completion state. Machine-local readiness belongs in `.local/`.
+Shared per-learner completion is no longer committed. Run `pal course init`, `pal course status`, and `pal course next`; the CLI stores progress in ignored `.local/progress.json` and evidence under `.local/runs/`.
 
-| ID | Robot/group | Status | Evidence/notes |
-|---|---|---|---|
-| T00 | `common` | pending | — |
-| T01 | `common` | pending | — |
-| T02 | `common` | pending | — |
-| T03 | `common` | pending | — |
-| T04 | `common` | pending | — |
-| T05 | `fr3` | pending | — |
-| T06 | `fr3` | pending | — |
-| T07 | `fr3` | pending | — |
-| T08 | `fr3` | pending | — |
-| T09 | `fr3` | pending | — |
-| T10 | `fr3` | pending | — |
-| T14 | `wuji-hand2` | pending | — |
-| T15 | `wuji-hand2` | pending | — |
-| T16 | `sharpa-wave` | pending | — |
-| T16A | `sharpa-wave` | pending | — |
-| T17 | `common` | pending | — |
-| T19 | `common` | pending | — |
-| T20 | `common` | pending | — |
-| T21 | `common` | pending | — |
-| T22 | `fr3` | pending | — |
-| T23 | `common` | pending | — |
-| T24 | `fr3` | pending | — |
-| T25 | `unitree-g1` | pending | — |
-| T26 | `unitree-g1` | pending | — |
-| T27 | `wuji-hand2` | pending | — |
-| T28 | `common` | pending | — |
-| T29 | `common` | pending | — |
-| T30 | `aloha` | pending | — |
-| T32A | `common` | pending | — |
-| T32C | `common` | pending | — |
-| T32D | `common` | pending | — |
-| T33 | `cross-robot` | pending | — |
-| T34 | `cross-robot` | pending | — |
-| T35 | `cross-robot` | pending | — |
-| T35A | `cross-robot` | pending | — |
-| T35B | `cross-robot` | pending | — |
-| T36 | `cross-robot` | pending | — |
-| T38 | `wuji-hand2` | pending | — |
-| T42A | `wuji-hand2` | pending | — |
-| T42B | `wuji-hand2` | pending | — |
+Repository maintainers track implementation and publication evidence in [PUBLISHING.md](PUBLISHING.md).

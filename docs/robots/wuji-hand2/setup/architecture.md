@@ -1,11 +1,11 @@
 # Architecture
 
 ```text
-official wuji-description v2026.8.3 (read-only)
+official wuji-description v2026.8.19 / Beta 2 (read-only cache)
               |
               +-- native MJCF position actuators -- MuJoCo viewer/tests
               |
-              +-- wuji_hand2_description -- robot_state_publisher -- RViz
+              +-- wuji_hand2_beta2_description -- robot_state_publisher -- RViz
 
 sensor_msgs/JointState command
               |

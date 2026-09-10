@@ -3,17 +3,15 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, ClassVar
 
 import gymnasium as gym
-from gymnasium import spaces
 import mujoco
 import numpy as np
-
+from gymnasium import spaces
 from mujoco_ros2_core import MujocoPositionActuatorBackend
 
 from wuji_hand2_motion.model import DESCRIPTION_ROOT, joint_names, model_path, prefix, validate_side
-
 
 CUBE_HALF_SIZE = 0.020
 CUBE_MASS = 0.050
@@ -71,7 +69,7 @@ def pregrasp_pose(side: str) -> dict[str, float]:
 
 
 class WujiHand2CubeYawEnv(gym.Env[np.ndarray, np.ndarray]):
-    metadata = {"render_modes": []}
+    metadata: ClassVar[dict[str, list[str]]] = {"render_modes": []}
 
     def __init__(
         self,
@@ -108,7 +106,7 @@ class WujiHand2CubeYawEnv(gym.Env[np.ndarray, np.ndarray]):
         self.previous_action = np.zeros(20, dtype=np.float64)
         self.steps = 0
         self.success_steps = 0
-        self.max_steps = max(1, int(round(episode_seconds / self.backend.control_dt)))
+        self.max_steps = max(1, round(episode_seconds / self.backend.control_dt))
         self.action_space = spaces.Box(-1.0, 1.0, shape=(20,), dtype=np.float32)
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(71,), dtype=np.float32

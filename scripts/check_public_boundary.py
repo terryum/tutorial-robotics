@@ -10,7 +10,7 @@ ALLOWED = {
     ROOT / "START_HERE.md",
     Path(__file__).resolve(),
 }
-BLOCKED = re.compile(r"friday|flexiv|cosmax|pai_private_lab|tutorial-robotics-private", re.IGNORECASE)
+BLOCKED = re.compile(r"friday|cosmax|pai_private_lab|tutorial-robotics-private", re.IGNORECASE)
 
 
 def main() -> int:

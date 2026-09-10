@@ -4,5 +4,4 @@ from __future__ import annotations
 
 
 def plugin() -> dict[str, str]:
-    return {"name": "wuji-hand2", "access": "public", "mode": "simulation-first"}
-
+    return {"name": "wuji", "access": "public", "mode": "read-only-first"}

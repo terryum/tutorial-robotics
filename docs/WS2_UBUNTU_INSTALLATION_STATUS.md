@@ -68,7 +68,7 @@ merged.
 
 ## Progress boundary
 
-- Public tutorial progress remains **0/40 done**.
+- This is pre-v1 host evidence; learner progress now remains local and publication evidence lives in `state/PUBLISHING.md`.
 - Next prerequisite-eligible tutorial remains **T00**.
 - This installation makes the host capable of later GPU tutorials; it is not
   evidence that their learning or acceptance contracts were completed.

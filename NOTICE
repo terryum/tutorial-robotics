@@ -1,7 +1,13 @@
-Wuji Hand 2 Setup
+Tutorial Robotics
 Copyright 2026 Terry Um
 
-This project depends on the unmodified wuji-technology/wuji-description
-repository, distributed separately as a pinned Git submodule under its MIT
-license. Wuji Hand names and model assets remain the property of their
-respective owners.
+This project can fetch unmodified, pinned public sources from Wuji Technology,
+Flexiv Robotics, Google DeepMind, Unitree Robotics, Sharpa Robotics, Hugging
+Face, Franka Robotics, and NVIDIA/Isaac projects. They are distributed
+separately into a local cache and retain their own licenses and notices.
+
+Flexiv description content identified as Apache-2.0 is not vendored here.
+Flexiv Hub downloads are not redistributed unless the file's own license or
+written permission explicitly allows it. Wuji Hand, Flexiv, Franka, Unitree,
+Sharpa, ALOHA, Isaac, and other product names and model assets remain the
+property of their respective owners.

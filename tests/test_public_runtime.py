@@ -5,7 +5,7 @@ from pai_lab.tutorials import discover, progress, validate_graph
 
 
 def test_public_tutorial_graph_is_closed() -> None:
-    assert discover()
+    assert len(discover()) == 49
     assert validate_graph() == []
 
 
@@ -19,11 +19,11 @@ def test_public_cli_needs_no_private_repository(capsys) -> None:
 def test_doctor_json_and_tutorial_commands(capsys) -> None:
     assert main(["doctor", "--format", "json"]) == 0
     result = json.loads(capsys.readouterr().out)
-    assert result["checks"]["tutorials"] is True
+    assert result["repository_errors"] == []
 
     assert main(["tutorial", "status"]) == 0
-    assert "T00\tpending" in capsys.readouterr().out
-    assert progress()["T00"] == "pending"
+    assert "core-00\tpending" in capsys.readouterr().out
+    assert progress()["core-00"] == "implemented"
 
     assert main(["tutorial", "next"]) == 0
-    assert capsys.readouterr().out.startswith("T00\tpending")
+    assert capsys.readouterr().out.startswith("id=core-00")

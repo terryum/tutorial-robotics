@@ -1,0 +1,7 @@
+site_name: Tutorial Robotics
+site_description: Capability-first bilingual robotics learning platform
+repo_url: https://github.com/terryum/tutorial-robotics
+docs_dir: docs
+theme:
+  name: mkdocs
+strict: true

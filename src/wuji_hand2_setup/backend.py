@@ -4,7 +4,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from mujoco_ros2_core import MujocoPositionActuatorBackend
+try:
+    from mujoco_ros2_core import MujocoPositionActuatorBackend
+except ModuleNotFoundError:
+    class MujocoPositionActuatorBackend:  # type: ignore[no-redef]
+        """Import-safe sentinel when the ROS extra is unavailable."""
+
+        def __init__(self, *_args: object, **_kwargs: object) -> None:
+            raise RuntimeError(
+                "mujoco-ros2-core is unavailable; install the `ros` extra for this backend"
+            )
 
 from wuji_hand2_setup.model import joint_names, model_path, validate_side
 

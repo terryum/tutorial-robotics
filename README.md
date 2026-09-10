@@ -1,134 +1,64 @@
-# Physical AI Tutorial Codex v4 — Capability-First
+# Tutorial Robotics
 
-> 기준일: 2026-09-03
-> 공개 학습 기준: [`references/PUBLIC_CURRICULUM.md`](references/PUBLIC_CURRICULUM.md)
-> 실행 원칙: **MacBook과 WS2를 자유롭게 오가며, 현재 capability로 실행 가능한 다음 tutorial을 Git 상태에서 이어서 수행**
+An open, capability-first course for robot control, simulation, learning, and safely gated hardware integration. English is the default; the complete [한국어 과정](docs/ko/index.md) uses the same commands and code.
 
-이 저장소는 Codex가 Physical AI 튜토리얼 코드를 한 단계씩 생성하고 실제로 실행·테스트·시각화·설명·기록하게 만드는 Markdown 기반 운영 체계다.
+There is no MacBook → workstation → robot-computer sequence. Start at Stage 1 on any supported macOS or Linux host, add Stage 2 capabilities on Ubuntu/NVIDIA, and enter only the hardware tracks for robots you own.
 
-## 1. 이번 v4의 핵심 변경
+| Path | Start here | What you need |
+|---|---|---|
+| Core learner | [25 Core lessons](docs/en/index.md) | Python 3.12 on macOS arm64 or Linux |
+| Simulation learner | Core, then 15 Simulation lessons | Ubuntu 24.04 x86_64; ROS 2/GPU/Isaac only for matching tracks |
+| Hardware learner | Core + selected Simulation prerequisites, then common safety lessons and one robot track | isolated Ubuntu runtime and explicit per-run approval |
 
-기존 v3의 `MacBook foundation → WS2 GPU phase`라는 machine gate를 제거했다.
+## Two-minute quickstart
 
-```text
-MacBook = portable development subset
-WS2     = portable subset + Linux/CUDA/Isaac/mjlab full stack
+```bash
+git clone https://github.com/terryum/tutorial-robotics.git
+cd tutorial-robotics
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+
+pal host detect --json
+pal setup plan --stage core --out .local/setup-plan.json --json
+pal course init --through core --json
+pal course next --json
+pal lesson check core-00 --json
+pal lesson run core-00 --headless --json
 ```
 
-따라서 다음이 모두 가능하다.
+The run writes learner-owned evidence to `.local/runs/` and progress to `.local/progress.json`; both are ignored by Git. `pal setup apply` installs only selected Python extras into an active virtual environment. It never installs system packages, drivers, ROS, Isaac Sim, firmware, or large models.
 
-- 처음부터 WS2에서 T00을 시작해 core와 GPU 튜토리얼을 연속 수행
-- WS2에서 하던 작업을 GitHub에 push하고 MacBook에서 가능한 다음 튜토리얼 수행
-- MacBook 작업을 다시 push한 뒤 WS2에서 GPU-only branch를 이어서 수행
-- 완료된 tutorial을 다른 host에서 local portability verification으로 재실행
+## Curriculum
 
-장비가 아니라 tutorial front matter의 `requires` capability가 실행 가능 여부를 결정한다. 자세한 규칙은 [`EXECUTION_MODEL.md`](EXECUTION_MODEL.md)다.
+- Stage 1 — Core: 25 portable lessons covering deterministic simulation, FR3 control, Enlight and Wuji models, dexterity, RL, datasets, IL, ALOHA, and a VLA protocol.
+- Stage 2 — Simulation: 15 Ubuntu lessons covering ROS 2, GPU learning, VLA, Isaac, deployment bundles, and robot-specific simulation.
+- Stage 3 — Hardware: 9 isolated-runtime lessons. Run `hw-common-01/02`, then only a robot track you own. Enlight+Wuji integration requires both devices.
 
-## 2. 로봇 포트폴리오
+The machine-readable [curriculum catalog](curriculum/catalog.json) is authoritative. Every one of its 49 lessons has matching [English](docs/en/index.md) and [Korean](docs/ko/index.md) pages, a thin `examples/<lesson-id>/run.py` entry point, a deterministic test, and explicit artifacts. Legacy T IDs remain CLI and URL aliases throughout v1.x; see the [migration table](migration/tutorial-id-map.csv).
 
-### 공개 학습 기준 모델
+## Copyable agent prompts
 
-- **Franka Research 3 v2** — 7축 제어·IK·임피던스·RL/IL
-- **Unitree G1 29-DoF** — humanoid PPO·motion imitation
-- **Sharpa Wave** — dexterous/tactile 비교
-- **ALOHA** — ACT·양팔 IL·VLA data pipeline
+English:
 
-`Unitree H2 Plus`는 watchlist다.
+> Inspect this host with `pal host detect --json`. Show me the smallest setup plan before applying it. Start at Stage 1 and run, inspect, and explain one eligible lesson at a time. Treat unavailable capabilities honestly, and ask before system changes or any hardware motion. Never install drivers, CUDA, ROS, Isaac Sim, firmware, or large models automatically.
 
-## 3. 권장 tutorial 흐름
+한국어:
 
-학습 내용은 prerequisite DAG를 따른다. 같은 단계라도 어느 host에서 실행할지는 고정하지 않는다.
+> `pal host detect --json`으로 이 호스트를 검사하고, 적용 전에 가장 작은 설치 계획을 보여줘. Stage 1부터 실행 가능한 수업을 한 번에 하나씩 실행·검사·설명해줘. 없는 capability는 그대로 보고하고, 시스템 변경이나 하드웨어 motion 전에는 반드시 승인을 요청해. driver, CUDA, ROS, Isaac Sim, firmware, 대형 모델은 자동 설치하지 마.
 
-```text
-T00–T10                 bootstrap, MuJoCo, FR3 model/control
-T14–T17, T19–T21        public hands, ROS 2, bridge, common API
-T22–T30                 Gym/PPO, humanoid learning, datasets, BC/ACT
-T32A, T32C–T35A         VLA protocol, GPU scaling, Isaac, sim-to-sim
-T35B–T36, T38, T42A/B   isolated public-robot runtime and capstones
+Codex reads [AGENTS.md](AGENTS.md) and the repository skill; Claude Code reads [CLAUDE.md](CLAUDE.md) and an equivalent generated skill. `pal`, not the wrapper, owns capability, selection, execution, and safety decisions.
+
+## Verification and release status
+
+`ci-checked` means the dependency-light contract runs in CI. `maintainer-checked` requires recorded stack evidence. `reader_test_required` is deliberately not presented as verified hardware/GPU behavior. Publication state is separate from learner progress in [state/PUBLISHING.md](state/PUBLISHING.md).
+
+```bash
+python scripts/validate_repository.py
+python scripts/validate_release.py
+pytest
+ruff check .
+mypy src
 ```
 
-WS2는 위 개발 tutorial 전체를 수행할 수 있다. MacBook은 capability가 맞는 항목을 수행한다.
-
-## 4. 처음 사용하는 명령
-
-### WS2에서 처음부터 시작
-
-```text
-이 컴퓨터는 WS2이며 DEVELOPMENT mode로 사용한다. EXECUTION_MODEL.md, AGENTS.md, references/PUBLIC_CURRICULUM.md, runbooks/FULL_GPU_DEVELOPMENT.md를 읽고 $bootstrap-host로 실제 capability를 등록해줘. WS2를 MacBook 이후 단계로 제한하지 말고 T00부터 현재 capability로 실행 가능한 tutorial 전체의 superset host로 취급해. 우선 T00 하나만 코드·테스트·실행·시각화·한국어 report·state 갱신까지 완료하고 멈춰줘.
-```
-
-### MacBook에서 시작 또는 이어서 진행
-
-```text
-이 컴퓨터는 MacBook이며 DEVELOPMENT mode로 사용한다. Git 상태를 확인하고 $bootstrap-host로 실제 capability를 등록해줘. shared progress를 그대로 이어받고, CUDA/Isaac/Ubuntu-vendor 전용 tutorial의 status는 바꾸지 말며 현재 MacBook에서 실행 가능한 다음 eligible tutorial 하나만 완료한 뒤 멈춰줘.
-```
-
-### 어느 개발 host에서든 반복
-
-```text
-현재 host capability와 shared progress를 검사해 실행 가능한 다음 eligible tutorial 하나만 수행해줘. 완료 후 코드·test·output·한국어 report·state를 갱신하고 정확한 Git commit 후보와 다음 후보를 보고한 뒤 멈춰줘.
-```
-
-명령 모음은 [`COMMANDS.md`](COMMANDS.md)에 있다.
-
-## 5. Git 동기화
-
-코드, Markdown, config, test, lockfile, small output, manifest와 progress를 Git으로 공유한다. 다음은 Git에 넣지 않는다.
-
-- `.venv`, Pixi/Conda environment
-- CUDA/Isaac cache
-- `.local/HOST_CAPABILITIES.md`
-- 큰 checkpoint/raw dataset/video
-
-큰 artifact는 Git LFS, DVC, NAS 또는 object storage에 두고 hash/manifest를 Git에 기록한다. 자세한 절차는 [`runbooks/GIT_SYNC.md`](runbooks/GIT_SYNC.md)다.
-
-### 호스트별 진행 현황
-
-MacBook, WS2 Windows, WS2 Ubuntu/WSL2, WS1 Ubuntu는
-[`state/HOST_STATUS.md`](state/HOST_STATUS.md)를 공통 조정판으로 사용한다.
-작업을 시작할 때 이 파일과 `state/PROGRESS.md`를 읽고, tutorial 또는 설치
-결과를 push할 때 현재 host 행도 같은 commit에서 갱신한다. 다른 host의 행을
-덮어쓰거나 hostname, IP, 계정, serial, credential 같은 machine-local 정보를
-기록하지 않는다.
-
-## 6. 완료 정의
-
-- reusable code와 thin tutorial entry point
-- automated test/smoke test
-- 실제 실행 로그
-- PNG/MP4/CSV/JSON 등 결과
-- 한국어 lesson report
-- shared progress 갱신
-
-설치만 하거나 코드만 생성한 상태는 `done`이 아니다.
-
-## 7. 환경 분리
-
-semantic environment role은 host와 무관하게 유지한다.
-
-- `core-dev`
-- `ros2-dev`
-- `lerobot-dev`
-- `gpu-mjlab`
-- `gpu-isaac-vendor`
-- `gpu-isaac-modern`
-- `gpu-lerobot`
-- `robot-runtime`
-
-동일 role이라도 macOS-arm64와 Linux-x86_64 lock은 각각 생성할 수 있으며 virtual environment 자체는 복사하지 않는다.
-
-## 8. 실물 안전
-
-실물 단계에서는 WS1/WS2라는 이름보다 `ROBOT_RUNTIME` mode와 safety capability가 중요하다.
-
-```text
-offline replay
-→ no-hardware command sink
-→ read-only hardware
-→ live no-command shadow
-→ torque-disabled replay
-→ explicit run card
-→ one approved low-risk motion
-```
-
-명시적 승인 없이 torque, joint/base motion, contact, system-ID excitation, firmware update 또는 limit 변경을 수행하지 않는다.
+The repository is Apache-2.0. Vendor sources remain pinned, read-only, on-demand dependencies. Assets without confirmed redistribution permission are represented only by source/version/license manifests and adapters.

@@ -1,64 +1,18 @@
-# Phase Gates
+# Capability and safety gates
 
-## Current status
+These gates describe evidence, not a required sequence of named computers. Learners progress through the catalog DAG; local eligibility is calculated from capabilities and `.local/progress.json`.
 
-| Gate | Status | Evidence / bundle ID | Last verified |
-|---|---|---|---|
-| `MACBOOK_FOUNDATION_COMPLETE` | pending | — | — |
-| `WS2_SIM_TRAIN_COMPLETE` | pending | — | — |
-| `WS2_DEPLOYMENT_BUNDLE_READY` | pending | — | — |
-| `CARTON_CANDIDATE_BUNDLE_READY` | pending | — | — |
-| `WUJI_COSMETICS_CANDIDATE_READY` | pending | — | — |
-| `RUNTIME_OFFLINE_VALIDATED` | pending | — | — |
-| `ROBOT_READ_ONLY_VALIDATED_WUJI` | pending | — | — |
-| `WUJI_LOW_RISK_VALIDATED` | pending | — | — |
+| Gate | Scope | Persistent? | Required evidence |
+|---|---|---:|---|
+| `CORE_CURRICULUM_VERIFIED` | Stage 1 | yes | 25 headless lesson checks on a supported host, including bootstrap and pendulum artifacts |
+| `SIMULATION_RUNTIME_VERIFIED` | selected Stage 2 track | yes | matching ROS/GPU/Isaac maintainer or reader evidence |
+| `CANDIDATE_DEPLOYMENT_BUNDLE_READY` | one explicit robot/task/policy | yes | sample or real candidate manifest, hashes, deterministic vectors, limits, rollback |
+| `RUNTIME_OFFLINE_VALIDATED` | runtime host | yes | rebuild, offline replay, command sink, shadow, rollback |
+| `ROBOT_READ_ONLY_VALIDATED_<ROBOT>` | one physical robot | yes | model/firmware/SDK identity and sanitized state summary |
+| `LOW_RISK_VALIDATED_<ROBOT>` | one approved action | no | dated run card and one bounded action result |
 
-Motion/contact approval is never a persistent done-state. It is a dated per-run card.
+`sim-deploy-01` teaches the bundle contract with the committed small sample candidate. It does not require every GPU track. The same checks must later be applied to a selected robot's actual candidate.
 
-## `MACBOOK_FOUNDATION_COMPLETE`
+Hardware motion/contact approval is never inherited, global, or permanent. `hw-common-01` and `hw-common-02` precede only the robot track being used. `hw-enlight-wuji-01` is eligible only when both devices and both read-only gates are present.
 
-Required:
-
-```text
-T00–T08, , T09–T17
-T19–T25
-T28–, T16A
-T32A
-```
-
-Evidence includes environment locks, source/model pins, four-model smoke outputs, cross-format tests, Korean reports and a WS2 handoff manifest.
-
-## `WS2_SIM_TRAIN_COMPLETE`
-
-Required:
-
-```text
-, T26, T27, , T32C, T33, T34, T35
-```
-
-T32D is optional. Target-specific //T42A are run when that robot/task is being promoted.
-
-## `WS2_DEPLOYMENT_BUNDLE_READY`
-
-T35A creates a bundle for one explicit robot/task/policy. A bare checkpoint is invalid. Include processor/config, normalization, camera/joint/state/action order, units/frame/rates/horizon, assets/calibration, dataset manifest, Git commit, lock/container digest, sim results, deterministic vectors, tolerances and rollback.
-
-## Target-specific candidate gates
-
-- `CARTON_CANDIDATE_BUNDLE_READY` — 
-- `WUJI_COSMETICS_CANDIDATE_READY` — T42A
-
-## `RUNTIME_OFFLINE_VALIDATED`
-
-T35B verifies bundle/hash, runtime rebuild, deterministic parity, recorded-episode replay, no-motion command-sink shadow and rollback. It authorizes read-only only.
-
-## Robot-specific read-only gates
-
-```text
-T36 --robot wuji_hand2_beta2_right → ROBOT_READ_ONLY_VALIDATED_WUJI
-```
-
-## Motion/contact progression
-
-- Wuji: T38 named-pose/calibration approvals → T42B separate grasp/regrasp approval.
-
-No gate in this file is production approval.
+No gate is production approval.

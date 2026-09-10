@@ -89,7 +89,7 @@ ROS Jazzy의 C++→Python localhost 메시지, RViz와 MCAP 기능도 현재 호
 ROS, 모델, 표시 장치, lock 설치 일치, capability/mode와 다음 튜토리얼 선택을
 보증하지 않는다. `pal tutorial next`도 현재 prerequisite만 확인한다.
 T00에서 capability/mode·선택 로직을 보완하고 정식 acceptance를 수행해야 한다.
-이번 작업은 설치 검증이며 **공개 진척은 0/40, T00 pending**이다.
+이 문단은 pre-v1 설치 검증 기록이다. 현재 learner progress는 `.local/progress.json`, 출판 검증은 `state/PUBLISHING.md`가 관리한다.
 
 공식 근거: [ROS Jazzy Ubuntu 설치](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html),
 [ROS Python 환경](https://docs.ros.org/en/jazzy/How-To-Guides/Using-Python-Packages.html),

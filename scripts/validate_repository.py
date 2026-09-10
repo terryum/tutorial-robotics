@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import re
-from pathlib import Path
 from urllib.parse import unquote
 
-from pai_lab.tutorials import ROOT, discover, validate_graph
-
+from pai_lab.assets import check_sources
+from pai_lab.catalog import ROOT, load_catalog, validate_catalog
+from pai_lab.lessons import check_lesson
 
 LINK = re.compile(r"!?\[[^]]*]\(([^)]+)\)")
 
@@ -27,20 +27,14 @@ def validate_links() -> list[str]:
 
 
 def main() -> int:
-    tutorials = discover()
-    ids = [tutorial.tutorial_id for tutorial in tutorials]
-    errors = validate_graph() + validate_links()
-    duplicates = sorted({tutorial_id for tutorial_id in ids if ids.count(tutorial_id) > 1})
-    errors.extend(f"duplicate tutorial id: {tutorial_id}" for tutorial_id in duplicates)
-    for tutorial in tutorials:
-        if not tutorial.mode:
-            errors.append(f"{tutorial.path.relative_to(ROOT)}: missing mode")
-        if not tutorial.requirements:
-            errors.append(f"{tutorial.path.relative_to(ROOT)}: missing requires")
+    lessons = load_catalog()
+    errors = validate_catalog() + check_sources() + validate_links()
+    for lesson in lessons:
+        errors.extend(check_lesson(lesson.id))
     if errors:
         print("\n".join(errors))
         return 1
-    print(f"validated {len(tutorials)} tutorials and Markdown links")
+    print(f"validated {len(lessons)} catalog lessons, bilingual contracts, sources, and links")
     return 0
 
 

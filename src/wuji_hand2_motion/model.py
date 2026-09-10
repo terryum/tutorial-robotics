@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DESCRIPTION_ROOT = (
-    PROJECT_ROOT / "assets/vendor/wuji-description/hand2/hand2_beta1/body"
+    PROJECT_ROOT / ".cache/assets/wuji-description/hand2/hand2_beta2/body"
 )
 HAND_SIDES = ("left", "right")
 JOINT_SUFFIXES = (
@@ -51,7 +50,15 @@ def joint_names(side: str) -> tuple[str, ...]:
 
 
 def model_path(side: str) -> Path:
-    path = DESCRIPTION_ROOT / "mjcf" / f"{validate_side(side)}.xml"
+    normalized = validate_side(side)
+    candidates = (
+        DESCRIPTION_ROOT / "mjcf" / f"{normalized}.xml",
+        DESCRIPTION_ROOT / "mjcf" / f"wujihand2-beta2-{normalized}.xml",
+    )
+    path = next((candidate for candidate in candidates if candidate.is_file()), candidates[0])
     if not path.is_file():
-        raise FileNotFoundError(f"missing pinned Wuji Hand 2 MJCF: {path}")
+        raise FileNotFoundError(
+            f"missing pinned Wuji Hand 2 Beta 2 MJCF: {path}; "
+            "run `pal assets fetch wuji-description-beta2`"
+        )
     return path

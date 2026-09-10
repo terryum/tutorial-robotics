@@ -11,7 +11,7 @@ from launch_ros.actions import Node
 
 def launch_setup(context):
     side = LaunchConfiguration("side").perform(context)
-    share = get_package_share_directory("wuji_hand2_description")
+    share = get_package_share_directory("wuji_hand2_beta2_description")
     with open(os.path.join(share, "urdf", f"{side}-ros.urdf"), encoding="utf-8") as file:
         description = file.read()
     prefix = "l" if side == "left" else "r"

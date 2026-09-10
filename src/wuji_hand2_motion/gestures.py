@@ -3,12 +3,23 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from dataclasses import dataclass
+from itertools import pairwise
 
 import numpy as np
 
-from mujoco_ros2_core import MotionTrajectory
-
 from wuji_hand2_motion.model import joint_names, prefix, validate_side
+
+
+@dataclass(frozen=True)
+class MotionTrajectory:
+    """Dependency-light trajectory contract used by the core stage."""
+
+    robot_id: str
+    model_id: str
+    joint_names: tuple[str, ...]
+    time_from_start: np.ndarray
+    positions: np.ndarray
 
 
 GESTURE_NAMES = ("open", "relaxed", "fist", "pinch", "point", "spread")
@@ -84,9 +95,9 @@ def gesture_trajectory(
     names = joint_names(side)
     rows: list[np.ndarray] = []
     times: list[float] = []
-    samples = max(2, int(round(transition_seconds * rate_hz)) + 1)
+    samples = max(2, round(transition_seconds * rate_hz) + 1)
     elapsed = 0.0
-    for segment, (start_name, end_name) in enumerate(zip(sequence, sequence[1:])):
+    for segment, (start_name, end_name) in enumerate(pairwise(sequence)):
         start = np.asarray([gesture_pose(side, start_name)[name] for name in names])
         end = np.asarray([gesture_pose(side, end_name)[name] for name in names])
         phase = np.linspace(0.0, 1.0, samples)
@@ -100,7 +111,7 @@ def gesture_trajectory(
 
     return MotionTrajectory(
         robot_id=f"wuji-hand2-{validate_side(side)}",
-        model_id="wuji-description-v2026.8.3",
+        model_id="wuji-description-v2026.8.19-beta2",
         joint_names=names,
         time_from_start=np.asarray(times),
         positions=np.asarray(rows),

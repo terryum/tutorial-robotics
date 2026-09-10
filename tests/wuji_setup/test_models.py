@@ -1,43 +1,56 @@
-import mujoco
-import numpy as np
-import pytest
-
-from wuji_hand2_setup import WujiHand2MujocoBackend, joint_names, verification_pose
-
-
-@pytest.mark.parametrize("side,prefix", [("left", "l"), ("right", "r")])
-def test_model_contract_and_native_motion(side: str, prefix: str) -> None:
-    backend = WujiHand2MujocoBackend(side)
-    assert backend.model.njnt == 20
-    assert backend.model.nu == 20
-    assert backend.joint_names == joint_names(side)
-    assert backend.controlled_joints == joint_names(side)
-    assert np.all(np.isfinite(backend.read_state().positions))
-
-    tips = {
-        mujoco.mj_id2name(backend.model, mujoco.mjtObj.mjOBJ_SITE, index)
-        for index in range(backend.model.nsite)
-    }
-    assert len({name for name in tips if name and name.endswith("_tip")}) == 5
-
-    joint = f"{prefix}_index_finger_mcp_flex"
-    initial = float(backend.read_control_state().positions[4])
-    backend.set_joint_targets({joint: initial + 0.35})
-    for _ in range(250):
-        backend.step()
-    final = float(backend.read_control_state().positions[4])
-    assert final > initial + 0.15
-
-    backend.reset()
-    np.testing.assert_allclose(backend.read_control_state().positions, backend.home)
+from wuji_hand2_motion.gestures import GESTURE_NAMES, gesture_pose, gesture_trajectory
+from wuji_hand2_setup.model import (
+    DESCRIPTION_ROOT,
+    MODEL_COMMIT,
+    MODEL_RELEASE,
+    ROS_DESCRIPTION_PACKAGE,
+    USD_FILENAME,
+    fingertip_sensor_frames,
+    inspect_model_xml,
+    joint_names,
+    model_id,
+    model_variants,
+    validate_beta2_inventory,
+)
 
 
-@pytest.mark.parametrize("side", ["left", "right"])
-@pytest.mark.parametrize("pose_name", ["open", "fist"])
-def test_verification_poses_fit_limits(side: str, pose_name: str) -> None:
-    backend = WujiHand2MujocoBackend(side)
-    pose = verification_pose(side, pose_name)
-    assert set(pose) == set(backend.controlled_joints)
-    backend.set_joint_targets(pose)
-    assert np.all(backend.target >= backend.lower)
-    assert np.all(backend.target <= backend.upper)
+def test_beta2_identifiers_and_inventory_are_canonical() -> None:
+    assert "hand2_beta2/body" in DESCRIPTION_ROOT.as_posix()
+    assert MODEL_RELEASE == "v2026.8.19"
+    assert MODEL_COMMIT == "b13f7d52b23cb79e35357303c72b7f61f1d2fda2"
+    assert ROS_DESCRIPTION_PACKAGE == "wuji_hand2_beta2_description"
+    assert USD_FILENAME == "wujihand2_beta2.usd"
+    assert len(model_variants()) == 4
+    for side in ("left", "right"):
+        assert model_id(side) == f"wujihand2-beta2-{side}"
+        assert len(joint_names(side)) == 20
+        frames = fingertip_sensor_frames(side)
+        assert len(frames) == 5
+        assert all(name.endswith("_tip_sensor_frame") for name in frames)
+
+
+def test_beta2_xml_inventory_validation(tmp_path) -> None:
+    bodies = "".join(
+        f'<body name="f{index}_tip_sensor_frame"><site name="f{index}_tip"/></body>'
+        for index in range(5)
+    )
+    joints = "".join(f'<joint name="j{index}"/>' for index in range(20))
+    path = tmp_path / "hand.xml"
+    path.write_text(
+        f'<mujoco><worldbody><body><inertial mass="1.0"/>{joints}{bodies}'
+        "<geom/></body></worldbody></mujoco>",
+        encoding="utf-8",
+    )
+    inventory = inspect_model_xml(path)
+    assert validate_beta2_inventory(inventory) == []
+
+
+def test_gestures_are_asset_independent_and_bounded() -> None:
+    for side in ("left", "right"):
+        for name in GESTURE_NAMES:
+            pose = gesture_pose(side, name)
+            assert tuple(pose) == joint_names(side)
+            assert all(-1.5 <= value <= 1.5 for value in pose.values())
+        trajectory = gesture_trajectory(side)
+        assert trajectory.positions.shape == (376, 20)
+        assert trajectory.model_id == "wuji-description-v2026.8.19-beta2"

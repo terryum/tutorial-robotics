@@ -21,7 +21,7 @@ ROS_DOMAIN_ID = "72"
 PYTHONPATH = "../src:../deps/mujoco-ros2-core/src"
 
 [tasks]
-build = "colcon build --base-paths src ../assets/vendor/wuji-description/hand2/hand2_beta1/body"
+build = "colcon build --base-paths src ../.cache/assets/wuji-description/hand2/hand2_beta2/body"
 test-backend = "bash -c 'source install/setup.bash && PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q src/wuji_hand2_tutorial/test/test_backend.py'"
 display-left = "bash -c 'source install/setup.bash && ros2 launch wuji_hand2_tutorial display.launch.py side:=left'"
 display-right = "bash -c 'source install/setup.bash && ros2 launch wuji_hand2_tutorial display.launch.py side:=right'"
