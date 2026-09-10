@@ -6,6 +6,7 @@ assets/vendor/
 .ruff_cache/
 .mypy_cache/
 .local/
+site/
 external/
 outputs/
 runs/

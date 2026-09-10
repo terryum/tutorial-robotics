@@ -2,14 +2,17 @@
 
 ```text
 pal host detect [--json]
-pal setup plan --stage core|sim|hardware [--robot ROBOT] --out PATH [--json]
+pal setup plan --profile core|ros|gpu|isaac|runtime-offline|hardware [--robot ROBOT] --out PATH [--json]
+pal setup plan --stage core|sim|hardware [--robot ROBOT] --out PATH [--json]  # v1.x compatibility
 pal setup apply PATH [--json]
-pal setup verify --stage STAGE [--robot ROBOT] [--json]
+pal setup verify --profile PROFILE [--robot ROBOT] [--json]
+pal setup verify --stage STAGE [--robot ROBOT] [--json]  # v1.x compatibility
 
 pal course init --through core|sim|hardware [--robot ROBOT] [--include-electives] [--json]
 pal course list [--json]
 pal course status [--json]
 pal course next [--json]
+pal course runnable --without-hardware [--json]
 
 pal lesson run ID [--headless] [--seed N] [--samples N] [--output-dir PATH] [--json]
 pal lesson check ID [--json]

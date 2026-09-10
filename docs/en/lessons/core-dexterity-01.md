@@ -1,6 +1,6 @@
 # core-dexterity-01 — Wuji and Sharpa model comparison
 
-You will build a reproducible minimum baseline for **Wuji and Sharpa model comparison** and inspect the flow from reference state to observed state through numeric artifacts.
+This lesson checks **Wuji and Sharpa model comparison** through the `hand-comparison` implementation and its `hand-comparison.json` artifact.
 
 | Field | Value |
 |---|---|
@@ -12,20 +12,21 @@ You will build a reproducible minimum baseline for **Wuji and Sharpa model compa
 | Prerequisites | `core-wuji-01` |
 | Safety | `simulation` |
 | Verification | `ci-checked` |
+| Implementation | `implemented` |
 
 This lesson never emits a hardware command.
 
 ## Learning goals
 
 - Check capabilities and prerequisites before execution.
-- Produce a seeded trace and record its SHA-256 digest.
+- Inspect the `hand-comparison.json` produced by `hand-comparison`.
 - Keep external GPU, ROS 2, and real-hardware evidence separate in the verification badge.
 
 ## Preflight
 
 ```bash
 pal host detect --json
-pal setup verify --stage core --json
+pal setup verify --profile core --json
 pal lesson check core-dexterity-01 --json
 ```
 
@@ -39,15 +40,15 @@ The same thin entry point is available as `python examples/core-dexterity-01/run
 
 ## Expected
 
-Exit code `0` creates `summary.json`, `trace.csv`, and `lesson-report.md`. `metric_value` in `summary.json` must be finite and repeatable for the same seed.
+An `implemented` lesson exits `0` and creates `hand-comparison.json`, `summary.json`, `trace.csv`, and `lesson-report.md`. A scaffolded lesson exits `2` with `reader_test_required` and does not create a run artifact.
 
 ## Recovery
 
-Run `pal lesson check core-dexterity-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --stage core --json`; do not auto-install system packages or firmware.
+Run `pal lesson check core-dexterity-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --profile core --json`; do not auto-install system packages or firmware.
 
 ## How it works
 
-The common runner samples normalized reference and observed signals every 20 ms. It computes mean absolute tracking error $E=\frac{1}{N}\sum_i |r_i-y_i|$ and uses the CSV byte-level SHA-256 as a checkpoint. This validates interface and reproducibility plumbing; it is not evidence of real robot accuracy or sensor force.
+The runner dispatches this catalog ID to the unique `hand-comparison` operation and computes `shared_joint_ratio`. Verification uses the lesson-specific `hand-comparison.json` schema and SHA-256, not a generic process-success signal. Lessons needing an external runtime cannot complete without its live host probe.
 
 Source references: `wuji-description`, `sharpa-wave`. The source manifest owns external revisions; generated or cached vendor files are never edited in place.
 

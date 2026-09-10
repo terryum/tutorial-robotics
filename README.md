@@ -20,14 +20,16 @@ source .venv/bin/activate
 python -m pip install -e .
 
 pal host detect --json
-pal setup plan --stage core --out .local/setup-plan.json --json
+pal setup plan --profile core --out .local/setup-plan.json --json
+pal setup verify --profile core --json
+pal course runnable --without-hardware --json
 pal course init --through core --json
 pal course next --json
 pal lesson check core-00 --json
 pal lesson run core-00 --headless --json
 ```
 
-The run writes learner-owned evidence to `.local/runs/` and progress to `.local/progress.json`; both are ignored by Git. `pal setup apply` installs only selected Python extras into an active virtual environment. It never installs system packages, drivers, ROS, Isaac Sim, firmware, or large models.
+The run writes learner-owned evidence to `.local/runs/` and progress to `.local/progress.json`; both are ignored by Git. Setup is profile-scoped (`core`, `ros`, `gpu`, `isaac`, `runtime-offline`, or `hardware`). `pal setup apply` installs only selected Python extras into an active virtual environment. It never installs system packages, drivers, ROS, Isaac Sim, firmware, or large models.
 
 ## Curriculum
 
@@ -35,7 +37,7 @@ The run writes learner-owned evidence to `.local/runs/` and progress to `.local/
 - Stage 2 — Simulation: 15 Ubuntu lessons covering ROS 2, GPU learning, VLA, Isaac, deployment bundles, and robot-specific simulation.
 - Stage 3 — Hardware: 9 isolated-runtime lessons. Run `hw-common-01/02`, then only a robot track you own. Enlight+Wuji integration requires both devices.
 
-The machine-readable [curriculum catalog](curriculum/catalog.json) is authoritative. Every one of its 49 lessons has matching [English](docs/en/index.md) and [Korean](docs/ko/index.md) pages, a thin `examples/<lesson-id>/run.py` entry point, a deterministic test, and explicit artifacts. Legacy T IDs remain CLI and URL aliases throughout v1.x; see the [migration table](migration/tutorial-id-map.csv).
+The machine-readable [curriculum catalog](curriculum/catalog.json) is authoritative. All 49 lessons have matching bilingual pages and thin entry points. Forty software lessons plus the offline command-sink lesson have lesson-specific implementations; the eight device-dependent lessons remain explicitly `scaffolded` until reader/hardware evidence exists. Legacy T IDs remain CLI and URL aliases throughout v1.x; see the [migration table](migration/tutorial-id-map.csv).
 
 ## Copyable agent prompts
 

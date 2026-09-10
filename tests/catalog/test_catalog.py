@@ -12,6 +12,8 @@ def test_catalog_has_exact_stage_counts_and_closed_graph() -> None:
     }
     assert validate_catalog() == []
     assert check_sources() == []
+    assert sum(item.implementation == "implemented" for item in lessons) == 41
+    assert sum(item.implementation == "scaffolded" for item in lessons) == 8
 
 
 def test_legacy_aliases_resolve_to_canonical_lessons() -> None:

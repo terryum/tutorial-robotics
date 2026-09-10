@@ -12,6 +12,8 @@ import os
 from pathlib import Path
 from typing import Any
 
+from pai_lab.lessons.runner import LESSON_SPECS
+
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = json.loads((ROOT / "curriculum" / "catalog.json").read_text(encoding="utf-8"))
 LESSONS: list[dict[str, Any]] = CATALOG["lessons"]
@@ -38,6 +40,24 @@ def _page(lesson: dict[str, Any], language: str) -> str:
     platforms = _csv(lesson["platforms"])
     safety = lesson["safety_level"]
     verification = lesson["verification"]
+    implementation = lesson["implementation"]
+    spec = LESSON_SPECS.get(lesson["id"])
+    operation = spec.operation if spec else "reader-hardware-gate"
+    artifact = spec.artifact if spec else "no run artifact until the gate is implemented"
+    metric = spec.metric if spec else "not applicable"
+    profile = (
+        "runtime-offline"
+        if lesson["id"] == "hw-common-01"
+        else "isaac"
+        if "isaac-sim" in lesson["capabilities"]
+        else "gpu"
+        if "nvidia-cuda" in lesson["capabilities"]
+        else "ros"
+        if "ros2-jazzy" in lesson["capabilities"]
+        else "hardware"
+        if lesson["stage"] == "hardware"
+        else "core"
+    )
     warning = (
         "이 entrypoint는 명령을 전송하지 않는 offline/read-only 계약만 실행합니다. 실제 motion에는 새로운 실행 카드와 명시적 승인이 필요합니다."
         if is_ko and lesson["stage"] == "hardware"
@@ -48,27 +68,25 @@ def _page(lesson: dict[str, Any], language: str) -> str:
         else "This lesson never emits a hardware command."
     )
     if is_ko:
-        intro = (
-            f"이 수업에서는 **{title}**의 재현 가능한 최소 기준선을 만들고, "
-            "상태·기준값·관측값의 흐름을 수치 artifact로 검사합니다."
-        )
+        intro = f"이 수업은 **{title}**을 `{operation}` 구현과 `{artifact}` artifact로 검사합니다."
         goals = (
             "- capability와 선행 수업을 실행 전에 확인합니다.\n"
-            "- 고정 seed로 기준 trace를 만들고 SHA-256으로 기록합니다.\n"
+            f"- `{operation}`이 만든 `{artifact}`를 직접 검사합니다.\n"
             "- 외부 GPU, ROS 2 또는 실제 장비 검증이 필요한 범위를 badge와 분리합니다."
         )
         expected = (
-            "exit code `0`과 함께 `summary.json`, `trace.csv`, `lesson-report.md`가 생성됩니다. "
-            "`summary.json`의 `metric_value`는 유한하고 같은 seed에서 재현되어야 합니다."
+            f"`{implementation}` 수업은 exit code `0`과 함께 `{artifact}`, `summary.json`, "
+            "`trace.csv`, `lesson-report.md`를 생성합니다. scaffolded 수업은 exit code `2`와 "
+            "`reader_test_required`를 반환하며 실행 artifact를 만들지 않습니다."
         )
         recovery = (
             f"먼저 `pal lesson check {lesson['id']} --json`을 실행합니다. capability가 없으면 "
-            f"`pal setup verify --stage {lesson['stage']} --json`의 missing 목록을 따르고, 시스템 패키지나 firmware는 자동 설치하지 않습니다."
+            f"`pal setup verify --profile {profile} --json`의 missing 목록을 따르고, 시스템 패키지나 firmware는 자동 설치하지 않습니다."
         )
         explanation = (
-            "공통 runner는 20 ms 간격의 정규화된 기준 신호와 관측 신호를 생성합니다. "
-            "평균 절대 추종 오차 $E=\\frac{1}{N}\\sum_i |r_i-y_i|$를 계산하고, CSV 바이트의 SHA-256을 checkpoint로 사용합니다. "
-            "이 값은 인터페이스와 재현성 smoke를 검증하며 실제 로봇 정확도나 센서 힘을 의미하지 않습니다."
+            f"runner는 catalog ID를 고유한 `{operation}`에 dispatch하고 `{metric}`을 계산합니다. "
+            f"검사는 범용 성공 신호가 아니라 `{artifact}`의 수업별 schema와 SHA-256을 사용합니다. "
+            "외부 runtime capability가 필요한 수업은 실제 host probe 없이 완료로 표시되지 않습니다."
         )
         try_it = (
             f"`pal lesson run {lesson['id']} --headless --seed 8 --samples 96`로 seed와 표본 수를 바꿉니다. "
@@ -80,27 +98,25 @@ def _page(lesson: dict[str, Any], language: str) -> str:
         )
         next_text = "과정의 다음 catalog 항목: " + _next(lesson)
     else:
-        intro = (
-            f"You will build a reproducible minimum baseline for **{title}** and inspect the flow "
-            "from reference state to observed state through numeric artifacts."
-        )
+        intro = f"This lesson checks **{title}** through the `{operation}` implementation and its `{artifact}` artifact."
         goals = (
             "- Check capabilities and prerequisites before execution.\n"
-            "- Produce a seeded trace and record its SHA-256 digest.\n"
+            f"- Inspect the `{artifact}` produced by `{operation}`.\n"
             "- Keep external GPU, ROS 2, and real-hardware evidence separate in the verification badge."
         )
         expected = (
-            "Exit code `0` creates `summary.json`, `trace.csv`, and `lesson-report.md`. "
-            "`metric_value` in `summary.json` must be finite and repeatable for the same seed."
+            f"An `implemented` lesson exits `0` and creates `{artifact}`, `summary.json`, `trace.csv`, "
+            "and `lesson-report.md`. A scaffolded lesson exits `2` with `reader_test_required` and "
+            "does not create a run artifact."
         )
         recovery = (
             f"Run `pal lesson check {lesson['id']} --json` first. If a capability is unavailable, follow "
-            f"the missing list from `pal setup verify --stage {lesson['stage']} --json`; do not auto-install system packages or firmware."
+            f"the missing list from `pal setup verify --profile {profile} --json`; do not auto-install system packages or firmware."
         )
         explanation = (
-            "The common runner samples normalized reference and observed signals every 20 ms. "
-            "It computes mean absolute tracking error $E=\\frac{1}{N}\\sum_i |r_i-y_i|$ and uses the CSV byte-level SHA-256 as a checkpoint. "
-            "This validates interface and reproducibility plumbing; it is not evidence of real robot accuracy or sensor force."
+            f"The runner dispatches this catalog ID to the unique `{operation}` operation and computes "
+            f"`{metric}`. Verification uses the lesson-specific `{artifact}` schema and SHA-256, not a "
+            "generic process-success signal. Lessons needing an external runtime cannot complete without its live host probe."
         )
         try_it = (
             f"Run `pal lesson run {lesson['id']} --headless --seed 8 --samples 96`. "
@@ -125,6 +141,7 @@ def _page(lesson: dict[str, Any], language: str) -> str:
 | Prerequisites | {prerequisites} |
 | Safety | `{safety}` |
 | Verification | `{verification}` |
+| Implementation | `{implementation}` |
 
 {warning}
 
@@ -136,7 +153,7 @@ def _page(lesson: dict[str, Any], language: str) -> str:
 
 ```bash
 pal host detect --json
-pal setup verify --stage {lesson['stage']} --json
+pal setup verify --profile {profile} --json
 pal lesson check {lesson['id']} --json
 ```
 
@@ -213,6 +230,28 @@ if __name__ == "__main__":
 
 
 def _test(lesson_id: str) -> str:
+    scaffolded = lesson_id in {
+        "hw-common-02",
+        "hw-fr3-01",
+        "hw-wuji-01",
+        "hw-wuji-02",
+        "hw-enlight-01",
+        "hw-enlight-02",
+        "hw-enlight-03",
+        "hw-enlight-wuji-01",
+    }
+    if scaffolded:
+        return f'''import pytest
+
+from pai_lab.lessons import check_lesson, implementation_status, run_lesson
+
+
+def test_{lesson_id.replace("-", "_")}_contract(tmp_path) -> None:
+    assert implementation_status("{lesson_id}") == "scaffolded"
+    with pytest.raises(NotImplementedError):
+        run_lesson("{lesson_id}", output_dir=tmp_path, seed=7, samples=16)
+    assert check_lesson("{lesson_id}") == []
+'''
     return f'''from pai_lab.lessons import check_lesson, run_lesson
 
 
@@ -220,7 +259,7 @@ def test_{lesson_id.replace("-", "_")}_contract(tmp_path) -> None:
     result = run_lesson("{lesson_id}", output_dir=tmp_path, seed=7, samples=16)
     assert result.lesson_id == "{lesson_id}"
     assert result.metric_value >= 0.0
-    assert {{path.name for path in tmp_path.iterdir()}} == {{"summary.json", "trace.csv", "lesson-report.md"}}
+    assert {{path.name for path in tmp_path.iterdir()}} == set(result.artifacts)
     assert check_lesson("{lesson_id}") == []
 '''
 
@@ -297,8 +336,22 @@ def _publishing_state() -> None:
         "|---|---|---|---|",
     ]
     for lesson in LESSONS:
+        status = (
+            "scaffolded"
+            if lesson["id"] in {
+                "hw-common-02",
+                "hw-fr3-01",
+                "hw-wuji-01",
+                "hw-wuji-02",
+                "hw-enlight-01",
+                "hw-enlight-02",
+                "hw-enlight-03",
+                "hw-enlight-wuji-01",
+            }
+            else "implemented"
+        )
         lines.append(
-            f"| {lesson['id']} | `{lesson['verification']}` | implemented | catalog/doc/entrypoint/smoke contract |"
+            f"| {lesson['id']} | `{lesson['verification']}` | {status} | lesson-specific deterministic artifact contract |"
         )
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 

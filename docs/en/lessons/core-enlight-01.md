@@ -1,6 +1,6 @@
 # core-enlight-01 — Enlight description, frames, and kinematics
 
-You will build a reproducible minimum baseline for **Enlight description, frames, and kinematics** and inspect the flow from reference state to observed state through numeric artifacts.
+This lesson checks **Enlight description, frames, and kinematics** through the `enlight-kinematics` implementation and its `enlight-frames.json` artifact.
 
 | Field | Value |
 |---|---|
@@ -12,20 +12,21 @@ You will build a reproducible minimum baseline for **Enlight description, frames
 | Prerequisites | `core-02` |
 | Safety | `simulation` |
 | Verification | `ci-checked` |
+| Implementation | `implemented` |
 
 This lesson never emits a hardware command.
 
 ## Learning goals
 
 - Check capabilities and prerequisites before execution.
-- Produce a seeded trace and record its SHA-256 digest.
+- Inspect the `enlight-frames.json` produced by `enlight-kinematics`.
 - Keep external GPU, ROS 2, and real-hardware evidence separate in the verification badge.
 
 ## Preflight
 
 ```bash
 pal host detect --json
-pal setup verify --stage core --json
+pal setup verify --profile core --json
 pal lesson check core-enlight-01 --json
 ```
 
@@ -39,15 +40,15 @@ The same thin entry point is available as `python examples/core-enlight-01/run.p
 
 ## Expected
 
-Exit code `0` creates `summary.json`, `trace.csv`, and `lesson-report.md`. `metric_value` in `summary.json` must be finite and repeatable for the same seed.
+An `implemented` lesson exits `0` and creates `enlight-frames.json`, `summary.json`, `trace.csv`, and `lesson-report.md`. A scaffolded lesson exits `2` with `reader_test_required` and does not create a run artifact.
 
 ## Recovery
 
-Run `pal lesson check core-enlight-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --stage core --json`; do not auto-install system packages or firmware.
+Run `pal lesson check core-enlight-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --profile core --json`; do not auto-install system packages or firmware.
 
 ## How it works
 
-The common runner samples normalized reference and observed signals every 20 ms. It computes mean absolute tracking error $E=\frac{1}{N}\sum_i |r_i-y_i|$ and uses the CSV byte-level SHA-256 as a checkpoint. This validates interface and reproducibility plumbing; it is not evidence of real robot accuracy or sensor force.
+The runner dispatches this catalog ID to the unique `enlight-kinematics` operation and computes `frame_count`. Verification uses the lesson-specific `enlight-frames.json` schema and SHA-256, not a generic process-success signal. Lessons needing an external runtime cannot complete without its live host probe.
 
 Source references: `flexiv-description`. The source manifest owns external revisions; generated or cached vendor files are never edited in place.
 

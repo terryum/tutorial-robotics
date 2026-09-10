@@ -25,17 +25,22 @@ Append new decisions rather than rewriting old ones. Mark superseded decisions e
 ## ADR-004 — Explicit MacBook → WS2 → runtime phase gates
 
 - Date: 2026-09-01
-- Status: accepted
+- Status: superseded by ADR-006
 - Decision: Mac foundations complete before WS2 training; WS2 candidate bundle and target-runtime offline validation complete before any real-hardware tutorial.
 - Reason: shared progress alone does not prove local environment, reproducibility, runtime compatibility or safety.
 
 ## ADR-005 — WS2 has mutually exclusive SIM_TRAIN and ROBOT_INTEGRATION profiles
 
 - Date: 2026-09-01
-- Status: accepted
+- Status: superseded by ADR-006
 - Reason: one machine can serve both roles, but not concurrently without avoidable timing, dependency and safety risk.
 
 
-- Date: 2026-09-01
+## ADR-006 — Capability-first, profile-scoped execution
+
+- Date: 2026-09-11
 - Status: accepted
-- Reason: separate stable runtime from experimental training and simulation changes.
+- Decision: hosts select `core`, `ros`, `gpu`, `isaac`, `runtime-offline`, or
+  `hardware` independently. A workstation may begin Core without a MacBook.
+- Reason: executable evidence is attached to a capability/profile, not a machine
+  nickname. Experimental training stays isolated from stable runtime work.

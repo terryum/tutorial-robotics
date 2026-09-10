@@ -4,7 +4,9 @@ Choose a scope, not a machine sequence.
 
 ```bash
 pal host detect --json
-pal setup plan --stage core --out .local/setup-plan.json --json
+pal setup plan --profile core --out .local/setup-plan.json --json
+pal setup verify --profile core --json
+pal course runnable --without-hardware --json
 pal course init --through core --json
 pal course next --json
 ```

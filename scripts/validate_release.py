@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 
 from pai_lab.catalog import ROOT, load_catalog, validate_catalog
@@ -19,6 +20,15 @@ def main() -> int:
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
     if 'path = "../mujoco-ros2-core"' in pyproject:
         errors.append("sibling mujoco-ros2-core path dependency remains")
+    release = json.loads((ROOT / "curriculum/catalog.json").read_text(encoding="utf-8"))["release"]
+    scaffolded = [lesson.id for lesson in load_catalog() if lesson.implementation == "scaffolded"]
+    if not str(release).endswith("-dev") and scaffolded:
+        errors.append("stable release blocked by scaffolded lessons: " + ", ".join(scaffolded))
+    publishing = (ROOT / "state/PUBLISHING.md").read_text(encoding="utf-8")
+    for lesson in load_catalog():
+        row_expected = f"| {lesson.id} | `{lesson.verification}` | {lesson.implementation} |"
+        if row_expected not in publishing:
+            errors.append(f"{lesson.id}: publishing state disagrees with catalog")
     for lesson in load_catalog():
         en = (ROOT / "docs/en/lessons" / f"{lesson.id}.md").read_text(encoding="utf-8")
         ko = (ROOT / "docs/ko/lessons" / f"{lesson.id}.md").read_text(encoding="utf-8")
@@ -26,7 +36,7 @@ def main() -> int:
             if PLACEHOLDERS.search(text):
                 errors.append(f"{lesson.id}/{language}: placeholder text")
             headings = [line for line in text.splitlines() if line.startswith("## ")]
-            expected = [
+            expected_headings = [
                 "## Learning goals",
                 "## Preflight",
                 "## Action",
@@ -37,7 +47,7 @@ def main() -> int:
                 "## Checkpoint",
                 "## Next lesson",
             ]
-            if headings != expected:
+            if headings != expected_headings:
                 errors.append(f"{lesson.id}/{language}: heading parity mismatch")
     agent = (ROOT / ".agents/skills/tutorial-robotics/SKILL.md").read_text(encoding="utf-8")
     claude = (ROOT / ".claude/skills/tutorial-robotics/SKILL.md").read_text(encoding="utf-8")

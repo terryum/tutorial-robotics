@@ -5,7 +5,8 @@ from urllib.parse import unquote
 
 from pai_lab.assets import check_sources
 from pai_lab.catalog import ROOT, load_catalog, validate_catalog
-from pai_lab.lessons import check_lesson
+from pai_lab.lessons import check_lesson, implementation_status
+from pai_lab.lessons.runner import LESSON_SPECS
 
 LINK = re.compile(r"!?\[[^]]*]\(([^)]+)\)")
 
@@ -31,6 +32,20 @@ def main() -> int:
     errors = validate_catalog() + check_sources() + validate_links()
     for lesson in lessons:
         errors.extend(check_lesson(lesson.id))
+        if lesson.implementation != implementation_status(lesson.id):
+            errors.append(
+                f"{lesson.id}: catalog says {lesson.implementation}, runner says "
+                f"{implementation_status(lesson.id)}"
+            )
+    operations = [spec.operation for spec in LESSON_SPECS.values()]
+    if len(operations) != len(set(operations)):
+        errors.append("implemented lessons must not reuse a generic operation")
+    generic = {"summary.json", "trace.csv", "lesson-report.md"}
+    for lesson_id, spec in LESSON_SPECS.items():
+        if spec.artifact in generic:
+            errors.append(f"{lesson_id}: semantic artifact is generic")
+        if spec.operation in {"baseline", "sine", "generic"}:
+            errors.append(f"{lesson_id}: generic fallback operation is forbidden")
     if errors:
         print("\n".join(errors))
         return 1

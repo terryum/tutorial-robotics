@@ -1,6 +1,6 @@
 # hw-common-01 — Runtime bootstrap, offline replay, and command sink
 
-You will build a reproducible minimum baseline for **Runtime bootstrap, offline replay, and command sink** and inspect the flow from reference state to observed state through numeric artifacts.
+This lesson checks **Runtime bootstrap, offline replay, and command sink** through the `offline-command-sink` implementation and its `command-sink.json` artifact.
 
 | Field | Value |
 |---|---|
@@ -8,24 +8,25 @@ You will build a reproducible minimum baseline for **Runtime bootstrap, offline 
 | Legacy alias | `T35B` |
 | Time / compute | 20–35 min / CPU smoke; external stack when noted |
 | Platforms | `ubuntu-24.04-x86_64` |
-| Capabilities | `robot-runtime` |
+| Capabilities | `python-3.12` |
 | Prerequisites | `sim-deploy-01` |
 | Safety | `read-only` |
 | Verification | `maintainer-checked` |
+| Implementation | `implemented` |
 
 This entry point only exercises an offline/read-only contract. Real motion requires a fresh run card and explicit approval.
 
 ## Learning goals
 
 - Check capabilities and prerequisites before execution.
-- Produce a seeded trace and record its SHA-256 digest.
+- Inspect the `command-sink.json` produced by `offline-command-sink`.
 - Keep external GPU, ROS 2, and real-hardware evidence separate in the verification badge.
 
 ## Preflight
 
 ```bash
 pal host detect --json
-pal setup verify --stage hardware --json
+pal setup verify --profile runtime-offline --json
 pal lesson check hw-common-01 --json
 ```
 
@@ -39,15 +40,15 @@ The same thin entry point is available as `python examples/hw-common-01/run.py -
 
 ## Expected
 
-Exit code `0` creates `summary.json`, `trace.csv`, and `lesson-report.md`. `metric_value` in `summary.json` must be finite and repeatable for the same seed.
+An `implemented` lesson exits `0` and creates `command-sink.json`, `summary.json`, `trace.csv`, and `lesson-report.md`. A scaffolded lesson exits `2` with `reader_test_required` and does not create a run artifact.
 
 ## Recovery
 
-Run `pal lesson check hw-common-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --stage hardware --json`; do not auto-install system packages or firmware.
+Run `pal lesson check hw-common-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --profile runtime-offline --json`; do not auto-install system packages or firmware.
 
 ## How it works
 
-The common runner samples normalized reference and observed signals every 20 ms. It computes mean absolute tracking error $E=\frac{1}{N}\sum_i |r_i-y_i|$ and uses the CSV byte-level SHA-256 as a checkpoint. This validates interface and reproducibility plumbing; it is not evidence of real robot accuracy or sensor force.
+The runner dispatches this catalog ID to the unique `offline-command-sink` operation and computes `emitted_command_count`. Verification uses the lesson-specific `command-sink.json` schema and SHA-256, not a generic process-success signal. Lessons needing an external runtime cannot complete without its live host probe.
 
 Source references: `sample-candidate`. The source manifest owns external revisions; generated or cached vendor files are never edited in place.
 
@@ -59,7 +60,7 @@ Run `pal lesson run hw-common-01 --headless --seed 8 --samples 96`. The digest a
 
 `pal lesson check` validates mirrored headings, the canonical command, the entry point, and the lesson-specific test. The publication badge is `maintainer-checked` and is independent of local completion.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`.
+Expected artifacts: `summary.json`, `trace.csv`, `command-sink.json`, `lesson-report.md`.
 
 ## Next lesson
 

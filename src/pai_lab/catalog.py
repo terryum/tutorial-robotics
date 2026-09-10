@@ -34,6 +34,7 @@ class Lesson:
     source_refs: tuple[str, ...]
     verification: str
     safety_level: str
+    implementation: str
 
     @classmethod
     def from_dict(cls, value: dict[str, Any]) -> Lesson:
@@ -55,6 +56,21 @@ class Lesson:
             source_refs=tuple(str(item) for item in value["source_refs"]),
             verification=str(value["verification"]),
             safety_level=str(value["safety_level"]),
+            implementation=str(
+                value.get(
+                    "implementation",
+                    "scaffolded" if str(value["id"]) in {
+                        "hw-common-02",
+                        "hw-fr3-01",
+                        "hw-wuji-01",
+                        "hw-wuji-02",
+                        "hw-enlight-01",
+                        "hw-enlight-02",
+                        "hw-enlight-03",
+                        "hw-enlight-wuji-01",
+                    } else "implemented",
+                )
+            ),
         )
 
 
@@ -110,6 +126,10 @@ def validate_catalog() -> list[str]:
             "reader_test_required",
         }:
             errors.append(f"{lesson.id}: invalid verification {lesson.verification}")
+        if lesson.implementation not in {"implemented", "scaffolded"}:
+            errors.append(f"{lesson.id}: invalid implementation {lesson.implementation}")
+        if lesson.implementation == "scaffolded" and lesson.verification != "reader_test_required":
+            errors.append(f"{lesson.id}: scaffolded lesson must require reader testing")
         if not lesson.source_refs:
             errors.append(f"{lesson.id}: source_refs is empty")
         for prerequisite in lesson.prerequisites:

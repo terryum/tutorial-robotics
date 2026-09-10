@@ -21,7 +21,7 @@ from pai_lab.catalog import (
 )
 from pai_lab.hardware import preflight
 from pai_lab.host import detect_host, write_profile
-from pai_lab.lessons import check_lesson, run_lesson
+from pai_lab.lessons import check_lesson, implementation_status, run_lesson
 from pai_lab.plugins import discover_robot_plugins
 from pai_lab.progress import (
     CourseProgress,
@@ -30,7 +30,15 @@ from pai_lab.progress import (
     save_progress,
     select_lesson,
 )
-from pai_lab.setup_plan import apply_plan, create_plan, verify_setup, write_plan
+from pai_lab.setup_plan import (
+    SETUP_PROFILES,
+    SetupProfile,
+    apply_plan,
+    create_plan,
+    normalize_profile,
+    verify_setup,
+    write_plan,
+)
 
 PUBLIC_ROBOTS = ("fr3", "g1", "wuji", "enlight", "sharpa", "aloha")
 
@@ -64,8 +72,14 @@ def doctor(json_output: bool) -> int:
     return 1 if errors else 0
 
 
-def setup_plan_command(stage: Stage, robots: tuple[str, ...], output: Path, json_output: bool) -> int:
-    plan = create_plan(stage, robots)
+def setup_plan_command(
+    profile: SetupProfile,
+    stage: Stage | None,
+    robots: tuple[str, ...],
+    output: Path,
+    json_output: bool,
+) -> int:
+    plan = create_plan(profile, robots, legacy_stage=stage)
     write_plan(plan, output)
     result = plan.to_dict()
     result["path"] = str(output)
@@ -97,6 +111,7 @@ def _lesson_row(lesson: Lesson, progress: CourseProgress) -> dict[str, object]:
         "capabilities": lesson.capabilities,
         "elective": lesson.elective,
         "verification": lesson.verification,
+        "implementation": lesson.implementation,
         "title": lesson.title,
     }
 
@@ -125,13 +140,65 @@ def _local_capabilities() -> set[str]:
     path = ROOT / ".local" / "capabilities.json"
     if path.is_file():
         raw = json.loads(path.read_text(encoding="utf-8"))
-        capabilities.update(str(item) for item in raw.get("capabilities", []))
+        # Legacy/user-authored lists are intentionally informational only. Only a
+        # receipt written by a pal verifier may add non-hardware capabilities.
+        if raw.get("schema_version") == 2 and raw.get("source") == "pal-verify":
+            protected = {
+                "robot-runtime",
+                "isolated-network",
+                "fr3-hardware",
+                "wuji-hardware",
+                "enlight-hardware",
+            }
+            capabilities.update(
+                str(item)
+                for item in raw.get("verified_capabilities", [])
+                if str(item) not in protected
+            )
     safety_root = ROOT / ".local" / "safety"
     for robot in ("fr3", "wuji", "enlight"):
         receipt = safety_root / f"{robot}-read-only.json"
         if receipt.is_file() and json.loads(receipt.read_text(encoding="utf-8")).get("ready"):
             capabilities.add(f"read-only-preflight-{robot}")
     return capabilities
+
+
+def course_runnable(without_hardware: bool, json_output: bool) -> int:
+    capabilities = _local_capabilities()
+    rows: list[dict[str, object]] = []
+    for lesson in load_catalog():
+        hardware_free = lesson.stage != "hardware" or lesson.id == "hw-common-01"
+        if without_hardware and not hardware_free:
+            continue
+        missing = sorted(set(lesson.capabilities) - capabilities)
+        rows.append(
+            {
+                "id": lesson.id,
+                "title": lesson.title,
+                "profile": (
+                    "runtime-offline"
+                    if lesson.id == "hw-common-01"
+                    else "isaac"
+                    if "isaac-sim" in lesson.capabilities
+                    else "gpu"
+                    if "nvidia-cuda" in lesson.capabilities
+                    else "ros"
+                    if "ros2-jazzy" in lesson.capabilities
+                    else "core"
+                ),
+                "hardware_free": hardware_free,
+                "implementation": lesson.implementation,
+                "available_now": lesson.implementation == "implemented" and not missing,
+                "missing_capabilities": missing,
+            }
+        )
+    if json_output:
+        _emit(rows, True)
+    else:
+        for row in rows:
+            state = "available" if row["available_now"] else "prepare"
+            print(f"{row['id']}\t{state}\t{row['profile']}\t{row['title']}")
+    return 0
 
 
 def next_lesson(json_output: bool) -> int:
@@ -163,6 +230,16 @@ def lesson_run_command(
     json_output: bool,
 ) -> int:
     lesson = resolve_lesson(identifier)
+    if implementation_status(lesson.id) != "implemented":
+        _emit(
+            {
+                "status": "reader_test_required",
+                "lesson": lesson.id,
+                "reason": "lesson is scaffolded until real hardware evidence exists",
+            },
+            json_output,
+        )
+        return 2
     progress = load_progress()
     missing_prerequisites = [item for item in lesson.prerequisites if item not in progress.completed]
     if missing_prerequisites:
@@ -227,7 +304,9 @@ def build_parser() -> argparse.ArgumentParser:
     setup = commands.add_parser("setup")
     setup_commands = setup.add_subparsers(dest="setup_command", required=True)
     plan = setup_commands.add_parser("plan")
-    plan.add_argument("--stage", choices=STAGES, required=True)
+    plan_selection = plan.add_mutually_exclusive_group(required=True)
+    plan_selection.add_argument("--profile", choices=SETUP_PROFILES)
+    plan_selection.add_argument("--stage", choices=STAGES)
     plan.add_argument("--robot", action="append", default=[])
     plan.add_argument("--out", type=Path, default=ROOT / ".local" / "setup-plan.json")
     plan.add_argument("--json", action="store_true")
@@ -235,7 +314,9 @@ def build_parser() -> argparse.ArgumentParser:
     apply.add_argument("plan", type=Path)
     apply.add_argument("--json", action="store_true")
     verify = setup_commands.add_parser("verify")
-    verify.add_argument("--stage", choices=STAGES, required=True)
+    verify_selection = verify.add_mutually_exclusive_group(required=True)
+    verify_selection.add_argument("--profile", choices=SETUP_PROFILES)
+    verify_selection.add_argument("--stage", choices=STAGES)
     verify.add_argument("--robot", action="append", default=[])
     verify.add_argument("--json", action="store_true")
 
@@ -249,6 +330,9 @@ def build_parser() -> argparse.ArgumentParser:
     for name in ("list", "status", "next"):
         item = course_commands.add_parser(name)
         item.add_argument("--json", action="store_true")
+    runnable = course_commands.add_parser("runnable")
+    runnable.add_argument("--without-hardware", action="store_true", required=True)
+    runnable.add_argument("--json", action="store_true")
 
     lesson = commands.add_parser("lesson")
     lesson_commands = lesson.add_subparsers(dest="lesson_command", required=True)
@@ -301,10 +385,12 @@ def main(argv: list[str] | None = None) -> int:
         return host_detect(args.json)
     if args.command == "setup":
         if args.setup_command == "plan":
-            return setup_plan_command(args.stage, tuple(args.robot), args.out, args.json)
+            profile = normalize_profile(args.profile, args.stage)
+            return setup_plan_command(profile, args.stage, tuple(args.robot), args.out, args.json)
         if args.setup_command == "apply":
             return setup_apply_command(args.plan, args.json)
-        result = verify_setup(args.stage, tuple(args.robot))
+        profile = normalize_profile(args.profile, args.stage)
+        result = verify_setup(profile, tuple(args.robot))
         _emit(result, args.json)
         return 0 if result["ready"] else 2
     if args.command == "course":
@@ -312,6 +398,8 @@ def main(argv: list[str] | None = None) -> int:
             return course_init(args.through, tuple(args.robot), args.include_electives, args.json)
         if args.course_command == "next":
             return next_lesson(args.json)
+        if args.course_command == "runnable":
+            return course_runnable(args.without_hardware, args.json)
         return course_list(args.course_command == "status", args.json)
     if args.command == "lesson":
         if args.lesson_command == "check":

@@ -1,6 +1,6 @@
 # sim-g1-01 — Unitree G1 GPU PPO and motion imitation
 
-You will build a reproducible minimum baseline for **Unitree G1 GPU PPO and motion imitation** and inspect the flow from reference state to observed state through numeric artifacts.
+This lesson checks **Unitree G1 GPU PPO and motion imitation** through the `gpu-motion-imitation` implementation and its `motion-imitation.csv` artifact.
 
 | Field | Value |
 |---|---|
@@ -12,20 +12,21 @@ You will build a reproducible minimum baseline for **Unitree G1 GPU PPO and moti
 | Prerequisites | `core-g1-01` |
 | Safety | `simulation` |
 | Verification | `reader_test_required` |
+| Implementation | `implemented` |
 
 This lesson never emits a hardware command.
 
 ## Learning goals
 
 - Check capabilities and prerequisites before execution.
-- Produce a seeded trace and record its SHA-256 digest.
+- Inspect the `motion-imitation.csv` produced by `gpu-motion-imitation`.
 - Keep external GPU, ROS 2, and real-hardware evidence separate in the verification badge.
 
 ## Preflight
 
 ```bash
 pal host detect --json
-pal setup verify --stage sim --json
+pal setup verify --profile gpu --json
 pal lesson check sim-g1-01 --json
 ```
 
@@ -39,15 +40,15 @@ The same thin entry point is available as `python examples/sim-g1-01/run.py --he
 
 ## Expected
 
-Exit code `0` creates `summary.json`, `trace.csv`, and `lesson-report.md`. `metric_value` in `summary.json` must be finite and repeatable for the same seed.
+An `implemented` lesson exits `0` and creates `motion-imitation.csv`, `summary.json`, `trace.csv`, and `lesson-report.md`. A scaffolded lesson exits `2` with `reader_test_required` and does not create a run artifact.
 
 ## Recovery
 
-Run `pal lesson check sim-g1-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --stage sim --json`; do not auto-install system packages or firmware.
+Run `pal lesson check sim-g1-01 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --profile gpu --json`; do not auto-install system packages or firmware.
 
 ## How it works
 
-The common runner samples normalized reference and observed signals every 20 ms. It computes mean absolute tracking error $E=\frac{1}{N}\sum_i |r_i-y_i|$ and uses the CSV byte-level SHA-256 as a checkpoint. This validates interface and reproducibility plumbing; it is not evidence of real robot accuracy or sensor force.
+The runner dispatches this catalog ID to the unique `gpu-motion-imitation` operation and computes `reward_gain`. Verification uses the lesson-specific `motion-imitation.csv` schema and SHA-256, not a generic process-success signal. Lessons needing an external runtime cannot complete without its live host probe.
 
 Source references: `unitree-g1`. The source manifest owns external revisions; generated or cached vendor files are never edited in place.
 
