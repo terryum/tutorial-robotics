@@ -1,9 +1,5 @@
-from pai_lab.lessons import check_lesson, run_lesson
+from tests.lesson_contract import assert_contract
 
 
-def test_hw_common_01_contract(tmp_path) -> None:
-    result = run_lesson("hw-common-01", output_dir=tmp_path, seed=7, samples=16)
-    assert result.lesson_id == "hw-common-01"
-    assert result.metric_value >= 0.0
-    assert {path.name for path in tmp_path.iterdir()} == set(result.artifacts)
-    assert check_lesson("hw-common-01") == []
+def test_hw_common_01_contract(tmp_path):
+    assert_contract("hw-common-01", tmp_path)

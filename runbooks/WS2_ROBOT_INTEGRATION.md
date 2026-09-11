@@ -1,3 +1,5 @@
+> Current execution authority: [common workflow](../agent/workflow.md). Learner state is ignored `.local/`; historical host reports below never complete lessons or require automatic commits.
+
 # Runbook — WS2 Robot Integration Mode
 
 ## 목적
@@ -16,7 +18,7 @@
 ## profile 전환 명령
 
 ```text
-이 컴퓨터는 WS2 Ubuntu이며 지금부터 ROBOT_RUNTIME mode로만 사용한다. git pull 이후 state/HOST_STATUS.md와 state/PROGRESS.md, runbooks/WS2_ROBOT_INTEGRATION.md와 docs/07_SAFETY.md를 읽고 실행 중인 training/Isaac process를 audit해 종료 여부를 확인해. ignored `.local/` state를 전환하고 T35B의 offline replay와 no-motion shadow dry-run만 실행해줘. 결과를 push할 때 WS2_UBUNTU 행을 갱신하고 실제 로봇 motion command는 실행하지 마.
+이 컴퓨터는 WS2 Ubuntu이며 지금부터 ROBOT_RUNTIME mode로만 사용한다. git pull 이후 state/HOST_STATUS.md와 .local/progress.json, runbooks/WS2_ROBOT_INTEGRATION.md와 docs/07_SAFETY.md를 읽고 실행 중인 training/Isaac process를 audit해 종료 여부를 확인해. ignored `.local/` state를 전환하고 T35B의 offline replay와 no-motion shadow dry-run만 실행해줘. 결과를 push할 때 WS2_UBUNTU 행을 갱신하고 실제 로봇 motion command는 실행하지 마.
 ```
 
 ## read-only 명령

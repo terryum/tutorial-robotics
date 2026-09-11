@@ -3,7 +3,7 @@
 ## MacBook
 
 Create the Python 3.12 environment, run the doctor and foundation tutorials,
-and commit shared progress. Keep global Python unchanged.
+and record learner progress only under ignored `.local/`. Keep global Python unchanged.
 
 ## WS2
 

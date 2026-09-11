@@ -63,6 +63,11 @@ strict = true
 exclude = ["examples/", "tests/"]
 
 [[tool.mypy.overrides]]
+# These runtime bindings ship no usable stubs in the portable Core environment.
+module = ["mujoco.*", "scipy.*", "torch.*", "rclpy.*", "sensor_msgs.*", "std_srvs.*", "geometry_msgs.*", "tf2_ros.*", "rosbag2_py.*", "example_interfaces.*", "isaacsim.*", "omni.*", "mjlab.*", "wuji_mjlab.*", "lerobot.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = [
     "pai_lab.installation_smoke",
     "wuji_hand2_motion.*",

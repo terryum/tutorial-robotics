@@ -10,11 +10,9 @@ from xml.etree import ElementTree
 HandSide = Literal["left", "right"]
 HAND_SIDES: tuple[HandSide, ...] = ("left", "right")
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DESCRIPTION_ROOT = (
-    PROJECT_ROOT / ".cache/assets/wuji-description/hand2/hand2_beta2/body"
-)
+DESCRIPTION_ROOT = PROJECT_ROOT / ".cache/assets/wuji-description/hand2/hand2_beta2/body"
 MODEL_RELEASE = "v2026.8.19"
-MODEL_COMMIT = "b13f7d52b23cb79e35357303c72b7f61f1d2fda2"
+MODEL_COMMIT = "c003186833616b23c06784ebefe442474cc5f4b5"
 ROS_DESCRIPTION_PACKAGE = "wuji_hand2_beta2_description"
 USD_FILENAME = "wujihand2_beta2.usd"
 
@@ -65,9 +63,7 @@ def model_id(side: str, *, with_mount: bool = False) -> str:
 
 def model_variants() -> tuple[str, ...]:
     return tuple(
-        model_id(side, with_mount=with_mount)
-        for side in HAND_SIDES
-        for with_mount in (False, True)
+        model_id(side, with_mount=with_mount) for side in HAND_SIDES for with_mount in (False, True)
     )
 
 

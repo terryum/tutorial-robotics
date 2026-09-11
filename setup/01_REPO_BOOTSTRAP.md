@@ -14,7 +14,7 @@ Codex creates the source layout only after the host audit.
 
 ## Machine-local contract
 
-Create `.local/` through `$bootstrap-host`; never commit host profile, local paths, device network details, or secrets. Shared tutorial progress remains under `state/`.
+Start with `sh bootstrap.sh --plan` before Python or pal is available. Only authorized installation or execution creates `.local/`; never commit learner progress, host profiles, local paths, device network details, or secrets. Shared publication evidence remains under `state/PUBLISHING.md`.
 
 ## Initial CLI contract
 

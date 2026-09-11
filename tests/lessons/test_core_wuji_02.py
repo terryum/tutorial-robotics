@@ -1,9 +1,5 @@
-from pai_lab.lessons import check_lesson, run_lesson
+from tests.lesson_contract import assert_contract
 
 
-def test_core_wuji_02_contract(tmp_path) -> None:
-    result = run_lesson("core-wuji-02", output_dir=tmp_path, seed=7, samples=16)
-    assert result.lesson_id == "core-wuji-02"
-    assert result.metric_value >= 0.0
-    assert {path.name for path in tmp_path.iterdir()} == set(result.artifacts)
-    assert check_lesson("core-wuji-02") == []
+def test_core_wuji_02_contract(tmp_path):
+    assert_contract("core-wuji-02", tmp_path)

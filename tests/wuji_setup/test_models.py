@@ -17,7 +17,7 @@ from wuji_hand2_setup.model import (
 def test_beta2_identifiers_and_inventory_are_canonical() -> None:
     assert "hand2_beta2/body" in DESCRIPTION_ROOT.as_posix()
     assert MODEL_RELEASE == "v2026.8.19"
-    assert MODEL_COMMIT == "b13f7d52b23cb79e35357303c72b7f61f1d2fda2"
+    assert MODEL_COMMIT == "c003186833616b23c06784ebefe442474cc5f4b5"
     assert ROS_DESCRIPTION_PACKAGE == "wuji_hand2_beta2_description"
     assert USD_FILENAME == "wujihand2_beta2.usd"
     assert len(model_variants()) == 4

@@ -1,0 +1,632 @@
+{
+  "source_commit": "0004b7d830eb7bd0758aff9865d3d0216bb5ab1c",
+  "implementation_digest": "80ab9b8f6c0cd8c748539a0d96c4e1a0f756fad0b3af7a3ae4752ebefabe2ccb",
+  "platform": "macos-arm64",
+  "python": "3.12.13",
+  "mujoco": "3.12.0",
+  "numpy": "2.5.2",
+  "verified_software_lessons": 27,
+  "external_software_unverified": 14,
+  "hardware_unverified": 8,
+  "measurements": [
+    {
+      "id": "core-00",
+      "metric": "available_capability_count",
+      "units": "count",
+      "baseline": 5.0,
+      "comparison": 5.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "python_3_12": true
+      }
+    },
+    {
+      "id": "core-01",
+      "metric": "energy_drift",
+      "units": "joule",
+      "baseline": 6.510347816401918e-13,
+      "comparison": 3.26059179656113e-11,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        2.0
+      ],
+      "checks": {
+        "energy_drift_below_1e_5_J": true
+      }
+    },
+    {
+      "id": "core-02",
+      "metric": "valid_source_ratio",
+      "units": "ratio",
+      "baseline": 1.0,
+      "comparison": 1.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "source_pins": true
+      }
+    },
+    {
+      "id": "core-03",
+      "metric": "valid_model_ratio",
+      "units": "ratio",
+      "baseline": 1.0,
+      "comparison": 1.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "all_models_loaded": true
+      }
+    },
+    {
+      "id": "core-04",
+      "metric": "rendered_joint_count",
+      "units": "count",
+      "baseline": 7.0,
+      "comparison": 7.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "positive_mass": true,
+        "seven_joints": true
+      }
+    },
+    {
+      "id": "core-fr3-01",
+      "metric": "joint_count",
+      "units": "count",
+      "baseline": 7.0,
+      "comparison": 7.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "positive_mass": true,
+        "seven_joints": true
+      }
+    },
+    {
+      "id": "core-fr3-02",
+      "metric": "tracking_error",
+      "units": "rad",
+      "baseline": 0.33762631224616046,
+      "comparison": 0.21310571118610405,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "bounded_error": true,
+        "finite_state": true,
+        "target_joint_tracks": true
+      }
+    },
+    {
+      "id": "core-fr3-03",
+      "metric": "tracking_error",
+      "units": "rad",
+      "baseline": 0.0024804754455689795,
+      "comparison": 0.0010593127636184824,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "gravity_reduces_error": true
+      }
+    },
+    {
+      "id": "core-fr3-04",
+      "metric": "ik_residual",
+      "units": "meter",
+      "baseline": 1.3877787807814457e-16,
+      "comparison": 1.3877787807814457e-16,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        2.0
+      ],
+      "checks": {
+        "ik_below_1mm": true,
+        "jacobian_below_1e_6": true
+      }
+    },
+    {
+      "id": "core-fr3-05",
+      "metric": "pose_error",
+      "units": "meter",
+      "baseline": 0.005604572851602407,
+      "comparison": 0.003203821264435028,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "bounded_error": true,
+        "finite_state": true,
+        "target_joint_tracks": true
+      }
+    },
+    {
+      "id": "core-fr3-06",
+      "metric": "mean_normal_force",
+      "units": "newton",
+      "baseline": 5.961402806014625,
+      "comparison": 5.961402806014625,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "actual_probe_contact": true
+      }
+    },
+    {
+      "id": "core-rl-01",
+      "metric": "objective_gain",
+      "units": "reward",
+      "baseline": 0.12800980197494358,
+      "comparison": 0.1278821196052641,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "finite_policy": true,
+        "parameters_updated": true,
+        "reload_exact": true
+      }
+    },
+    {
+      "id": "core-fr3-07",
+      "metric": "terminal_distance",
+      "units": "meter",
+      "baseline": 0.007745070049019222,
+      "comparison": 0.007837086190073348,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "bounded_episode": true,
+        "distance_reduced": true
+      }
+    },
+    {
+      "id": "core-fr3-08",
+      "metric": "reward_gain",
+      "units": "reward",
+      "baseline": 0.018636654829356274,
+      "comparison": 0.018139223003174304,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "finite_policy": true,
+        "parameters_updated": true,
+        "reload_exact": true
+      }
+    },
+    {
+      "id": "core-enlight-01",
+      "metric": "frame_count",
+      "units": "count",
+      "baseline": 9.0,
+      "comparison": 9.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "positive_mass": true,
+        "seven_joints": true
+      }
+    },
+    {
+      "id": "core-enlight-02",
+      "metric": "max_fk_error",
+      "units": "meter",
+      "baseline": 6.760705022789419e-16,
+      "comparison": 5.673898371194878e-16,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "fk_error_below_1e_9_m": true
+      }
+    },
+    {
+      "id": "core-wuji-01",
+      "metric": "pose_count",
+      "units": "count",
+      "baseline": 3.0,
+      "comparison": 3.0,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "five_tips": true,
+        "twenty_joints": true
+      }
+    },
+    {
+      "id": "core-wuji-02",
+      "metric": "mean_contact_force",
+      "units": "newton",
+      "baseline": 5.849244984066344,
+      "comparison": 12.621947648679743,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "real_contact_force": true
+      }
+    },
+    {
+      "id": "core-dexterity-01",
+      "metric": "shared_joint_ratio",
+      "units": "ratio",
+      "baseline": 0.9090909090909091,
+      "comparison": 0.9090909090909091,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "five_tips_each": true,
+        "two_models": true
+      }
+    },
+    {
+      "id": "core-data-01",
+      "metric": "transition_count",
+      "units": "count",
+      "baseline": 512.0,
+      "comparison": 512.0,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "nonempty": true,
+        "state_changes": true
+      }
+    },
+    {
+      "id": "core-dexterity-02",
+      "metric": "retarget_error",
+      "units": "meter",
+      "baseline": 0.00557915967861077,
+      "comparison": 0.014675099956469664,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "improves_mean_tip_error": true
+      }
+    },
+    {
+      "id": "core-g1-01",
+      "metric": "loop_error",
+      "units": "rad",
+      "baseline": 0.0,
+      "comparison": 0.0,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "closed_cycle": true,
+        "replay_exact": true
+      }
+    },
+    {
+      "id": "core-il-01",
+      "metric": "loss_reduction",
+      "units": "loss",
+      "baseline": 0.18645989951226155,
+      "comparison": 0.18852163945798753,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "heldout_mse_below_0_1": true,
+        "loss_decreased": true,
+        "reload_exact": true
+      }
+    },
+    {
+      "id": "core-aloha-01",
+      "metric": "action_dimension",
+      "units": "count",
+      "baseline": 14.0,
+      "comparison": 14.0,
+      "seed": [
+        7,
+        7
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.5
+      ],
+      "checks": {
+        "camera_nonempty": true,
+        "dual_arm_14_actions": true,
+        "finite_states": true
+      }
+    },
+    {
+      "id": "core-vla-01",
+      "metric": "schema_fields",
+      "units": "count",
+      "baseline": 10.0,
+      "comparison": 10.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "bounded_actions": true,
+        "schema_roundtrip": true,
+        "sink_only": true
+      }
+    },
+    {
+      "id": "sim-deploy-01",
+      "metric": "test_vector_error",
+      "units": "normalized",
+      "baseline": 0.0,
+      "comparison": 0.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "actual_trained_policy": true,
+        "bundle_valid": true
+      }
+    },
+    {
+      "id": "hw-common-01",
+      "metric": "emitted_command_count",
+      "units": "count",
+      "baseline": 0.0,
+      "comparison": 0.0,
+      "seed": [
+        7,
+        8
+      ],
+      "samples": [
+        64,
+        64
+      ],
+      "variant": [
+        1.0,
+        1.0
+      ],
+      "checks": {
+        "deterministic_inference": true,
+        "nonempty_inference": true
+      }
+    }
+  ]
+}

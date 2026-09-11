@@ -41,9 +41,10 @@ def main() -> int:
                 "## Preflight",
                 "## Action",
                 "## Expected",
-                "## Recovery",
                 "## How it works",
+                "## Code connection",
                 "## Try it",
+                "## Recovery",
                 "## Checkpoint",
                 "## Next lesson",
             ]

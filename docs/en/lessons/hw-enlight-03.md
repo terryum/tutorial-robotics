@@ -1,67 +1,71 @@
 # hw-enlight-03 — Enlight contact-task shadow and gated evaluation
 
-This lesson checks **Enlight contact-task shadow and gated evaluation** through the `reader-hardware-gate` implementation and its `no run artifact until the gate is implemented` artifact.
-
+<!-- pal:metadata:start -->
 | Field | Value |
 |---|---|
-| Stage / track | `hardware` / `enlight` |
+| Stage / track | `hardware / enlight` |
 | Legacy alias | `T41B` |
-| Time / compute | 20–35 min / CPU smoke; external stack when noted |
 | Platforms | `ubuntu-24.04-x86_64` |
-| Capabilities | `robot-runtime`, `isolated-network`, `enlight-hardware`, `read-only-preflight-enlight` |
-| Prerequisites | `hw-enlight-01`, `sim-enlight-02` |
+| Capabilities | `robot-runtime, isolated-network, enlight-hardware, read-only-preflight-enlight` |
+| Prerequisites | `hw-enlight-01, sim-enlight-02` |
 | Safety | `motion-approval` |
 | Verification | `reader_test_required` |
 | Implementation | `scaffolded` |
-
-This entry point only exercises an offline/read-only contract. Real motion requires a fresh run card and explicit approval.
+<!-- pal:metadata:end -->
 
 ## Learning goals
 
-- Check capabilities and prerequisites before execution.
-- Inspect the `no run artifact until the gate is implemented` produced by `reader-hardware-gate`.
-- Keep external GPU, ROS 2, and real-hardware evidence separate in the verification badge.
+Review the observations, prerequisites and per-run safety boundary for enlight contact-task shadow and gated evaluation.
 
 ## Preflight
 
-```bash
-pal host detect --json
-pal setup verify --profile hardware --json
-pal lesson check hw-enlight-03 --json
-```
+This lesson remains scaffolded / reader_test_required until device evidence exists. Verify the offline candidate, common read-only gate and this robot's simulation prerequisites. A robot name or network connection does not authorize execution.
+
+Read [hardware safety](../../07_SAFETY.md). A local snapshot must establish model/firmware identity, torque-disabled state, faults/E-stop, joint/force limits, communication timeout, fresh timestamps and isolated networking. Keep serials, private IPs and calibration only under .local/.
 
 ## Action
 
 ```bash
-pal lesson run hw-enlight-03 --headless --seed 7 --samples 64
+pal lesson check hw-enlight-03 --json
+pal lesson run hw-enlight-03 --headless --json
 ```
 
-The same thin entry point is available as `python examples/hw-enlight-03/run.py --headless`.
+The current entrypoint must return exit code 2 because an executable device adapter has not been verified. This is not completion. Do not manufacture a mock success receipt.
 
 ## Expected
 
-An `implemented` lesson exits `0` and creates `no run artifact until the gate is implemented`, `summary.json`, `trace.csv`, and `lesson-report.md`. A scaffolded lesson exits `2` with `reader_test_required` and does not create a run artifact.
-
-## Recovery
-
-Run `pal lesson check hw-enlight-03 --json` first. If a capability is unavailable, follow the missing list from `pal setup verify --profile hardware --json`; do not auto-install system packages or firmware.
+Read the explicit reason that real-device verification evidence is absent. When equipment is ready, first measure identity, state rate, units/axes/joint order, freshness and stop paths read-only.
 
 ## How it works
 
-The runner dispatches this catalog ID to the unique `reader-hardware-gate` operation and computes `not applicable`. Verification uses the lesson-specific `no run artifact until the gate is implemented` schema and SHA-256, not a generic process-success signal. Lessons needing an external runtime cannot complete without its live host probe.
+```text
+offline replay → command sink → read-only → live shadow
+→ torque-disabled replay → fresh run card → one explicitly approved action
+```
 
-Source references: `flexiv-rdk`. The source manifest owns external revisions; generated or cached vendor files are never edited in place.
+Each stage consumes the previous evidence without automatically granting authority for the next action. Contact, real evaluation, system identification and integrated-device work need fresh approval for the exact robot and action. An integrated task requires both devices' individual read-only gates.
+
+## Code connection
+
+`examples/hw-enlight-03/run.py` → `src/pai_lab/lessons/runner.py`;
+`src/pai_lab/hardware/preflight.py` checks supplied read-only snapshots.
 
 ## Try it
 
-Run `pal lesson run hw-enlight-03 --headless --seed 8 --samples 96`. The digest and `changed_metric_value` should change while the artifact schema stays fixed.
+In a local copy of a snapshot, change only its timestamp to an old value and confirm stale-state rejection. Do not alter a real controller's clock, limits or watchdog. Preserve read-only check failures.
+
+## Recovery
+
+Stop without sending device commands if identity, disabled state, fault state, freshness or network isolation fails. Follow the vendor's E-stop and recovery procedure. Never automatically update firmware, enable torque, raise limits or bypass collision checks.
 
 ## Checkpoint
 
-`pal lesson check` validates mirrored headings, the canonical command, the entry point, and the lesson-specific test. The publication badge is `reader_test_required` and is independent of local completion.
+Completion criteria are currently unmet. Keep the lesson incomplete until an actual adapter, fresh evidence and applicable per-run approval exist. Personal state belongs under .local/; only publication evidence belongs in state/PUBLISHING.md.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`.
-
+<!-- pal:navigation:start -->
 ## Next lesson
 
-Next catalog item: [hw-enlight-wuji-01](./hw-enlight-wuji-01.md) — Enlight and Wuji integrated read-only validation
+[hw-enlight-wuji-01](./hw-enlight-wuji-01.md)
+
+This is catalog order. Use `pal course next --json` to select an eligible lesson.
+<!-- pal:navigation:end -->
