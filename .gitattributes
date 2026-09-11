@@ -1,0 +1,2 @@
+# Deployment bundle checksums cover exact repository bytes on every OS.
+examples/sim-deploy-01/sample_candidate/*.json -text
