@@ -1,0 +1,48 @@
+{
+  "host": "WS1_UBUNTU",
+  "runs": [
+    {
+      "artifact_digest": "be15b5c567509628b6c6be03d7644250b3c6d9547a174738db06a2477046053d",
+      "artifacts": [
+        "summary.json",
+        "trace.csv",
+        "host-audit.json",
+        "lesson-report.md"
+      ],
+      "changed_metric_value": 6.0,
+      "lesson_id": "core-00",
+      "metric_name": "available_capability_count",
+      "metric_value": 6.0,
+      "operation": "host-audit",
+      "safety_level": "simulation",
+      "samples": 64,
+      "seed": 7,
+      "status": "passed",
+      "units": "count",
+      "verification": "ci-checked"
+    },
+    {
+      "artifact_digest": "be15b5c567509628b6c6be03d7644250b3c6d9547a174738db06a2477046053d",
+      "artifacts": [
+        "summary.json",
+        "trace.csv",
+        "host-audit.json",
+        "lesson-report.md"
+      ],
+      "changed_metric_value": 6.0,
+      "lesson_id": "core-00",
+      "metric_name": "available_capability_count",
+      "metric_value": 6.0,
+      "operation": "host-audit",
+      "safety_level": "simulation",
+      "samples": 96,
+      "seed": 8,
+      "status": "passed",
+      "units": "count",
+      "verification": "ci-checked"
+    }
+  ],
+  "same_host_artifact_digest": true,
+  "next_lesson": "core-01",
+  "progress_storage": "host-local"
+}

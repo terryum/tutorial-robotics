@@ -62,6 +62,8 @@ pal lesson run core-00 --headless --samples 64 --output-dir .local/runs/core-00/
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
 
+The host-audit digest and available_capability_count should stay unchanged when only the seed changes. This is an installed-capability measurement, not a random simulation. Sourcing ROS can change the detected capabilities; inspect each capability’s evidence.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.

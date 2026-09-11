@@ -62,6 +62,8 @@ pal lesson run core-00 --headless --samples 64 --output-dir .local/runs/core-00/
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
 
+seed만 바꾸면 host-audit digest와 available_capability_count는 같아야 합니다. 설치된 기능을 측정하기 때문입니다. ROS 환경을 활성화하면 탐지 기능이 달라질 수 있으므로 각 capability의 근거를 확인합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.

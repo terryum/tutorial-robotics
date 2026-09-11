@@ -1,0 +1,10 @@
+{
+  "mujoco": "3.12.0",
+  "seed": 7,
+  "samples": 1000,
+  "repeat_max_abs_error": 0.0,
+  "timestep_angle_max_abs_error_rad": 0.0015375537058700886,
+  "invalid_inputs_rejected": 3,
+  "final_time_s": 2.0000000000000013,
+  "finite": true
+}
