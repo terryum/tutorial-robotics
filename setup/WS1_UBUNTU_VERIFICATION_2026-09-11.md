@@ -39,6 +39,12 @@ Only `core-00` is completed locally. The next eligible lesson is `core-01`.
 Progress stays in ignored `.local/progress.json`; the shared progress pointer
 is unchanged. This installation pass grants no hardware authority.
 
+## Publication checks
+
+The publication pass also corrected setup-profile typing across mypy versions
+and isolated the legacy CLI test from real learner progress. The full public
+suite, Ruff, mypy, repository and release validators passed after these fixes.
+
 ## Local evidence
 
 Full public artifacts are under `.local/installation/ws1-ubuntu-20260911-verified/`

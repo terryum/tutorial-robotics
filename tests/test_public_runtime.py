@@ -16,7 +16,8 @@ def test_public_cli_needs_no_private_repository(capsys) -> None:
         assert robot in output
 
 
-def test_doctor_json_and_tutorial_commands(capsys) -> None:
+def test_doctor_json_and_tutorial_commands(capsys, monkeypatch, tmp_path) -> None:
+    monkeypatch.setattr("pai_lab.progress.PROGRESS_PATH", tmp_path / "progress.json")
     assert main(["doctor", "--format", "json"]) == 0
     result = json.loads(capsys.readouterr().out)
     assert result["repository_errors"] == []
