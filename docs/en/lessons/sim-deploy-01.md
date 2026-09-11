@@ -60,7 +60,7 @@ Run `pal lesson run sim-deploy-01 --headless --seed 8 --samples 96`. The digest 
 
 `pal lesson check` validates mirrored headings, the canonical command, the entry point, and the lesson-specific test. The publication badge is `ci-checked` and is independent of local completion.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`, `sample_candidate/manifest.json`.
+Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`, `bundle-verification.json`, `sample_candidate/manifest.json`.
 
 ## Next lesson
 

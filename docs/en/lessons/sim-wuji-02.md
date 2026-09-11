@@ -60,7 +60,7 @@ Run `pal lesson run sim-wuji-02 --headless --seed 8 --samples 96`. The digest an
 
 `pal lesson check` validates mirrored headings, the canonical command, the entry point, and the lesson-specific test. The publication badge is `reader_test_required` and is independent of local completion.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`.
+Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`, `dexterity-candidate.json`.
 
 ## Next lesson
 

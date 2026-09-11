@@ -60,7 +60,7 @@ Run `pal lesson run sim-ros-03 --headless --seed 8 --samples 96`. The digest and
 
 `pal lesson check` validates mirrored headings, the canonical command, the entry point, and the lesson-specific test. The publication badge is `maintainer-checked` and is independent of local completion.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`.
+Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`, `record-replay.json`.
 
 ## Next lesson
 

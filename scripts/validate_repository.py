@@ -46,6 +46,9 @@ def main() -> int:
             errors.append(f"{lesson_id}: semantic artifact is generic")
         if spec.operation in {"baseline", "sine", "generic"}:
             errors.append(f"{lesson_id}: generic fallback operation is forbidden")
+        lesson = next(item for item in lessons if item.id == lesson_id)
+        if spec.artifact not in lesson.expected_artifacts:
+            errors.append(f"{lesson_id}: catalog omits semantic artifact {spec.artifact}")
     if errors:
         print("\n".join(errors))
         return 1

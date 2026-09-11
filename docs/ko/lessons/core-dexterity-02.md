@@ -60,7 +60,7 @@ Source references: `wuji-description`, `sharpa-wave`. The source manifest owns e
 
 `pal lesson check`는 양언어 heading, canonical 명령, entrypoint와 lesson별 test를 검사합니다. 출판 badge는 `ci-checked`이며 local 완료 여부와 독립적입니다.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`.
+Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`, `retargeted-demo.csv`.
 
 ## Next lesson
 

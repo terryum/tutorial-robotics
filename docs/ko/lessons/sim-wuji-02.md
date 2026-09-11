@@ -60,7 +60,7 @@ Source references: `wuji-description`. The source manifest owns external revisio
 
 `pal lesson check`는 양언어 heading, canonical 명령, entrypoint와 lesson별 test를 검사합니다. 출판 badge는 `reader_test_required`이며 local 완료 여부와 독립적입니다.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`.
+Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`, `dexterity-candidate.json`.
 
 ## Next lesson
 
