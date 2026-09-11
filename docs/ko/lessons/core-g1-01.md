@@ -40,6 +40,10 @@ pal lesson run core-g1-01 --headless --seed 7 --samples 64 --output-dir .local/r
 
 ## Expected
 
+고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
+
+![core-g1-01 frame.png](../../assets/examples/core-g1-01-frame.png)
+
 joint_names, motion.npz, 주기 연결, 정확한 재생 오차를 읽습니다. variant 1.5는 hinge 진폭을 0.08 rad에서 0.12 rad로 바꿉니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.

@@ -40,6 +40,12 @@ pal lesson run core-fr3-03 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
+
+![core-fr3-03 frame.png](../../assets/examples/core-fr3-03-frame.png)
+
+![core-fr3-03 plot.png](../../assets/examples/core-fr3-03-plot.png)
+
 without_compensation_error와 final_error를 읽습니다. 보상 후 측정 오차가 줄어야 합니다. 토크 배열은 Nm, 추종 오차 지표는 rad입니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.

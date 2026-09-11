@@ -40,6 +40,10 @@ pal lesson run core-fr3-02 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+Reviewed maintainer example from the pinned public model; your local run must be checked separately.
+
+![core-fr3-02 plot.png](../../assets/examples/core-fr3-02-plot.png)
+
 The first joint target shifts by 0.18 rad. Its final error must be below 0.02 rad; the arm norm must stay below 0.5 rad. Inspect torque saturation and residual gravity error.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.

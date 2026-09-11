@@ -40,6 +40,10 @@ pal lesson run core-wuji-02 --headless --seed 7 --samples 64 --output-dir .local
 
 ## Expected
 
+Reviewed maintainer example from the pinned public model; your local run must be checked separately.
+
+![core-wuji-02 frame.png](../../assets/examples/core-wuji-02-frame.png)
+
 Inspect stimulus contacts and positive force values in tactile-grid.csv and experiment.json. variant 1.5 changes stimulus radius from 12 to 18 mm.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.

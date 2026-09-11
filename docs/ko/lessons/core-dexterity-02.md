@@ -41,6 +41,10 @@ pal lesson run core-dexterity-02 --headless --seed 7 --samples 64 --output-dir .
 
 ## Expected
 
+고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
+
+![core-dexterity-02 frame.png](../../assets/examples/core-dexterity-02-frame.png)
+
 각 원본 자세의 초기·최적화 오차를 비교합니다. retargeted-motion.npz의 관절 순서와 Sharpa 렌더링을 확인합니다. 최적화 평균 오차는 초기 오차보다 크지 않아야 합니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.

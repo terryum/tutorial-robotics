@@ -40,6 +40,10 @@ pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .loca
 
 ## Expected
 
+고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
+
+![core-aloha-01 frame.png](../../assets/examples/core-aloha-01-frame.png)
+
 act-batch.npz 차원, observation.png와 행동 채널 14개를 확인합니다. 첫 목표의 진폭만 바꾸면 batch 차원은 유지되고 움직임은 달라져야 합니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.

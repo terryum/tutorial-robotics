@@ -40,6 +40,10 @@ pal lesson run core-fr3-08 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+Reviewed maintainer example from the pinned public model; your local run must be checked separately.
+
+![core-fr3-08 plot.png](../../assets/examples/core-fr3-08-plot.png)
+
 Inspect policy-contract.json, parameter change and rollout rewards. Compare learning rate only. Rewards may fluctuate; keep performance_verified false until a separate evaluation establishes a threshold.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.

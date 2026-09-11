@@ -40,6 +40,10 @@ pal lesson run core-g1-01 --headless --seed 7 --samples 64 --output-dir .local/r
 
 ## Expected
 
+Reviewed maintainer example from the pinned public model; your local run must be checked separately.
+
+![core-g1-01 frame.png](../../assets/examples/core-g1-01-frame.png)
+
 Inspect joint_names, motion.npz, loop closure and exact replay error. variant 1.5 changes hinge amplitude from 0.08 to 0.12 rad.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.

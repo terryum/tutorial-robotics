@@ -40,6 +40,10 @@ pal lesson run core-fr3-02 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
+
+![core-fr3-02 plot.png](../../assets/examples/core-fr3-02-plot.png)
+
 첫 관절 목표를 0.18 rad 이동합니다. 첫 관절 오차는 0.02 rad 미만, 전체 팔 오차는 0.5 rad 미만이어야 합니다. 토크 포화와 중력에 의한 잔여 오차를 살펴봅니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.

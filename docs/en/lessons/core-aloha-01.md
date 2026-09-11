@@ -40,6 +40,10 @@ pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .loca
 
 ## Expected
 
+Reviewed maintainer example from the pinned public model; your local run must be checked separately.
+
+![core-aloha-01 frame.png](../../assets/examples/core-aloha-01-frame.png)
+
 Inspect act-batch.npz shapes, observation.png and the fourteen action channels. Changing the first target amplitude should change the motion while preserving batch dimensions.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.

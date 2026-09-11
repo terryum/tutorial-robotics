@@ -53,6 +53,8 @@ The catalog retains 49 IDs and legacy aliases: 25 Core lessons, 15 Simulation le
 
 Mac verification covers Core plus the generated deployment candidate and offline sink. The other 14 software lessons require actual Ubuntu/ROS/GPU/Isaac environments and remain `reader_test_required` until run there. The eight device lessons remain `scaffolded`; no simulation result authorizes physical motion. See [WS1 preparation and verification](setup/WS1_HANDOFF.md).
 
+Read the [measured verification report and reviewed figures](docs/verification/reader-experience.md) for exact results, source revision and remaining external checks.
+
 `lesson check --run-dir` verifies artifact identity/hashes, finite numerical traces and nonblank required images. `lesson review` records a separate one-variable comparison and explanation. `lesson finish` rechecks readiness, evidence and unresolved feedback before recording completion. Short training verification never claims a solved policy.
 
 All learner progress, feedback, datasets, checkpoints and private run details stay in ignored .local/. [state/PUBLISHING.md](state/PUBLISHING.md) holds only shared publication evidence. A separate `PAL_LOCAL_DIR` keeps developer verification independent of the user's learning state.

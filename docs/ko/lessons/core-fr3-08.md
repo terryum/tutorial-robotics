@@ -40,6 +40,10 @@ pal lesson run core-fr3-08 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
+
+![core-fr3-08 plot.png](../../assets/examples/core-fr3-08-plot.png)
+
 policy-contract.json, 파라미터 변화, rollout 보상을 읽습니다. 학습률만 비교합니다. 보상은 변동할 수 있으며 별도 평가 기준을 충족하기 전에는 performance_verified를 false로 유지합니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.

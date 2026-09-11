@@ -40,6 +40,12 @@ pal lesson run core-fr3-03 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+Reviewed maintainer example from the pinned public model; your local run must be checked separately.
+
+![core-fr3-03 frame.png](../../assets/examples/core-fr3-03-frame.png)
+
+![core-fr3-03 plot.png](../../assets/examples/core-fr3-03-plot.png)
+
 Read without_compensation_error and final_error. Compensation must reduce the measured norm. Torque arrays are in Nm; the reported tracking metric is in rad.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.

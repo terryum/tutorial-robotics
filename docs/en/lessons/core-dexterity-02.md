@@ -41,6 +41,10 @@ pal lesson run core-dexterity-02 --headless --seed 7 --samples 64 --output-dir .
 
 ## Expected
 
+Reviewed maintainer example from the pinned public model; your local run must be checked separately.
+
+![core-dexterity-02 frame.png](../../assets/examples/core-dexterity-02-frame.png)
+
 Compare baseline and optimized errors for each source pose. Inspect retargeted-motion.npz joint order and the rendered Sharpa hand; average optimized error must not exceed baseline.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
