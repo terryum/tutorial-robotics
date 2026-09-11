@@ -54,7 +54,7 @@ Source references: `repository`. The source manifest owns external revisions; ge
 
 ## Try it
 
-`pal lesson run core-00 --headless --seed 8 --samples 96`로 seed와 표본 수를 바꿉니다. 새 artifact의 digest와 `changed_metric_value`가 달라지되 schema는 같아야 합니다.
+`pal lesson run core-00 --headless --seed 8 --samples 96`로 seed와 표본 수를 바꿉니다. 같은 호스트와 환경에서는 host-audit digest와 `available_capability_count`가 같아야 합니다. 이 작업은 난수 시뮬레이션이 아니라 설치된 기능을 측정합니다. 실행 summary에는 바뀐 seed와 표본 수가 기록됩니다. ROS 환경을 활성화하면 탐지 기능이 달라질 수 있으므로, seed에 따른 변화 대신 각 capability의 근거를 확인합니다.
 
 ## Checkpoint
 
