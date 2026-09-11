@@ -4,7 +4,7 @@
     "wuji-description-beta2": {
       "kind": "git",
       "url": "https://github.com/wuji-technology/wuji-description.git",
-      "revision": "b13f7d52b23cb79e35357303c72b7f61f1d2fda2",
+      "revision": "c003186833616b23c06784ebefe442474cc5f4b5",
       "release": "v2026.8.19",
       "license": "vendor repository license",
       "destination": "wuji-description",
@@ -17,7 +17,7 @@
     "flexiv-description": {
       "kind": "git",
       "url": "https://github.com/flexivrobotics/flexiv_description.git",
-      "revision": "jazzy-v3.1",
+      "revision": "77dd8d8ec4c48a06778ac3886569c9d24e7a977a",
       "release": "jazzy-v3.1",
       "license": "Apache-2.0",
       "destination": "flexiv-description"
@@ -25,7 +25,7 @@
     "flexiv-ros2": {
       "kind": "git",
       "url": "https://github.com/flexivrobotics/flexiv_ros2.git",
-      "revision": "jazzy-v2.1",
+      "revision": "a165e88a2b41cb7e09b46aa1bfb842718ee783b1",
       "release": "jazzy-v2.1",
       "license": "Apache-2.0",
       "destination": "flexiv-ros2"
@@ -33,7 +33,7 @@
     "flexiv-rdk": {
       "kind": "git",
       "url": "https://github.com/flexivrobotics/flexiv_rdk.git",
-      "revision": "v2.2",
+      "revision": "ff92fe421e19daee6cdf27794a332c8fef7cf831",
       "release": "v2.2",
       "license": "vendor repository license",
       "destination": "flexiv-rdk"
@@ -53,6 +53,44 @@
       "release": "user-supplied",
       "license": "redistribution not established",
       "destination": "manual/flexiv-hub"
+    },
+    "mujoco-menagerie": {
+      "kind": "git",
+      "url": "https://github.com/google-deepmind/mujoco_menagerie.git",
+      "revision": "8161bba264d7fa7c99ca301e91e7fb44737676ad",
+      "release": "pinned commit",
+      "license": "per-model LICENSE (recorded in model-lock.json)",
+      "destination": "mujoco-menagerie",
+      "sparse_paths": [
+        "franka_fr3",
+        "unitree_g1",
+        "aloha",
+        "sharpa_wave"
+      ]
+    },
+    "unitree-mjlab": {
+      "kind": "git",
+      "url": "https://github.com/unitreerobotics/unitree_rl_mjlab.git",
+      "revision": "1425b15f73bd4095f0df53709d7c389c3eb9e790",
+      "release": "pinned commit",
+      "license": "see pinned repository LICENSE",
+      "destination": "unitree-mjlab"
+    },
+    "wuji-mjlab": {
+      "kind": "git",
+      "url": "https://github.com/wuji-technology/wuji-mjlab.git",
+      "revision": "9410a3ac9caf57ac0b8c74c0a5a63f2b466c3003",
+      "release": "pinned commit",
+      "license": "see pinned repository LICENSE",
+      "destination": "wuji-mjlab"
+    },
+    "lerobot": {
+      "kind": "git",
+      "url": "https://github.com/huggingface/lerobot.git",
+      "revision": "b6ec0060779550c0a157ae34feb89e0cf86012a8",
+      "release": "pinned commit",
+      "license": "see pinned repository LICENSE",
+      "destination": "lerobot"
     }
   }
 }

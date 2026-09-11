@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from pai_lab.catalog import ROOT, STAGES, Lesson, Stage
+from pai_lab.local import local_root, write_json
 
 PROGRESS_PATH = ROOT / ".local" / "progress.json"
 STAGE_RANK = {stage: index for index, stage in enumerate(STAGES)}
@@ -36,7 +37,11 @@ def default_progress() -> CourseProgress:
 
 
 def load_progress(path: Path | None = None) -> CourseProgress:
-    path = path or PROGRESS_PATH
+    path = path or (
+        local_root() / "progress.json"
+        if PROGRESS_PATH == ROOT / ".local/progress.json"
+        else PROGRESS_PATH
+    )
     if not path.is_file():
         return default_progress()
     raw = json.loads(path.read_text(encoding="utf-8"))
@@ -49,9 +54,12 @@ def load_progress(path: Path | None = None) -> CourseProgress:
 
 
 def save_progress(progress: CourseProgress, path: Path | None = None) -> None:
-    path = path or PROGRESS_PATH
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(progress.to_dict(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path = path or (
+        local_root() / "progress.json"
+        if PROGRESS_PATH == ROOT / ".local/progress.json"
+        else PROGRESS_PATH
+    )
+    write_json(path, progress.to_dict())
 
 
 def select_lesson(lesson: Lesson, progress: CourseProgress) -> bool:
@@ -59,7 +67,16 @@ def select_lesson(lesson: Lesson, progress: CourseProgress) -> bool:
         return False
     if lesson.elective and not progress.include_electives:
         return False
-    if lesson.track in {"common", "learning", "deployment", "cross", "ros2", "isaac", "vla", "dexterity"}:
+    if lesson.track in {
+        "common",
+        "learning",
+        "deployment",
+        "cross",
+        "ros2",
+        "isaac",
+        "vla",
+        "dexterity",
+    }:
         return True
     if not progress.robots:
         return lesson.stage != "hardware"

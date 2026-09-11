@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from pai_lab import feedback
 from pai_lab.assets import check_sources, fetch_bundle
 from pai_lab.catalog import (
     ROOT,
@@ -20,8 +21,9 @@ from pai_lab.catalog import (
     validate_catalog,
 )
 from pai_lab.hardware import preflight
-from pai_lab.host import detect_host, write_profile
+from pai_lab.host import detect_host
 from pai_lab.lessons import check_lesson, implementation_status, run_lesson
+from pai_lab.local import local_root, write_json
 from pai_lab.plugins import discover_robot_plugins
 from pai_lab.progress import (
     CourseProgress,
@@ -30,6 +32,7 @@ from pai_lab.progress import (
     save_progress,
     select_lesson,
 )
+from pai_lab.readiness import completion_gaps, gaps
 from pai_lab.setup_plan import (
     SETUP_PROFILES,
     SetupProfile,
@@ -57,7 +60,7 @@ def _emit(value: Any, json_output: bool) -> None:
 
 
 def host_detect(json_output: bool) -> int:
-    profile = write_profile(ROOT / ".local" / "host.json")
+    profile = detect_host()
     _emit(profile.to_dict(), json_output)
     return 0 if "python-3.12" in profile.capabilities else 2
 
@@ -94,7 +97,8 @@ def setup_apply_command(path: Path, json_output: bool) -> int:
 
 
 def course_init(through: Stage, robots: tuple[str, ...], electives: bool, json_output: bool) -> int:
-    progress = CourseProgress(through, robots, electives, {})
+    progress = load_progress()
+    progress.through, progress.robots, progress.include_electives = through, robots, electives
     save_progress(progress)
     _emit(progress.to_dict(), json_output)
     return 0
@@ -106,7 +110,9 @@ def _lesson_row(lesson: Lesson, progress: CourseProgress) -> dict[str, object]:
         "aliases": lesson.aliases,
         "stage": lesson.stage,
         "track": lesson.track,
-        "status": "complete" if lesson.id in progress.completed else "pending",
+        "status": ("needs-review" if completion_gaps(lesson.id) else "complete")
+        if lesson.id in progress.completed
+        else "pending",
         "prerequisites": lesson.prerequisites,
         "capabilities": lesson.capabilities,
         "elective": lesson.elective,
@@ -122,7 +128,7 @@ def course_list(status_only: bool, json_output: bool) -> int:
         _lesson_row(lesson, progress)
         for lesson in load_catalog()
         if select_lesson(lesson, progress)
-        and (not status_only or lesson.id not in progress.completed)
+        and (not status_only or lesson.id not in progress.completed or completion_gaps(lesson.id))
     ]
     if json_output:
         _emit(rows, True)
@@ -164,13 +170,12 @@ def _local_capabilities() -> set[str]:
 
 
 def course_runnable(without_hardware: bool, json_output: bool) -> int:
-    capabilities = _local_capabilities()
     rows: list[dict[str, object]] = []
     for lesson in load_catalog():
         hardware_free = lesson.stage != "hardware" or lesson.id == "hw-common-01"
         if without_hardware and not hardware_free:
             continue
-        missing = sorted(set(lesson.capabilities) - capabilities)
+        missing = gaps(lesson, prerequisites=False)
         rows.append(
             {
                 "id": lesson.id,
@@ -203,15 +208,22 @@ def course_runnable(without_hardware: bool, json_output: bool) -> int:
 
 def next_lesson(json_output: bool) -> int:
     progress = load_progress()
-    capabilities = _local_capabilities()
     blocked: list[dict[str, object]] = []
     for lesson in load_catalog():
-        if not select_lesson(lesson, progress) or lesson.id in progress.completed:
+        if not select_lesson(lesson, progress) or (
+            lesson.id in progress.completed and not completion_gaps(lesson.id)
+        ):
             continue
         incomplete = [item for item in lesson.prerequisites if item not in progress.completed]
-        missing = sorted(set(lesson.capabilities) - capabilities)
+        missing = gaps(lesson)
         if incomplete or missing:
-            blocked.append({"id": lesson.id, "incomplete_prerequisites": incomplete, "missing_capabilities": missing})
+            blocked.append(
+                {
+                    "id": lesson.id,
+                    "incomplete_prerequisites": incomplete,
+                    "missing_capabilities": missing,
+                }
+            )
             continue
         result = _lesson_row(lesson, progress)
         result["eligible"] = True
@@ -228,6 +240,7 @@ def lesson_run_command(
     samples: int,
     headless: bool,
     json_output: bool,
+    variant: float = 1.0,
 ) -> int:
     lesson = resolve_lesson(identifier)
     if implementation_status(lesson.id) != "implemented":
@@ -241,49 +254,154 @@ def lesson_run_command(
         )
         return 2
     progress = load_progress()
-    missing_prerequisites = [item for item in lesson.prerequisites if item not in progress.completed]
+    missing_prerequisites = [
+        item for item in lesson.prerequisites if item not in progress.completed
+    ]
     if missing_prerequisites:
         _emit(
-            {"status": "blocked", "lesson": lesson.id, "missing_prerequisites": missing_prerequisites},
+            {
+                "status": "blocked",
+                "lesson": lesson.id,
+                "missing_prerequisites": missing_prerequisites,
+            },
             json_output,
         )
         return 2
-    missing_capabilities = sorted(set(lesson.capabilities) - _local_capabilities())
+    missing_capabilities = gaps(lesson)
     if missing_capabilities:
         _emit(
-            {"status": "capability-unavailable", "lesson": lesson.id, "missing_capabilities": missing_capabilities},
+            {
+                "status": "capability-unavailable",
+                "lesson": lesson.id,
+                "missing_capabilities": missing_capabilities,
+            },
             json_output,
         )
         return 2
     if identifier.lower() != lesson.id:
         print(f"warning: {identifier} is deprecated; use {lesson.id}", file=sys.stderr)
     run_dir = output_dir or (
-        ROOT / ".local" / "runs" / lesson.id / datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+        local_root() / "runs" / lesson.id / datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
+    )
+    write_json(
+        local_root() / "session.json",
+        {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "running"},
     )
     try:
         result = run_lesson(
-            lesson.id, output_dir=run_dir, seed=seed, samples=samples, headless=headless
+            lesson.id,
+            output_dir=run_dir,
+            seed=seed,
+            samples=samples,
+            headless=headless,
+            variant=variant,
         )
-    except PermissionError as error:
+    except (PermissionError, RuntimeError, ValueError, FileNotFoundError, ImportError) as error:
+        write_json(
+            local_root() / "session.json",
+            {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "failed"},
+        )
         _emit(
-            {"status": "safety-blocked", "lesson": lesson.id, "error": str(error)},
+            {
+                "status": "capability-unavailable"
+                if isinstance(error, (FileNotFoundError, ImportError))
+                else "failed",
+                "lesson": lesson.id,
+                "error": str(error),
+            },
             json_output,
         )
-        return 3
-    # Local completion and publication verification are independent states.
-    mark_complete(progress, lesson, run_dir)
-    save_progress(progress)
-    payload = {"status": result.status, "lesson": lesson.id, "run_dir": str(run_dir), "result": result.__dict__}
+        return 2 if isinstance(error, (FileNotFoundError, ImportError)) else 1
+    write_json(
+        local_root() / "session.json",
+        {"lesson": lesson.id, "run_dir": str(run_dir), "phase": "inspect"},
+    )
+    payload = {
+        "status": result.status,
+        "lesson": lesson.id,
+        "run_dir": str(run_dir),
+        "result": result.__dict__,
+    }
     _emit(payload, json_output)
     return 0
 
 
-def lesson_check_command(identifier: str, json_output: bool) -> int:
+def lesson_check_command(identifier: str, json_output: bool, run_dir: Path | None = None) -> int:
     lesson = resolve_lesson(identifier)
     errors = check_lesson(lesson.id)
+    if run_dir is not None:
+        from pai_lab.lessons.evidence import validate_run
+
+        errors += validate_run(lesson.id, run_dir)
+    errors += gaps(lesson)
     result = {"lesson": lesson.id, "valid": not errors, "errors": errors}
     _emit(result, json_output)
     return 1 if errors else 0
+
+
+def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> int:
+    from pai_lab.lessons.evidence import validate_run
+
+    lesson = resolve_lesson(identifier)
+    errors = check_lesson(lesson.id) + gaps(lesson) + validate_run(lesson.id, run_dir)
+    if feedback.pending(lesson.id):
+        errors.append("unresolved feedback; inspect pal feedback list")
+    review_path = run_dir / "review.json"
+    if not review_path.is_file():
+        errors.append("explanation and comparison missing; use pal lesson review")
+    else:
+        review = json.loads(review_path.read_text())
+        if review.get("lesson") != lesson.id or not review.get("notes", "").strip():
+            errors.append("invalid lesson review")
+        comparison = Path(review.get("comparison_run", ""))
+        errors += validate_run(lesson.id, comparison)
+    if errors:
+        _emit({"status": "blocked", "lesson": lesson.id, "errors": errors}, json_output)
+        return 2
+    progress = load_progress()
+    mark_complete(progress, lesson, run_dir.resolve())
+    save_progress(progress)
+    write_json(
+        local_root() / "session.json",
+        {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "finished"},
+    )
+    _emit({"status": "complete", "lesson": lesson.id, "run_dir": str(run_dir)}, json_output)
+    return 0
+
+
+def lesson_review_command(
+    identifier: str, run_dir: Path, comparison: Path, notes: str, json_output: bool
+) -> int:
+    from pai_lab.lessons.evidence import validate_run
+
+    lesson = resolve_lesson(identifier)
+    errors = validate_run(lesson.id, run_dir) + validate_run(lesson.id, comparison)
+    if run_dir.resolve() == comparison.resolve():
+        errors.append("comparison must be a separate execution")
+    if not notes.strip():
+        errors.append("explain the observed result and comparison")
+    if not errors:
+        baseline = json.loads((run_dir / "summary.json").read_text())
+        other = json.loads((comparison / "summary.json").read_text())
+        a = json.loads((run_dir / "experiment.json").read_text())["variant"]
+        b = json.loads((comparison / "experiment.json").read_text())["variant"]
+        differences = sum(baseline[key] != other[key] for key in ("seed", "samples")) + (a != b)
+        if differences != 1:
+            errors.append("change exactly one of seed, samples, or variant")
+    if errors:
+        _emit({"status": "blocked", "errors": errors}, json_output)
+        return 2
+    write_json(
+        run_dir / "review.json",
+        {
+            "lesson": lesson.id,
+            "comparison_run": str(comparison.resolve()),
+            "notes": notes,
+            "reviewed_at": datetime.now(UTC).isoformat(),
+        },
+    )
+    _emit({"status": "reviewed", "lesson": lesson.id}, json_output)
+    return 0
 
 
 def list_robots(json_output: bool) -> int:
@@ -341,11 +459,37 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--output-dir", type=Path)
     run.add_argument("--seed", type=int, default=7)
     run.add_argument("--samples", type=int, default=64)
+    run.add_argument("--variant", type=float, default=1.0)
     run.add_argument("--headless", action=argparse.BooleanOptionalAction, default=True)
     run.add_argument("--json", action="store_true")
     check = lesson_commands.add_parser("check")
     check.add_argument("lesson_id")
+    check.add_argument("--run-dir", type=Path)
     check.add_argument("--json", action="store_true")
+    finish = lesson_commands.add_parser("finish")
+    finish.add_argument("lesson_id")
+    finish.add_argument("--run-dir", type=Path, required=True)
+    finish.add_argument("--json", action="store_true")
+    review = lesson_commands.add_parser("review")
+    review.add_argument("lesson_id")
+    review.add_argument("--run-dir", type=Path, required=True)
+    review.add_argument("--comparison-run-dir", type=Path, required=True)
+    review.add_argument("--notes", required=True)
+    review.add_argument("--json", action="store_true")
+
+    feedback_parser = commands.add_parser("feedback")
+    feedback_commands = feedback_parser.add_subparsers(dest="feedback_command", required=True)
+    feedback_add = feedback_commands.add_parser("add")
+    feedback_add.add_argument("text")
+    feedback_add.add_argument("--lesson")
+    feedback_add.add_argument("--urgent", action="store_true")
+    feedback_add.add_argument("--json", action="store_true")
+    feedback_list = feedback_commands.add_parser("list")
+    feedback_list.add_argument("--json", action="store_true")
+    feedback_resolve = feedback_commands.add_parser("resolve")
+    feedback_resolve.add_argument("id")
+    feedback_resolve.add_argument("--evidence", required=True)
+    feedback_resolve.add_argument("--json", action="store_true")
 
     assets = commands.add_parser("assets")
     assets_commands = assets.add_subparsers(dest="assets_command", required=True)
@@ -403,10 +547,36 @@ def main(argv: list[str] | None = None) -> int:
         return course_list(args.course_command == "status", args.json)
     if args.command == "lesson":
         if args.lesson_command == "check":
-            return lesson_check_command(args.lesson_id, args.json)
+            return lesson_check_command(args.lesson_id, args.json, args.run_dir)
+        if args.lesson_command == "finish":
+            return lesson_finish_command(args.lesson_id, args.run_dir, args.json)
+        if args.lesson_command == "review":
+            return lesson_review_command(
+                args.lesson_id, args.run_dir, args.comparison_run_dir, args.notes, args.json
+            )
         return lesson_run_command(
-            args.lesson_id, args.output_dir, args.seed, args.samples, args.headless, args.json
+            args.lesson_id,
+            args.output_dir,
+            args.seed,
+            args.samples,
+            args.headless,
+            args.json,
+            args.variant,
         )
+    if args.command == "feedback":
+        try:
+            value = (
+                feedback.add(args.text, args.lesson, args.urgent)
+                if args.feedback_command == "add"
+                else feedback.resolve(args.id, args.evidence)
+                if args.feedback_command == "resolve"
+                else feedback.items()
+            )
+        except ValueError as error:
+            _emit({"error": str(error)}, args.json)
+            return 2
+        _emit(value, args.json)
+        return 0
     if args.command == "assets":
         receipt = fetch_bundle(args.bundle)
         _emit(receipt, args.json)
@@ -414,7 +584,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "hardware":
         snapshot = args.snapshot or ROOT / ".local" / "hardware" / f"{args.robot}.json"
         if not snapshot.is_file():
-            _emit({"ready": False, "status": "capability-unavailable", "snapshot": str(snapshot)}, args.json)
+            _emit(
+                {"ready": False, "status": "capability-unavailable", "snapshot": str(snapshot)},
+                args.json,
+            )
             return 2
         result = preflight(args.robot, snapshot, read_only=args.read_only)
         if result["ready"]:
@@ -434,7 +607,11 @@ def main(argv: list[str] | None = None) -> int:
         return doctor(args.format == "json")
     if args.command == "tutorial":
         print("warning: `pal tutorial` is deprecated; use `pal course`", file=sys.stderr)
-        return next_lesson(False) if args.tutorial_command == "next" else course_list(args.tutorial_command == "status", False)
+        return (
+            next_lesson(False)
+            if args.tutorial_command == "next"
+            else course_list(args.tutorial_command == "status", False)
+        )
     if args.command == "robot":
         return list_robots(args.json)
     raise AssertionError("unreachable")

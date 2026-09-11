@@ -27,15 +27,35 @@ def fetch_bundle(name: str, cache: Path = CACHE) -> dict[str, str]:
         raise ValueError(f"unknown asset bundle: {name}") from error
     if bundle["kind"] == "manual":
         raise RuntimeError(
-            "manual download required; redistribution is not established: "
-            f"{bundle['url']}"
+            f"manual download required; redistribution is not established: {bundle['url']}"
         )
     destination = cache / str(bundle["destination"])
     revision = str(bundle["revision"])
     cache.mkdir(parents=True, exist_ok=True)
+    if (destination / ".git").is_dir():
+        dirty = subprocess.run(
+            ["git", "-C", str(destination), "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        if dirty:
+            raise RuntimeError("vendor cache contains changes; preserve it and use a fresh cache")
     if not (destination / ".git").is_dir():
         subprocess.run(
-            ["git", "clone", "--filter=blob:none", str(bundle["url"]), str(destination)],
+            [
+                "git",
+                "clone",
+                "--filter=blob:none",
+                "--no-checkout",
+                str(bundle["url"]),
+                str(destination),
+            ],
+            check=True,
+        )
+    if bundle.get("sparse_paths"):
+        subprocess.run(
+            ["git", "-C", str(destination), "sparse-checkout", "set", *bundle["sparse_paths"]],
             check=True,
         )
     subprocess.run(["git", "-C", str(destination), "fetch", "origin", revision], check=True)
@@ -54,7 +74,7 @@ def fetch_bundle(name: str, cache: Path = CACHE) -> dict[str, str]:
         "revision": actual,
         "license": str(bundle["license"]),
     }
-    (destination / ".pal-receipt.json").write_text(
+    (cache / f"{name}-receipt.json").write_text(
         json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     return receipt

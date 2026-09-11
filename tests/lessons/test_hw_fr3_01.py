@@ -1,10 +1,5 @@
-import pytest
-
-from pai_lab.lessons import check_lesson, implementation_status, run_lesson
+from tests.lesson_contract import assert_contract
 
 
-def test_hw_fr3_01_contract(tmp_path) -> None:
-    assert implementation_status("hw-fr3-01") == "scaffolded"
-    with pytest.raises(NotImplementedError):
-        run_lesson("hw-fr3-01", output_dir=tmp_path, seed=7, samples=16)
-    assert check_lesson("hw-fr3-01") == []
+def test_hw_fr3_01_contract(tmp_path):
+    assert_contract("hw-fr3-01", tmp_path)

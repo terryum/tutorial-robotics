@@ -36,6 +36,10 @@ def validate_bundle(path: Path) -> list[str]:
 
     errors: list[str] = []
     manifest: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") == 2:
+        from pai_lab.lessons.deployment import validate_candidate
+
+        return validate_candidate(path.parent)
     for field in sorted(REQUIRED_FIELDS - set(manifest)):
         errors.append(f"missing field: {field}")
     policy = manifest.get("policy", {})
@@ -51,8 +55,7 @@ def validate_bundle(path: Path) -> list[str]:
     inputs = [float(item) for item in vector.get("input", [])]
     expected = [float(item) for item in vector.get("expected_action", [])]
     actual = [
-        sum(float(weight) * item for weight, item in zip(row, inputs, strict=True))
-        + float(bias)
+        sum(float(weight) * item for weight, item in zip(row, inputs, strict=True)) + float(bias)
         for row, bias in zip(weights.get("weights", []), weights.get("bias", []), strict=True)
     ]
     tolerance = float(manifest.get("tolerances", {}).get("absolute", 0.0))
