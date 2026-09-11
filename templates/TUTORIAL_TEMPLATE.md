@@ -41,4 +41,4 @@ hardware: "none | read-only | motion-approval"
 
 ## Capability mismatch
 
-Keep shared status `pending`, record the local mismatch under `.local/`, and let `$run-next-tutorial` scan for another eligible row. Use `blocked-retry` only for a reproducible failure on a host that should support this tutorial.
+Keep local status `capability-unavailable`, record the local mismatch under `.local/`, and let `$run-next-tutorial` scan for another eligible row. Use `blocked-retry` only for a reproducible failure on a host that should support this tutorial.

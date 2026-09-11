@@ -1,3 +1,5 @@
+> Current execution authority: [common workflow](../agent/workflow.md). Learner state is ignored `.local/`; historical host reports below never complete lessons or require automatic commits.
+
 # Runbook — Isolated Robot Runtime
 
 This mode can run on WS1 or an isolated WS2. Machine name does not grant permission; capabilities and safety gates do.
@@ -14,7 +16,7 @@ This mode can run on WS1 or an isolated WS2. Machine name does not grant permiss
 ## Start
 
 ```text
-git pull 이후 state/HOST_STATUS.md와 state/PROGRESS.md를 읽고 이 host를 ROBOT_RUNTIME mode로 전환할 준비를 audit해. development batch process, active GPU jobs, environment, NIC, command authority와 E-stop path를 확인하고 실제 command 없이 T35B offline replay/command-sink 단계까지만 진행해. 결과를 push할 때 현재 host 행을 non-secret summary로 갱신해.
+git pull 이후 state/HOST_STATUS.md와 .local/progress.json를 읽고 이 host를 ROBOT_RUNTIME mode로 전환할 준비를 audit해. development batch process, active GPU jobs, environment, NIC, command authority와 E-stop path를 확인하고 실제 command 없이 T35B offline replay/command-sink 단계까지만 진행해. 결과를 push할 때 현재 host 행을 non-secret summary로 갱신해.
 ```
 
 ## Preferred placement

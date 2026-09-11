@@ -1,3 +1,5 @@
+> Current execution authority: [common workflow](../agent/workflow.md). Learner state is ignored `.local/`; historical host reports below never complete lessons or require automatic commits.
+
 # Codex Commands — Capability-First
 
 ## WS2: first tutorial
@@ -9,13 +11,13 @@
 ## MacBook: first or resumed tutorial
 
 ```text
-이 컴퓨터는 MacBook이며 DEVELOPMENT mode다. git status와 shared progress를 확인하고 $bootstrap-host를 실행해. 현재 capability로 실행 가능한 다음 eligible tutorial 하나만 완료해. 지원하지 않는 GPU/Isaac tutorial은 shared status를 변경하지 마.
+이 컴퓨터는 MacBook이며 DEVELOPMENT mode다. git status와 local learner progress를 확인하고 $bootstrap-host를 실행해. 현재 capability로 실행 가능한 다음 eligible tutorial 하나만 완료해. 지원하지 않는 GPU/Isaac tutorial은 shared status를 변경하지 마.
 ```
 
 ## Any development host: next
 
 ```text
-현재 host capabilities, tutorial prerequisites와 shared progress를 기준으로 다음 eligible tutorial 하나만 실행해줘. 작은 deterministic baseline부터 실제 실행한 뒤 test·시각화·한국어 report·state를 갱신하고 멈춰줘.
+현재 host capabilities, tutorial prerequisites와 local learner progress를 기준으로 다음 eligible tutorial 하나만 실행해줘. 작은 deterministic baseline부터 실제 실행한 뒤 test·시각화·한국어 report·state를 갱신하고 멈춰줘.
 ```
 
 ## Switch host

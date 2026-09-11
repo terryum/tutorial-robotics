@@ -1,28 +1,15 @@
-# Host-Local State
+# Host-local learner state
 
-The repository has shared tutorial progress while environments, paths and capabilities differ by host.
+Read-only readiness checks do not create state. Authorized installation and execution use ignored .local/:
 
-## Required local files
+- progress.json: selected course scope and completed lesson records
+- session.json: current or most recently finished lesson and run directory
+- feedback.json: original text, lesson, received time, urgency, status and resolution evidence
+- runs/: immutable baseline/comparison artifacts, execution receipts and separate review records
+- bootstrap-verification.json: actual installation verification
 
-`$bootstrap-host` creates:
+Set PAL_LOCAL_DIR to another ignored directory for development verification. Never point a developer batch at the user's .local/ root. Each worktree owns its environment and state.
 
-```text
-.local/
-├── HOST_CAPABILITIES.md
-├── ENVIRONMENTS.md
-├── MODELS.md
-└── NETWORK.md
-```
+Course initialization preserves completed records. Execution writes a run; review and finish separately establish completion. Old progress records remain readable. A rerun never overwrites earlier artifacts. The metadata generator cannot update learner progress.
 
-`.local/` is ignored by Git.
-
-## Shared state
-
-Committed under `state/`:
-
-- tutorial completion and reports
-- milestone/safety gates
-- source commit pins and schemas
-- deployment manifests and hashes
-
-A tutorial done on WS2 stays done on MacBook and vice versa. This does not imply the new host already has the same environment or asset cache; reconstruct those from committed specs and pins.
+Only publication evidence is shared in state/PUBLISHING.md. Historical host verification reports may remain in state/ and setup/ as publication history; they do not select lessons or imply current capability. Do not commit learner completion, device details, raw data, policies or checkpoints.

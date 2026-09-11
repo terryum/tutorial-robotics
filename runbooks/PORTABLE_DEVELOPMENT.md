@@ -1,3 +1,5 @@
+> Current execution authority: [common workflow](../agent/workflow.md). Learner state is ignored `.local/`; historical host reports below never complete lessons or require automatic commits.
+
 # Runbook — Portable Development on MacBook
 
 MacBook is not a mandatory first phase. It is a portable `DEVELOPMENT` host.

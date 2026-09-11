@@ -1,67 +1,90 @@
 # core-fr3-03 — FR3 중력 보상과 피드포워드
 
-이 수업은 **FR3 중력 보상과 피드포워드**을 `gravity-feedforward` 구현과 `gravity-torque.csv` artifact로 검사합니다.
-
+<!-- pal:metadata:start -->
 | Field | Value |
 |---|---|
-| Stage / track | `core` / `fr3` |
+| Stage / track | `core / fr3` |
 | Legacy alias | `T07` |
-| Time / compute | 20–35 min / CPU smoke; external stack when noted |
-| Platforms | `macos-arm64`, `linux-x86_64` |
-| Capabilities | `python-3.12` |
+| Platforms | `macos-arm64, linux-x86_64` |
+| Capabilities | `python-3.12, numpy, mujoco` |
 | Prerequisites | `core-fr3-02` |
 | Safety | `simulation` |
-| Verification | `ci-checked` |
+| Verification | `maintainer-checked` |
 | Implementation | `implemented` |
-
-이 수업은 실제 하드웨어 명령을 전송하지 않습니다.
+<!-- pal:metadata:end -->
 
 ## Learning goals
 
-- capability와 선행 수업을 실행 전에 확인합니다.
-- `gravity-feedforward`이 만든 `gravity-torque.csv`를 직접 검사합니다.
-- 외부 GPU, ROS 2 또는 실제 장비 검증이 필요한 범위를 badge와 분리합니다.
+중력 피드포워드가 추종 오차를 어떻게 바꾸는지 측정합니다.
 
 ## Preflight
 
+처음이면 저장소 루트에서 `sh bootstrap.sh --plan`을 실행하고 계획을 읽은 뒤 `--apply`로 환경을 준비합니다. `source .venv/bin/activate` 후 아래 명령을 사용합니다. 이미 같은 이름의 실행 폴더가 있으면 02처럼 새 이름을 정합니다.
+
+필요한 공개 모델을 한 번 준비합니다:
+
+```bash
+pal assets fetch mujoco-menagerie
+```
+
 ```bash
 pal host detect --json
-pal setup verify --profile core --json
 pal lesson check core-fr3-03 --json
 ```
 
 ## Action
 
 ```bash
-pal lesson run core-fr3-03 --headless --seed 7 --samples 64
+pal lesson run core-fr3-03 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-03/baseline-01 --json
 ```
-
-The same thin entry point is available as `python examples/core-fr3-03/run.py --headless`.
 
 ## Expected
 
-`implemented` 수업은 exit code `0`과 함께 `gravity-torque.csv`, `summary.json`, `trace.csv`, `lesson-report.md`를 생성합니다. scaffolded 수업은 exit code `2`와 `reader_test_required`를 반환하며 실행 artifact를 만들지 않습니다.
+without_compensation_error와 final_error를 읽습니다. 보상 후 측정 오차가 줄어야 합니다. 토크 배열은 Nm, 추종 오차 지표는 rad입니다.
 
-## Recovery
+공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
 
-먼저 `pal lesson check core-fr3-03 --json`을 실행합니다. capability가 없으면 `pal setup verify --profile core --json`의 missing 목록을 따르고, 시스템 패키지나 firmware는 자동 설치하지 않습니다.
+```bash
+pal lesson check core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --json
+```
 
 ## How it works
 
-runner는 catalog ID를 고유한 `gravity-feedforward`에 dispatch하고 `residual_torque`을 계산합니다. 검사는 범용 성공 신호가 아니라 `gravity-torque.csv`의 수업별 schema와 SHA-256을 사용합니다. 외부 runtime capability가 필요한 수업은 실제 host probe 없이 완료로 표시되지 않습니다.
+qfrc_bias에는 중력과 속도에 따른 편향력이 포함됩니다. 같은 PD 이득에서 이 항의 유무를 비교합니다. 시뮬레이션 모델에 대한 보상이므로 실물 payload가 정확하다는 증거는 아닙니다.
 
-Source references: `mujoco-menagerie`. The source manifest owns external revisions; generated or cached vendor files are never edited in place.
+```text
+τ = kp e − kd qdot + qfrc_bias
+```
+
+## Code connection
+
+`examples/core-fr3-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
 
 ## Try it
 
-`pal lesson run core-fr3-03 --headless --seed 8 --samples 96`로 seed와 표본 수를 바꿉니다. 새 artifact의 digest와 `changed_metric_value`가 달라지되 schema는 같아야 합니다.
+```bash
+pal lesson run core-fr3-03 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-03/comparison-01 --variant 1.5 --json
+```
+
+seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+## Recovery
+
+capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
 
 ## Checkpoint
 
-`pal lesson check`는 양언어 heading, canonical 명령, entrypoint와 lesson별 test를 검사합니다. 출판 badge는 `ci-checked`이며 local 완료 여부와 독립적입니다.
+명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
 
-Expected artifacts: `summary.json`, `trace.csv`, `lesson-report.md`, `gravity-torque.csv`.
+```bash
+pal lesson review core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --comparison-run-dir .local/runs/core-fr3-03/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
+pal lesson finish core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --json
+```
 
+<!-- pal:navigation:start -->
 ## Next lesson
 
-과정의 다음 catalog 항목: [core-fr3-04](./core-fr3-04.md) — FR3 kinematics, Jacobian, and inverse kinematics
+[core-fr3-04](./core-fr3-04.md)
+
+다음 항목은 목차 순서입니다. 실제 선택은 `pal course next --json`이 준비 상태로 결정합니다.
+<!-- pal:navigation:end -->

@@ -1,3 +1,5 @@
+> Current execution authority: [common workflow](../agent/workflow.md). Learner state is ignored `.local/`; historical host reports below never complete lessons or require automatic commits.
+
 # Runbook — Full GPU Development Host
 
 WS2 normally uses this runbook in `DEVELOPMENT` mode. It is a superset of portable development.
@@ -13,10 +15,6 @@ WS2 normally uses this runbook in `DEVELOPMENT` mode. It is a superset of portab
 - synthetic data and candidate bundle creation
 
 ## First command
-
-```text
-이 컴퓨터는 full GPU DEVELOPMENT host다. git pull 이후 state/HOST_STATUS.md와 state/PROGRESS.md를 읽고 $bootstrap-host로 capability를 등록해. shared progress에서 다음 eligible tutorial 하나를 실행하되 core tutorial도 생략하지 말고 deterministic baseline 후 GPU scale-up을 분리해 기록해. 결과를 push할 때 이 OS layer의 host 행도 같은 commit에서 갱신해.
-```
 
 ## Safety boundary
 

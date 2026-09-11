@@ -18,7 +18,7 @@ Host selection does not change this architecture. MacBook and WS2 operate on the
 ## 2. Capability-first execution
 
 ```text
-Git repository + shared progress
+Git source revision + host-local learner progress
        │
        ├─ MacBook: portable subset
        ├─ WS2: portable subset + CUDA/Isaac/mjlab
@@ -41,7 +41,7 @@ Never declare automatic format conversion physically equivalent without cross-fo
 Committed:
 
 - code, tests, configs, reports
-- tutorial progress/gates
+- reviewed publication evidence (never learner completion)
 - source/model pins
 - environment specs and hashes
 - small deterministic evidence

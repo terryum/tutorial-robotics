@@ -2,58 +2,2015 @@
   "schema_version": 1,
   "release": "1.0.0-dev",
   "lessons": [
-    {"id":"core-00","aliases":["T00"],"stage":"core","track":"common","order":1,"title":"Repository bootstrap and host audit","title_ko":"저장소 시작과 호스트 점검","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":[],"elective":false,"entrypoint":"examples/core-00/run.py","check":"pal lesson check core-00","expected_artifacts":["summary.json","trace.csv","lesson-report.md","host-audit.json"],"source_refs":["repository"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-01","aliases":["T01"],"stage":"core","track":"common","order":2,"title":"Deterministic pendulum state and timestep","title_ko":"결정론적 진자 상태와 시간 간격","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-00"],"elective":false,"entrypoint":"examples/core-01/run.py","check":"pal lesson check core-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","pendulum-state.csv"],"source_refs":["mujoco"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-02","aliases":["T02"],"stage":"core","track":"common","order":3,"title":"Pinned public robot sources","title_ko":"공개 로봇 소스 고정과 자산 매니페스트","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-00"],"elective":false,"entrypoint":"examples/core-02/run.py","check":"pal lesson check core-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","source-pins.json"],"source_refs":["sources-manifest"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-03","aliases":["T03"],"stage":"core","track":"common","order":4,"title":"Multi-model inspection and asset validation","title_ko":"다중 모델 검사와 자산 검증","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-01","core-02"],"elective":false,"entrypoint":"examples/core-03/run.py","check":"pal lesson check core-03","expected_artifacts":["summary.json","trace.csv","lesson-report.md","model-inventory.json"],"source_refs":["sources-manifest"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-04","aliases":["T04"],"stage":"core","track":"common","order":5,"title":"Unified viewer and deterministic rendering","title_ko":"통합 뷰어와 결정론적 렌더링","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-03"],"elective":false,"entrypoint":"examples/core-04/run.py","check":"pal lesson check core-04","expected_artifacts":["summary.json","trace.csv","lesson-report.md","frame.pgm"],"source_refs":["mujoco"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-
-    {"id":"core-fr3-01","aliases":["T05"],"stage":"core","track":"fr3","order":6,"title":"FR3 model anatomy","title_ko":"FR3 모델 구조","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-04"],"elective":false,"entrypoint":"examples/core-fr3-01/run.py","check":"pal lesson check core-fr3-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","fr3-joints.json"],"source_refs":["mujoco-menagerie"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-fr3-02","aliases":["T06"],"stage":"core","track":"fr3","order":7,"title":"FR3 joint-space PD control","title_ko":"FR3 관절 공간 PD 제어","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-fr3-01"],"elective":false,"entrypoint":"examples/core-fr3-02/run.py","check":"pal lesson check core-fr3-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","pd-response.csv"],"source_refs":["mujoco-menagerie"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-fr3-03","aliases":["T07"],"stage":"core","track":"fr3","order":8,"title":"FR3 gravity compensation and feedforward","title_ko":"FR3 중력 보상과 피드포워드","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-fr3-02"],"elective":false,"entrypoint":"examples/core-fr3-03/run.py","check":"pal lesson check core-fr3-03","expected_artifacts":["summary.json","trace.csv","lesson-report.md","gravity-torque.csv"],"source_refs":["mujoco-menagerie"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-fr3-04","aliases":["T08"],"stage":"core","track":"fr3","order":9,"title":"FR3 kinematics, Jacobian, and inverse kinematics","title_ko":"FR3 기구학, 자코비안과 역기구학","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-fr3-03"],"elective":false,"entrypoint":"examples/core-fr3-04/run.py","check":"pal lesson check core-fr3-04","expected_artifacts":["summary.json","trace.csv","lesson-report.md","jacobian.json"],"source_refs":["mujoco-menagerie"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-fr3-05","aliases":["T09"],"stage":"core","track":"fr3","order":10,"title":"FR3 operational-space control","title_ko":"FR3 작업 공간 제어","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-fr3-04"],"elective":false,"entrypoint":"examples/core-fr3-05/run.py","check":"pal lesson check core-fr3-05","expected_artifacts":["summary.json","trace.csv","lesson-report.md","task-space-response.csv"],"source_refs":["mujoco-menagerie"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-fr3-06","aliases":["T10"],"stage":"core","track":"fr3","order":11,"title":"FR3 contact and friction laboratory","title_ko":"FR3 접촉과 마찰 실험실","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-fr3-05"],"elective":false,"entrypoint":"examples/core-fr3-06/run.py","check":"pal lesson check core-fr3-06","expected_artifacts":["summary.json","trace.csv","lesson-report.md","friction-sweep.csv"],"source_refs":["mujoco-menagerie"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-fr3-07","aliases":["T22"],"stage":"core","track":"fr3","order":13,"title":"FR3 reach environment without ROS","title_ko":"ROS 없는 FR3 도달 환경","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-fr3-04"],"elective":false,"entrypoint":"examples/core-fr3-07/run.py","check":"pal lesson check core-fr3-07","expected_artifacts":["summary.json","trace.csv","lesson-report.md","reach-rollout.csv"],"source_refs":["gymnasium"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-fr3-08","aliases":["T24"],"stage":"core","track":"fr3","order":14,"title":"PPO on FR3 reach","title_ko":"FR3 도달 과제 PPO","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-fr3-07","core-rl-01"],"elective":false,"entrypoint":"examples/core-fr3-08/run.py","check":"pal lesson check core-fr3-08","expected_artifacts":["summary.json","trace.csv","lesson-report.md","ppo-learning.csv"],"source_refs":["gymnasium"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-
-    {"id":"core-enlight-01","aliases":["T08A"],"stage":"core","track":"enlight","order":15,"title":"Enlight description, frames, and kinematics","title_ko":"Enlight 모델, 좌표계와 기구학","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-02"],"elective":false,"entrypoint":"examples/core-enlight-01/run.py","check":"pal lesson check core-enlight-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","enlight-frames.json"],"source_refs":["flexiv-description"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-enlight-02","aliases":["T10A"],"stage":"core","track":"enlight","order":16,"title":"Enlight MuJoCo draft and cross-format validation","title_ko":"Enlight MuJoCo 초안과 형식 간 검증","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-enlight-01"],"elective":false,"entrypoint":"examples/core-enlight-02/run.py","check":"pal lesson check core-enlight-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","cross-format.json"],"source_refs":["flexiv-description"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-wuji-01","aliases":["T14"],"stage":"core","track":"wuji","order":17,"title":"Wuji Hand 2 Beta 2 joints, poses, and synergies","title_ko":"Wuji Hand 2 Beta 2 관절, 자세와 시너지","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-02","core-04"],"elective":false,"entrypoint":"examples/core-wuji-01/run.py","check":"pal lesson check core-wuji-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","named-poses.json"],"source_refs":["wuji-description"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-wuji-02","aliases":["T15"],"stage":"core","track":"wuji","order":18,"title":"Wuji virtual tactile observation","title_ko":"Wuji 가상 촉각 관측","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-wuji-01"],"elective":false,"entrypoint":"examples/core-wuji-02/run.py","check":"pal lesson check core-wuji-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","tactile-grid.csv"],"source_refs":["wuji-description"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-dexterity-01","aliases":["T16"],"stage":"core","track":"dexterity","order":19,"title":"Wuji and Sharpa model comparison","title_ko":"Wuji와 Sharpa 모델 비교","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-wuji-01"],"elective":false,"entrypoint":"examples/core-dexterity-01/run.py","check":"pal lesson check core-dexterity-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","hand-comparison.json"],"source_refs":["wuji-description","sharpa-wave"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-dexterity-02","aliases":["T16A"],"stage":"core","track":"dexterity","order":21,"title":"Hand retargeting and demonstration recording","title_ko":"손 리타게팅과 시연 기록","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-dexterity-01","core-data-01"],"elective":false,"entrypoint":"examples/core-dexterity-02/run.py","check":"pal lesson check core-dexterity-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","retargeted-demo.csv"],"source_refs":["wuji-description","sharpa-wave"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-rl-01","aliases":["T23"],"stage":"core","track":"learning","order":12,"title":"Minimal continuous-action PPO","title_ko":"최소 연속 행동 PPO","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-01"],"elective":false,"entrypoint":"examples/core-rl-01/run.py","check":"pal lesson check core-rl-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","policy-update.csv"],"source_refs":["repository"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-g1-01","aliases":["T25"],"stage":"core","track":"g1","order":22,"title":"Unitree G1 playback and motion data","title_ko":"Unitree G1 재생과 모션 데이터","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-03","core-04"],"elective":false,"entrypoint":"examples/core-g1-01/run.py","check":"pal lesson check core-g1-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","g1-motion.csv"],"source_refs":["unitree-g1"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-data-01","aliases":["T28"],"stage":"core","track":"learning","order":20,"title":"Episode dataset from MuJoCo","title_ko":"MuJoCo 에피소드 데이터셋","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-01"],"elective":false,"entrypoint":"examples/core-data-01/run.py","check":"pal lesson check core-data-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","episode.jsonl"],"source_refs":["lerobot"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-il-01","aliases":["T29"],"stage":"core","track":"learning","order":23,"title":"Behavioral cloning baseline","title_ko":"행동 복제 기준선","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-data-01"],"elective":false,"entrypoint":"examples/core-il-01/run.py","check":"pal lesson check core-il-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","bc-loss.csv"],"source_refs":["lerobot"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-aloha-01","aliases":["T30"],"stage":"core","track":"aloha","order":24,"title":"ALOHA simulation and ACT contract","title_ko":"ALOHA 시뮬레이션과 ACT 계약","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-data-01","core-il-01"],"elective":false,"entrypoint":"examples/core-aloha-01/run.py","check":"pal lesson check core-aloha-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","act-schema.json"],"source_refs":["lerobot"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"core-vla-01","aliases":["T32A"],"stage":"core","track":"vla","order":25,"title":"VLA protocol and mock policy client","title_ko":"VLA 프로토콜과 모의 정책 클라이언트","platforms":["macos-arm64","linux-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-data-01"],"elective":false,"entrypoint":"examples/core-vla-01/run.py","check":"pal lesson check core-vla-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","vla-request-response.json"],"source_refs":["lerobot"],"verification":"ci-checked","safety_level":"simulation","implementation":"implemented"},
-
-    {"id":"sim-ros-01","aliases":["T17"],"stage":"sim","track":"ros2","order":26,"title":"ROS 2 topics, QoS, services, actions, and TF","title_ko":"ROS 2 토픽, QoS, 서비스, 액션과 TF","platforms":["ubuntu-24.04-x86_64"],"capabilities":["ros2-jazzy"],"prerequisites":["core-00","core-02"],"elective":false,"entrypoint":"examples/sim-ros-01/run.py","check":"pal lesson check sim-ros-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","ros-graph.json"],"source_refs":["ros2-jazzy"],"verification":"maintainer-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-ros-02","aliases":["T19"],"stage":"sim","track":"ros2","order":27,"title":"MuJoCo to ROS 2 bridge","title_ko":"MuJoCo–ROS 2 브리지","platforms":["ubuntu-24.04-x86_64"],"capabilities":["ros2-jazzy"],"prerequisites":["core-04","sim-ros-01"],"elective":false,"entrypoint":"examples/sim-ros-02/run.py","check":"pal lesson check sim-ros-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","joint-state-bridge.csv"],"source_refs":["ros2-jazzy","mujoco-ros2-core"],"verification":"maintainer-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-ros-03","aliases":["T20"],"stage":"sim","track":"ros2","order":28,"title":"Rosbag episode recording and deterministic replay","title_ko":"rosbag 에피소드 기록과 결정론적 재생","platforms":["ubuntu-24.04-x86_64"],"capabilities":["ros2-jazzy"],"prerequisites":["sim-ros-02"],"elective":false,"entrypoint":"examples/sim-ros-03/run.py","check":"pal lesson check sim-ros-03","expected_artifacts":["summary.json","trace.csv","lesson-report.md","record-replay.json"],"source_refs":["ros2-jazzy"],"verification":"maintainer-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-ros-04","aliases":["T21"],"stage":"sim","track":"ros2","order":29,"title":"Common embodiment API for simulation and ROS 2","title_ko":"시뮬레이션과 ROS 2 공통 embodiment API","platforms":["ubuntu-24.04-x86_64"],"capabilities":["ros2-jazzy"],"prerequisites":["sim-ros-02"],"elective":false,"entrypoint":"examples/sim-ros-04/run.py","check":"pal lesson check sim-ros-04","expected_artifacts":["summary.json","trace.csv","lesson-report.md","embodiment-contract.json"],"source_refs":["ros2-jazzy"],"verification":"maintainer-checked","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-g1-01","aliases":["T26"],"stage":"sim","track":"g1","order":30,"title":"Unitree G1 GPU PPO and motion imitation","title_ko":"Unitree G1 GPU PPO와 모션 모방","platforms":["ubuntu-24.04-x86_64"],"capabilities":["nvidia-cuda"],"prerequisites":["core-g1-01"],"elective":false,"entrypoint":"examples/sim-g1-01/run.py","check":"pal lesson check sim-g1-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","motion-imitation.csv"],"source_refs":["unitree-g1"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-wuji-01","aliases":["T27"],"stage":"sim","track":"wuji","order":31,"title":"Wuji in-hand PPO on GPU","title_ko":"Wuji GPU 손안 조작 PPO","platforms":["ubuntu-24.04-x86_64"],"capabilities":["nvidia-cuda"],"prerequisites":["core-wuji-02","core-rl-01"],"elective":false,"entrypoint":"examples/sim-wuji-01/run.py","check":"pal lesson check sim-wuji-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","inhand-learning.csv"],"source_refs":["wuji-description"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-vla-01","aliases":["T32C"],"stage":"sim","track":"vla","order":32,"title":"SmolVLA fine-tuning and policy server","title_ko":"SmolVLA 미세조정과 정책 서버","platforms":["ubuntu-24.04-x86_64"],"capabilities":["nvidia-cuda"],"prerequisites":["core-vla-01"],"elective":false,"entrypoint":"examples/sim-vla-01/run.py","check":"pal lesson check sim-vla-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","finetune-metrics.csv"],"source_refs":["lerobot"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-vla-02","aliases":["T32D"],"stage":"sim","track":"vla","order":33,"title":"Optional remote VLA inference","title_ko":"선택형 원격 VLA 추론","platforms":["ubuntu-24.04-x86_64"],"capabilities":["nvidia-cuda"],"prerequisites":["sim-vla-01"],"elective":true,"entrypoint":"examples/sim-vla-02/run.py","check":"pal lesson check sim-vla-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","remote-inference.json"],"source_refs":["openpi","groot"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-isaac-01","aliases":["T33"],"stage":"sim","track":"isaac","order":34,"title":"Import public robot assets into Isaac Sim","title_ko":"Isaac Sim 공개 로봇 자산 가져오기","platforms":["ubuntu-24.04-x86_64"],"capabilities":["isaac-sim"],"prerequisites":["core-04"],"elective":false,"entrypoint":"examples/sim-isaac-01/run.py","check":"pal lesson check sim-isaac-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","import-contract.json"],"source_refs":["isaac-sim-ws"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-isaac-02","aliases":["T34"],"stage":"sim","track":"isaac","order":35,"title":"Isaac camera, lighting, and synthetic data","title_ko":"Isaac 카메라, 조명과 합성 데이터","platforms":["ubuntu-24.04-x86_64"],"capabilities":["isaac-sim"],"prerequisites":["sim-isaac-01"],"elective":false,"entrypoint":"examples/sim-isaac-02/run.py","check":"pal lesson check sim-isaac-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","synthetic-camera.json"],"source_refs":["isaac-sim-ws"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-cross-01","aliases":["T35"],"stage":"sim","track":"cross","order":36,"title":"MuJoCo to Isaac sim-to-sim validation","title_ko":"MuJoCo–Isaac sim-to-sim 검증","platforms":["ubuntu-24.04-x86_64"],"capabilities":["isaac-sim"],"prerequisites":["core-fr3-08","sim-isaac-01"],"elective":false,"entrypoint":"examples/sim-cross-01/run.py","check":"pal lesson check sim-cross-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","sim-parity.csv"],"source_refs":["isaac-sim-ws"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-deploy-01","aliases":["T35A"],"stage":"sim","track":"deployment","order":37,"title":"Candidate deployment bundle and promotion gate","title_ko":"후보 배포 번들과 승격 게이트","platforms":["ubuntu-24.04-x86_64"],"capabilities":["python-3.12"],"prerequisites":["core-00"],"elective":false,"entrypoint":"examples/sim-deploy-01/run.py","check":"pal lesson check sim-deploy-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","bundle-verification.json","sample_candidate/manifest.json"],"source_refs":["sample-candidate"],"verification":"ci-checked","safety_level":"offline","implementation":"implemented"},
-    {"id":"sim-enlight-01","aliases":["T18"],"stage":"sim","track":"enlight","order":38,"title":"Enlight ROS 2 fake hardware","title_ko":"Enlight ROS 2 가상 하드웨어","platforms":["ubuntu-24.04-x86_64"],"capabilities":["ros2-jazzy"],"prerequisites":["core-enlight-01","sim-ros-01"],"elective":false,"entrypoint":"examples/sim-enlight-01/run.py","check":"pal lesson check sim-enlight-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md","fake-hardware.json"],"source_refs":["flexiv-ros2"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-enlight-02","aliases":["T41A"],"stage":"sim","track":"enlight","order":39,"title":"Enlight contact-task simulation and candidate bundle","title_ko":"Enlight 접촉 과제 시뮬레이션과 후보 번들","platforms":["ubuntu-24.04-x86_64"],"capabilities":["nvidia-cuda"],"prerequisites":["core-enlight-02","sim-deploy-01"],"elective":false,"entrypoint":"examples/sim-enlight-02/run.py","check":"pal lesson check sim-enlight-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","contact-candidate.json"],"source_refs":["flexiv-rdk"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-    {"id":"sim-wuji-02","aliases":["T42A"],"stage":"sim","track":"wuji","order":40,"title":"Wuji dexterity candidate bundle","title_ko":"Wuji 정교 조작 후보 번들","platforms":["ubuntu-24.04-x86_64"],"capabilities":["nvidia-cuda"],"prerequisites":["sim-wuji-01","sim-deploy-01"],"elective":false,"entrypoint":"examples/sim-wuji-02/run.py","check":"pal lesson check sim-wuji-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md","dexterity-candidate.json"],"source_refs":["wuji-description"],"verification":"reader_test_required","safety_level":"simulation","implementation":"implemented"},
-
-    {"id":"hw-common-01","aliases":["T35B"],"stage":"hardware","track":"common","order":41,"title":"Runtime bootstrap, offline replay, and command sink","title_ko":"런타임 시작, 오프라인 재생과 명령 차단","platforms":["ubuntu-24.04-x86_64"],"capabilities":["python-3.12"],"prerequisites":["sim-deploy-01"],"elective":false,"entrypoint":"examples/hw-common-01/run.py","check":"pal lesson check hw-common-01","expected_artifacts":["summary.json","trace.csv","command-sink.json","lesson-report.md"],"source_refs":["sample-candidate"],"verification":"maintainer-checked","safety_level":"read-only","implementation":"implemented"},
-    {"id":"hw-common-02","aliases":["T36"],"stage":"hardware","track":"common","order":42,"title":"Real-hardware read-only integration gate","title_ko":"실물 하드웨어 읽기 전용 통합 게이트","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network"],"prerequisites":["hw-common-01"],"elective":false,"entrypoint":"examples/hw-common-02/run.py","check":"pal lesson check hw-common-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["hardware-safety"],"verification":"reader_test_required","safety_level":"read-only","implementation":"scaffolded"},
-    {"id":"hw-fr3-01","aliases":[],"stage":"hardware","track":"fr3","order":43,"title":"FR3 read-only state, shadow, and approved low-risk motion","title_ko":"FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network","fr3-hardware","read-only-preflight-fr3"],"prerequisites":["hw-common-02","core-fr3-06"],"elective":false,"entrypoint":"examples/hw-fr3-01/run.py","check":"pal lesson check hw-fr3-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["libfranka"],"verification":"reader_test_required","safety_level":"motion-approval","implementation":"scaffolded"},
-    {"id":"hw-wuji-01","aliases":["T38"],"stage":"hardware","track":"wuji","order":44,"title":"Wuji Beta 2 read-only adapter and tactile calibration","title_ko":"Wuji Beta 2 읽기 전용 어댑터와 촉각 보정","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network","wuji-hardware","read-only-preflight-wuji"],"prerequisites":["hw-common-02","core-wuji-02"],"elective":false,"entrypoint":"examples/hw-wuji-01/run.py","check":"pal lesson check hw-wuji-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["wuji-control-guide"],"verification":"reader_test_required","safety_level":"motion-approval","implementation":"scaffolded"},
-    {"id":"hw-wuji-02","aliases":["T42B"],"stage":"hardware","track":"wuji","order":45,"title":"Wuji shadow and gated real evaluation","title_ko":"Wuji 섀도와 승인 기반 실물 평가","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network","wuji-hardware","read-only-preflight-wuji"],"prerequisites":["hw-wuji-01","sim-wuji-02"],"elective":false,"entrypoint":"examples/hw-wuji-02/run.py","check":"pal lesson check hw-wuji-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["wuji-control-guide"],"verification":"reader_test_required","safety_level":"motion-approval","implementation":"scaffolded"},
-    {"id":"hw-enlight-01","aliases":["T37"],"stage":"hardware","track":"enlight","order":46,"title":"Enlight read-only adapter and low-risk validation","title_ko":"Enlight 읽기 전용 어댑터와 저위험 검증","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network","enlight-hardware","read-only-preflight-enlight"],"prerequisites":["hw-common-02","sim-enlight-01"],"elective":false,"entrypoint":"examples/hw-enlight-01/run.py","check":"pal lesson check hw-enlight-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["flexiv-rdk"],"verification":"reader_test_required","safety_level":"motion-approval","implementation":"scaffolded"},
-    {"id":"hw-enlight-02","aliases":["T37A"],"stage":"hardware","track":"enlight","order":47,"title":"Enlight system identification and MuJoCo calibration","title_ko":"Enlight 시스템 식별과 MuJoCo 보정","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network","enlight-hardware","read-only-preflight-enlight"],"prerequisites":["hw-enlight-01","core-enlight-02"],"elective":false,"entrypoint":"examples/hw-enlight-02/run.py","check":"pal lesson check hw-enlight-02","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["flexiv-rdk"],"verification":"reader_test_required","safety_level":"motion-approval","implementation":"scaffolded"},
-    {"id":"hw-enlight-03","aliases":["T41B"],"stage":"hardware","track":"enlight","order":48,"title":"Enlight contact-task shadow and gated evaluation","title_ko":"Enlight 접촉 과제 섀도와 승인 기반 평가","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network","enlight-hardware","read-only-preflight-enlight"],"prerequisites":["hw-enlight-01","sim-enlight-02"],"elective":false,"entrypoint":"examples/hw-enlight-03/run.py","check":"pal lesson check hw-enlight-03","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["flexiv-rdk"],"verification":"reader_test_required","safety_level":"motion-approval","implementation":"scaffolded"},
-    {"id":"hw-enlight-wuji-01","aliases":["T38A"],"stage":"hardware","track":"enlight-wuji","order":49,"title":"Enlight and Wuji integrated read-only validation","title_ko":"Enlight와 Wuji 통합 읽기 전용 검증","platforms":["ubuntu-24.04-x86_64"],"capabilities":["robot-runtime","isolated-network","enlight-hardware","read-only-preflight-enlight","wuji-hardware","read-only-preflight-wuji"],"prerequisites":["hw-enlight-01","hw-wuji-01"],"elective":false,"entrypoint":"examples/hw-enlight-wuji-01/run.py","check":"pal lesson check hw-enlight-wuji-01","expected_artifacts":["summary.json","trace.csv","lesson-report.md"],"source_refs":["flexiv-rdk","wuji-control-guide"],"verification":"reader_test_required","safety_level":"motion-approval","implementation":"scaffolded"}
+    {
+      "id": "core-00",
+      "aliases": [
+        "T00"
+      ],
+      "stage": "core",
+      "track": "common",
+      "order": 1,
+      "title": "Repository bootstrap and host audit",
+      "title_ko": "저장소 시작과 호스트 점검",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12"
+      ],
+      "prerequisites": [],
+      "elective": false,
+      "entrypoint": "examples/core-00/run.py",
+      "check": "pal lesson check core-00",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "host-audit.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "repository"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-01",
+      "aliases": [
+        "T01"
+      ],
+      "stage": "core",
+      "track": "common",
+      "order": 2,
+      "title": "Deterministic pendulum state and timestep",
+      "title_ko": "결정론적 진자 상태와 시간 간격",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-00"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-01/run.py",
+      "check": "pal lesson check core-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "pendulum-state.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-02",
+      "aliases": [
+        "T02"
+      ],
+      "stage": "core",
+      "track": "common",
+      "order": 3,
+      "title": "Pinned public robot sources",
+      "title_ko": "공개 로봇 소스 고정과 자산 매니페스트",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-00"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-02/run.py",
+      "check": "pal lesson check core-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "source-pins.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "sources-manifest"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-03",
+      "aliases": [
+        "T03"
+      ],
+      "stage": "core",
+      "track": "common",
+      "order": 4,
+      "title": "Multi-model inspection and asset validation",
+      "title_ko": "다중 모델 검사와 자산 검증",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-01",
+        "core-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-03/run.py",
+      "check": "pal lesson check core-03",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "model-inventory.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "sources-manifest"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-04",
+      "aliases": [
+        "T04"
+      ],
+      "stage": "core",
+      "track": "common",
+      "order": 5,
+      "title": "Unified viewer and deterministic rendering",
+      "title_ko": "통합 뷰어와 결정론적 렌더링",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-03"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-04/run.py",
+      "check": "pal lesson check core-04",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "frame.pgm",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-01",
+      "aliases": [
+        "T05"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 6,
+      "title": "FR3 model anatomy",
+      "title_ko": "FR3 모델 구조",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-01/run.py",
+      "check": "pal lesson check core-fr3-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "fr3-joints.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-02",
+      "aliases": [
+        "T06"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 7,
+      "title": "FR3 joint-space PD control",
+      "title_ko": "FR3 관절 공간 PD 제어",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-02/run.py",
+      "check": "pal lesson check core-fr3-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "pd-response.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-03",
+      "aliases": [
+        "T07"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 8,
+      "title": "FR3 gravity compensation and feedforward",
+      "title_ko": "FR3 중력 보상과 피드포워드",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-03/run.py",
+      "check": "pal lesson check core-fr3-03",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "gravity-torque.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-04",
+      "aliases": [
+        "T08"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 9,
+      "title": "FR3 kinematics, Jacobian, and inverse kinematics",
+      "title_ko": "FR3 기구학, 자코비안과 역기구학",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-03"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-04/run.py",
+      "check": "pal lesson check core-fr3-04",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "jacobian.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-05",
+      "aliases": [
+        "T09"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 10,
+      "title": "FR3 operational-space control",
+      "title_ko": "FR3 작업 공간 제어",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-05/run.py",
+      "check": "pal lesson check core-fr3-05",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "task-space-response.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-06",
+      "aliases": [
+        "T10"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 11,
+      "title": "FR3 contact and friction laboratory",
+      "title_ko": "FR3 접촉과 마찰 실험실",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-05"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-06/run.py",
+      "check": "pal lesson check core-fr3-06",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "friction-sweep.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-07",
+      "aliases": [
+        "T22"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 13,
+      "title": "FR3 reach environment without ROS",
+      "title_ko": "ROS 없는 FR3 도달 환경",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-07/run.py",
+      "check": "pal lesson check core-fr3-07",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "reach-rollout.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "gymnasium"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-08",
+      "aliases": [
+        "T24"
+      ],
+      "stage": "core",
+      "track": "fr3",
+      "order": 14,
+      "title": "PPO on FR3 reach",
+      "title_ko": "FR3 도달 과제 PPO",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-07",
+        "core-rl-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-08/run.py",
+      "check": "pal lesson check core-fr3-08",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "ppo-learning.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "policy.npz",
+        "policy-contract.json"
+      ],
+      "source_refs": [
+        "gymnasium"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-enlight-01",
+      "aliases": [
+        "T08A"
+      ],
+      "stage": "core",
+      "track": "enlight",
+      "order": 15,
+      "title": "Enlight description, frames, and kinematics",
+      "title_ko": "Enlight 모델, 좌표계와 기구학",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-enlight-01/run.py",
+      "check": "pal lesson check core-enlight-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-frames.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-enlight-02",
+      "aliases": [
+        "T10A"
+      ],
+      "stage": "core",
+      "track": "enlight",
+      "order": 16,
+      "title": "Enlight MuJoCo draft and cross-format validation",
+      "title_ko": "Enlight MuJoCo 초안과 형식 간 검증",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-enlight-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-enlight-02/run.py",
+      "check": "pal lesson check core-enlight-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "cross-format.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-wuji-01",
+      "aliases": [
+        "T14"
+      ],
+      "stage": "core",
+      "track": "wuji",
+      "order": 17,
+      "title": "Wuji Hand 2 Beta 2 joints, poses, and synergies",
+      "title_ko": "Wuji Hand 2 Beta 2 관절, 자세와 시너지",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-02",
+        "core-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-wuji-01/run.py",
+      "check": "pal lesson check core-wuji-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "named-poses.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "wuji-description"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-wuji-02",
+      "aliases": [
+        "T15"
+      ],
+      "stage": "core",
+      "track": "wuji",
+      "order": 18,
+      "title": "Wuji virtual tactile observation",
+      "title_ko": "Wuji 가상 촉각 관측",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-wuji-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-wuji-02/run.py",
+      "check": "pal lesson check core-wuji-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "tactile-grid.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "wuji-description"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-dexterity-01",
+      "aliases": [
+        "T16"
+      ],
+      "stage": "core",
+      "track": "dexterity",
+      "order": 19,
+      "title": "Wuji and Sharpa model comparison",
+      "title_ko": "Wuji와 Sharpa 모델 비교",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-wuji-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-dexterity-01/run.py",
+      "check": "pal lesson check core-dexterity-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "hand-comparison.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "wuji-description",
+        "sharpa-wave"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-dexterity-02",
+      "aliases": [
+        "T16A"
+      ],
+      "stage": "core",
+      "track": "dexterity",
+      "order": 21,
+      "title": "Hand retargeting and demonstration recording",
+      "title_ko": "손 리타게팅과 시연 기록",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-dexterity-01",
+        "core-data-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-dexterity-02/run.py",
+      "check": "pal lesson check core-dexterity-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "retargeted-demo.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "wuji-description",
+        "sharpa-wave"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-rl-01",
+      "aliases": [
+        "T23"
+      ],
+      "stage": "core",
+      "track": "learning",
+      "order": 12,
+      "title": "Minimal continuous-action PPO",
+      "title_ko": "최소 연속 행동 PPO",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-rl-01/run.py",
+      "check": "pal lesson check core-rl-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "policy-update.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "policy.npz",
+        "policy-contract.json"
+      ],
+      "source_refs": [
+        "repository"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-g1-01",
+      "aliases": [
+        "T25"
+      ],
+      "stage": "core",
+      "track": "g1",
+      "order": 22,
+      "title": "Unitree G1 playback and motion data",
+      "title_ko": "Unitree G1 재생과 모션 데이터",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-03",
+        "core-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-g1-01/run.py",
+      "check": "pal lesson check core-g1-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "g1-motion.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "motion.npz"
+      ],
+      "source_refs": [
+        "unitree-g1"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-data-01",
+      "aliases": [
+        "T28"
+      ],
+      "stage": "core",
+      "track": "learning",
+      "order": 20,
+      "title": "Episode dataset from MuJoCo",
+      "title_ko": "MuJoCo 에피소드 데이터셋",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-data-01/run.py",
+      "check": "pal lesson check core-data-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "episode.jsonl",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "lerobot"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-il-01",
+      "aliases": [
+        "T29"
+      ],
+      "stage": "core",
+      "track": "learning",
+      "order": 23,
+      "title": "Behavioral cloning baseline",
+      "title_ko": "행동 복제 기준선",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-data-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-il-01/run.py",
+      "check": "pal lesson check core-il-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "bc-loss.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "policy.npz"
+      ],
+      "source_refs": [
+        "lerobot"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-aloha-01",
+      "aliases": [
+        "T30"
+      ],
+      "stage": "core",
+      "track": "aloha",
+      "order": 24,
+      "title": "ALOHA simulation and ACT contract",
+      "title_ko": "ALOHA 시뮬레이션과 ACT 계약",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-data-01",
+        "core-il-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-aloha-01/run.py",
+      "check": "pal lesson check core-aloha-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "act-schema.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "lerobot"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-vla-01",
+      "aliases": [
+        "T32A"
+      ],
+      "stage": "core",
+      "track": "vla",
+      "order": 25,
+      "title": "VLA protocol and mock policy client",
+      "title_ko": "VLA 프로토콜과 모의 정책 클라이언트",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-data-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-vla-01/run.py",
+      "check": "pal lesson check core-vla-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "vla-request-response.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "lerobot"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-ros-01",
+      "aliases": [
+        "T17"
+      ],
+      "stage": "sim",
+      "track": "ros2",
+      "order": 26,
+      "title": "ROS 2 topics, QoS, services, actions, and TF",
+      "title_ko": "ROS 2 토픽, QoS, 서비스, 액션과 TF",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "ros2-jazzy"
+      ],
+      "prerequisites": [
+        "core-00",
+        "core-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-ros-01/run.py",
+      "check": "pal lesson check sim-ros-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "ros-graph.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "ros2-jazzy"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-ros-02",
+      "aliases": [
+        "T19"
+      ],
+      "stage": "sim",
+      "track": "ros2",
+      "order": 27,
+      "title": "MuJoCo to ROS 2 bridge",
+      "title_ko": "MuJoCo–ROS 2 브리지",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "ros2-jazzy"
+      ],
+      "prerequisites": [
+        "core-04",
+        "sim-ros-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-ros-02/run.py",
+      "check": "pal lesson check sim-ros-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "joint-state-bridge.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "ros2-jazzy",
+        "mujoco-ros2-core"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-ros-03",
+      "aliases": [
+        "T20"
+      ],
+      "stage": "sim",
+      "track": "ros2",
+      "order": 28,
+      "title": "Rosbag episode recording and deterministic replay",
+      "title_ko": "rosbag 에피소드 기록과 결정론적 재생",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "ros2-jazzy"
+      ],
+      "prerequisites": [
+        "sim-ros-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-ros-03/run.py",
+      "check": "pal lesson check sim-ros-03",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "record-replay.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "ros2-jazzy"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-ros-04",
+      "aliases": [
+        "T21"
+      ],
+      "stage": "sim",
+      "track": "ros2",
+      "order": 29,
+      "title": "Common embodiment API for simulation and ROS 2",
+      "title_ko": "시뮬레이션과 ROS 2 공통 embodiment API",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "ros2-jazzy"
+      ],
+      "prerequisites": [
+        "sim-ros-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-ros-04/run.py",
+      "check": "pal lesson check sim-ros-04",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "embodiment-contract.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "ros2-jazzy"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-g1-01",
+      "aliases": [
+        "T26"
+      ],
+      "stage": "sim",
+      "track": "g1",
+      "order": 30,
+      "title": "Unitree G1 GPU PPO and motion imitation",
+      "title_ko": "Unitree G1 GPU PPO와 모션 모방",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-g1-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-g1-01/run.py",
+      "check": "pal lesson check sim-g1-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "motion-imitation.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "initial.pt",
+        "policy.pt",
+        "evaluation.png",
+        "evaluation-actions.npz"
+      ],
+      "source_refs": [
+        "unitree-mjlab"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-wuji-01",
+      "aliases": [
+        "T27"
+      ],
+      "stage": "sim",
+      "track": "wuji",
+      "order": 31,
+      "title": "Wuji in-hand PPO on GPU",
+      "title_ko": "Wuji GPU 손안 조작 PPO",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-wuji-02",
+        "core-rl-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-wuji-01/run.py",
+      "check": "pal lesson check sim-wuji-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "inhand-learning.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "initial.pt",
+        "policy.pt",
+        "evaluation.png",
+        "evaluation-actions.npz"
+      ],
+      "source_refs": [
+        "wuji-mjlab"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-vla-01",
+      "aliases": [
+        "T32C"
+      ],
+      "stage": "sim",
+      "track": "vla",
+      "order": 32,
+      "title": "SmolVLA fine-tuning and policy server",
+      "title_ko": "SmolVLA 미세조정과 정책 서버",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-vla-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-vla-01/run.py",
+      "check": "pal lesson check sim-vla-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "finetune-metrics.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "training-observation.png",
+        "server-response.json"
+      ],
+      "source_refs": [
+        "lerobot"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-vla-02",
+      "aliases": [
+        "T32D"
+      ],
+      "stage": "sim",
+      "track": "vla",
+      "order": 33,
+      "title": "Optional remote VLA inference",
+      "title_ko": "선택형 원격 VLA 추론",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "sim-vla-01"
+      ],
+      "elective": true,
+      "entrypoint": "examples/sim-vla-02/run.py",
+      "check": "pal lesson check sim-vla-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "remote-inference.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "openpi",
+        "groot"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-isaac-01",
+      "aliases": [
+        "T33"
+      ],
+      "stage": "sim",
+      "track": "isaac",
+      "order": 34,
+      "title": "Import public robot assets into Isaac Sim",
+      "title_ko": "Isaac Sim 공개 로봇 자산 가져오기",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "isaac-sim"
+      ],
+      "prerequisites": [
+        "core-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-isaac-01/run.py",
+      "check": "pal lesson check sim-isaac-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "import-contract.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "camera-depth.npy",
+        "imported.usda"
+      ],
+      "source_refs": [
+        "isaac-sim-ws"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-isaac-02",
+      "aliases": [
+        "T34"
+      ],
+      "stage": "sim",
+      "track": "isaac",
+      "order": 35,
+      "title": "Isaac camera, lighting, and synthetic data",
+      "title_ko": "Isaac 카메라, 조명과 합성 데이터",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "isaac-sim"
+      ],
+      "prerequisites": [
+        "sim-isaac-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-isaac-02/run.py",
+      "check": "pal lesson check sim-isaac-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "synthetic-camera.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "camera-depth.npy",
+        "imported.usda"
+      ],
+      "source_refs": [
+        "isaac-sim-ws"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-cross-01",
+      "aliases": [
+        "T35"
+      ],
+      "stage": "sim",
+      "track": "cross",
+      "order": 36,
+      "title": "MuJoCo to Isaac sim-to-sim validation",
+      "title_ko": "MuJoCo–Isaac sim-to-sim 검증",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "isaac-sim"
+      ],
+      "prerequisites": [
+        "core-fr3-08",
+        "sim-isaac-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-cross-01/run.py",
+      "check": "pal lesson check sim-cross-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "sim-parity.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "camera-depth.npy",
+        "imported.usda"
+      ],
+      "source_refs": [
+        "isaac-sim-ws"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-deploy-01",
+      "aliases": [
+        "T35A"
+      ],
+      "stage": "sim",
+      "track": "deployment",
+      "order": 37,
+      "title": "Candidate deployment bundle and promotion gate",
+      "title_ko": "후보 배포 번들과 승격 게이트",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12"
+      ],
+      "prerequisites": [
+        "core-fr3-08"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-deploy-01/run.py",
+      "check": "pal lesson check sim-deploy-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "bundle-verification.json",
+        "sample_candidate/manifest.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "mujoco-menagerie",
+        "repository"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "offline",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-enlight-01",
+      "aliases": [
+        "T18"
+      ],
+      "stage": "sim",
+      "track": "enlight",
+      "order": 38,
+      "title": "Enlight ROS 2 fake hardware",
+      "title_ko": "Enlight ROS 2 가상 하드웨어",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "ros2-jazzy"
+      ],
+      "prerequisites": [
+        "core-enlight-01",
+        "sim-ros-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-enlight-01/run.py",
+      "check": "pal lesson check sim-enlight-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "fake-hardware.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "source_refs": [
+        "flexiv-ros2"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-enlight-02",
+      "aliases": [
+        "T41A"
+      ],
+      "stage": "sim",
+      "track": "enlight",
+      "order": 39,
+      "title": "Enlight contact-task simulation and candidate bundle",
+      "title_ko": "Enlight 접촉 과제 시뮬레이션과 후보 번들",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-enlight-02",
+        "sim-deploy-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-enlight-02/run.py",
+      "check": "pal lesson check sim-enlight-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "contact-candidate.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "contact-actions.npz",
+        "candidate-controller.json"
+      ],
+      "source_refs": [
+        "flexiv-rdk"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-wuji-02",
+      "aliases": [
+        "T42A"
+      ],
+      "stage": "sim",
+      "track": "wuji",
+      "order": 40,
+      "title": "Wuji dexterity candidate bundle",
+      "title_ko": "Wuji 정교 조작 후보 번들",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "sim-wuji-01",
+        "sim-deploy-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-wuji-02/run.py",
+      "check": "pal lesson check sim-wuji-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "dexterity-candidate.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "evaluation.png",
+        "evaluation-actions.npz"
+      ],
+      "source_refs": [
+        "wuji-description"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "hw-common-01",
+      "aliases": [
+        "T35B"
+      ],
+      "stage": "hardware",
+      "track": "common",
+      "order": 41,
+      "title": "Runtime bootstrap, offline replay, and command sink",
+      "title_ko": "런타임 시작, 오프라인 재생과 명령 차단",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12"
+      ],
+      "prerequisites": [
+        "sim-deploy-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-common-01/run.py",
+      "check": "pal lesson check hw-common-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "command-sink.json",
+        "lesson-report.md",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "inference.json"
+      ],
+      "source_refs": [
+        "repository"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "offline",
+      "implementation": "implemented"
+    },
+    {
+      "id": "hw-common-02",
+      "aliases": [
+        "T36"
+      ],
+      "stage": "hardware",
+      "track": "common",
+      "order": 42,
+      "title": "Real-hardware read-only integration gate",
+      "title_ko": "실물 하드웨어 읽기 전용 통합 게이트",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network"
+      ],
+      "prerequisites": [
+        "hw-common-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-common-02/run.py",
+      "check": "pal lesson check hw-common-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "hardware-safety"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "read-only",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-fr3-01",
+      "aliases": [],
+      "stage": "hardware",
+      "track": "fr3",
+      "order": 43,
+      "title": "FR3 read-only state, shadow, and approved low-risk motion",
+      "title_ko": "FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "fr3-hardware",
+        "read-only-preflight-fr3"
+      ],
+      "prerequisites": [
+        "hw-common-02",
+        "core-fr3-06"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-fr3-01/run.py",
+      "check": "pal lesson check hw-fr3-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "libfranka"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-wuji-01",
+      "aliases": [
+        "T38"
+      ],
+      "stage": "hardware",
+      "track": "wuji",
+      "order": 44,
+      "title": "Wuji Beta 2 read-only adapter and tactile calibration",
+      "title_ko": "Wuji Beta 2 읽기 전용 어댑터와 촉각 보정",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "wuji-hardware",
+        "read-only-preflight-wuji"
+      ],
+      "prerequisites": [
+        "hw-common-02",
+        "core-wuji-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-wuji-01/run.py",
+      "check": "pal lesson check hw-wuji-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "wuji-control-guide"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-wuji-02",
+      "aliases": [
+        "T42B"
+      ],
+      "stage": "hardware",
+      "track": "wuji",
+      "order": 45,
+      "title": "Wuji shadow and gated real evaluation",
+      "title_ko": "Wuji 섀도와 승인 기반 실물 평가",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "wuji-hardware",
+        "read-only-preflight-wuji"
+      ],
+      "prerequisites": [
+        "hw-wuji-01",
+        "sim-wuji-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-wuji-02/run.py",
+      "check": "pal lesson check hw-wuji-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "wuji-control-guide"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-enlight-01",
+      "aliases": [
+        "T37"
+      ],
+      "stage": "hardware",
+      "track": "enlight",
+      "order": 46,
+      "title": "Enlight read-only adapter and low-risk validation",
+      "title_ko": "Enlight 읽기 전용 어댑터와 저위험 검증",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "enlight-hardware",
+        "read-only-preflight-enlight"
+      ],
+      "prerequisites": [
+        "hw-common-02",
+        "sim-enlight-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-enlight-01/run.py",
+      "check": "pal lesson check hw-enlight-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "flexiv-rdk"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-enlight-02",
+      "aliases": [
+        "T37A"
+      ],
+      "stage": "hardware",
+      "track": "enlight",
+      "order": 47,
+      "title": "Enlight system identification and MuJoCo calibration",
+      "title_ko": "Enlight 시스템 식별과 MuJoCo 보정",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "enlight-hardware",
+        "read-only-preflight-enlight"
+      ],
+      "prerequisites": [
+        "hw-enlight-01",
+        "core-enlight-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-enlight-02/run.py",
+      "check": "pal lesson check hw-enlight-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "flexiv-rdk"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-enlight-03",
+      "aliases": [
+        "T41B"
+      ],
+      "stage": "hardware",
+      "track": "enlight",
+      "order": 48,
+      "title": "Enlight contact-task shadow and gated evaluation",
+      "title_ko": "Enlight 접촉 과제 섀도와 승인 기반 평가",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "enlight-hardware",
+        "read-only-preflight-enlight"
+      ],
+      "prerequisites": [
+        "hw-enlight-01",
+        "sim-enlight-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-enlight-03/run.py",
+      "check": "pal lesson check hw-enlight-03",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "flexiv-rdk"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-enlight-wuji-01",
+      "aliases": [
+        "T38A"
+      ],
+      "stage": "hardware",
+      "track": "enlight-wuji",
+      "order": 49,
+      "title": "Enlight and Wuji integrated read-only validation",
+      "title_ko": "Enlight와 Wuji 통합 읽기 전용 검증",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "enlight-hardware",
+        "read-only-preflight-enlight",
+        "wuji-hardware",
+        "read-only-preflight-wuji"
+      ],
+      "prerequisites": [
+        "hw-enlight-01",
+        "hw-wuji-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-enlight-wuji-01/run.py",
+      "check": "pal lesson check hw-enlight-wuji-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "flexiv-rdk",
+        "wuji-control-guide"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    }
   ]
 }

@@ -1,3 +1,5 @@
+> Current execution authority: [common workflow](../agent/workflow.md). Learner state is ignored `.local/`; historical host reports below never complete lessons or require automatic commits.
+
 # Runbook — WS2 Simulation and Training
 
 ## 역할
@@ -5,10 +7,6 @@
 WS2 is the primary GPU research machine. Use Ubuntu 24.04.x/Jazzy-compatible cells for vendor stacks and separate locked environments for Isaac, mjlab and LeRobot/VLA.
 
 ## First command
-
-```text
-이 컴퓨터는 WS2의 Ubuntu/WSL2 DEVELOPMENT layer다. git pull 이후 EXECUTION_MODEL.md, AGENTS.md, state/HOST_STATUS.md와 state/PROGRESS.md를 읽고 $bootstrap-host로 실제 capability를 등록해줘. WS2를 portable curriculum의 superset host로 취급하고 다음 eligible tutorial 하나만 실행해. 결과를 push할 때 WS2_UBUNTU 행도 같은 commit에서 갱신하고 실물 command는 실행하지 마.
-```
 
 ## Sequence
 

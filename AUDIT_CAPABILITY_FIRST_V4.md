@@ -1,3 +1,5 @@
+> Historical audit. Current learner lifecycle is defined in [agent/workflow.md](agent/workflow.md).
+
 # v4 Capability-First Audit
 
 ## User correction incorporated
