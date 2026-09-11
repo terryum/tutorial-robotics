@@ -1,4 +1,4 @@
-"""Isaac Sim 5.1 URDF import, camera data, and measured MuJoCo/PhysX comparison."""
+"""Isaac Sim 5.1/6.0 URDF import, camera data and measured engine comparison."""
 
 from __future__ import annotations
 
@@ -17,10 +17,9 @@ from pai_lab.local import write_json
 def run(identifier: str, output: Path, seed: int, samples: int, variant: float = 1.0) -> Experiment:
     from isaacsim import SimulationApp
 
-    # This adapter targets the documented 5.1 API. Other versions need a verified adapter.
+    # Version-specific import is selected by the available documented importer API.
     app = SimulationApp({"headless": True})
     try:
-        import omni.kit.commands
         import omni.replicator.core as rep
         import omni.usd
         from isaacsim.core.api import World
@@ -36,20 +35,10 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
             mesh.set("filename", str((vendor.parent / mesh.attrib["filename"]).resolve()))
         urdf = output / "wuji-local.urdf"
         tree.write(urdf, encoding="unicode")
-        ok, config = omni.kit.commands.execute("URDFCreateImportConfig")
-        if not ok:
-            raise RuntimeError("Isaac URDF importer configuration failed")
-        config.set_fix_base(True)
-        config.set_merge_fixed_joints(False)
-        config.set_import_inertia_tensor(True)
-        ok, prim = omni.kit.commands.execute(
-            "URDFParseAndImportFile",
-            urdf_path=str(urdf.resolve()),
-            import_config=config,
-            get_articulation_root=True,
-        )
-        if not ok:
-            raise RuntimeError("Isaac URDF import failed")
+        from pai_lab.lessons.isaac_adapter import import_urdf
+
+        imported, prim, adapter = import_urdf(urdf, output / "imported.usda", fix_base=True)
+        omni.usd.get_context().open_stage(imported.GetRootLayer().realPath)
         world = World(stage_units_in_meters=1.0, physics_dt=0.002, rendering_dt=0.02)
         robot = world.scene.add(Articulation(prim_path=prim, name="wuji"))
         world.reset()
@@ -99,6 +88,7 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
         )
         payload = {
             "source": source,
+            "import_adapter": adapter,
             "joint_order": names,
             "isaac_joint_indices": mapping,
             "states": states,

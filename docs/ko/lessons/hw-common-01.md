@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 실제 후보를 오프라인 추론하고 모든 행동을 sink에 보관합니다.
@@ -34,6 +40,10 @@ pal lesson run hw-common-01 --headless --seed 7 --samples 64 --output-dir .local
 
 ## Expected
 
+실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+
+![hw-common-01 measured plot](../../assets/examples/hw-common-01-plot.png)
+
 inference.json 행동 배열, 재생 일치, inference_count, emitted_command_count=0을 확인합니다. 휴대 가능한 오프라인 수업이며 실물 동작 승인을 부여하지 않습니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
@@ -42,13 +52,39 @@ inference.json 행동 배열, 재생 일치, inference_count, emitted_command_co
 pal lesson check hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/hw-common-01/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/hw-common-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 런타임은 후보 해시를 검증하고 policy.npz를 로드해 결정론적 입력을 두 번 평가합니다. sink는 publisher·socket·SDK·장치 callback이 없는 메모리 목록입니다. 전송 명령이 0개라는 것만으로 충분하지 않고 실제 추론이 실행되어야 합니다.
 
-```text
-offline policy(input) = replay policy(input); emitted commands = 0
-```
+$$
+e=\|\pi_{loaded}(o)-a_{expected}\|_{\infty}
+$$
+
+기호·단위·조건: o와 a는 저장된 정책 계약 사용; 별도 선언 없으면 정규화 출력.
+
+손으로 계산하는 예시(실행 측정값이 아님): expected [0.1,0.2], loaded [0.1,0.2] → e=0.
+
+실전 연결: 체크섬·입력 순서·시험 벡터가 같은 checkpoint를 가리켜야 합니다.
 
 ## Code connection
 
@@ -63,6 +99,17 @@ pal lesson run hw-common-01 --headless --samples 64 --output-dir .local/runs/hw-
 ```
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --comparison-run-dir .local/runs/hw-common-01/comparison-01 --output-dir .local/comparisons/hw-common-01/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 

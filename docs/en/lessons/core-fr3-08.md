@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Train, save and reload PPO on the actual FR3 reach environment.
@@ -52,13 +58,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-fr3-08/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-fr3-08/baseline-01/experiment.json
+```
+
 ## How it works
 
 The same PPO implementation now sees the 17-value reach observation and emits seven Gaussian latent actions. tanh bounds the simulator command. The saved contract includes observation scaling and action semantics so deployment cannot silently reinterpret weights.
 
-```text
-a = tanh(Wᵀ[obs,1]); q* = q + 0.03 a rad
-```
+$$
+a=\tanh(W^T[o,1]),\qquad q^*=q+0.03a
+$$
+
+Symbols, units and assumptions: a: normalized; q: rad; W uses the saved observation ordering/scaling.
+
+Worked calculation (not a measured run result): a=0.5 → target increment 0.015 rad.
+
+Practical connection: A changed observation scale changes the policy even when weights are unchanged.
 
 ## Code connection
 
@@ -73,6 +105,17 @@ pal lesson run core-fr3-08 --headless --seed 7 --samples 64 --output-dir .local/
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --comparison-run-dir .local/runs/core-fr3-08/comparison-01 --output-dir .local/comparisons/core-fr3-08/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

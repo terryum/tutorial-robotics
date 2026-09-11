@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Bridge measured MuJoCo state into ROS JointState messages.
@@ -44,13 +50,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/sim-ros-02/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/sim-ros-02/baseline-01/experiment.json
+```
+
 ## How it works
 
 Simulation time, positions and velocities are serialized into ROS messages. Joint names carry ordering; message timestamps use simulation seconds and nanoseconds. The subscriber compares received state against the simulator before another sample is produced.
 
-```text
-JointState = {names, q [rad], qdot [rad/s], stamp}
-```
+$$
+e=\max_{t,j}|q^{sent}_{t,j}-q^{received}_{t,j}|
+$$
+
+Symbols, units and assumptions: q rad; t is matched sequence/time; compare names before values.
+
+Worked calculation (not a measured run result): sent 0.2 rad, received 0.199 rad → error 0.001 rad.
+
+Practical connection: A live state stream is distinct from a command publisher or physical stop proof.
 
 ## Code connection
 
@@ -65,6 +97,17 @@ pal lesson run sim-ros-02 --headless --seed 7 --samples 64 --output-dir .local/r
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --comparison-run-dir .local/runs/sim-ros-02/comparison-01 --output-dir .local/comparisons/sim-ros-02/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

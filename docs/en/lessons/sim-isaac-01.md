@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Import the pinned public Wuji URDF into an actual Isaac articulation.
@@ -44,13 +50,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/sim-isaac-01/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/sim-isaac-01/baseline-01/experiment.json
+```
+
 ## How it works
 
-URDF import converts joints, inertia and geometry into USD/PhysX. The adapter uses the documented Isaac Sim 5.1 importer API. Mesh paths are resolved in a local derived URDF; the vendor files stay unchanged. Version compatibility still requires WS1 execution evidence.
+URDF import converts joints, inertia and geometry into USD/PhysX. The version adapter uses the 5.1 Kit API or the 6.0 direct URDFImporter API. Mesh paths are resolved in a local derived URDF; the vendor files stay unchanged. Version compatibility still requires WS1 execution evidence.
 
-```text
-URDF joint names → USD articulation DOF map
-```
+$$
+J_{matched}=J_{source}\cap J_{imported}
+$$
+
+Symbols, units and assumptions: J: sets of names, not Jacobians here; compare axes, units, mass and limits separately.
+
+Worked calculation (not a measured run result): 20 expected joint names, 19 matched → one missing joint: fail.
+
+Practical connection: Successful USD export alone does not verify importer fidelity.
 
 ## Code connection
 
@@ -65,6 +97,17 @@ pal lesson run sim-isaac-01 --headless --seed 7 --samples 64 --output-dir .local
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --comparison-run-dir .local/runs/sim-isaac-01/comparison-01 --output-dir .local/comparisons/sim-isaac-01/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 
@@ -86,3 +129,6 @@ pal lesson finish sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --
 
 This is catalog order. Use `pal course next --json` to select an eligible lesson.
 <!-- pal:navigation:end -->
+
+
+[Isaac 6.0 importer migration](https://docs.isaacsim.omniverse.nvidia.com/latest/migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html). Execution still requires verification on each prepared 5.1/6.0 host.

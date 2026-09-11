@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 제한된 G1 관절 모션 주기를 기록하고 재생합니다.
@@ -40,6 +46,10 @@ pal lesson run core-g1-01 --headless --seed 7 --samples 64 --output-dir .local/r
 
 ## Expected
 
+실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+
+![core-g1-01 measured plot](../../assets/examples/core-g1-01-plot.png)
+
 고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
 
 ![core-g1-01 frame.png](../../assets/examples/core-g1-01-frame.png)
@@ -52,13 +62,39 @@ joint_names, motion.npz, 주기 연결, 정확한 재생 오차를 읽습니다.
 pal lesson check core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/core-g1-01/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/core-g1-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 공개 G1 모델의 floating base 때문에 qpos에는 quaternion이 포함됩니다. hinge 관절 주소만 바꾸고 저장된 전체 설정을 재생해 순기구학을 계산합니다. 정해진 모션 재생이며 학습된 보행이 아닙니다.
 
-```text
-q_hinge(t) = q_home + A sin(phase)
-```
+$$
+q_h(t)=q_{home}+A\sin(\omega t)
+$$
+
+기호·단위·조건: qh: hinge rad; A: rad; ω: rad/s; 자유 base quaternion 보존.
+
+손으로 계산하는 예시(실행 측정값이 아님): A=0.1 rad, phase=π/2 → offset 0.1 rad.
+
+실전 연결: 지정한 FK 재생으로 균형이나 학습 보행을 입증할 수 없습니다.
 
 ## Code connection
 
@@ -73,6 +109,17 @@ pal lesson run core-g1-01 --headless --seed 7 --samples 64 --output-dir .local/r
 ```
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --comparison-run-dir .local/runs/core-g1-01/comparison-01 --output-dir .local/comparisons/core-g1-01/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 

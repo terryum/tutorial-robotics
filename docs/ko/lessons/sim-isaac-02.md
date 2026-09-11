@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 조명 세기를 바꾸며 RGB·깊이 관측을 측정합니다.
@@ -44,13 +50,39 @@ isaac-frame.png와 camera-depth.npy를 엽니다. 빈 영상이 아니며 유한
 pal lesson check sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/sim-isaac-02/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/sim-isaac-02/baseline-01/experiment.json
+```
+
 ## How it works
 
 Replicator로 카메라·render product·RGB/깊이 annotator를 만듭니다. 픽셀과 깊이값은 실제 렌더러 출력입니다. 조명 변경은 외관을 바꾸지만 영상 차원과 모델 식별은 유지해야 합니다.
 
-```text
-RGB ∈ uint8[H,W,3]; depth in meters
-```
+$$
+I\in\{0,\ldots,255\}^{H\times W\times3},\quad D\in\mathbb R^{H\times W}
+$$
+
+기호·단위·조건: I: RGB; D: 카메라까지 거리 m, 광축 방향 깊이와 다를 수 있음.
+
+손으로 계산하는 예시(실행 측정값이 아님): 360 × 480 = 172800 depth samples.
+
+실전 연결: 카메라 좌표계와 clipping을 합성 dataset의 규칙에 맞춥니다.
 
 ## Code connection
 
@@ -65,6 +97,17 @@ pal lesson run sim-isaac-02 --headless --seed 7 --samples 64 --output-dir .local
 ```
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --comparison-run-dir .local/runs/sim-isaac-02/comparison-01 --output-dir .local/comparisons/sim-isaac-02/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 
@@ -86,3 +129,6 @@ pal lesson finish sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --
 
 다음 항목은 목차 순서입니다. 실제 선택은 `pal course next --json`이 준비 상태로 결정합니다.
 <!-- pal:navigation:end -->
+
+
+[Isaac 6.0 importer 변경 사항](https://docs.isaacsim.omniverse.nvidia.com/latest/migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html). 실제 5.1/6.0 호스트 실행 검증은 별도로 필요합니다.

@@ -12,9 +12,13 @@ class LessonProvider(Protocol):
 
     def lessons(self) -> tuple[Any, ...]: ...
 
-    def run(self, identifier: str, output_dir: Path, samples: int = 64) -> Any: ...
+    def run(self, identifier: str, output_dir: Path, samples: int = 64, **options: Any) -> Any: ...
 
     def check(self, identifier: str) -> list[str]: ...
+
+    def requires_comparison(self, identifier: str) -> bool: ...
+
+    def validate_run(self, identifier: str, output_dir: Path) -> list[str]: ...
 
 
 def discover_lesson_providers() -> tuple[LessonProvider, ...]:
@@ -35,4 +39,6 @@ def provider_for(identifier: str) -> LessonProvider | None:
 def extended_catalog() -> tuple[Any, ...]:
     """Return provider metadata without contaminating the 49-node public catalog."""
 
-    return tuple(lesson for provider in discover_lesson_providers() for lesson in provider.lessons())
+    return tuple(
+        lesson for provider in discover_lesson_providers() for lesson in provider.lessons()
+    )

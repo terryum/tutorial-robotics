@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 실제 MuJoCo 상태·행동·다음 상태 전이를 기록합니다.
@@ -34,6 +40,10 @@ pal lesson run core-data-01 --headless --seed 7 --samples 64 --output-dir .local
 
 ## Expected
 
+실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+
+![core-data-01 measured plot](../../assets/examples/core-data-01-plot.png)
+
 8×samples개의 전이가 있어야 하며 관측 단위는 rad·rad/s, 행동은 Nm입니다. 에피소드 경계를 보고 다음 상태가 실제로 변하는지 확인합니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
@@ -42,13 +52,39 @@ pal lesson run core-data-01 --headless --seed 7 --samples 64 --output-dir .local
 pal lesson check core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/core-data-01/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/core-data-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 제한된 PD 시연기로 진자 에피소드 여덟 개를 기록합니다. 행동 전 상태와 적분 후 상태, episode/step ID, truncated를 저장합니다. BC에서는 인접 프레임이 평가로 새지 않도록 에피소드 단위로 나눕니다.
 
-```text
-(s_t, a_t, s_(t+1), terminated, truncated)
-```
+$$
+d_t=(s_t,a_t,s_{t+1},terminated_t,truncated_t)
+$$
+
+기호·단위·조건: s=[q(rad), 속도(rad/s)]; a: 제한된 Nm; 시각 s.
+
+손으로 계산하는 예시(실행 측정값이 아님): 8 episodes × 64 transitions = 512 transitions.
+
+실전 연결: 인접 프레임 누출을 막기 위해 episode 단위로 학습·평가를 나눕니다.
 
 ## Code connection
 
@@ -63,6 +99,17 @@ pal lesson run core-data-01 --headless --seed 7 --samples 64 --output-dir .local
 ```
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --comparison-run-dir .local/runs/core-data-01/comparison-01 --output-dir .local/comparisons/core-data-01/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 

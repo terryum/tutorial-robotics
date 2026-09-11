@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Round-trip the explicitly mocked VLA protocol without a device.
@@ -34,6 +40,10 @@ pal lesson run core-vla-01 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-vla-01 measured plot](../../assets/examples/core-vla-01-plot.png)
+
 Inspect request/response fields and units. A different seed should preserve this deterministic fixture response; the lesson must never connect to a robot.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
@@ -42,13 +52,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-vla-01/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-vla-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 The mock serializes an instruction, image fixture identity, state and timeout, then returns bounded actions with a command-sink flag. Protocol correctness and neural-policy quality are separate. Keep the mock label visible in every result.
 
-```text
-JSON encode → decode → bounded action schema
-```
+$$
+\forall i,\quad a_i\in\mathbb R,\quad |a_i|\leq a_{max}
+$$
+
+Symbols, units and assumptions: a: normalized action; limit: same units; finite values required.
+
+Worked calculation (not a measured run result): limit 1.0, action 1.2 → reject.
+
+Practical connection: Transport validation does not establish a neural policy is useful.
 
 ## Code connection
 
@@ -63,6 +99,17 @@ pal lesson run core-vla-01 --headless --samples 64 --output-dir .local/runs/core
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --comparison-run-dir .local/runs/core-vla-01/comparison-01 --output-dir .local/comparisons/core-vla-01/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

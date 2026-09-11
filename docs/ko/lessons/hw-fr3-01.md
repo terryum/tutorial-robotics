@@ -13,6 +13,12 @@
 | Implementation | `scaffolded` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작에 필요한 관측·선행 조건과 실행별 안전 경계를 검토합니다.
@@ -44,6 +50,8 @@ offline replay → command sink → read-only → live shadow
 ```
 
 각 단계는 이전 단계의 결과를 소비하지만 다음 단계의 동작 권한을 자동 부여하지 않습니다. contact·실물 평가·시스템 식별·통합 장치 작업은 정확한 로봇과 행동에 대한 새로운 승인이 필요합니다. 두 장치 통합 과제는 각각의 읽기 전용 검증을 모두 요구합니다.
+
+예상 질문: 상태가 보이면 동작해도 되나요? 아닙니다. 수신 timestamp의 age, 모델 identity, fault·disabled 상태와 개별 run card를 확인해야 합니다. 예를 들어 state age가 0.3 s이고 허용 최대가 0.1 s면 관찰 값은 stale입니다. 이 숫자는 설명용이며 장치 제한을 새로 정하지 않습니다.
 
 ## Code connection
 

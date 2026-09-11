@@ -56,9 +56,10 @@ def inverse_kinematics(model: Any, data: Any, target: np.ndarray, steps: int = 1
 
 
 def arm_control(
-    model: Any, data: Any, count: int, gain: float, mode: str
+    model: Any, data: Any, count: int, gain: float, mode: str, damping: float | None = None
 ) -> tuple[list[tuple[float, float, float]], dict[str, Any]]:
     model.opt.disableflags |= int(mujoco.mjtDisableBit.mjDSBL_ACTUATION)
+    kd = 2 * np.sqrt(gain) if damping is None else damping
     qhome = data.qpos.copy()
     target_q = qhome.copy()
     target_q[0] += 0.18
@@ -68,7 +69,7 @@ def arm_control(
         if mode == "task"
         else float(np.linalg.norm(target_q - data.qpos))
     )
-    rows, states, torques = [], [], []
+    rows, states, torques, velocities, control_rows = [], [], [], [], []
     for index in range(count):
         for _ in range(25):
             if mode == "task":
@@ -82,13 +83,27 @@ def arm_control(
                 )
                 torque = jac.T @ force + data.qfrc_bias - 2 * data.qvel
             else:
-                torque = gain * (target_q - data.qpos) - 2 * np.sqrt(gain) * data.qvel
+                torque = gain * (target_q - data.qpos) - kd * data.qvel
                 if mode == "gravity":
                     torque += data.qfrc_bias
             data.qfrc_applied[:] = np.clip(
                 torque, model.jnt_actfrcrange[:, 0], model.jnt_actfrcrange[:, 1]
             )
+            # Control rows are pre-step values: every operand matches this torque.
+            for j in range(model.nv):
+                control_rows.append(
+                    (
+                        float(data.time),
+                        model.joint(j).name,
+                        float(target_q[j]),
+                        float(data.qpos[j]),
+                        float(data.qvel[j]),
+                        float(torque[j]),
+                        float(data.qfrc_applied[j]),
+                    )
+                )
             mujoco.mj_step(model, data)
+        mujoco.mj_forward(model, data)
         error = (
             float(np.linalg.norm(target - data.site_xpos[0]))
             if mode == "task"
@@ -96,11 +111,18 @@ def arm_control(
         )
         rows.append((float(data.time), 0.0, error))
         states.append(data.qpos.copy().tolist())
+        velocities.append(data.qvel.copy().tolist())
         torques.append(data.qfrc_applied.copy().tolist())
     return rows, {
         "initial_error": initial,
         "final_error": rows[-1][2],
         "qpos": states,
+        "qvel": velocities,
+        "time_s": [row[0] for row in rows],
+        "joint_names": [model.joint(j).name for j in range(model.njnt)],
+        "target_qpos": target_q.tolist(),
+        "kd": float(kd),
+        "control_rows": control_rows,
         "torque_nm": torques,
         "gain": gain,
         "mode": mode,
@@ -108,7 +130,15 @@ def arm_control(
     }
 
 
-def run(identifier: str, output: Path, seed: int, samples: int, variant: float = 1.0) -> Experiment:
+def run(
+    identifier: str,
+    output: Path,
+    seed: int,
+    samples: int,
+    variant: float = 1.0,
+    parameters: dict[str, float] | None = None,
+) -> Experiment:
+    parameters = parameters or {}
     if identifier == "core-00":
         host: dict[str, Any] = detect_host().to_dict()
         status = host["capability_status"]
@@ -138,7 +168,7 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
         )
     if identifier == "core-01":
         model, data = pendulum()
-        model.opt.timestep *= variant
+        model.opt.timestep = parameters.get("timestep", model.opt.timestep * variant)
         initial_energy = float(data.energy.sum())
         rows, states = [], []
         for _ in range(samples):
@@ -257,7 +287,9 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
         )
     if identifier in {"core-fr3-02", "core-fr3-05", "core-fr3-07"}:
         mode = "pd" if identifier == "core-fr3-02" else "task"
-        rows, measured = arm_control(model, data, samples, 120.0 * variant, mode)
+        rows, measured = arm_control(
+            model, data, samples, parameters.get("kp", 120.0 * variant), mode, parameters.get("kd")
+        )
         info.update(measured)
         if identifier == "core-fr3-07":
             info.update(

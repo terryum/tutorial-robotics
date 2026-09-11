@@ -4,6 +4,10 @@ An action-first bilingual course for readers who know basic Python and are new t
 
 ## First start — no Python or pal assumed
 
+For command explanations, fresh terminals, saved-result replay and feedback, use the
+[English reader guide](docs/en/READER_GUIDE.md) or [한국어 실행 안내](docs/ko/READER_GUIDE.md).
+The [redesign verification record](state/READER_REDESIGN.md) separates local evidence from pending host checks.
+
 ```bash
 git clone https://github.com/terryum/tutorial-robotics.git
 cd tutorial-robotics
@@ -25,7 +29,7 @@ pal lesson run T00 --headless --output-dir .local/runs/core-00/first --json
 pal lesson check T00 --run-dir .local/runs/core-00/first --json
 ```
 
-Read [T00](docs/en/lessons/core-00.md) or [한국어 T00](docs/ko/lessons/core-00.md) for the explanation, one-variable comparison, review and finish steps. Stop after T00. An execution does not complete a lesson. `course init` preserves earlier completion records; use a fresh run directory for reruns.
+Read [T00](docs/en/lessons/core-00.md) or [한국어 T00](docs/ko/lessons/core-00.md) for the explanation, source inspection, review and finish steps. Stop after T00. An execution does not complete a lesson. `course init` preserves earlier completion records; use a fresh run directory for reruns.
 
 Bootstrap reuses the Python 3.12 environment and existing lockfile. If needed, uv is installed into this checkout's .local/bin and managed Python into .local/python. It does not change system Python. ROS, GPU, learning frameworks, Isaac and large pretrained models are prepared only when their lesson needs them. System packages, drivers, firmware and physical actions retain separate approval requirements.
 

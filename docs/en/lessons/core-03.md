@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Load six robot models and inspect their actual dimensions.
@@ -42,6 +48,10 @@ pal lesson run core-03 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-03 measured plot](../../assets/examples/core-03-plot.png)
+
 Read joint names, limits, total mass and nq/nv/nu for FR3, Enlight, Wuji, Sharpa, G1 and ALOHA. Enlight's local draft is derived from pinned vendor parameters.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
@@ -50,13 +60,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-03 --run-dir .local/runs/core-03/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-03/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-03/baseline-01/experiment.json
+```
+
 ## How it works
 
 nq counts configuration coordinates; nv counts velocity coordinates. A free joint has seven position coordinates but six velocity coordinates. nu counts actuators, so it need not equal either nq or nv.
 
-```text
-nq ≠ nv ≠ nu in general
-```
+$$
+n_q=7,\quad n_v=6\quad\text{(one free joint)}
+$$
+
+Symbols, units and assumptions: Counts are dimensionless; quaternion has unit norm.
+
+Worked calculation (not a measured run result): 3 position + 4 quaternion = 7; 3 linear + 3 angular = 6.
+
+Practical connection: Do not index velocities using configuration addresses.
 
 ## Code connection
 
@@ -64,13 +100,14 @@ nq ≠ nv ≠ nu in general
 
 ## Try it
 
-Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
+This is an environment or structure audit. A seed change is not required. Compare names, units, prerequisites and the actual artifact; record specific findings in the review notes.
 
-```bash
-pal lesson run core-03 --headless --samples 64 --output-dir .local/runs/core-03/comparison-01 --seed 8 --json
-```
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
 
-Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 
@@ -81,7 +118,7 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
 
 ```bash
-pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --comparison-run-dir .local/runs/core-03/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
 

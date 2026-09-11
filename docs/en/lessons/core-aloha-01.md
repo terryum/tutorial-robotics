@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Run the dual-arm ALOHA model and build an ACT-shaped batch.
@@ -40,6 +46,10 @@ pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .loca
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-aloha-01 measured plot](../../assets/examples/core-aloha-01-plot.png)
+
 Reviewed maintainer example from the pinned public model; your local run must be checked separately.
 
 ![core-aloha-01 frame.png](../../assets/examples/core-aloha-01-frame.png)
@@ -52,13 +62,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-aloha-01/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-aloha-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 An action chunk contains a sequence of future actions. The model has fourteen actuator targets and the contract uses a sixteen-step horizon. This lesson records real model state and an RGB observation but deliberately does not train ACT.
 
-```text
-action batch shape = (samples, 16, 14)
-```
+$$
+A_t\in\mathbb R^{H\times d_a},\qquad H=16,\ d_a=14
+$$
+
+Symbols, units and assumptions: H: time steps; da: 14 actuator targets; exact target units follow action contract.
+
+Worked calculation (not a measured run result): 16 × 14 = 224 action values per chunk.
+
+Practical connection: A schema and camera frame do not constitute ACT training.
 
 ## Code connection
 
@@ -73,6 +109,17 @@ pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .loca
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --comparison-run-dir .local/runs/core-aloha-01/comparison-01 --output-dir .local/comparisons/core-aloha-01/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

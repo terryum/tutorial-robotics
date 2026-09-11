@@ -51,7 +51,12 @@ def implementation_status(identifier: str) -> str:
         )
 
 
-def implementation_digest() -> str:
+def implementation_digest(identifier: str | None = None) -> str:
+    if identifier is not None:
+        from pai_lab.lessons.dependencies import dependency_digest
+
+        return dependency_digest(identifier)
+
     files = sorted((ROOT / "src/pai_lab").rglob("*.py"))
     files += [
         ROOT / name
@@ -77,6 +82,7 @@ def run_lesson(
     samples: int = 64,
     headless: bool = True,
     variant: float = 1.0,
+    parameters: dict[str, float] | None = None,
 ) -> Any:
     try:
         lesson = resolve_lesson(identifier)
@@ -84,7 +90,9 @@ def run_lesson(
         provider = provider_for(identifier)
         if provider is None:
             raise
-        return provider.run(identifier, output_dir, samples)
+        return provider.run(
+            identifier, output_dir, samples, seed=seed, variant=variant, parameters=parameters or {}
+        )
     if lesson.implementation != "implemented":
         raise NotImplementedError(f"{lesson.id}: reader_test_required")
     if samples < 8 or samples > 100000 or not np.isfinite(variant) or variant <= 0:
@@ -96,7 +104,10 @@ def run_lesson(
         raise PermissionError("only offline command sink is available")
     if output_dir.exists() and any(output_dir.iterdir()):
         raise ValueError("run directory is not empty; choose a new directory to preserve evidence")
-    code_digest = implementation_digest()
+    from pai_lab.lessons.parameters import resolve_parameters
+
+    resolved = resolve_parameters(lesson.id, parameters or {}, variant)
+    code_digest = implementation_digest(lesson.id)
     output_dir.mkdir(parents=True, exist_ok=True)
     write_json(
         output_dir / "run.json",
@@ -107,6 +118,9 @@ def run_lesson(
             "implementation_digest": code_digest,
         },
     )
+    from pai_lab.lessons.inputs import inputs
+
+    inputs.set([])
     spec = LESSON_SPECS[lesson.id]
     try:
         if lesson.id in {
@@ -127,8 +141,14 @@ def run_lesson(
             from pai_lab.lessons.deployment import run
         else:
             from pai_lab.lessons.stacks import run
-        experiment = run(lesson.id, output_dir, seed, samples, variant)
-        if code_digest != implementation_digest():
+        from pai_lab.lessons import physics
+
+        experiment = (
+            physics.run(lesson.id, output_dir, seed, samples, variant, parameters=resolved)
+            if resolved
+            else run(lesson.id, output_dir, seed, samples, variant)
+        )
+        if code_digest != implementation_digest(lesson.id):
             raise RuntimeError("source changed during execution; preserve this run and restart")
         write_json(
             output_dir / "experiment.json",
@@ -137,6 +157,8 @@ def run_lesson(
                 "checks": experiment.checks,
                 "metric": experiment.metric,
                 "variant": variant,
+                "parameters": resolved,
+                "requested_parameters": parameters or {},
             },
         )
         if not experiment.checks or not all(experiment.checks.values()):
@@ -157,9 +179,17 @@ def run_lesson(
         if spec.artifact.endswith(".json"):
             write_json(output_dir / spec.artifact, experiment.payload)
         plot_trace(output_dir / "plot.png", experiment.rows, ylabel, xlabel)
+        from pai_lab.lessons.observation import save_replay
+
+        save_replay(output_dir, experiment)
         visual = {}
         if experiment.model is not None:
-            visual = render(output_dir / "frame.png", experiment.model, experiment.data)
+            visual = render(
+                output_dir / "frame.png",
+                experiment.model,
+                experiment.data,
+                resolved.get("camera_azimuth", 135.0),
+            )
             if visual["std"] < 1.0:
                 raise RuntimeError("empty rendering")
             if spec.artifact.endswith(".pgm"):
@@ -197,10 +227,14 @@ def run_lesson(
             for p in output_dir.rglob("*")
             if p.is_file() and p.name != "run.json"
         }
+        from pai_lab.lessons.dependencies import dependency_manifest
+
         write_json(
             output_dir / "run.json",
             {
-                "schema_version": 2,
+                "schema_version": 3,
+                "dependencies": dependency_manifest(lesson.id),
+                "inputs": inputs.get() or [],
                 "lesson": lesson.id,
                 "status": "executed",
                 "created_at": datetime.now(UTC).isoformat(),
@@ -218,7 +252,7 @@ def run_lesson(
                 "lesson": lesson.id,
                 "status": "interrupted" if isinstance(error, KeyboardInterrupt) else "failed",
                 "error": str(error),
-                "implementation_digest": implementation_digest(),
+                "implementation_digest": code_digest,
             },
         )
         raise

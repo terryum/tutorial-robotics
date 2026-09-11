@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Measure RGB and depth observations while changing light intensity.
@@ -44,13 +50,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/sim-isaac-02/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/sim-isaac-02/baseline-01/experiment.json
+```
+
 ## How it works
 
 Replicator creates a camera, render product and RGB/depth annotators. Camera pixels and depth values are actual renderer outputs. A lighting change should alter appearance while retaining image dimensions and model identity.
 
-```text
-RGB ∈ uint8[H,W,3]; depth in meters
-```
+$$
+I\in\{0,\ldots,255\}^{H\times W\times3},\quad D\in\mathbb R^{H\times W}
+$$
+
+Symbols, units and assumptions: I: RGB; D: distance-to-camera m, not necessarily optical-axis depth.
+
+Worked calculation (not a measured run result): 360 × 480 = 172800 depth samples.
+
+Practical connection: Camera convention and clipping must match downstream synthetic datasets.
 
 ## Code connection
 
@@ -65,6 +97,17 @@ pal lesson run sim-isaac-02 --headless --seed 7 --samples 64 --output-dir .local
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --comparison-run-dir .local/runs/sim-isaac-02/comparison-01 --output-dir .local/comparisons/sim-isaac-02/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 
@@ -86,3 +129,6 @@ pal lesson finish sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --
 
 This is catalog order. Use `pal course next --json` to select an eligible lesson.
 <!-- pal:navigation:end -->
+
+
+[Isaac 6.0 importer migration](https://docs.isaacsim.omniverse.nvidia.com/latest/migration_guides/isaac_sim_6_0/urdf_mjcf_importer_exporter_pipeline.html). Execution still requires verification on each prepared 5.1/6.0 host.

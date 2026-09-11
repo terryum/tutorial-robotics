@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Map FR3 joints, bodies, actuators and the tool site.
@@ -40,6 +46,10 @@ pal lesson run core-fr3-01 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-fr3-01 measured plot](../../assets/examples/core-fr3-01-plot.png)
+
 Check seven joint names and ranges, actuator count, total mass and attachment_site. Match the rendered pose to the recorded home configuration.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
@@ -48,13 +58,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-fr3-01/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-fr3-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 Joint indices are model-specific. The attachment_site is a location on the final link; its world position changes with the joint angles. Read model limits rather than inventing a generic seven-joint range.
 
-```text
-p_world = T_world_tool(q) p_tool
-```
+$$
+{}^Wp={}^WT_T(q)\,{}^Tp
+$$
+
+Symbols, units and assumptions: p: homogeneous point; translation: m; q: rad; W: world, T: tool.
+
+Worked calculation (not a measured run result): [0,0,0,1] maps to the transform translation column.
+
+Practical connection: Sensor state must use the same joint names and frames as the display.
 
 ## Code connection
 
@@ -62,13 +98,14 @@ p_world = T_world_tool(q) p_tool
 
 ## Try it
 
-Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
+This is an environment or structure audit. A seed change is not required. Compare names, units, prerequisites and the actual artifact; record specific findings in the review notes.
 
-```bash
-pal lesson run core-fr3-01 --headless --samples 64 --output-dir .local/runs/core-fr3-01/comparison-01 --seed 8 --json
-```
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
 
-Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 
@@ -79,7 +116,7 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
 
 ```bash
-pal lesson review core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --comparison-run-dir .local/runs/core-fr3-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --json
 ```
 

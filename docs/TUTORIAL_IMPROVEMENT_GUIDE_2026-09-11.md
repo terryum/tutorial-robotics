@@ -179,8 +179,8 @@ $\,{}^{a}T_b$는 좌표계 b의 좌표를 a로 표현하는 4×4 동차변환으
 
 $$
 M(\mathbf q)\ddot{\mathbf q}
-C(\mathbf q,\dot{\mathbf q})\dot{\mathbf q}
-\mathbf g(\mathbf q)
++C(\mathbf q,\dot{\mathbf q})\dot{\mathbf q}
++\mathbf g(\mathbf q)
 =\boldsymbol{\tau}_{\mathrm{act}}
 +\boldsymbol{\tau}_{\mathrm{passive}}
 +J(\mathbf q)^\mathsf{T}\mathbf f_{\mathrm{ext}}
@@ -410,3 +410,8 @@ private 상세 기록을 public 예제로 바꾸는 작업은 이름만 치환�
 - [ ] 기존 자동 검증, 대화형 화면 검증, 실물 검증을 별도 상태로 남긴다.
 
 세션 기록에는 **실제로 보낸 입력 / 관찰한 값과 화면 / 질문과 보충 설명 / 미실행 제안 / 남은 프로세스 / 다음 시작점**을 남긴다. 원시 로그와 사용자 환경 정보는 해당 저장소의 ignored 로컬 기록에 둔다. 다음 세션에서 관절 반복을 다시 시작할지, 중단·안전 검사부터 이어갈지 명시한다.
+
+
+## Implementation follow-up
+
+See `state/READER_REDESIGN.md` and the bilingual [reader guide](ko/READER_GUIDE.md). The rigid-body equation is $M(q)\ddot q+c(q,\dot q)+g(q)=\tau+J^Tf_{ext}$; all bias terms are added on the left.

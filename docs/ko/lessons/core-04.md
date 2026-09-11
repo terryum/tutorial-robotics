@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 실제 FR3 장면을 렌더링하고 카메라 결과를 확인합니다.
@@ -40,6 +46,10 @@ pal lesson run core-04 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
+실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+
+![core-04 measured plot](../../assets/examples/core-04-plot.png)
+
 480×360 MuJoCo RGB 렌더링 frame.png와 그 회색조 표현 frame.pgm을 엽니다. 베이스·팔꿈치·말단을 찾습니다. 같은 호스트에서 반복하면 같은 자세가 보여야 합니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
@@ -48,13 +58,39 @@ pal lesson run core-04 --headless --seed 7 --samples 64 --output-dir .local/runs
 pal lesson check core-04 --run-dir .local/runs/core-04/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect core-04 --run-dir .local/runs/core-04/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/core-04/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/core-04/baseline-01/experiment.json
+```
+
 ## How it works
 
 모델·상태·카메라·렌더러가 함께 픽셀을 결정합니다. headless는 대화형 창을 띄우지 않는다는 뜻이며 offscreen 그래픽 컨텍스트는 필요합니다. 픽셀 분산은 빈 영상만 검출하므로 사람이 시점도 확인해야 합니다.
 
-```text
-RGB image shape = (360, 480, 3)
-```
+$$
+I\in\{0,\ldots,255\}^{360\times480\times3}
+$$
+
+기호·단위·조건: I: RGB uint8 영상; 축: 행, 열, 채널.
+
+손으로 계산하는 예시(실행 측정값이 아님): 360 × 480 × 3 = 518400 channel values.
+
+실전 연결: 빈 영상이 아니어도 도구와 바닥이 보이는지 확인해야 합니다.
 
 ## Code connection
 
@@ -62,13 +98,24 @@ RGB image shape = (360, 480, 3)
 
 ## Try it
 
-seed를 7 → 8로 바꿉니다. 구조 검사·고정 모델 화면·결정론적 추론은 동일할 수 있습니다. 원격 서비스는 로컬 seed와 별개로 변할 수 있으므로 이 한계를 기록합니다.
+카메라 방위각만 135° → 165°로 바꿉니다. 관절 상태와 수치는 그대로 유지되고 frame.png의 시점만 바뀌어야 합니다.
 
 ```bash
-pal lesson run core-04 --headless --samples 64 --output-dir .local/runs/core-04/comparison-01 --seed 8 --json
+pal lesson run core-04 --headless --samples 64 --output-dir .local/runs/core-04/comparison-01 --seed 7 --param camera_azimuth=165 --json
 ```
 
-seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+위 명령에서 지정한 이름 있는 파라미터 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare core-04 --run-dir .local/runs/core-04/baseline-01 --comparison-run-dir .local/runs/core-04/comparison-01 --output-dir .local/comparisons/core-04/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 

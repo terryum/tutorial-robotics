@@ -37,13 +37,13 @@ def plot_trace(
     plt.close(fig)
 
 
-def render(path: Path, model: Any, data: Any) -> dict[str, Any]:
+def render(path: Path, model: Any, data: Any, azimuth: float = 135.0) -> dict[str, Any]:
     import mujoco
     from PIL import Image
 
     camera = mujoco.MjvCamera()
     mujoco.mjv_defaultFreeCamera(model, camera)
-    camera.azimuth, camera.elevation = 135, -25
+    camera.azimuth, camera.elevation = azimuth, -25
     camera.distance = max(float(model.stat.extent) * 1.6, 0.35)
     with mujoco.Renderer(model, height=360, width=480) as renderer:
         renderer.update_scene(data, camera=camera)

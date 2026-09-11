@@ -25,6 +25,7 @@ ros = [
 hardware = []
 docs = [
     "mkdocs>=1.6,<2",
+    "pymdown-extensions>=10,<12",
 ]
 learning = [
     "stable-baselines3>=2.7,<3",
@@ -64,7 +65,7 @@ exclude = ["examples/", "tests/"]
 
 [[tool.mypy.overrides]]
 # These runtime bindings ship no usable stubs in the portable Core environment.
-module = ["mujoco.*", "scipy.*", "torch.*", "rclpy.*", "sensor_msgs.*", "std_srvs.*", "geometry_msgs.*", "tf2_ros.*", "rosbag2_py.*", "example_interfaces.*", "isaacsim.*", "omni.*", "mjlab.*", "wuji_mjlab.*", "lerobot.*"]
+module = ["mujoco.*", "scipy.*", "torch.*", "rclpy.*", "sensor_msgs.*", "std_srvs.*", "geometry_msgs.*", "tf2_ros.*", "rosbag2_py.*", "example_interfaces.*", "isaacsim.*", "omni.*", "mjlab.*", "wuji_mjlab.*", "lerobot.*", "pxr.*"]
 ignore_missing_imports = true
 
 [[tool.mypy.overrides]]

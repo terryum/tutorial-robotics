@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Measure how gravity feedforward changes tracking error.
@@ -54,13 +60,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-fr3-03/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-fr3-03/baseline-01/experiment.json
+```
+
 ## How it works
 
 qfrc_bias contains gravity and velocity-dependent bias forces. The lesson compares identical PD gains with and without this term. Compensation uses the simulated model, so it is not evidence that a physical robot's payload is correct.
 
-```text
-τ = kp e − kd qdot + qfrc_bias
-```
+$$
+M(q)\ddot q+c(q,\dot q)+g(q)=\tau+J^Tf_{ext}
+$$
+
+Symbols, units and assumptions: M: kg m²; qddot: rad/s²; c,g,torque: Nm; J: m/rad; f: N.
+
+Worked calculation (not a measured run result): 21.6 Nm PD + 4 Nm bias = 25.6 Nm before clipping.
+
+Practical connection: qfrc_bias includes velocity terms as well as gravity; incorrect payload breaks compensation.
 
 ## Code connection
 
@@ -75,6 +107,17 @@ pal lesson run core-fr3-03 --headless --seed 7 --samples 64 --output-dir .local/
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --comparison-run-dir .local/runs/core-fr3-03/comparison-01 --output-dir .local/comparisons/core-fr3-03/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

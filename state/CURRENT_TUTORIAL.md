@@ -1,5 +1,5 @@
-# Current Tutorial
+# Reader redesign — development
 
-No tutorial is currently in progress.
+Implementation and evidence: [READER_REDESIGN.md](READER_REDESIGN.md).
 
-Codex replaces this file with an ExecPlan when starting work and resets it to a completion summary when done.
+This is a batch development request, not a learner lesson. Preserve all learner state; use the isolated reader-redesign session.

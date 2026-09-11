@@ -241,6 +241,7 @@ def lesson_run_command(
     headless: bool,
     json_output: bool,
     variant: float = 1.0,
+    parameters: list[str] | None = None,
 ) -> int:
     lesson = resolve_lesson(identifier)
     if implementation_status(lesson.id) != "implemented":
@@ -288,6 +289,8 @@ def lesson_run_command(
         {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "running"},
     )
     try:
+        from pai_lab.lessons.parameters import parse_parameters
+
         result = run_lesson(
             lesson.id,
             output_dir=run_dir,
@@ -295,6 +298,7 @@ def lesson_run_command(
             samples=samples,
             headless=headless,
             variant=variant,
+            parameters=parse_parameters(parameters or []),
         )
     except (PermissionError, RuntimeError, ValueError, FileNotFoundError, ImportError) as error:
         write_json(
@@ -362,7 +366,7 @@ def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> 
 
 
 def lesson_review_command(
-    identifier: str, run_dir: Path, comparison: Path, notes: str, json_output: bool
+    identifier: str, run_dir: Path, comparison: Path | None, notes: str, json_output: bool
 ) -> int:
     from pai_lab.lessons.evidence import comparison_errors
 
@@ -377,7 +381,7 @@ def lesson_review_command(
         run_dir / "review.json",
         {
             "lesson": lesson.id,
-            "comparison_run": str(comparison.resolve()),
+            "comparison_run": str(comparison.resolve()) if comparison else None,
             "notes": notes,
             "reviewed_at": datetime.now(UTC).isoformat(),
         },
@@ -441,6 +445,7 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--output-dir", type=Path)
     run.add_argument("--seed", type=int, default=7)
     run.add_argument("--samples", type=int, default=64)
+    run.add_argument("--param", action="append", default=[], metavar="NAME=VALUE")
     run.add_argument("--variant", type=float, default=1.0)
     run.add_argument("--headless", action=argparse.BooleanOptionalAction, default=True)
     run.add_argument("--json", action="store_true")
@@ -455,9 +460,21 @@ def build_parser() -> argparse.ArgumentParser:
     review = lesson_commands.add_parser("review")
     review.add_argument("lesson_id")
     review.add_argument("--run-dir", type=Path, required=True)
-    review.add_argument("--comparison-run-dir", type=Path, required=True)
+    review.add_argument("--comparison-run-dir", type=Path)
     review.add_argument("--notes", required=True)
     review.add_argument("--json", action="store_true")
+
+    for operation in ("inspect", "compare", "view"):
+        observation = lesson_commands.add_parser(operation)
+        observation.add_argument("lesson_id")
+        observation.add_argument("--run-dir", type=Path, required=True)
+        observation.add_argument("--json", action="store_true")
+        if operation == "compare":
+            observation.add_argument("--comparison-run-dir", type=Path, required=True)
+            observation.add_argument("--output-dir", type=Path)
+        if operation == "view":
+            observation.add_argument("--offscreen", type=Path)
+            observation.add_argument("--speed", type=float, default=1.0)
 
     feedback_parser = commands.add_parser("feedback")
     feedback_commands = feedback_parser.add_subparsers(dest="feedback_command", required=True)
@@ -528,6 +545,24 @@ def main(argv: list[str] | None = None) -> int:
             return course_runnable(args.without_hardware, args.json)
         return course_list(args.course_command == "status", args.json)
     if args.command == "lesson":
+        if args.lesson_command in {"inspect", "compare", "view"}:
+            from pai_lab.lessons.observation import compare_runs, inspect_run, replay
+
+            try:
+                identifier = resolve_lesson(args.lesson_id).id
+                if args.lesson_command == "compare":
+                    observation_result = compare_runs(
+                        identifier, args.run_dir, args.comparison_run_dir, args.output_dir
+                    )
+                else:
+                    observation_result = inspect_run(identifier, args.run_dir)
+                    if args.lesson_command == "view":
+                        replay(args.run_dir, offscreen=args.offscreen, speed=args.speed)
+                _emit(observation_result, args.json)
+                return 0
+            except (OSError, ValueError, RuntimeError) as error:
+                _emit({"status": "blocked", "error": str(error)}, args.json)
+                return 2
         if args.lesson_command == "check":
             return lesson_check_command(args.lesson_id, args.json, args.run_dir)
         if args.lesson_command == "finish":
@@ -544,6 +579,7 @@ def main(argv: list[str] | None = None) -> int:
             args.headless,
             args.json,
             args.variant,
+            args.param,
         )
     if args.command == "feedback":
         try:

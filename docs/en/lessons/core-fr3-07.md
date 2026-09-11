@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Use reset, observation, action, reward and episode boundaries for FR3 reach.
@@ -40,6 +46,10 @@ pal lesson run core-fr3-07 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-fr3-07 measured plot](../../assets/examples/core-fr3-07-plot.png)
+
 Inspect every transition in transitions.json. The baseline Jacobian controller should reduce distance; count steps and distinguish success from timeout.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
@@ -48,13 +58,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-fr3-07/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-fr3-07/baseline-01/experiment.json
+```
+
 ## How it works
 
 The observation concatenates seven position offsets, seven scaled velocities and three world-target errors. Seven bounded actions adjust joint position targets. A successful reach terminates; the 64-step time limit truncates. These meanings matter to later PPO bootstrapping.
 
-```text
-observation ∈ R¹⁷; action ∈ R⁷; reward = −distance − effort penalty
-```
+$$
+o=[q-q_0,\;s_v\dot q,\;x^*-x]\in\mathbb R^{17}
+$$
+
+Symbols, units and assumptions: q: rad; qdot: rad/s; x: world m; sv: chosen numeric scaling.
+
+Worked calculation (not a measured run result): 7 + 7 + 3 = 17.
+
+Practical connection: Termination and time-limit truncation need different value bootstrapping.
 
 ## Code connection
 
@@ -69,6 +105,17 @@ pal lesson run core-fr3-07 --headless --seed 7 --samples 64 --output-dir .local/
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --comparison-run-dir .local/runs/core-fr3-07/comparison-01 --output-dir .local/comparisons/core-fr3-07/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

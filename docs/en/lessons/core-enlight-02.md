@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Compare independent vendor forward kinematics against compiled MJCF.
@@ -40,6 +46,10 @@ pal lesson run core-enlight-02 --headless --seed 7 --samples 64 --output-dir .lo
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-enlight-02 measured plot](../../assets/examples/core-enlight-02-plot.png)
+
 Reviewed maintainer example from the pinned public model; your local run must be checked separately.
 
 ![core-enlight-02 frame.png](../../assets/examples/core-enlight-02-frame.png)
@@ -52,13 +62,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-enlight-02/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-enlight-02/baseline-01/experiment.json
+```
+
 ## How it works
 
 The reference path multiplies homogeneous transforms using vendor xyz/rpy values. The other path asks MuJoCo for attachment_site. Agreement checks conversion of joint axes and frame order, while dynamics and contact still require separate calibration.
 
-```text
-e_FK = ‖p_vendor(q) − p_MJCF(q)‖₂
-```
+$$
+e_{FK}=\|p_{vendor}(q)-p_{MJCF}(q)\|_2
+$$
+
+Symbols, units and assumptions: Both positions: world m; same q in rad and same tool frame.
+
+Worked calculation (not a measured run result): difference [0.001,0,0] m → error 0.001 m.
+
+Practical connection: Agreement tests conversion, not physical calibration or contact.
 
 ## Code connection
 
@@ -75,6 +111,17 @@ pal lesson run core-enlight-02 --headless --seed 7 --samples 64 --output-dir .lo
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --comparison-run-dir .local/runs/core-enlight-02/comparison-01 --output-dir .local/comparisons/core-enlight-02/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

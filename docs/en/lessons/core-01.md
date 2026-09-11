@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Measure pendulum state and numerical energy drift.
@@ -34,6 +40,10 @@ pal lesson run core-01 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-01 measured plot](../../assets/examples/core-01-plot.png)
+
 Compare the measured energy trace with its initial value. The maximum absolute drift must remain below 1e-5 J; inspect q and qdot separately in experiment.json.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
@@ -42,13 +52,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-01 --run-dir .local/runs/core-01/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-01 --run-dir .local/runs/core-01/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-01/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 MuJoCo integrates q (rad) and qdot (rad/s). For an unforced rigid pendulum, total kinetic plus potential energy is constant; numerical integration introduces drift. The capsule has distributed mass, so do not substitute a point-mass inertia.
 
-```text
-E = K + U; drift = max |E(t)-E(0)|
-```
+$$
+E=K+U,\qquad d=\max_t |E(t)-E(0)|
+$$
+
+Symbols, units and assumptions: K,U,E,d: J; t: s; unforced, frictionless model.
+
+Worked calculation (not a measured run result): |1.000003-1.000000|=0.000003 J.
+
+Practical connection: Energy drift detects integration error before controller tuning.
 
 ## Code connection
 
@@ -63,6 +99,17 @@ pal lesson run core-01 --headless --seed 7 --samples 64 --output-dir .local/runs
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-01 --run-dir .local/runs/core-01/baseline-01 --comparison-run-dir .local/runs/core-01/comparison-01 --output-dir .local/comparisons/core-01/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

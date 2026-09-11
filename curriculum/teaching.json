@@ -53,10 +53,10 @@
     "goal_ko": "실제 FR3 장면을 렌더링하고 카메라 결과를 확인합니다.",
     "concept": "A model, state, camera and renderer jointly determine pixels. Headless means no interactive viewer; it still needs a functioning offscreen graphics context. Pixel variance rejects blank images but cannot establish a useful camera angle.",
     "concept_ko": "모델·상태·카메라·렌더러가 함께 픽셀을 결정합니다. headless는 대화형 창을 띄우지 않는다는 뜻이며 offscreen 그래픽 컨텍스트는 필요합니다. 픽셀 분산은 빈 영상만 검출하므로 사람이 시점도 확인해야 합니다.",
-    "observe": "Open frame.png, a 480×360 MuJoCo RGB rendering, and frame.pgm, its grayscale representation. Identify the base, elbow and tool. Repeated host-stable rendering should depict the same pose.",
-    "observe_ko": "480×360 MuJoCo RGB 렌더링 frame.png와 그 회색조 표현 frame.pgm을 엽니다. 베이스·팔꿈치·말단을 찾습니다. 같은 호스트에서 반복하면 같은 자세가 보여야 합니다.",
-    "variable": "seed",
-    "value": "8",
+    "observe": "Compare frame.png at 135 and 165 degrees; state and joint count stay fixed.",
+    "observe_ko": "135°와 165°의 frame.png를 비교합니다. 상태와 관절 개수는 유지됩니다.",
+    "variable": "camera_azimuth",
+    "value": "165",
     "equation": "RGB image shape = (360, 480, 3)"
   },
   "core-fr3-01": {
@@ -77,10 +77,10 @@
     "goal_ko": "FR3 동역학에 제한된 관절 PD 토크를 적용합니다.",
     "concept": "Proportional torque corrects position error and derivative torque damps velocity. Here kp=120 Nm/rad and kd=2√kp Nms/rad. Without gravity feedforward, static error is expected; inspect the commanded first joint separately from the whole-arm norm.",
     "concept_ko": "비례 토크는 위치 오차를 줄이고 미분 토크는 속도를 감쇠합니다. 여기서는 kp=120 Nm/rad, kd=2√kp Nms/rad입니다. 중력 보상 없이 정상상태 오차가 남으므로 지령을 준 첫 관절과 전체 팔 오차를 구분합니다.",
-    "observe": "The first joint target shifts by 0.18 rad. Its final error must be below 0.02 rad; the arm norm must stay below 0.5 rad. Inspect torque saturation and residual gravity error.",
-    "observe_ko": "첫 관절 목표를 0.18 rad 이동합니다. 첫 관절 오차는 0.02 rad 미만, 전체 팔 오차는 0.5 rad 미만이어야 합니다. 토크 포화와 중력에 의한 잔여 오차를 살펴봅니다.",
-    "variable": "variant",
-    "value": "1.5",
+    "observe": "Change kp only, keep kd fixed, inspect control.csv requested/applied torque and joint error.",
+    "observe_ko": "kp만 바꾸고 kd는 유지하여 control.csv의 요청·적용 토크와 관절 오차를 확인합니다.",
+    "variable": "kp",
+    "value": "180",
     "equation": "τ = kp(q*−q) − kd qdot"
   },
   "core-fr3-03": {

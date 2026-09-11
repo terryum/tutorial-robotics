@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Read virtual contact forces at a Wuji fingertip.
@@ -40,6 +46,10 @@ pal lesson run core-wuji-02 --headless --seed 7 --samples 64 --output-dir .local
 
 ## Expected
 
+Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+
+![core-wuji-02 measured plot](../../assets/examples/core-wuji-02-plot.png)
+
 Reviewed maintainer example from the pinned public model; your local run must be checked separately.
 
 ![core-wuji-02 frame.png](../../assets/examples/core-wuji-02-frame.png)
@@ -52,13 +62,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/core-wuji-02/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/core-wuji-02/baseline-01/experiment.json
+```
+
 ## How it works
 
 A local spherical stimulus contacts the hand's actual collision geometry. The observation records contact positions and contact-frame forces. It does not emulate a calibrated tactile sensor's pixel grid or electrical response.
 
-```text
-virtual observation = {contact position [m], contact force [N]}
-```
+$$
+\bar f_n=\frac1N\sum_{i=1}^{N}f_{n,i}
+$$
+
+Symbols, units and assumptions: fn: contact-frame N; N: number of sampled contacts.
+
+Worked calculation (not a measured run result): contacts 2 N and 4 N → mean 3 N.
+
+Practical connection: A collision contact is not a calibrated tactile taxel reading.
 
 ## Code connection
 
@@ -73,6 +109,17 @@ pal lesson run core-wuji-02 --headless --seed 7 --samples 64 --output-dir .local
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 --comparison-run-dir .local/runs/core-wuji-02/comparison-01 --output-dir .local/comparisons/core-wuji-02/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

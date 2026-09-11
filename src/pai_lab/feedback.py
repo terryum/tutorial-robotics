@@ -40,10 +40,21 @@ def current_lesson() -> str:
 def add(text: str, identifier: str | None = None, urgent: bool = False) -> dict[str, Any]:
     if not text.strip():
         raise ValueError("feedback must not be empty")
-    lesson = resolve_lesson(identifier or current_lesson())
+    try:
+        lesson_id = resolve_lesson(identifier or current_lesson()).id
+    except ValueError:
+        from pai_lab.providers import provider_for
+
+        name = identifier or current_lesson()
+        provider = provider_for(name)
+        if provider is None:
+            raise
+        lesson_id = str(
+            next(item.id for item in provider.lessons() if item.id.lower() == name.lower())
+        )
     value = {
         "id": uuid4().hex,
-        "lesson": lesson.id,
+        "lesson": lesson_id,
         "original": text,
         "received_at": datetime.now(UTC).isoformat(),
         "urgency": "immediate" if urgent or "지금 바로" in text else "batch",

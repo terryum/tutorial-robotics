@@ -37,6 +37,7 @@ def main() -> int:
                 errors.append(f"{lesson.id}/{language}: placeholder text")
             headings = [line for line in text.splitlines() if line.startswith("## ")]
             expected_headings = [
+                "## Reader route",
                 "## Learning goals",
                 "## Preflight",
                 "## Action",
@@ -48,6 +49,8 @@ def main() -> int:
                 "## Checkpoint",
                 "## Next lesson",
             ]
+            if lesson.implementation == "implemented":
+                expected_headings.insert(expected_headings.index("## How it works"), "## Observe")
             if headings != expected_headings:
                 errors.append(f"{lesson.id}/{language}: heading parity mismatch")
     agent = (ROOT / ".agents/skills/tutorial-robotics/SKILL.md").read_text(encoding="utf-8")

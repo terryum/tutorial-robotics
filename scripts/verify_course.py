@@ -100,6 +100,13 @@ def main() -> int:
             ],
             ["lesson", "finish", lesson.id, "--run-dir", str(baseline), "--json"],
         ]
+        if description["variable"] not in {"seed", "samples", "variant"}:
+            commands[1].extend(["--param", f"{description['variable']}={description['value']}"])
+        if lesson.id in {"core-00", "core-02", "core-03", "core-fr3-01", "core-enlight-01", "core-dexterity-01"}:
+            commands.pop(1)
+            review_command = commands[2]
+            comparison_index = review_command.index("--comparison-run-dir")
+            del review_command[comparison_index:comparison_index + 2]
         code = 0
         for command in commands:
             code = pal(command)

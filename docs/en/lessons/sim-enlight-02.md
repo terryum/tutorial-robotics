@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Evaluate an Enlight contact controller and record a candidate configuration.
@@ -44,13 +50,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/sim-enlight-02/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/sim-enlight-02/baseline-01/experiment.json
+```
+
 ## How it works
 
 The public Enlight dynamics and local probe/table scene supply state and contact force. Torch evaluates PD, bias compensation and Jacobian force on CUDA. This is a controller candidate with known gains, not a trained-policy checkpoint.
 
-```text
-τ = 80 e − 12 qdot + bias + JᵀF
-```
+$$
+\tau=80(q^*-q)-12\dot q+c+g+J^TF
+$$
+
+Symbols, units and assumptions: q rad; qdot rad/s; Kp Nm/rad; Kd Nm s/rad; F world N.
+
+Worked calculation (not a measured run result): 80 × 0.01 − 12 × 0.02 = 0.56 Nm before bias and contact terms.
+
+Practical connection: Known controller gains produce a controller candidate, not a learned policy.
 
 ## Code connection
 
@@ -65,6 +97,17 @@ pal lesson run sim-enlight-02 --headless --seed 7 --samples 64 --output-dir .loc
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --comparison-run-dir .local/runs/sim-enlight-02/comparison-01 --output-dir .local/comparisons/sim-enlight-02/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

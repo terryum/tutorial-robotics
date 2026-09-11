@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 양팔 ALOHA 모델을 실행하고 ACT 형식의 batch를 만듭니다.
@@ -40,6 +46,10 @@ pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .loca
 
 ## Expected
 
+실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+
+![core-aloha-01 measured plot](../../assets/examples/core-aloha-01-plot.png)
+
 고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
 
 ![core-aloha-01 frame.png](../../assets/examples/core-aloha-01-frame.png)
@@ -52,13 +62,39 @@ act-batch.npz 차원, observation.png와 행동 채널 14개를 확인합니다.
 pal lesson check core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/core-aloha-01/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/core-aloha-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 행동 chunk는 앞으로 실행할 행동의 시퀀스입니다. 모델에는 구동기 목표 14개가 있고 계약의 horizon은 16스텝입니다. 실제 모델 상태와 RGB 관측을 기록하지만 이 수업에서 ACT를 학습하지는 않습니다.
 
-```text
-action batch shape = (samples, 16, 14)
-```
+$$
+A_t\in\mathbb R^{H\times d_a},\qquad H=16,\ d_a=14
+$$
+
+기호·단위·조건: H: 시간 단계; da: 14 구동기 목표; 단위는 행동 계약 참조.
+
+손으로 계산하는 예시(실행 측정값이 아님): 16 × 14 = 224 action values per chunk.
+
+실전 연결: schema와 카메라 프레임만으로 ACT 학습을 완료한 것은 아닙니다.
 
 ## Code connection
 
@@ -73,6 +109,17 @@ pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .loca
 ```
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --comparison-run-dir .local/runs/core-aloha-01/comparison-01 --output-dir .local/comparisons/core-aloha-01/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 

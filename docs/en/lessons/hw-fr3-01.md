@@ -13,6 +13,12 @@
 | Implementation | `scaffolded` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Review the observations, prerequisites and per-run safety boundary for fr3 read-only state, shadow, and approved low-risk motion.
@@ -44,6 +50,8 @@ offline replay → command sink → read-only → live shadow
 ```
 
 Each stage consumes the previous evidence without automatically granting authority for the next action. Contact, real evaluation, system identification and integrated-device work need fresh approval for the exact robot and action. An integrated task requires both devices' individual read-only gates.
+
+Reader question: does receiving state authorize motion? No. Check timestamp age, model identity, fault/disabled state and the individual run card. For example, age 0.3 s exceeds a declared 0.1 s maximum and is stale. These illustrative numbers do not set device limits.
 
 ## Code connection
 

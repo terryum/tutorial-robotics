@@ -23,7 +23,15 @@ def previous_run(identifier: str) -> Path:
     if not entry:
         raise FileNotFoundError(f"finish {identifier} to provide its actual data/policy artifact")
     path = Path(entry["run_dir"])
-    return path if path.is_absolute() else ROOT / path
+    path = path if path.is_absolute() else ROOT / path
+    from pai_lab.lessons.evidence import validate_run
+    from pai_lab.lessons.inputs import record
+
+    errors = validate_run(identifier, path)
+    if errors:
+        raise ValueError("input evidence: " + "; ".join(errors))
+    record(identifier, path)
+    return path
 
 
 class Reach:

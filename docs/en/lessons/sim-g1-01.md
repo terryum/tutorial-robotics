@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+
+[Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
+
 ## Learning goals
 
 Train a G1 motion-imitation PPO task and evaluate its saved checkpoint.
@@ -44,13 +50,39 @@ Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.jso
 pal lesson check sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --json
 ```
 
+## Observe
+
+Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+
+```bash
+pal lesson inspect sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --json
+```
+
+Open the plot on macOS (closing the image preserves the run):
+
+```bash
+open .local/runs/sim-g1-01/baseline-01/plot.png
+```
+
+On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
+
+```bash
+python -m json.tool .local/runs/sim-g1-01/baseline-01/experiment.json
+```
+
 ## How it works
 
 The pinned Unitree MJLab task uses GPU simulation and RSL-RL. A prepared reference-motion file is mandatory. A small number of optimizer iterations checks mechanics; measured evaluation reward and rendered state do not certify walking performance.
 
-```text
-PPO rollout → parameter update → checkpoint reload → GPU evaluation
-```
+$$
+\theta_{k+1}=\theta_k-\eta\nabla_\theta L_k
+$$
+
+Symbols, units and assumptions: θ: learned parameters; η: learning rate; L: algorithm-specific loss; example is scalar SGD.
+
+Worked calculation (not a measured run result): θ=1, η=0.01, gradient=2 → new θ=0.98.
+
+Practical connection: Real training must change weights and reload them; short smoke does not establish success rate.
 
 ## Code connection
 
@@ -65,6 +97,17 @@ pal lesson run sim-g1-01 --headless --seed 7 --output-dir .local/runs/sim-g1-01/
 ```
 
 Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+
+```bash
+pal lesson compare sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --comparison-run-dir .local/runs/sim-g1-01/comparison-01 --output-dir .local/comparisons/sim-g1-01/comparison-01 --json
+```
+
+<details>
+<summary>Optional: what changes when the assumptions fail?</summary>
+
+Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
+
+</details>
 
 ## Recovery
 

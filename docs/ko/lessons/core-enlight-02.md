@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 독립적인 vendor 순기구학과 컴파일된 MJCF를 비교합니다.
@@ -40,6 +46,10 @@ pal lesson run core-enlight-02 --headless --seed 7 --samples 64 --output-dir .lo
 
 ## Expected
 
+실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+
+![core-enlight-02 measured plot](../../assets/examples/core-enlight-02-plot.png)
+
 고정된 공개 모델로 실행해 검토한 예시입니다. 개인 실행 결과는 별도로 검사합니다.
 
 ![core-enlight-02 frame.png](../../assets/examples/core-enlight-02-frame.png)
@@ -52,13 +62,39 @@ pal lesson run core-enlight-02 --headless --seed 7 --samples 64 --output-dir .lo
 pal lesson check core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/core-enlight-02/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/core-enlight-02/baseline-01/experiment.json
+```
+
 ## How it works
 
 기준 경로는 vendor xyz/rpy로 동차 변환을 곱합니다. 다른 경로는 MuJoCo의 attachment_site를 읽습니다. 일치 여부는 관절 축과 좌표계 순서의 변환을 검사하며 동역학·접촉 보정은 별도입니다.
 
-```text
-e_FK = ‖p_vendor(q) − p_MJCF(q)‖₂
-```
+$$
+e_{FK}=\|p_{vendor}(q)-p_{MJCF}(q)\|_2
+$$
+
+기호·단위·조건: 두 위치: 세계 m; 같은 q(rad)와 도구 좌표계.
+
+손으로 계산하는 예시(실행 측정값이 아님): difference [0.001,0,0] m → error 0.001 m.
+
+실전 연결: 변환 일치 검사이며 실물 보정이나 접촉 검증은 아닙니다.
 
 ## Code connection
 
@@ -75,6 +111,17 @@ pal lesson run core-enlight-02 --headless --seed 7 --samples 64 --output-dir .lo
 ```
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --comparison-run-dir .local/runs/core-enlight-02/comparison-01 --output-dir .local/comparisons/core-enlight-02/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 

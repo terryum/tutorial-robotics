@@ -13,6 +13,12 @@
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
+## Reader route
+
+이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
+
+[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
+
 ## Learning goals
 
 기하 자코비안을 검증하고 작은 변위의 IK를 풉니다.
@@ -40,6 +46,10 @@ pal lesson run core-fr3-04 --headless --seed 7 --samples 64 --output-dir .local/
 
 ## Expected
 
+실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+
+![core-fr3-04 measured plot](../../assets/examples/core-fr3-04-plot.png)
+
 analytic과 finite_difference 배열을 비교합니다. 최대 차이는 1e-6 미만, 고정된 3차원 목표 변위의 IK 오차는 1 mm 미만이어야 합니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
@@ -48,13 +58,39 @@ analytic과 finite_difference 배열을 비교합니다. 최대 차이는 1e-6 �
 pal lesson check core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --json
 ```
 
+## Observe
+
+먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+
+```bash
+pal lesson inspect core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --json
+```
+
+Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
+
+```bash
+open .local/runs/core-fr3-04/baseline-01/plot.png
+```
+
+다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
+
+```bash
+python -m json.tool .local/runs/core-fr3-04/baseline-01/experiment.json
+```
+
 ## How it works
 
 J의 각 열은 한 관절의 각속도를 말단 선속도로 변환합니다. 중앙 유한차분으로 열을 독립적으로 근사합니다. 감쇠 최소제곱은 특이점 부근의 영향을 줄이고 관절 증분을 제한합니다.
 
-```text
-Δq = Jᵀ(JJᵀ + λI)⁻¹ Δx
-```
+$$
+\Delta q=J^T(JJ^T+\lambda I)^{-1}\Delta x
+$$
+
+기호·단위·조건: J: 3×nv 병진 Jacobian; x: 세계 좌표 m; q: rad; λ는 JJᵀ 정규화.
+
+손으로 계산하는 예시(실행 측정값이 아님): J=0.5 m/rad, Δx=0.01 m, λ=0.0001 (m/rad)² → Δq≈0.019992 rad.
+
+실전 연결: 특이점 근처에서는 작은 위치 변경에도 큰 관절 변화가 필요합니다.
 
 ## Code connection
 
@@ -69,6 +105,17 @@ pal lesson run core-fr3-04 --headless --seed 7 --samples 64 --output-dir .local/
 ```
 
 seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
+
+```bash
+pal lesson compare core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --comparison-run-dir .local/runs/core-fr3-04/comparison-01 --output-dir .local/comparisons/core-fr3-04/comparison-01 --json
+```
+
+<details>
+<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+
+본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
+
+</details>
 
 ## Recovery
 
