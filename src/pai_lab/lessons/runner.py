@@ -16,6 +16,7 @@ from typing import Any
 
 from pai_lab.bundle import validate_bundle
 from pai_lab.catalog import ROOT, Lesson, resolve_lesson
+from pai_lab.providers import provider_for
 
 
 @dataclass(frozen=True)
@@ -89,7 +90,17 @@ class LessonResult:
 
 
 def implementation_status(identifier: str) -> str:
-    return "implemented" if resolve_lesson(identifier).id in LESSON_SPECS else "scaffolded"
+    try:
+        lesson = resolve_lesson(identifier)
+    except ValueError:
+        provider = provider_for(identifier)
+        if provider is None:
+            raise
+        external = next(
+            item for item in provider.lessons() if str(item.id).lower() == identifier.lower()
+        )
+        return str(external.implementation)
+    return "implemented" if lesson.id in LESSON_SPECS else "scaffolded"
 
 
 def _write_csv(path: Path, header: tuple[str, ...], rows: Sequence[tuple[object, ...]]) -> None:
@@ -301,10 +312,16 @@ def run_lesson(
     seed: int = 7,
     samples: int = 64,
     headless: bool = True,
-) -> LessonResult:
+) -> Any:
     """Execute the registered implementation; there is deliberately no generic fallback."""
 
-    lesson = resolve_lesson(identifier)
+    try:
+        lesson = resolve_lesson(identifier)
+    except ValueError:
+        provider = provider_for(identifier)
+        if provider is None:
+            raise
+        return provider.run(identifier, output_dir, samples)
     if samples < 8:
         raise ValueError("samples must be at least 8")
     spec = LESSON_SPECS.get(lesson.id)
@@ -372,7 +389,13 @@ def run_lesson(
 def check_lesson(identifier: str) -> list[str]:
     """Verify docs, entry point, implementation status, and command contract."""
 
-    lesson = resolve_lesson(identifier)
+    try:
+        lesson = resolve_lesson(identifier)
+    except ValueError:
+        provider = provider_for(identifier)
+        if provider is None:
+            raise
+        return provider.check(identifier)
     errors: list[str] = []
     paths = {
         "entrypoint": ROOT / lesson.entrypoint,
