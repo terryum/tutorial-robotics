@@ -56,6 +56,8 @@ L = mean min(rA, clip(r, 0.8, 1.2)A)
 
 ## Try it
 
+actor 경사 갱신 크기를 0.01 → 0.015로 바꿉니다. seed와 rollout·갱신 수는 고정하고 파라미터 변화 및 측정 보상을 비교합니다.
+
 ```bash
 pal lesson run core-rl-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-rl-01/comparison-01 --variant 1.5 --json
 ```

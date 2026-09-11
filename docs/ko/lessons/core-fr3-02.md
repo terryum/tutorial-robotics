@@ -62,6 +62,8 @@ pal lesson check core-fr3-02 --run-dir .local/runs/core-fr3-02/baseline-01 --jso
 
 ## Try it
 
+PD의 kp를 120 → 180 Nm/rad로 바꿉니다. kd는 2√kp 규칙을 따릅니다. 전체 관절 오차와 명령한 첫 관절의 오차를 나누어 비교합니다.
+
 ```bash
 pal lesson run core-fr3-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-02/comparison-01 --variant 1.5 --json
 ```

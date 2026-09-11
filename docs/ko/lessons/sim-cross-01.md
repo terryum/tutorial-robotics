@@ -58,6 +58,8 @@ RMSE = sqrt(mean((q_MuJoCo − q_PhysX)²))
 
 ## Try it
 
+두 시뮬레이터에 같은 토크 진폭 0.002 → 0.003 Nm를 적용합니다. 조명과 2 ms 적분 간격은 고정합니다.
+
 ```bash
 pal lesson run sim-cross-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-cross-01/comparison-01 --variant 1.5 --json
 ```

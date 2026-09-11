@@ -63,6 +63,8 @@ min_q ‖p_target(q)−p_desired‖² + λ‖q−q_home‖²
 
 ## Try it
 
+원본 자세의 최대 진폭을 관절 제한 적용 전 0.5 → 0.75 rad로 바꿉니다. 대상 손 형상과 풀이 방법은 같습니다.
+
 ```bash
 pal lesson run core-dexterity-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-dexterity-02/comparison-01 --variant 1.5 --json
 ```

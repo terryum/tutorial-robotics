@@ -159,6 +159,33 @@ def test_concurrent_feedback_is_not_lost(session):
     assert {item["id"] for item in items()} == {item["id"] for item in results}
 
 
+def test_interrupted_experiment_keeps_receipt_without_completion(session, tmp_path, monkeypatch):
+    from pai_lab.lessons.runner import run_lesson
+
+    def interrupt(*args):
+        raise KeyboardInterrupt("urgent learner correction")
+
+    monkeypatch.setattr("pai_lab.lessons.physics.run", interrupt)
+    path = tmp_path / "interrupted"
+    with pytest.raises(KeyboardInterrupt):
+        run_lesson("T00", output_dir=path)
+    assert json.loads((path / "run.json").read_text())["status"] == "interrupted"
+    assert not load_progress().completed
+
+
+def test_modified_comparison_invalidates_completed_prerequisite(session, tmp_path):
+    from pai_lab.readiness import completion_gaps
+
+    baseline, comparison = tmp_path / "base", tmp_path / "other"
+    run_t00(baseline)
+    run_t00(comparison, 8)
+    assert review_t00(baseline, comparison) == 0
+    assert main(["lesson", "finish", "T00", "--run-dir", str(baseline), "--json"]) == 0
+    (comparison / "trace.csv").write_text("broken evidence")
+    assert completion_gaps("core-00")
+    assert main(["lesson", "finish", "T00", "--run-dir", str(baseline), "--json"]) == 2
+
+
 def test_bootstrap_plan_without_python_or_uv_is_read_only(session):
     import os
     import subprocess

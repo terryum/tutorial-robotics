@@ -58,6 +58,8 @@ pal lesson check sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01
 
 ## Try it
 
+요청하는 말단 하향 힘을 2 → 3 N으로 바꿉니다. 측정 접촉 힘과 CUDA 제어기 출력을 확인합니다.
+
 ```bash
 pal lesson run sim-enlight-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-02/comparison-01 --variant 1.5 --json
 ```

@@ -56,6 +56,8 @@ L_BC = mean ‖Wᵀ[q,qdot,1] − a_demo‖²
 
 ## Try it
 
+회귀 학습률을 0.15 → 0.225로 바꿉니다. 저장된 데이터셋과 에피소드 분할은 동일합니다.
+
 ```bash
 pal lesson run core-il-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-il-01/comparison-01 --variant 1.5 --json
 ```

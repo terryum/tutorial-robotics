@@ -62,6 +62,8 @@ p_world = T_world_tool(q) p_tool
 
 ## Try it
 
+Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
+
 ```bash
 pal lesson run core-fr3-01 --headless --samples 64 --output-dir .local/runs/core-fr3-01/comparison-01 --seed 8 --json
 ```

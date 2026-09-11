@@ -58,6 +58,8 @@ RGB ∈ uint8[H,W,3]; depth in meters
 
 ## Try it
 
+돔 조명 강도를 렌더러 단위로 1000 → 1500으로 바꿉니다. 가져온 자산과 카메라는 같습니다.
+
 ```bash
 pal lesson run sim-isaac-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-isaac-02/comparison-01 --variant 1.5 --json
 ```

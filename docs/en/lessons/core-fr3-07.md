@@ -62,6 +62,8 @@ observation ∈ R¹⁷; action ∈ R⁷; reward = −distance − effort penalty
 
 ## Try it
 
+Scripted action scale: 1 → 1.5 before bounded latent-action conversion. Check the 17-observation/7-action contract and termination.
+
 ```bash
 pal lesson run core-fr3-07 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-07/comparison-01 --variant 1.5 --json
 ```

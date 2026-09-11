@@ -58,6 +58,8 @@ JointState = {names, q [rad], qdot [rad/s], stamp}
 
 ## Try it
 
+시뮬레이션 액추에이터 계약의 정현파 명령 진폭을 0.1 → 0.15로 바꿉니다. 메시지 수와 QoS는 같습니다.
+
 ```bash
 pal lesson run sim-ros-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-ros-02/comparison-01 --variant 1.5 --json
 ```

@@ -52,7 +52,7 @@ def gaps(lesson: Lesson, *, prerequisites: bool = True) -> list[str]:
 
 def completion_gaps(identifier: str) -> list[str]:
     from pai_lab.feedback import pending
-    from pai_lab.lessons.evidence import validate_run
+    from pai_lab.lessons.evidence import validate_review, validate_run
 
     entry = load_progress().completed.get(identifier)
     if not entry or not entry.get("run_dir"):
@@ -61,8 +61,7 @@ def completion_gaps(identifier: str) -> list[str]:
     if not path.is_absolute():
         path = ROOT / path
     errors = validate_run(identifier, path)
-    if not (path / "review.json").is_file():
-        errors.append("completed run has no review; legacy record preserved but unverified")
+    errors += validate_review(identifier, path)
     if pending(identifier):
         errors.append("unresolved feedback")
     return errors

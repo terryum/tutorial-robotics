@@ -58,9 +58,13 @@ e_FK = ‖p_vendor(q) − p_MJCF(q)‖₂
 
 ## Code connection
 
+Visual OBJ files contain multiple objects. The local adapter retains every vertex/face in one derived object for MuJoCo and preserves the vendor files; collision geometry and full inertia remain separate.
+
 `examples/core-enlight-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
 
 ## Try it
+
+Random joint interval: ±0.4 → ±0.6 rad using the same seed. Compare two independent FK evaluations at every resulting configuration.
 
 ```bash
 pal lesson run core-enlight-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-enlight-02/comparison-01 --variant 1.5 --json

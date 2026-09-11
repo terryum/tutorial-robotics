@@ -340,21 +340,13 @@ def lesson_check_command(identifier: str, json_output: bool, run_dir: Path | Non
 
 
 def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> int:
-    from pai_lab.lessons.evidence import validate_run
+    from pai_lab.lessons.evidence import validate_review, validate_run
 
     lesson = resolve_lesson(identifier)
     errors = check_lesson(lesson.id) + gaps(lesson) + validate_run(lesson.id, run_dir)
     if feedback.pending(lesson.id):
         errors.append("unresolved feedback; inspect pal feedback list")
-    review_path = run_dir / "review.json"
-    if not review_path.is_file():
-        errors.append("explanation and comparison missing; use pal lesson review")
-    else:
-        review = json.loads(review_path.read_text())
-        if review.get("lesson") != lesson.id or not review.get("notes", "").strip():
-            errors.append("invalid lesson review")
-        comparison = Path(review.get("comparison_run", ""))
-        errors += validate_run(lesson.id, comparison)
+    errors += validate_review(lesson.id, run_dir)
     if errors:
         _emit({"status": "blocked", "lesson": lesson.id, "errors": errors}, json_output)
         return 2
@@ -372,22 +364,12 @@ def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> 
 def lesson_review_command(
     identifier: str, run_dir: Path, comparison: Path, notes: str, json_output: bool
 ) -> int:
-    from pai_lab.lessons.evidence import validate_run
+    from pai_lab.lessons.evidence import comparison_errors
 
     lesson = resolve_lesson(identifier)
-    errors = validate_run(lesson.id, run_dir) + validate_run(lesson.id, comparison)
-    if run_dir.resolve() == comparison.resolve():
-        errors.append("comparison must be a separate execution")
+    errors = comparison_errors(lesson.id, run_dir, comparison)
     if not notes.strip():
         errors.append("explain the observed result and comparison")
-    if not errors:
-        baseline = json.loads((run_dir / "summary.json").read_text())
-        other = json.loads((comparison / "summary.json").read_text())
-        a = json.loads((run_dir / "experiment.json").read_text())["variant"]
-        b = json.loads((comparison / "experiment.json").read_text())["variant"]
-        differences = sum(baseline[key] != other[key] for key in ("seed", "samples")) + (a != b)
-        if differences != 1:
-            errors.append("change exactly one of seed, samples, or variant")
     if errors:
         _emit({"status": "blocked", "errors": errors}, json_output)
         return 2

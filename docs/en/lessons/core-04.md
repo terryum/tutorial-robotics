@@ -62,6 +62,8 @@ RGB image shape = (360, 480, 3)
 
 ## Try it
 
+Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
+
 ```bash
 pal lesson run core-04 --headless --samples 64 --output-dir .local/runs/core-04/comparison-01 --seed 8 --json
 ```

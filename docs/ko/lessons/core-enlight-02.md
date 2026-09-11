@@ -58,9 +58,13 @@ e_FK = ‖p_vendor(q) − p_MJCF(q)‖₂
 
 ## Code connection
 
+시각 OBJ에는 여러 객체가 있습니다. 로컬 변환기는 모든 정점·면을 한 파생 객체에 보존해 MuJoCo로 읽으며 vendor 원본은 유지합니다. 충돌 형상과 전체 관성은 별도로 사용합니다.
+
 `examples/core-enlight-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
 
 ## Try it
+
+같은 seed로 관절 표본 범위를 ±0.4 → ±0.6 rad로 바꿉니다. 각 자세에서 두 독립 FK 계산값을 비교합니다.
 
 ```bash
 pal lesson run core-enlight-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-enlight-02/comparison-01 --variant 1.5 --json

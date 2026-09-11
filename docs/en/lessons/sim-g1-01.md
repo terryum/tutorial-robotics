@@ -58,6 +58,8 @@ PPO rollout → parameter update → checkpoint reload → GPU evaluation
 
 ## Try it
 
+Sample budget: 64 → 96. Training lessons derive optimizer iterations from this budget and evaluate for this many steps; candidate-only lessons change evaluation length.
+
 ```bash
 pal lesson run sim-g1-01 --headless --seed 7 --output-dir .local/runs/sim-g1-01/comparison-01 --samples 96 --json
 ```

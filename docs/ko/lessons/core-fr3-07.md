@@ -62,6 +62,8 @@ observation ∈ R¹⁷; action ∈ R⁷; reward = −distance − effort penalty
 
 ## Try it
 
+제어 명령을 제한된 잠재 행동으로 변환하기 전 배율을 1 → 1.5로 바꿉니다. 관찰 17개·행동 7개 계약과 종료 조건을 확인합니다.
+
 ```bash
 pal lesson run core-fr3-07 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-07/comparison-01 --variant 1.5 --json
 ```

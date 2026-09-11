@@ -56,7 +56,9 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
         names = [model.joint(i).name for i in range(model.njnt)]
         mapping = [robot.dof_names.index(name) for name in names]
         camera = rep.create.camera(position=(0.35, -0.45, 0.3), look_at=(0, 0, 0))
-        rep.create.light(light_type="dome", intensity=1000.0 * variant)
+        rep.create.light(
+            light_type="dome", intensity=1000.0 * (variant if identifier != "sim-cross-01" else 1.0)
+        )
         product = rep.create.render_product(camera, (480, 360))
         rgb = rep.AnnotatorRegistry.get_annotator("rgb")
         rgb.attach(product)

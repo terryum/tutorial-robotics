@@ -58,6 +58,8 @@ URDF joint names → USD articulation DOF map
 
 ## Try it
 
+Dome light intensity: 1000 → 1500 renderer units; imported asset and camera remain fixed.
+
 ```bash
 pal lesson run sim-isaac-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-isaac-01/comparison-01 --variant 1.5 --json
 ```

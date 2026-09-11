@@ -105,7 +105,37 @@ def enlight_xml(output: Path) -> Path:
     assets = ET.SubElement(root, "asset")
     world = ET.SubElement(root, "worldbody")
     ET.SubElement(world, "light", pos="0 0 2")
-    parent = world
+    ET.SubElement(world, "geom", type="plane", size="2 2 .05", rgba=".25 .3 .35 1")
+    base = ET.SubElement(world, "body", name="base_link")
+    base_inertia = parameters["inertia"]["base_link"]
+    ET.SubElement(
+        base,
+        "inertial",
+        mass=str(base_inertia["mass"]),
+        pos=" ".join(str(base_inertia["origin"][axis]) for axis in ("x", "y", "z")),
+        fullinertia=" ".join(
+            str(base_inertia["inertia"][axis])
+            for axis in ("ixx", "iyy", "izz", "ixy", "ixz", "iyz")
+        ),
+    )
+    mesh_root = ROOT / ".cache/assets/flexiv-description/meshes/Enlight-L"
+    ET.SubElement(
+        assets,
+        "mesh",
+        name="visual0",
+        file=str(flatten_obj(mesh_root / "visual/link0.obj", output)),
+    )
+    ET.SubElement(
+        base,
+        "geom",
+        type="mesh",
+        mesh="visual0",
+        contype="0",
+        conaffinity="0",
+        group="2",
+        rgba=".7 .75 .85 1",
+    )
+    parent = base
     for i in range(1, 8):
         name = f"joint{i}"
         k = parameters["kinematics"][name]
@@ -139,7 +169,25 @@ def enlight_xml(output: Path) -> Path:
         )
         mesh = ROOT / f".cache/assets/flexiv-description/meshes/Enlight-L/collision/link{i}.stl"
         ET.SubElement(assets, "mesh", name=f"mesh{i}", file=str(mesh))
-        ET.SubElement(parent, "geom", type="mesh", mesh=f"mesh{i}", rgba="0.65 0.72 0.85 1")
+        ET.SubElement(
+            parent, "geom", type="mesh", mesh=f"mesh{i}", group="3", rgba="0.65 0.72 0.85 1"
+        )
+        ET.SubElement(
+            assets,
+            "mesh",
+            name=f"visual{i}",
+            file=str(flatten_obj(mesh_root / f"visual/link{i}.obj", output)),
+        )
+        ET.SubElement(
+            parent,
+            "geom",
+            type="mesh",
+            mesh=f"visual{i}",
+            contype="0",
+            conaffinity="0",
+            group="2",
+            rgba=".7 .75 .85 1",
+        )
     k = parameters["kinematics"]["link7_to_flange"]
     ET.SubElement(
         parent, "site", name="attachment_site", pos=" ".join(str(k[a]) for a in ("x", "y", "z"))
@@ -164,6 +212,24 @@ def enlight_xml(output: Path) -> Path:
     path = output / "enlight-draft.xml"
     ET.ElementTree(root).write(path, encoding="unicode")
     return path
+
+
+def flatten_obj(source: Path, output: Path) -> Path:
+    """Keep all vendor faces in one OBJ object: MuJoCo otherwise selects one shape.
+
+    Vertex/normal indices are global in the pinned Enlight export. Only object,
+    group and material declarations are removed; geometry stays byte-for-byte.
+    """
+    target = output / (source.stem + "-visual.obj")
+    target.write_text(
+        "\n".join(
+            line
+            for line in source.read_text().splitlines()
+            if line.split() and line.split()[0] in {"v", "vn", "vt", "f"}
+        )
+        + "\n"
+    )
+    return target.resolve()
 
 
 def enlight_fk(q: np.ndarray) -> np.ndarray:

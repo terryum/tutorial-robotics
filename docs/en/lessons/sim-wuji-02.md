@@ -58,6 +58,8 @@ candidate identity = SHA256(checkpoint used in evaluation)
 
 ## Try it
 
+Sample budget: 64 → 96. Training lessons derive optimizer iterations from this budget and evaluate for this many steps; candidate-only lessons change evaluation length.
+
 ```bash
 pal lesson run sim-wuji-02 --headless --seed 7 --output-dir .local/runs/sim-wuji-02/comparison-01 --samples 96 --json
 ```

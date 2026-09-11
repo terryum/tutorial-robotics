@@ -56,6 +56,8 @@ L = mean min(rA, clip(r, 0.8, 1.2)A)
 
 ## Try it
 
+Actor gradient step size: 0.01 → 0.015. Keep the same seed and rollout/update counts; compare parameter delta and measured rewards.
+
 ```bash
 pal lesson run core-rl-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-rl-01/comparison-01 --variant 1.5 --json
 ```

@@ -58,6 +58,8 @@ reset → observe → act → observe → close
 
 ## Try it
 
+Sinusoidal simulation control amplitude: 0.1 → 0.15 in the actuator contract; message count and QoS stay fixed.
+
 ```bash
 pal lesson run sim-ros-04 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-ros-04/comparison-01 --variant 1.5 --json
 ```

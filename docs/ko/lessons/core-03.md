@@ -64,6 +64,8 @@ nq ≠ nv ≠ nu in general
 
 ## Try it
 
+seed를 7 → 8로 바꿉니다. 구조 검사·고정 모델 화면·결정론적 추론은 동일할 수 있습니다. 원격 서비스는 로컬 seed와 별개로 변할 수 있으므로 이 한계를 기록합니다.
+
 ```bash
 pal lesson run core-03 --headless --samples 64 --output-dir .local/runs/core-03/comparison-01 --seed 8 --json
 ```

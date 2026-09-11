@@ -63,6 +63,8 @@ min_q ‖p_target(q)−p_desired‖² + λ‖q−q_home‖²
 
 ## Try it
 
+Source pose amplitude: maximum 0.5 → 0.75 rad before joint-limit clipping. The target solver and geometry remain fixed.
+
 ```bash
 pal lesson run core-dexterity-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-dexterity-02/comparison-01 --variant 1.5 --json
 ```

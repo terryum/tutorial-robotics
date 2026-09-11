@@ -43,3 +43,19 @@ def test_acceptance_recomputes_energy_instead_of_trusting_success_flag(tmp_path)
     assert measurement_errors("core-01", tmp_path, trace, experiment) == []
     trace[-1, 2] += 0.01
     assert measurement_errors("core-01", tmp_path, trace, experiment)
+
+
+def test_obj_adapter_preserves_faces_across_vendor_objects(tmp_path):
+    import mujoco
+
+    from pai_lab.lessons.models import flatten_obj
+
+    source = tmp_path / "vendor.obj"
+    original = "o first\nv 0 0 0\nv 1 0 0\nv 0 1 0\nv 0 0 1\nf 1 3 2\nf 1 2 4\no second\nf 2 3 4\nf 3 1 4\n"
+    source.write_text(original)
+    target = flatten_obj(source, tmp_path)
+    model = mujoco.MjModel.from_xml_string(
+        f'<mujoco><asset><mesh name="full" file="{target}"/></asset><worldbody><geom type="mesh" mesh="full"/></worldbody></mujoco>'
+    )
+    assert model.mesh_facenum[0] == 4
+    assert source.read_text() == original

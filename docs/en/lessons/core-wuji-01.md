@@ -62,6 +62,8 @@ q = clip(s α, q_min, q_max)
 
 ## Try it
 
+Synergy amplitude multiplier: 1 → 1.5. Inspect each joint after clipping; a saturated joint need not change.
+
 ```bash
 pal lesson run core-wuji-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-wuji-01/comparison-01 --variant 1.5 --json
 ```

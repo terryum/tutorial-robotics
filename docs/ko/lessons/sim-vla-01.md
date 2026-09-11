@@ -58,6 +58,8 @@ batch → processors → SmolVLA loss → gradient → checkpoint → HTTP infer
 
 ## Try it
 
+AdamW 학습률을 10⁻⁴ → 1.5×10⁻⁴로 바꿉니다. 준비된 모델과 데이터셋은 같습니다.
+
 ```bash
 pal lesson run sim-vla-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-vla-01/comparison-01 --variant 1.5 --json
 ```

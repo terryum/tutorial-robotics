@@ -62,6 +62,8 @@ qfrc_bias에는 중력과 속도에 따른 편향력이 포함됩니다. 같은 
 
 ## Try it
 
+kp를 120 → 180 Nm/rad로 바꾸며 kd는 같은 규칙으로 결정합니다. 보상 유무를 비교하는 두 분기에는 같은 이득을 적용합니다.
+
 ```bash
 pal lesson run core-fr3-03 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-03/comparison-01 --variant 1.5 --json
 ```

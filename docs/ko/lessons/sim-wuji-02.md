@@ -58,6 +58,8 @@ candidate identity = SHA256(checkpoint used in evaluation)
 
 ## Try it
 
+표본 예산을 64 → 96으로 바꿉니다. 학습 수업은 이 예산에서 갱신 수와 평가 길이를 결정하며, 후보 평가 수업은 평가 길이만 바꿉니다.
+
 ```bash
 pal lesson run sim-wuji-02 --headless --seed 7 --output-dir .local/runs/sim-wuji-02/comparison-01 --samples 96 --json
 ```

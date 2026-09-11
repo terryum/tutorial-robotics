@@ -58,9 +58,13 @@ T_world_flange = Π T_origin,i Rz(q_i)
 
 ## Code connection
 
+Visual OBJ files contain multiple objects. The local adapter retains every vertex/face in one derived object for MuJoCo and preserves the vendor files; collision geometry and full inertia remain separate.
+
 `examples/core-enlight-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
 
 ## Try it
+
+Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
 
 ```bash
 pal lesson run core-enlight-01 --headless --samples 64 --output-dir .local/runs/core-enlight-01/comparison-01 --seed 8 --json

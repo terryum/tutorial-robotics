@@ -62,6 +62,8 @@ a = tanh(Wᵀ[obs,1]); q* = q + 0.03 a rad
 
 ## Try it
 
+Actor gradient step size: 0.01 → 0.015 with the same reach environment. A reward difference in this short run does not establish policy quality.
+
 ```bash
 pal lesson run core-fr3-08 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-08/comparison-01 --variant 1.5 --json
 ```

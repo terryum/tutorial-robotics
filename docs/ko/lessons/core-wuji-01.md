@@ -62,6 +62,8 @@ q = clip(s α, q_min, q_max)
 
 ## Try it
 
+시너지 진폭 배율을 1 → 1.5로 바꿉니다. 제한 적용 후 관절별 값을 확인합니다. 이미 포화된 관절은 변하지 않을 수 있습니다.
+
 ```bash
 pal lesson run core-wuji-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-wuji-01/comparison-01 --variant 1.5 --json
 ```

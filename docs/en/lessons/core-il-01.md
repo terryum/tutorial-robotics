@@ -56,6 +56,8 @@ L_BC = mean ‖Wᵀ[q,qdot,1] − a_demo‖²
 
 ## Try it
 
+Regression learning rate: 0.15 → 0.225; use the same saved dataset and episode split.
+
 ```bash
 pal lesson run core-il-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-il-01/comparison-01 --variant 1.5 --json
 ```

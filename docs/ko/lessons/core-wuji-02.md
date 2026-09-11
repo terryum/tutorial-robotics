@@ -62,6 +62,8 @@ virtual observation = {contact position [m], contact force [N]}
 
 ## Try it
 
+가상 자극 구의 반지름을 0.012 → 0.018 m로 바꿉니다. 접촉 형상이 달라지므로 접촉 수와 측정 힘을 함께 비교합니다.
+
 ```bash
 pal lesson run core-wuji-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-wuji-02/comparison-01 --variant 1.5 --json
 ```

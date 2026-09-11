@@ -62,6 +62,8 @@ a = tanh(Wᵀ[obs,1]); q* = q + 0.03 a rad
 
 ## Try it
 
+같은 도달 환경에서 actor 경사 갱신 크기를 0.01 → 0.015로 바꿉니다. 짧은 실행의 보상 차이만으로 정책 품질을 판단하지 않습니다.
+
 ```bash
 pal lesson run core-fr3-08 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-08/comparison-01 --variant 1.5 --json
 ```

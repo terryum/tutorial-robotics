@@ -58,6 +58,8 @@ RGB ∈ uint8[H,W,3]; depth in meters
 
 ## Try it
 
+Dome light intensity: 1000 → 1500 renderer units; imported asset and camera remain fixed.
+
 ```bash
 pal lesson run sim-isaac-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-isaac-02/comparison-01 --variant 1.5 --json
 ```

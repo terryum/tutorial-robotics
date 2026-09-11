@@ -62,6 +62,8 @@ q_hinge(t) = q_home + A sin(phase)
 
 ## Try it
 
+Hinge motion amplitude: 0.08 → 0.12 rad, clipped to each model limit. The floating-base quaternion is preserved.
+
 ```bash
 pal lesson run core-g1-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-g1-01/comparison-01 --variant 1.5 --json
 ```

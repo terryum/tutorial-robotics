@@ -58,6 +58,8 @@ The public Enlight dynamics and local probe/table scene supply state and contact
 
 ## Try it
 
+Requested downward tool force: 2 → 3 N. Inspect measured contact force and CUDA controller output.
+
 ```bash
 pal lesson run sim-enlight-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-02/comparison-01 --variant 1.5 --json
 ```

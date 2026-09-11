@@ -62,6 +62,8 @@ virtual observation = {contact position [m], contact force [N]}
 
 ## Try it
 
+Virtual probe radius: 0.012 → 0.018 m. Contact geometry changes, so compare contact count and measured force together.
+
 ```bash
 pal lesson run core-wuji-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-wuji-02/comparison-01 --variant 1.5 --json
 ```

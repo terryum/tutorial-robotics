@@ -62,6 +62,8 @@ A small sphere is attached to the real FR3 tool link in a local derived scene. m
 
 ## Try it
 
+Sliding friction coefficient: 0.6 → 0.9 (dimensionless). Purely normal loading may show little change; this is not a friction-identification test.
+
 ```bash
 pal lesson run core-fr3-06 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-06/comparison-01 --variant 1.5 --json
 ```

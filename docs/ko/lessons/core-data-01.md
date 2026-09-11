@@ -56,6 +56,8 @@ pal lesson check core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --j
 
 ## Try it
 
+시연 제어기의 비례 이득을 2 → 3 Nm/rad로 바꿉니다. 미분 이득과 ±3 Nm 토크 제한은 고정합니다.
+
 ```bash
 pal lesson run core-data-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-data-01/comparison-01 --variant 1.5 --json
 ```

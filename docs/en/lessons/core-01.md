@@ -56,6 +56,8 @@ E = K + U; drift = max |E(t)-E(0)|
 
 ## Try it
 
+Integration step: 0.002 → 0.004 s. Fixed sample count also doubles the observed duration; compare energy drift, not equal-time terminal state.
+
 ```bash
 pal lesson run core-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-01/comparison-01 --variant 2 --json
 ```

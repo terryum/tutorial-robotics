@@ -62,6 +62,8 @@ pal lesson check core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --jso
 
 ## Try it
 
+작업 공간 가속도 이득을 120 → 180 s⁻²로 바꾸며 감쇠는 2√gain을 따릅니다. M은 kg·m², Λ는 kg, 힘은 N, 토크는 Nm입니다.
+
 ```bash
 pal lesson run core-fr3-05 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-05/comparison-01 --variant 1.5 --json
 ```

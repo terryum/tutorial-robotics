@@ -62,6 +62,8 @@ qfrc_bias contains gravity and velocity-dependent bias forces. The lesson compar
 
 ## Try it
 
+PD gain: kp 120 → 180 Nm/rad, with kd determined by the same rule. Both compensation branches use identical gains.
+
 ```bash
 pal lesson run core-fr3-03 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-03/comparison-01 --variant 1.5 --json
 ```

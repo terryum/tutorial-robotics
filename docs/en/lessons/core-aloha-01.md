@@ -62,6 +62,8 @@ action batch shape = (samples, 16, 14)
 
 ## Try it
 
+First actuator target amplitude: 0.05 → 0.075 rad. Other targets and the 16×14 chunk shape remain fixed.
+
 ```bash
 pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-aloha-01/comparison-01 --variant 1.5 --json
 ```

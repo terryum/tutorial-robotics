@@ -62,6 +62,8 @@ Proportional torque corrects position error and derivative torque damps velocity
 
 ## Try it
 
+PD gain: kp 120 → 180 Nm/rad. kd follows the documented 2√kp rule; compare whole-arm and commanded-joint errors separately.
+
 ```bash
 pal lesson run core-fr3-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-02/comparison-01 --variant 1.5 --json
 ```

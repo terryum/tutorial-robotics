@@ -58,6 +58,8 @@ RMSE = sqrt(mean((q_MuJoCo − q_PhysX)²))
 
 ## Try it
 
+Matched torque amplitude: 0.002 → 0.003 Nm in both simulators; lighting and the 2 ms integration interval remain fixed.
+
 ```bash
 pal lesson run sim-cross-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-cross-01/comparison-01 --variant 1.5 --json
 ```

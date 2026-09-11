@@ -56,6 +56,8 @@ JSON encode → decode → bounded action schema
 
 ## Try it
 
+Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
+
 ```bash
 pal lesson run core-vla-01 --headless --samples 64 --output-dir .local/runs/core-vla-01/comparison-01 --seed 8 --json
 ```

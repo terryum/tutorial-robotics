@@ -62,6 +62,8 @@ pal lesson check core-fr3-06 --run-dir .local/runs/core-fr3-06/baseline-01 --jso
 
 ## Try it
 
+미끄럼 마찰계수를 0.6 → 0.9로 바꿉니다(무차원). 수직 하중만 가하면 변화가 작을 수 있습니다. 마찰계수 식별 실험으로 해석하지 않습니다.
+
 ```bash
 pal lesson run core-fr3-06 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-06/comparison-01 --variant 1.5 --json
 ```

@@ -56,6 +56,8 @@ E = K + U; drift = max |E(t)-E(0)|
 
 ## Try it
 
+적분 간격을 0.002 → 0.004 s로 바꿉니다. 표본 수가 같으므로 관찰 시간도 두 배가 됩니다. 같은 시각의 상태가 아니라 에너지 표류를 비교합니다.
+
 ```bash
 pal lesson run core-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-01/comparison-01 --variant 2 --json
 ```

@@ -58,9 +58,13 @@ T_world_flange = Π T_origin,i Rz(q_i)
 
 ## Code connection
 
+시각 OBJ에는 여러 객체가 있습니다. 로컬 변환기는 모든 정점·면을 한 파생 객체에 보존해 MuJoCo로 읽으며 vendor 원본은 유지합니다. 충돌 형상과 전체 관성은 별도로 사용합니다.
+
 `examples/core-enlight-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
 
 ## Try it
+
+seed를 7 → 8로 바꿉니다. 구조 검사·고정 모델 화면·결정론적 추론은 동일할 수 있습니다. 원격 서비스는 로컬 seed와 별개로 변할 수 있으므로 이 한계를 기록합니다.
 
 ```bash
 pal lesson run core-enlight-01 --headless --samples 64 --output-dir .local/runs/core-enlight-01/comparison-01 --seed 8 --json

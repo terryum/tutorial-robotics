@@ -62,6 +62,8 @@ Each column of J maps one joint's angular velocity into tool linear velocity. Ce
 
 ## Try it
 
+Central-difference step: ε 10⁻⁶ → 2×10⁻⁶ rad. The IK target remains fixed. J has units m/rad, Δq rad and Δx m.
+
 ```bash
 pal lesson run core-fr3-04 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-04/comparison-01 --variant 2 --json
 ```

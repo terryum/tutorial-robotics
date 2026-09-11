@@ -56,6 +56,8 @@ offline policy(input) = replay policy(input); emitted commands = 0
 
 ## Try it
 
+Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
+
 ```bash
 pal lesson run hw-common-01 --headless --samples 64 --output-dir .local/runs/hw-common-01/comparison-01 --seed 8 --json
 ```

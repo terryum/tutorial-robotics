@@ -56,6 +56,8 @@ Eight pendulum episodes use a bounded PD demonstrator. The dataset stores state 
 
 ## Try it
 
+Demonstrator proportional gain: 2 → 3 Nm/rad; derivative gain and the ±3 Nm torque bound remain fixed.
+
 ```bash
 pal lesson run core-data-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-data-01/comparison-01 --variant 1.5 --json
 ```

@@ -62,6 +62,8 @@ action batch shape = (samples, 16, 14)
 
 ## Try it
 
+첫 액추에이터 목표 진폭을 0.05 → 0.075 rad로 바꿉니다. 다른 목표와 16×14 청크 크기는 유지합니다.
+
 ```bash
 pal lesson run core-aloha-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-aloha-01/comparison-01 --variant 1.5 --json
 ```

@@ -62,6 +62,8 @@ J의 각 열은 한 관절의 각속도를 말단 선속도로 변환합니다. 
 
 ## Try it
 
+중앙 유한차분 간격 ε를 10⁻⁶ → 2×10⁻⁶ rad로 바꿉니다. IK 목표는 같습니다. J의 단위는 m/rad, Δq는 rad, Δx는 m입니다.
+
 ```bash
 pal lesson run core-fr3-04 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-04/comparison-01 --variant 2 --json
 ```

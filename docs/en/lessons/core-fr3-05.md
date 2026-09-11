@@ -62,6 +62,8 @@ The mass matrix M couples joint accelerations. Operational inertia Λ converts C
 
 ## Try it
 
+Cartesian acceleration gain: 120 → 180 s⁻²; damping follows 2√gain. M is kg·m², Λ kg, force N and torque Nm.
+
 ```bash
 pal lesson run core-fr3-05 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-05/comparison-01 --variant 1.5 --json
 ```

@@ -58,6 +58,8 @@ evaluation = saved policy(observation) in the registered GPU task
 
 ## Try it
 
+Sample budget: 64 → 96. Training lessons derive optimizer iterations from this budget and evaluate for this many steps; candidate-only lessons change evaluation length.
+
 ```bash
 pal lesson run sim-wuji-01 --headless --seed 7 --output-dir .local/runs/sim-wuji-01/comparison-01 --samples 96 --json
 ```

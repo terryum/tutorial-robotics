@@ -63,6 +63,31 @@ def validate_run(identifier: str, run_dir: Path) -> list[str]:
         from pai_lab.lessons.acceptance import measurement_errors
 
         errors += measurement_errors(lesson.id, run_dir, values, experiment)
-    except (OSError, ValueError, KeyError, TypeError) as error:
+    except (OSError, ValueError, KeyError, TypeError, IndexError, AttributeError) as error:
         errors.append(f"unreadable run evidence: {error}")
     return errors
+
+
+def comparison_errors(identifier: str, baseline: Path, comparison: Path) -> list[str]:
+    errors = validate_run(identifier, baseline) + validate_run(identifier, comparison)
+    if baseline.resolve() == comparison.resolve():
+        errors.append("comparison must be a separate execution")
+    if errors:
+        return errors
+    a = json.loads((baseline / "summary.json").read_text())
+    b = json.loads((comparison / "summary.json").read_text())
+    av = json.loads((baseline / "experiment.json").read_text())["variant"]
+    bv = json.loads((comparison / "experiment.json").read_text())["variant"]
+    if sum(a[key] != b[key] for key in ("seed", "samples")) + (av != bv) != 1:
+        errors.append("change exactly one of seed, samples, or variant")
+    return errors
+
+
+def validate_review(identifier: str, run_dir: Path) -> list[str]:
+    try:
+        review = json.loads((run_dir / "review.json").read_text())
+        if review.get("lesson") != identifier or not str(review.get("notes", "")).strip():
+            return ["invalid lesson review"]
+        return comparison_errors(identifier, run_dir, Path(review["comparison_run"]))
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+        return [f"unreadable or missing review; use pal lesson review: {error}"]
