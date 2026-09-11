@@ -54,7 +54,7 @@ Source references: `repository`. The source manifest owns external revisions; ge
 
 ## Try it
 
-Run `pal lesson run core-00 --headless --seed 8 --samples 96`. The digest and `changed_metric_value` should change while the artifact schema stays fixed.
+Run `pal lesson run core-00 --headless --seed 8 --samples 96`. With the same host and environment, the host-audit digest and `available_capability_count` should stay unchanged: this operation measures installed capabilities, not a seeded simulation. The run summary records the new seed and sample count. A sourced ROS environment can change the detected capabilities; inspect the evidence for each capability instead of expecting the seed to change it.
 
 ## Checkpoint
 

@@ -8,7 +8,7 @@ import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Literal, cast
+from typing import Literal
 
 from pai_lab.bundle import validate_bundle
 from pai_lab.catalog import ROOT, Stage
@@ -56,8 +56,9 @@ def normalize_profile(profile: str | None, stage: Stage | None) -> SetupProfile:
         raise ValueError("choose --profile or legacy --stage, not both")
     if stage:
         return STAGE_PROFILE[stage]
-    if profile in SETUP_PROFILES:
-        return cast(SetupProfile, profile)
+    for known_profile in SETUP_PROFILES:
+        if profile == known_profile:
+            return known_profile
     raise ValueError("a setup profile is required")
 
 
