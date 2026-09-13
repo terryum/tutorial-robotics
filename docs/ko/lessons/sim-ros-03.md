@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-ros-03.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-ros-03.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-ros-03 — rosbag 에피소드 기록과 결정론적 재생
 
 <!-- pal:metadata:start -->

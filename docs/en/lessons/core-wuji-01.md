@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-wuji-01.md" lang="ko">한국어</a> | <a href="core-wuji-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-wuji-01 — Wuji Hand 2 Beta 2 joints, poses, and synergies
 
 <!-- pal:metadata:start -->

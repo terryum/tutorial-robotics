@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-02.md" lang="ko">한국어</a> | <a href="core-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-02 — Pinned public robot sources
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-data-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-data-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-data-01 — MuJoCo 에피소드 데이터셋
 
 <!-- pal:metadata:start -->

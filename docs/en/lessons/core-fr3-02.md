@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-fr3-02.md" lang="ko">한국어</a> | <a href="core-fr3-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-fr3-02 — FR3 joint-space PD control
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/sim-wuji-02.md" lang="ko">한국어</a> | <a href="sim-wuji-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-wuji-02 — Wuji dexterity candidate bundle
 
 <!-- pal:metadata:start -->

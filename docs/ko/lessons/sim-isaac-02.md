@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-isaac-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-isaac-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-isaac-02 — Isaac 카메라, 조명과 합성 데이터
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-01 — 결정론적 진자 상태와 시간 간격
 
 <!-- pal:metadata:start -->

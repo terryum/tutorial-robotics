@@ -14,6 +14,8 @@ The catalog and `pal` CLI are authoritative. Machine names never authorize or or
 
 ## Execution contract
 
+- Start guided learning by opening the current lesson's GitHub page in the reader's language. Reuse that tutorial tab for subsequent lessons and reruns; follow `agent/workflow.md` for tab selection and unavailable-browser handling.
+- Initialize the lesson language from the conversation. Before subsequent navigation, preserve the language currently selected in the tutorial tab, including manual 한국어/ENGLISH switches; follow the language continuity rules in `agent/workflow.md`.
 - Detect the host and show the smallest setup plan before applying it.
 - Run one eligible lesson at a time unless the user asks for a broader batch.
 - Every lesson uses committed English/Korean docs, a thin entry point, deterministic check, expected artifacts, and an explicit verification badge.

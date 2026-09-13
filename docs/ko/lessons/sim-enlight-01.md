@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-enlight-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-enlight-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-enlight-01 — Enlight ROS 2 가상 하드웨어
 
 <!-- pal:metadata:start -->

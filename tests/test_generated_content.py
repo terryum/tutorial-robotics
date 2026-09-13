@@ -1,8 +1,20 @@
 import importlib.util
 import json
 import shutil
+from html.parser import HTMLParser
 
 from pai_lab.catalog import ROOT
+
+
+class LanguageLinks(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.links = {}
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "a" and attrs.get("lang") in {"ko", "en"}:
+            self.links[attrs["lang"]] = attrs["href"]
 
 
 def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
@@ -38,3 +50,17 @@ def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
         for lang in ("en", "ko"):
             page = (tmp_path / f"docs/{lang}/lessons/{lesson['id']}.md").read_text()
             assert f"(./{catalog[i + 1]['id']}.md)" in page.split("## Next lesson")[1]
+    for language in ("ko", "en"):
+        for path in (tmp_path / "docs" / language).rglob("*.md"):
+            relative = path.relative_to(tmp_path / "docs" / language)
+            page = path.read_text()
+            parser = LanguageLinks()
+            parser.feed(page.split("<!-- pal:language:end -->")[0])
+            assert set(parser.links) == {"ko", "en"}
+            for target_language, href in parser.links.items():
+                # Switching preserves chapter/guide identity and round-trips locally.
+                target = (path.parent / href).resolve()
+                assert target == tmp_path / "docs" / target_language / relative
+                assert target.is_file()
+            assert page.count("<!-- pal:language:start -->") == 1
+            assert page.index('<p align="right">') < page.index("# ")

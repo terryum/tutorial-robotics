@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/sim-ros-03.md" lang="ko">한국어</a> | <a href="sim-ros-03.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-ros-03 — Rosbag episode recording and deterministic replay
 
 <!-- pal:metadata:start -->

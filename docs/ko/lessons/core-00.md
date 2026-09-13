@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-00.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-00.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-00 — 저장소 시작과 호스트 점검
 
 <!-- pal:metadata:start -->

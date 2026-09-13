@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="hw-enlight-wuji-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/hw-enlight-wuji-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-enlight-wuji-01 — Enlight와 Wuji 통합 읽기 전용 검증
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-ros-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-ros-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-ros-02 — MuJoCo–ROS 2 브리지
 
 <!-- pal:metadata:start -->

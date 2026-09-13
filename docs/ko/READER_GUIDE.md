@@ -1,8 +1,20 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="READER_GUIDE.md" lang="ko">한국어</a> | <a href="../en/READER_GUIDE.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # GitHub에서 읽고 직접 실행하기
 
 이 문서는 현재 실행 안내입니다. 날짜가 붙은 호스트 설치 보고서는 당시 환경의 기록이며 현재 실행 성공을 보장하지 않습니다. 수업의 Action은 계산하고 종료합니다. GUI 재생은 별도 명령입니다.
 
 ## 처음 준비 — Mac Terminal, zsh
+
+시작 언어는 Codex/Claude Code의 대화 언어를 따릅니다. 모든 교재 페이지 본문 상단 오른쪽의 **한국어 | ENGLISH**를 누르면 같은 챕터의 다른 언어로 이동합니다. 페이지 아래의 다음 수업 링크도 그 언어를 유지합니다. 에이전트에게 다음 수업을 요청하면 현재 교재 탭의 언어를 확인해 같은 언어의 교재와 설명을 이어갑니다. 중간에 다시 언어 링크를 누르거나 대화에서 언어 변경을 명시하면 새 선택을 따릅니다. 탭을 닫았을 때는 에이전트가 마지막으로 확인한 언어를 복원합니다.
+
+Codex 또는 Claude Code와 시작하면 에이전트가 먼저 [T00 한국어 GitHub 교재](https://github.com/terryum/tutorial-robotics/blob/main/docs/ko/lessons/core-00.md)를 브라우저에 엽니다. 교재 탭이 없으면 새 탭을 하나 만들고, 다음 수업이나 재실행에서는 같은 교재 탭을 해당 수업으로 이동합니다. 다른 작업의 탭은 그대로 둡니다. 브라우저 연결이 없으면 에이전트가 그 사실과 링크를 안내하므로 직접 열어도 됩니다.
+
+한쪽에는 Codex/Claude Code 대화와 터미널, 다른 쪽에는 GitHub 교재를 두고 진행합니다. 에이전트가 짚어주는 Expected·Observe·How it works를 읽으며 실제 결과와 이론을 연결합니다. 시뮬레이션 재생이 필요한 수업에서는 별도 뷰어 창을 사용합니다. 교재를 여는 것만으로 시뮬레이션이 실행되지는 않습니다.
 
 Git은 고정 소스 버전을 받고, Python은 실험을 실행하며, uv는 잠긴 의존성을 `.venv`에 설치합니다. MuJoCo는 동역학과 렌더링, NumPy는 수치 계산을 담당합니다. GUI용 프로그램을 따로 설치할 필요는 없습니다.
 

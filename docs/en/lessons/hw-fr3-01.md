@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-fr3-01.md" lang="ko">한국어</a> | <a href="hw-fr3-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-fr3-01 — FR3 read-only state, shadow, and approved low-risk motion
 
 <!-- pal:metadata:start -->

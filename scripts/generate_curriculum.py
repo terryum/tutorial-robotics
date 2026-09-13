@@ -3,10 +3,38 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def language_switch(text: str, path: Path, relative: Path) -> str:
+    """Prepend paired, branch-relative links without touching the authored body."""
+    links = []
+    for language, label in (("ko", "한국어"), ("en", "ENGLISH")):
+        target = ROOT / "docs" / language / relative
+        if not target.is_file():
+            raise FileNotFoundError(f"Missing translation: {target}")
+        href = Path(os.path.relpath(target, path.parent)).as_posix()
+        links.append(f'<a href="{href}" lang="{language}">{label}</a>')
+    opening, closing = "<!-- pal:language:start -->", "<!-- pal:language:end -->"
+    text = re.sub(
+        re.escape(opening) + r".*?" + re.escape(closing) + r"\n*",
+        "",
+        text,
+        flags=re.DOTALL,
+    )
+    return (
+        opening
+        + '\n<p align="right">\n  '
+        + " | ".join(links)
+        + "\n</p>\n"
+        + closing
+        + "\n\n"
+        + text
+    )
 
 
 def metadata(lesson: dict) -> str:
@@ -102,6 +130,12 @@ def main() -> None:
     else:
         text += "\n" + block + "\n"
     readme.write_text(text)
+    # Include indexes and reader guides as well as every lesson pair.
+    for language in ("en", "ko"):
+        for path in (ROOT / "docs" / language).rglob("*.md"):
+            relative = path.relative_to(ROOT / "docs" / language)
+            path.write_text(language_switch(path.read_text(), path, relative))
+    readme.write_text(language_switch(readme.read_text(), readme, Path("index.md")))
     print(
         f"refreshed {len(lessons)} metadata/navigation pairs; authored bodies, entrypoints and tests preserved"
     )

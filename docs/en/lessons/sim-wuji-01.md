@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/sim-wuji-01.md" lang="ko">한국어</a> | <a href="sim-wuji-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-wuji-01 — Wuji in-hand PPO on GPU
 
 <!-- pal:metadata:start -->

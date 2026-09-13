@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-g1-01.md" lang="ko">한국어</a> | <a href="core-g1-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-g1-01 — Unitree G1 playback and motion data
 
 <!-- pal:metadata:start -->

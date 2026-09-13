@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-03.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-03.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-03 — 다중 모델 검사와 자산 검증
 
 <!-- pal:metadata:start -->

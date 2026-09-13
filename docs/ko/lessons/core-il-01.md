@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-il-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-il-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-il-01 — 행동 복제 기준선
 
 <!-- pal:metadata:start -->

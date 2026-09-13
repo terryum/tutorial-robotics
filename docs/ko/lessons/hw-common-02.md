@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="hw-common-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/hw-common-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-common-02 — 실물 하드웨어 읽기 전용 통합 게이트
 
 <!-- pal:metadata:start -->

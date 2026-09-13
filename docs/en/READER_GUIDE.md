@@ -1,8 +1,20 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../ko/READER_GUIDE.md" lang="ko">한국어</a> | <a href="READER_GUIDE.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # Read on GitHub, execute in your terminal
 
 This is the current execution guide. Dated host installation reports describe their historical revision. They do not establish current readiness. Lesson Action commands compute and exit; GUI replay is separate.
 
 ## First setup — macOS Terminal, zsh
+
+The initial language follows your Codex/Claude Code conversation. Select **한국어 | ENGLISH** at the top right of any curriculum page to open the same chapter in the other language. The Next lesson link stays in that language. When you ask the agent to continue, it reads the current tutorial tab's language and keeps it for the next page and explanation. Switch again using the links or explicitly request a language change in chat. If the tab is closed, the agent restores the last language it observed.
+
+When you start with Codex or Claude Code, the agent first opens the [T00 English GitHub lesson](https://github.com/terryum/tutorial-robotics/blob/main/docs/en/lessons/core-00.md). It creates one new tab if no tutorial tab exists, then navigates that same tutorial tab for subsequent lessons and reruns. Unrelated tabs stay untouched. If browser control is unavailable, the agent says so and provides the link for you to open manually.
+
+Keep the Codex/Claude Code conversation and terminal on one side and the GitHub lesson on the other. Follow the agent's pointers to Expected, Observe and How it works to connect measured results to the theory. Lessons with simulation replay use a separate viewer window. Opening the theory page alone does not start a simulation.
 
 Git retrieves pinned sources. Python runs the experiments. uv installs locked dependencies into `.venv`. MuJoCo provides dynamics and rendering; NumPy performs numerical calculations.
 

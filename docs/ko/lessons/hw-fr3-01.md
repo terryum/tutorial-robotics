@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="hw-fr3-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/hw-fr3-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-fr3-01 — FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작
 
 <!-- pal:metadata:start -->

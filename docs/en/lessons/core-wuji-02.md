@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-wuji-02.md" lang="ko">한국어</a> | <a href="core-wuji-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-wuji-02 — Wuji virtual tactile observation
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-enlight-01.md" lang="ko">한국어</a> | <a href="hw-enlight-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-enlight-01 — Enlight read-only adapter and low-risk validation
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-rl-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-rl-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-rl-01 — 최소 연속 행동 PPO
 
 <!-- pal:metadata:start -->

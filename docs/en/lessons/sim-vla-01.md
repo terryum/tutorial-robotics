@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/sim-vla-01.md" lang="ko">한국어</a> | <a href="sim-vla-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-vla-01 — SmolVLA fine-tuning and policy server
 
 <!-- pal:metadata:start -->

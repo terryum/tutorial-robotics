@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-enlight-02.md" lang="ko">한국어</a> | <a href="hw-enlight-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-enlight-02 — Enlight system identification and MuJoCo calibration
 
 <!-- pal:metadata:start -->

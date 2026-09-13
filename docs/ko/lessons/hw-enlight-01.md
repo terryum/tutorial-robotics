@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="hw-enlight-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/hw-enlight-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-enlight-01 — Enlight 읽기 전용 어댑터와 저위험 검증
 
 <!-- pal:metadata:start -->

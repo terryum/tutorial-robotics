@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-il-01.md" lang="ko">한국어</a> | <a href="core-il-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-il-01 — Behavioral cloning baseline
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="hw-wuji-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/hw-wuji-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-wuji-01 — Wuji Beta 2 읽기 전용 어댑터와 촉각 보정
 
 <!-- pal:metadata:start -->

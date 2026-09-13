@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-fr3-08.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-fr3-08.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-fr3-08 — FR3 도달 과제 PPO
 
 <!-- pal:metadata:start -->

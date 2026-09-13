@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-cross-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-cross-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-cross-01 — MuJoCo–Isaac sim-to-sim 검증
 
 <!-- pal:metadata:start -->

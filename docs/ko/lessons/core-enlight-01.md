@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-enlight-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-enlight-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-enlight-01 — Enlight 모델, 좌표계와 기구학
 
 <!-- pal:metadata:start -->

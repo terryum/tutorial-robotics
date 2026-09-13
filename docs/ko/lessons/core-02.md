@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-02 — 공개 로봇 소스 고정과 자산 매니페스트
 
 <!-- pal:metadata:start -->

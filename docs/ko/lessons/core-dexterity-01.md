@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-dexterity-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-dexterity-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-dexterity-01 — Wuji와 Sharpa 모델 비교
 
 <!-- pal:metadata:start -->

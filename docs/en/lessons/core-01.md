@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-01.md" lang="ko">한국어</a> | <a href="core-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-01 — Deterministic pendulum state and timestep
 
 <!-- pal:metadata:start -->

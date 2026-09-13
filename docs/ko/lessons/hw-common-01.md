@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="hw-common-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/hw-common-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-common-01 — 런타임 시작, 오프라인 재생과 명령 차단
 
 <!-- pal:metadata:start -->

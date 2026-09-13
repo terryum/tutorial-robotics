@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-fr3-06.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-fr3-06.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-fr3-06 — FR3 접촉과 마찰 실험실
 
 <!-- pal:metadata:start -->

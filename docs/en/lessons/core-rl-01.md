@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-rl-01.md" lang="ko">한국어</a> | <a href="core-rl-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-rl-01 — Minimal continuous-action PPO
 
 <!-- pal:metadata:start -->

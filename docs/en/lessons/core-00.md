@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-00.md" lang="ko">한국어</a> | <a href="core-00.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-00 — Repository bootstrap and host audit
 
 <!-- pal:metadata:start -->

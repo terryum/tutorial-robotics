@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-common-01.md" lang="ko">한국어</a> | <a href="hw-common-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-common-01 — Runtime bootstrap, offline replay, and command sink
 
 <!-- pal:metadata:start -->

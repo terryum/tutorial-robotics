@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-common-02.md" lang="ko">한국어</a> | <a href="hw-common-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-common-02 — Real-hardware read-only integration gate
 
 <!-- pal:metadata:start -->

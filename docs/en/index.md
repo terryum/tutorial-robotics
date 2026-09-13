@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../ko/index.md" lang="ko">한국어</a> | <a href="index.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # Lesson index
 
 | # | Lesson | Stage | Track | Verification |

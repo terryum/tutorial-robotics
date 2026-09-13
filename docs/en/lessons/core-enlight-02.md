@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-enlight-02.md" lang="ko">한국어</a> | <a href="core-enlight-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-enlight-02 — Enlight MuJoCo draft and cross-format validation
 
 <!-- pal:metadata:start -->

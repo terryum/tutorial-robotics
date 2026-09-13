@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-fr3-01.md" lang="ko">한국어</a> | <a href="core-fr3-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-fr3-01 — FR3 model anatomy
 
 <!-- pal:metadata:start -->

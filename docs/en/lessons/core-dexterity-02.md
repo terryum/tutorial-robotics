@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-dexterity-02.md" lang="ko">한국어</a> | <a href="core-dexterity-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-dexterity-02 — Hand retargeting and demonstration recording
 
 <!-- pal:metadata:start -->

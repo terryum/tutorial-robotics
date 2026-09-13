@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-wuji-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-wuji-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-wuji-01 — Wuji Hand 2 Beta 2 관절, 자세와 시너지
 
 <!-- pal:metadata:start -->

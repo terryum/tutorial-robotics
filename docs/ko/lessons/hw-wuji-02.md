@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="hw-wuji-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/hw-wuji-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-wuji-02 — Wuji 섀도와 승인 기반 실물 평가
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-enlight-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-enlight-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-enlight-02 — Enlight 접촉 과제 시뮬레이션과 후보 번들
 
 <!-- pal:metadata:start -->

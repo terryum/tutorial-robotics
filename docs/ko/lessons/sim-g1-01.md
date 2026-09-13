@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-g1-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-g1-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-g1-01 — Unitree G1 GPU PPO와 모션 모방
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-vla-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-vla-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-vla-01 — VLA 프로토콜과 모의 정책 클라이언트
 
 <!-- pal:metadata:start -->

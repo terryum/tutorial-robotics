@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-wuji-01.md" lang="ko">한국어</a> | <a href="hw-wuji-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-wuji-01 — Wuji Beta 2 read-only adapter and tactile calibration
 
 <!-- pal:metadata:start -->

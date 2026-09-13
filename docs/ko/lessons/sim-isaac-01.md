@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-isaac-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-isaac-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-isaac-01 — Isaac Sim 공개 로봇 자산 가져오기
 
 <!-- pal:metadata:start -->

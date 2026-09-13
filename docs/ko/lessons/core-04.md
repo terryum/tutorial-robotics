@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-04.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-04.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-04 — 통합 뷰어와 결정론적 렌더링
 
 <!-- pal:metadata:start -->

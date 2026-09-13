@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-fr3-03.md" lang="ko">한국어</a> | <a href="core-fr3-03.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-fr3-03 — FR3 gravity compensation and feedforward
 
 <!-- pal:metadata:start -->

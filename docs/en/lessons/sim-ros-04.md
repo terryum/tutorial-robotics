@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/sim-ros-04.md" lang="ko">한국어</a> | <a href="sim-ros-04.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-ros-04 — Common embodiment API for simulation and ROS 2
 
 <!-- pal:metadata:start -->

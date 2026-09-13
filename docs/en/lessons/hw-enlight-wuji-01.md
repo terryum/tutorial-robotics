@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-enlight-wuji-01.md" lang="ko">한국어</a> | <a href="hw-enlight-wuji-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-enlight-wuji-01 — Enlight and Wuji integrated read-only validation
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-vla-01.md" lang="ko">한국어</a> | <a href="core-vla-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-vla-01 — VLA protocol and mock policy client
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-dexterity-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-dexterity-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-dexterity-02 — 손 리타게팅과 시연 기록
 
 <!-- pal:metadata:start -->

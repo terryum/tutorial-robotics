@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="core-aloha-01.md" lang="ko">한국어</a> | <a href="../../en/lessons/core-aloha-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-aloha-01 — ALOHA 시뮬레이션과 ACT 계약
 
 <!-- pal:metadata:start -->

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-03.md" lang="ko">한국어</a> | <a href="core-03.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-03 — Multi-model inspection and asset validation
 
 <!-- pal:metadata:start -->

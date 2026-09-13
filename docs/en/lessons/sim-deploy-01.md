@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/sim-deploy-01.md" lang="ko">한국어</a> | <a href="sim-deploy-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-deploy-01 — Candidate deployment bundle and promotion gate
 
 <!-- pal:metadata:start -->

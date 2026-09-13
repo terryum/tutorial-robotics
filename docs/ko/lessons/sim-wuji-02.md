@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-wuji-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-wuji-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-wuji-02 — Wuji 정교 조작 후보 번들
 
 <!-- pal:metadata:start -->

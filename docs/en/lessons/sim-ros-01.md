@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/sim-ros-01.md" lang="ko">한국어</a> | <a href="sim-ros-01.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-ros-01 — ROS 2 topics, QoS, services, actions, and TF
 
 <!-- pal:metadata:start -->

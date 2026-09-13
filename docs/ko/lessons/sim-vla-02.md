@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sim-vla-02.md" lang="ko">한국어</a> | <a href="../../en/lessons/sim-vla-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # sim-vla-02 — 선택형 원격 VLA 추론
 
 <!-- pal:metadata:start -->

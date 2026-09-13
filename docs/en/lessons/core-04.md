@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/core-04.md" lang="ko">한국어</a> | <a href="core-04.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # core-04 — Unified viewer and deterministic rendering
 
 <!-- pal:metadata:start -->

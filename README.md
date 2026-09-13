@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="docs/ko/index.md" lang="ko">한국어</a> | <a href="docs/en/index.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # Tutorial Robotics
 
 An action-first bilingual course for readers who know basic Python and are new to robotics. Start with one lesson, inspect the actual state and images, explain the result, compare one variable, then finish it. [English](docs/en/index.md) · [한국어](docs/ko/index.md)
@@ -7,6 +13,10 @@ An action-first bilingual course for readers who know basic Python and are new t
 For command explanations, fresh terminals, saved-result replay and feedback, use the
 [English reader guide](docs/en/READER_GUIDE.md) or [한국어 실행 안내](docs/ko/READER_GUIDE.md).
 The [redesign verification record](state/READER_REDESIGN.md) separates local evidence from pending host checks.
+
+During guided learning, Codex and Claude Code open the current GitHub lesson in your language and reuse that tutorial tab as you advance. Keep the conversation/terminal beside the theory page; simulation replay uses a separate viewer. Without browser control, the agent provides the exact link for manual opening. Start with [한국어 T00](https://github.com/terryum/tutorial-robotics/blob/main/docs/ko/lessons/core-00.md) or [English T00](https://github.com/terryum/tutorial-robotics/blob/main/docs/en/lessons/core-00.md).
+
+The first lesson uses your conversation language. Each curriculum page has a top-right **한국어 | ENGLISH** link to the same page in the other language. After you switch, both native Next lesson links and agent-guided continuation preserve that selection. The agent checks the current tutorial tab before navigating and remembers the last observed language for reopening.
 
 ```bash
 git clone https://github.com/terryum/tutorial-robotics.git

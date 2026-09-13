@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/lessons/hw-wuji-02.md" lang="ko">한국어</a> | <a href="hw-wuji-02.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # hw-wuji-02 — Wuji shadow and gated real evaluation
 
 <!-- pal:metadata:start -->
