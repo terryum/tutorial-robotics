@@ -58,6 +58,22 @@ Select one eligible lesson. Initializing does not erase completed records.
 
 Run `cd` and `source .venv/bin/activate` in each new terminal. Installation is not repeated.
 
+Completed lessons and timestamps are saved in this clone's `.local/progress.json`.
+The last lesson and phase are in `.local/session.json`, feedback in
+`.local/feedback.json`, and execution/review evidence in `.local/runs/`.
+They survive terminal restarts. Git ignores `.local/`, so your state is not shared
+with other learners. Keep the same checkout and `.local/` to resume; a fresh clone
+starts with no completed lessons.
+
+```bash
+pal course list --json
+pal course next --json
+```
+
+`list` shows completed and pending lessons; `next` shows the next eligible lesson.
+The `status` command below shows only remaining or review-needed lessons.
+Running `pal course init` again preserves completed records.
+
 ```bash
 pal course status --json
 ```

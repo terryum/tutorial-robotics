@@ -4,6 +4,7 @@ Shared per-learner completion is no longer committed. Run `pal course init`, `pa
 
 Repository maintainers track implementation and publication evidence in [PUBLISHING.md](PUBLISHING.md).
 
-User-requested progress synchronization can record a reviewed summary in a private
-handoff. See [Cross-host continuation](../README.md#cross-host-continuation) for
-discovery and fresh-host verification. Raw learner state remains local.
+Use `pal course list --json` to see completed and pending lessons;
+`pal course status --json` lists only remaining or review-needed lessons.
+See [Your local progress](../README.md#your-local-progress) for returning to the
+same checkout. A fresh clone starts independently with no completed lessons.

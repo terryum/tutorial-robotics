@@ -58,6 +58,21 @@ pal course next --json
 
 새 터미널마다 `cd`와 `source .venv/bin/activate`를 다시 실행합니다. 설치를 반복할 필요는 없습니다.
 
+진도는 현재 클론의 `.local/progress.json`에 완료 시각과 함께 저장됩니다.
+마지막 수업과 단계는 `.local/session.json`, 피드백은 `.local/feedback.json`,
+실행·복습 증거는 `.local/runs/`에 남습니다. 터미널을 닫아도 유지되며,
+`.local/`은 Git에서 제외되므로 다른 사용자에게 공유되지 않습니다.
+다시 이어가려면 같은 클론과 `.local/`을 보존하세요. 새 클론은 완료 수업 없이 시작합니다.
+
+```bash
+pal course list --json
+pal course next --json
+```
+
+`list`는 완료·미완료 수업 전체, `next`는 다음 실행 가능한 수업을 보여줍니다.
+아래 `status`는 남은 수업과 재검토가 필요한 수업만 보여줍니다.
+`pal course init`을 다시 실행해도 기존 완료 기록은 유지됩니다.
+
 ```bash
 pal course status --json
 ```

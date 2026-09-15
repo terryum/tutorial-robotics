@@ -61,19 +61,27 @@ pal feedback list --json
 pal feedback add "[개선점] Explain the plot units" --lesson T00 --json
 ```
 
-## Cross-host continuation
+## Your local progress
 
-For Terry's authorized cross-host sessions, read the private
-[learner handoff](https://github.com/terryum/tutorial-robotics-private/blob/main/state/LEARNER_HANDOFF.md)
-or the sibling checkout's `state/LEARNER_HANDOFF.md` before choosing where to resume.
-It records reviewed learning history and the next lesson; access requires the private repository.
-Public-only learners continue with their own `.local/` state.
+Each clone starts with no completed lessons. Your completed lessons and completion
+times are saved in `.local/progress.json`, your last lesson and phase in
+`.local/session.json`, and your feedback in `.local/feedback.json`. Execution and
+review evidence stays in `.local/runs/`. Git ignores `.local/`; ordinary commits,
+pushes and pulls do not share or overwrite this state.
 
-The handoff does not restore `pal` execution receipts. Preserve existing local progress,
-check the current host, and reverify missing prerequisite evidence through the normal
-run/check/review/finish workflow. Do not create completion records from the summary alone.
-Update the private summary when the user requests progress synchronization; keep raw
-state and artifacts under ignored `.local/`.
+Return to the same checkout, activate `.venv`, and run:
+
+```bash
+pal course list --json    # All selected lessons, including completed ones
+pal course status --json  # Remaining lessons and any needing review
+pal course next --json    # Next eligible lesson
+```
+
+`pal course init` preserves completion records. A lesson becomes complete only
+after the run/check/review/finish workflow succeeds. Keep `.local/` and its run
+artifacts to resume later; a fresh clone has its own progress. See the
+[English reader guide](docs/en/READER_GUIDE.md#resume-in-a-new-terminal) or
+[한국어 실행 안내](docs/ko/READER_GUIDE.md#새-터미널에서-재개).
 
 ## Evidence and course scope
 

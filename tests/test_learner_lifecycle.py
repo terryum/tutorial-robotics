@@ -1,6 +1,9 @@
 """Regression tests for irreversible-looking learner-state mistakes."""
 
 import json
+import os
+import subprocess
+import sys
 
 import pytest
 
@@ -53,6 +56,52 @@ def test_init_preserves_legacy_completion(session):
     (session / "progress.json").write_text(json.dumps(original))
     assert main(["course", "init", "--through", "sim", "--json"]) == 0
     assert load_progress().completed == original["completed"]
+
+
+def test_progress_survives_cli_restart_and_new_learner_starts_empty(session, tmp_path):
+    """Independent CLI processes must resume only their own saved learner state."""
+    from pai_lab.catalog import ROOT
+
+    def cli(state, *args):
+        result = subprocess.run(
+            [sys.executable, "-m", "pai_lab.cli", *args, "--json"],
+            cwd=ROOT,
+            env={**os.environ, "PAL_LOCAL_DIR": str(state)},
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stdout + result.stderr
+        return json.loads(result.stdout)
+
+    assert cli(session, "course", "next")["id"] == "core-00"
+    assert not session.exists()  # Reading status must not initialize a learner.
+    cli(session, "course", "init")
+    run = cli(session, "lesson", "run", "core-00", "--headless")
+    baseline = run["run_dir"]
+    assert str(session / "runs") in baseline
+    assert json.loads((session / "progress.json").read_text())["completed"] == {}
+    assert json.loads((session / "session.json").read_text())["phase"] == "inspect"
+    cli(session, "lesson", "check", "core-00", "--run-dir", baseline)
+    cli(
+        session, "lesson", "review", "core-00", "--run-dir", baseline,
+        "--notes", "Inspected capability counts; this host audit is independent of seed.",
+    )
+    cli(session, "lesson", "finish", "core-00", "--run-dir", baseline)
+    complete = json.loads((session / "progress.json").read_text())["completed"]
+    assert complete["core-00"]["completed_at"]
+    assert json.loads((session / "session.json").read_text())["phase"] == "finished"
+    assert cli(session, "course", "list")[0]["status"] == "complete"
+    assert all(row["id"] != "core-00" for row in cli(session, "course", "status"))
+    assert cli(session, "course", "next")["id"] == "core-01"
+    cli(session, "course", "init")
+    assert json.loads((session / "progress.json").read_text())["completed"] == complete
+
+    other = tmp_path / "new-learner"
+    assert cli(other, "course", "next")["id"] == "core-00"
+    assert all(row["status"] == "pending" for row in cli(other, "course", "list"))
+    assert not other.exists()
+    assert json.loads((session / "progress.json").read_text())["completed"] == complete
 
 
 def test_run_review_feedback_finish_and_reinit(session, tmp_path):
