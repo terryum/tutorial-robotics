@@ -20,7 +20,7 @@ from pai_lab.progress import load_progress
 
 def previous_run(identifier: str) -> Path:
     entry = load_progress().completed.get(identifier)
-    if not entry:
+    if not entry or not entry.get("run_dir"):
         raise FileNotFoundError(f"finish {identifier} to provide its actual data/policy artifact")
     path = Path(entry["run_dir"])
     path = path if path.is_absolute() else ROOT / path

@@ -10,7 +10,7 @@ Build and teach the public capability-first robotics curriculum. Read, in order:
 4. `docs/07_SAFETY.md` for any hardware-stage work
 5. `.local/host.json`, `.local/capabilities.json`, and `.local/progress.json` when present
 
-The catalog and `pal` CLI are authoritative. Machine names never authorize or order work. A workstation can start at Stage 1 without a MacBook. Learner state belongs only under ignored `.local/`; `state/PUBLISHING.md` records shared publication evidence.
+The catalog and `pal` CLI are authoritative. Machine names never authorize or order work. A workstation can start at Stage 1 without a MacBook. Learner state defaults to ignored `.local/`. An explicitly enabled learner-owned JSON helper may synchronize minimal completion hashes to that learner’s private store; raw evidence and hardware authority stay local. See `docs/PERSONAL_PROGRESS.md`; `state/PUBLISHING.md` records shared publication evidence.
 
 ## Execution contract
 

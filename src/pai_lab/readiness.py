@@ -47,13 +47,30 @@ def gaps(lesson: Lesson, *, prerequisites: bool = True) -> list[str]:
                 errors.append(
                     f"prerequisite {identifier} has stale or unverified evidence; rerun and finish it"
                 )
+    # Shared learning never supplies data or policy files consumed by a run.
+    data_prerequisites = {
+        "core-il-01": "core-data-01",
+        "sim-deploy-01": "core-fr3-08",
+        "hw-common-01": "sim-deploy-01",
+    }
+    source = data_prerequisites.get(lesson.id) if prerequisites else None
+    if source:
+        entry = load_progress().completed.get(source, {})
+        if not entry.get("run_dir"):
+            errors.append(
+                f"local data/policy required from {source}; run and finish it on this environment"
+            )
     return errors
 
 
 def completion_gaps(identifier: str) -> list[str]:
     from pai_lab.feedback import pending
     from pai_lab.lessons.evidence import validate_review, validate_run
+    from pai_lab.personal_progress import shared_gaps
 
+    shared = shared_gaps(identifier)
+    if shared is not None:
+        return shared + (["unresolved feedback"] if pending(identifier) else [])
     entry = load_progress().completed.get(identifier)
     if not entry or not entry.get("run_dir"):
         return ["no completed run"]

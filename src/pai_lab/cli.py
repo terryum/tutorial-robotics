@@ -9,7 +9,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from pai_lab import feedback
+from pai_lab import feedback, personal_progress
 from pai_lab.assets import check_sources, fetch_bundle
 from pai_lab.catalog import (
     ROOT,
@@ -105,7 +105,7 @@ def course_init(through: Stage, robots: tuple[str, ...], electives: bool, json_o
 
 
 def _lesson_row(lesson: Lesson, progress: CourseProgress) -> dict[str, object]:
-    return {
+    row: dict[str, object] = {
         "id": lesson.id,
         "aliases": lesson.aliases,
         "stage": lesson.stage,
@@ -120,6 +120,14 @@ def _lesson_row(lesson: Lesson, progress: CourseProgress) -> dict[str, object]:
         "implementation": lesson.implementation,
         "title": lesson.title,
     }
+    shared = personal_progress.shared_entry(lesson.id)
+    if shared is not None:
+        row.update(
+            completed_on=shared["completed_on"],
+            learning_completed=True,
+            current_version_verified=shared["current_version_verified"],
+        )
+    return row
 
 
 def course_list(status_only: bool, json_output: bool) -> int:
@@ -288,6 +296,7 @@ def lesson_run_command(
         local_root() / "session.json",
         {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "running"},
     )
+    personal_progress.notify()
     try:
         from pai_lab.lessons.parameters import parse_parameters
 
@@ -326,6 +335,7 @@ def lesson_run_command(
         "run_dir": str(run_dir),
         "result": result.__dict__,
     }
+    personal_progress.notify()
     _emit(payload, json_output)
     return 0
 
@@ -348,8 +358,8 @@ def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> 
 
     lesson = resolve_lesson(identifier)
     errors = check_lesson(lesson.id) + gaps(lesson) + validate_run(lesson.id, run_dir)
-    if feedback.pending(lesson.id):
-        errors.append("unresolved feedback; inspect pal feedback list")
+    if feedback.pending(lesson.id) or personal_progress.shared_feedback(lesson.id):
+        errors.append("unresolved feedback; inspect local feedback and shared summary")
     errors += validate_review(lesson.id, run_dir)
     if errors:
         _emit({"status": "blocked", "lesson": lesson.id, "errors": errors}, json_output)
@@ -361,7 +371,12 @@ def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> 
         local_root() / "session.json",
         {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "finished"},
     )
-    _emit({"status": "complete", "lesson": lesson.id, "run_dir": str(run_dir)}, json_output)
+    personal_progress.notify()
+    result: dict[str, Any] = {"status": "complete", "lesson": lesson.id, "run_dir": str(run_dir)}
+    shared = personal_progress.snapshot()
+    if shared is not None:
+        result["sync"] = shared.get("sync", {"status": "pending"})
+    _emit(result, json_output)
     return 0
 
 
@@ -386,6 +401,11 @@ def lesson_review_command(
             "reviewed_at": datetime.now(UTC).isoformat(),
         },
     )
+    write_json(
+        local_root() / "session.json",
+        {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "reviewed"},
+    )
+    personal_progress.notify()
     _emit({"status": "reviewed", "lesson": lesson.id}, json_output)
     return 0
 
@@ -431,7 +451,7 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--robot", action="append", default=[])
     init.add_argument("--include-electives", action="store_true")
     init.add_argument("--json", action="store_true")
-    for name in ("list", "status", "next"):
+    for name in ("list", "status", "next", "summary"):
         item = course_commands.add_parser(name)
         item.add_argument("--json", action="store_true")
     runnable = course_commands.add_parser("runnable")
@@ -513,7 +533,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser.add_argument("--format", choices=("text", "json"), default="text")
     tutorial = commands.add_parser("tutorial", help="deprecated: use course")
     tutorial_commands = tutorial.add_subparsers(dest="tutorial_command", required=True)
-    for name in ("list", "status", "next"):
+    for name in ("list", "status", "next", "summary"):
         tutorial_commands.add_parser(name)
     robot = commands.add_parser("robot")
     robot_commands = robot.add_subparsers(dest="robot_command", required=True)
@@ -536,7 +556,12 @@ def main(argv: list[str] | None = None) -> int:
         result = verify_setup(profile, tuple(args.robot))
         _emit(result, args.json)
         return 0 if result["ready"] else 2
+    if args.command in {"course", "lesson", "tutorial"}:
+        personal_progress.exchange()
     if args.command == "course":
+        if args.course_command == "summary":
+            _emit(personal_progress.summary(), args.json)
+            return 0
         if args.course_command == "init":
             return course_init(args.through, tuple(args.robot), args.include_electives, args.json)
         if args.course_command == "next":
@@ -593,6 +618,7 @@ def main(argv: list[str] | None = None) -> int:
         except ValueError as error:
             _emit({"error": str(error)}, args.json)
             return 2
+        personal_progress.notify()
         _emit(value, args.json)
         return 0
     if args.command == "assets":

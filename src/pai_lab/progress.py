@@ -42,14 +42,16 @@ def load_progress(path: Path | None = None) -> CourseProgress:
         if PROGRESS_PATH == ROOT / ".local/progress.json"
         else PROGRESS_PATH
     )
-    if not path.is_file():
-        return default_progress()
-    raw = json.loads(path.read_text(encoding="utf-8"))
+    raw = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
+    completed = dict(raw.get("completed", {}))
+    from pai_lab.personal_progress import overlay
+
+    overlay(completed)
     return CourseProgress(
         through=raw.get("through", "core"),
         robots=tuple(raw.get("robots", [])),
         include_electives=bool(raw.get("include_electives", False)),
-        completed=dict(raw.get("completed", {})),
+        completed=completed,
     )
 
 
@@ -59,7 +61,11 @@ def save_progress(progress: CourseProgress, path: Path | None = None) -> None:
         if PROGRESS_PATH == ROOT / ".local/progress.json"
         else PROGRESS_PATH
     )
-    write_json(path, progress.to_dict())
+    value = progress.to_dict()
+    value["completed"] = {
+        key: item for key, item in progress.completed.items() if not item.get("shared")
+    }
+    write_json(path, value)
 
 
 def select_lesson(lesson: Lesson, progress: CourseProgress) -> bool:

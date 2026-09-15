@@ -1,7 +1,7 @@
 """Durable feedback shared by both agents in the current local session."""
 
-import fcntl
 import json
+import sys
 from collections.abc import Callable
 from datetime import UTC, datetime
 from functools import wraps
@@ -18,8 +18,23 @@ def serialized[**P, T](function: Callable[P, T]) -> Callable[P, T]:
         path = local_root() / "feedback.lock"
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a") as stream:
-            fcntl.flock(stream.fileno(), fcntl.LOCK_EX)
-            return function(*args, **kwargs)
+            if sys.platform == "win32":
+                import msvcrt
+
+                stream.write("0")
+                stream.flush()
+                stream.seek(0)
+                msvcrt.locking(stream.fileno(), msvcrt.LK_LOCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(stream.fileno(), fcntl.LOCK_EX)
+            try:
+                return function(*args, **kwargs)
+            finally:
+                if sys.platform == "win32":
+                    stream.seek(0)
+                    msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
 
     return wrapped
 
