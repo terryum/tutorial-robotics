@@ -1,12 +1,12 @@
 """Evidence must connect user interventions, exact controls and saved replay."""
 import json
 
+import mujoco
 import numpy as np
 import pytest
 
 from pai_lab.lessons.dependencies import semantic_source
 from pai_lab.lessons.evidence import validate_run
-from pai_lab.lessons.models import load
 from pai_lab.lessons.observation import inspect_run
 from pai_lab.lessons.parameters import parse_parameters, resolve_parameters
 from pai_lab.lessons.physics import arm_control
@@ -39,7 +39,19 @@ def run(identifier):
 
 
 def test_pd_control_samples_reconstruct_requested_and_clipped_torque():
-    model, data, _ = load("fr3")
+    # The control-row contract needs finite inertial dynamics and torque limits,
+    # not an ignored vendor mesh cache. Keep this test runnable in a fresh clone.
+    model = mujoco.MjModel.from_xml_string("""
+        <mujoco><option timestep="0.002" gravity="0 0 0"/>
+          <worldbody><body>
+            <joint name="hinge" axis="0 0 1" actuatorfrcrange="-10 10"/>
+            <geom type="capsule" fromto="0 0 0 0.3 0 0" size="0.03" mass="1"/>
+            <site pos="0.3 0 0"/>
+          </body></worldbody>
+        </mujoco>
+    """)
+    data = mujoco.MjData(model)
+    mujoco.mj_forward(model, data)
     _, payload = arm_control(model, data, 8, 180., "pd", 21.)
     for time_s, name, target, q, velocity, requested, applied in payload["control_rows"]:
         assert time_s >= 0
@@ -47,6 +59,7 @@ def test_pd_control_samples_reconstruct_requested_and_clipped_torque():
         limits = model.jnt_actfrcrange[model.joint(name).id]
         assert applied == pytest.approx(np.clip(requested, *limits))
     assert payload["control_rows"][0][5] == pytest.approx(32.4)
+    assert payload["control_rows"][0][6] == pytest.approx(10.0)
 
 
 def test_inspect_rejects_corruption_and_audit_needs_no_fake_comparison(tmp_path, monkeypatch):
