@@ -23,6 +23,12 @@ ros = [
     "mujoco-ros2-core @ git+https://github.com/terryum/mujoco-ros2-core.git@b525d62f6bace3444fe22ce1dcfe65985b124a70",
 ]
 hardware = []
+manuals = [
+    "beautifulsoup4>=4.14,<5",
+    "reportlab>=4.4,<6",
+    "pypdf>=6,<7",
+    "svglib>=1.5,<1.6",
+]
 docs = [
     "mkdocs>=1.6,<2",
     "pymdown-extensions>=10,<12",

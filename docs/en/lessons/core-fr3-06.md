@@ -31,6 +31,8 @@ Measure probe/table contact force and vary friction.
 
 ## Preflight
 
+Device setup and manual references: [Franka Research 3](../setup/fr3.md).
+
 On a fresh checkout, run `sh bootstrap.sh --plan`, read the plan, then use `--apply`. Activate `source .venv/bin/activate` before these commands. If the run directory already exists, use a new suffix such as 02.
 
 Prepare the required public models once:

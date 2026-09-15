@@ -31,6 +31,8 @@ Enlight 시스템 식별과 MuJoCo 보정에 필요한 관측·선행 조건과 
 
 ## Preflight
 
+장비 setup·매뉴얼 참조: [Enlight](../setup/enlight.md).
+
 장비 검증 전까지 이 수업은 scaffolded / reader_test_required입니다. 오프라인 후보 검증과 공통 읽기 전용 게이트, 해당 로봇의 선행 시뮬레이션을 확인합니다. 장비 이름이나 네트워크 연결만으로 준비됐다고 판단하지 않습니다.
 
 [하드웨어 안전 절차](../../07_SAFETY.md)를 읽고 로컬 snapshot에서 모델·펌웨어 식별, torque-disabled, 오류·E-stop, 관절/힘 한계, 통신 timeout, timestamp 신선도, 격리 네트워크를 확인합니다. 비공개 serial·IP·보정값은 .local/에만 둡니다.

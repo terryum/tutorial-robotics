@@ -8,3 +8,7 @@ The course is generated from the same Markdown that GitHub renders.
 - [Source pins](SOURCES.md)
 
 Start with `pal host detect --json`, create a setup plan, and run `core-00`.
+
+## Hardware setup and manuals
+
+[한국어 자료실](ko/setup/index.md) · [English library](en/setup/index.md)

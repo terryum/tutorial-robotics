@@ -31,6 +31,8 @@ Review the observations, prerequisites and per-run safety boundary for enlight a
 
 ## Preflight
 
+Device setup and manual references: [Enlight](../setup/enlight.md), [Wuji Hand 2 Beta 2](../setup/wuji.md).
+
 This lesson remains scaffolded / reader_test_required until device evidence exists. Verify the offline candidate, common read-only gate and this robot's simulation prerequisites. A robot name or network connection does not authorize execution.
 
 Read [hardware safety](../../07_SAFETY.md). A local snapshot must establish model/firmware identity, torque-disabled state, faults/E-stop, joint/force limits, communication timeout, fresh timestamps and isolated networking. Keep serials, private IPs and calibration only under .local/.

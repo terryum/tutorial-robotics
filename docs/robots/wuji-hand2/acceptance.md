@@ -1,6 +1,6 @@
 # Wuji Hand 2 Beta 2 acceptance
 
-The canonical public model is `wuji-description` v2026.8.19 at commit `b13f7d52b23cb79e35357303c72b7f61f1d2fda2`. Fetch it on demand:
+The canonical public model is `wuji-description` v2026.8.19 at commit `c003186833616b23c06784ebefe442474cc5f4b5`. Fetch it on demand:
 
 ```bash
 pal assets fetch wuji-description-beta2 --json

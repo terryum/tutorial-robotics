@@ -4,7 +4,7 @@
   "firmware": "v2.6.0",
   "sdk": "v2026.8.31",
   "description_release": "v2026.8.19",
-  "description_commit": "b13f7d52b23cb79e35357303c72b7f61f1d2fda2",
+  "description_commit": "c003186833616b23c06784ebefe442474cc5f4b5",
   "power_voltage_v": {"minimum": 11.0, "maximum": 13.0},
   "read_rate_hz_maximum": 100,
   "publish_rate_hz_maximum": 1000,

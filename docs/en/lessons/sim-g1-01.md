@@ -31,6 +31,8 @@ Train a G1 motion-imitation PPO task and evaluate its saved checkpoint.
 
 ## Preflight
 
+Device setup and manual references: [Unitree G1](../setup/g1.md).
+
 On a fresh checkout, run `sh bootstrap.sh --plan`, read the plan, then use `--apply`. Activate `source .venv/bin/activate` before these commands. If the run directory already exists, use a new suffix such as 02.
 
 Read the [WS1 environment/input handoff](../../verification/ws1-handoff.md). External-stack execution remains reader_test_required until measured on a suitable host.

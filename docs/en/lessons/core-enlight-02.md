@@ -31,6 +31,8 @@ Compare independent vendor forward kinematics against compiled MJCF.
 
 ## Preflight
 
+Device setup and manual references: [Enlight](../setup/enlight.md).
+
 On a fresh checkout, run `sh bootstrap.sh --plan`, read the plan, then use `--apply`. Activate `source .venv/bin/activate` before these commands. If the run directory already exists, use a new suffix such as 02.
 
 Prepare the required public models once:

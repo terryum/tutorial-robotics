@@ -31,6 +31,8 @@ FR3 도달 과제의 reset·관측·행동·보상·에피소드 경계를 사�
 
 ## Preflight
 
+장비 setup·매뉴얼 참조: [Franka Research 3](../setup/fr3.md).
+
 처음이면 저장소 루트에서 `sh bootstrap.sh --plan`을 실행하고 계획을 읽은 뒤 `--apply`로 환경을 준비합니다. `source .venv/bin/activate` 후 아래 명령을 사용합니다. 이미 같은 이름의 실행 폴더가 있으면 02처럼 새 이름을 정합니다.
 
 필요한 공개 모델을 한 번 준비합니다:

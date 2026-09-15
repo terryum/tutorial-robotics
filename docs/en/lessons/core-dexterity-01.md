@@ -31,6 +31,8 @@ Compare Wuji and Sharpa using measured model properties.
 
 ## Preflight
 
+Device setup and manual references: [Wuji Hand 2 Beta 2](../setup/wuji.md), [Sharpa Wave](../setup/sharpa.md).
+
 On a fresh checkout, run `sh bootstrap.sh --plan`, read the plan, then use `--apply`. Activate `source .venv/bin/activate` before these commands. If the run directory already exists, use a new suffix such as 02.
 
 Prepare the required public models once:

@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "purpose": "Source review only; examples do not import or execute these SDKs",
+  "sources": [
+    {
+      "repository": "https://github.com/flexivrobotics/flexiv_rdk",
+      "revision": "ff92fe421e19daee6cdf27794a332c8fef7cf831",
+      "license": "Apache-2.0",
+      "files": {
+        "LICENSE": {
+          "sha256": "598e794c9e486099f9da77222fa331e9c9c9c1976dd63d1fa247fa1fbcb3ab53",
+          "url": "https://github.com/flexivrobotics/flexiv_rdk/blob/ff92fe421e19daee6cdf27794a332c8fef7cf831/LICENSE"
+        },
+        "README.md": {
+          "sha256": "abdad3c99fb4fee8f7c50a730735ef8b3af870db73de331bc38ada78a948cf3c",
+          "url": "https://github.com/flexivrobotics/flexiv_rdk/blob/ff92fe421e19daee6cdf27794a332c8fef7cf831/README.md"
+        },
+        "example/basics1_display_robot_states.cpp": {
+          "sha256": "59807c157c21c61103f40a31033d4de174e8a09745c58a3f497a0b9eefa2a273",
+          "url": "https://github.com/flexivrobotics/flexiv_rdk/blob/ff92fe421e19daee6cdf27794a332c8fef7cf831/example/basics1_display_robot_states.cpp"
+        },
+        "example_py/basics1_display_robot_states.py": {
+          "sha256": "202904f14a95ef018ee924aa75f044aa74ef8cd4c6c7f2fd8c07e8ffd0e5e864",
+          "url": "https://github.com/flexivrobotics/flexiv_rdk/blob/ff92fe421e19daee6cdf27794a332c8fef7cf831/example_py/basics1_display_robot_states.py"
+        }
+      },
+      "reviewed_at": "2026-09-15"
+    },
+    {
+      "repository": "https://github.com/frankarobotics/libfranka",
+      "revision": "e88d08f64cbf842b8f53c0b551963684064038d6",
+      "license": "Apache-2.0",
+      "files": {
+        "LICENSE": {
+          "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+          "url": "https://github.com/frankarobotics/libfranka/blob/e88d08f64cbf842b8f53c0b551963684064038d6/LICENSE"
+        },
+        "examples/echo_robot_state.cpp": {
+          "sha256": "61aae6fbfdec06ce438a67ebb8c4600eae380a7e77d24017b6d803a0457f0ef4",
+          "url": "https://github.com/frankarobotics/libfranka/blob/e88d08f64cbf842b8f53c0b551963684064038d6/examples/echo_robot_state.cpp"
+        },
+        "include/franka/robot_state.h": {
+          "sha256": "a1be5118af87ea1c779282f2f153268a17efb7b4bf2fcd3171a0f6285fee9376",
+          "url": "https://github.com/frankarobotics/libfranka/blob/e88d08f64cbf842b8f53c0b551963684064038d6/include/franka/robot_state.h"
+        }
+      },
+      "reviewed_at": "2026-09-15"
+    },
+    {
+      "repository": "https://github.com/frankarobotics/franka_ros2",
+      "revision": "6cedf7f1a2ca280c433f643eae697be23eb2a15e",
+      "license": "Apache-2.0",
+      "files": {
+        "LICENSE": {
+          "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+          "url": "https://github.com/frankarobotics/franka_ros2/blob/6cedf7f1a2ca280c433f643eae697be23eb2a15e/LICENSE"
+        },
+        "README.md": {
+          "sha256": "a87daf0a4e2a67bb781e25c7c492b13a3d9d58f46a9d2f36c8d0e934e5c78fdb",
+          "url": "https://github.com/frankarobotics/franka_ros2/blob/6cedf7f1a2ca280c433f643eae697be23eb2a15e/README.md"
+        },
+        "franka_robot_state_broadcaster/src/franka_robot_state_broadcaster.cpp": {
+          "sha256": "98b55b66d3fbb9b7f6dc1fb5d2963a85bf48b1d0f0084eb183a874372a7c9878",
+          "url": "https://github.com/frankarobotics/franka_ros2/blob/6cedf7f1a2ca280c433f643eae697be23eb2a15e/franka_robot_state_broadcaster/src/franka_robot_state_broadcaster.cpp"
+        },
+        "franka_robot_state_broadcaster/test/test_franka_robot_state_broadcaster.cpp": {
+          "sha256": "c0582563bf8bb3deae1462f6a091c4d83f23375a6ee326aa343f351c70cf64be",
+          "url": "https://github.com/frankarobotics/franka_ros2/blob/6cedf7f1a2ca280c433f643eae697be23eb2a15e/franka_robot_state_broadcaster/test/test_franka_robot_state_broadcaster.cpp"
+        },
+        "franka_robot_state_broadcaster/test/test_load_franka_robot_state_broadcaster.cpp": {
+          "sha256": "94cfc84182eebfb5b4b3286eff09d1f28140039c6be16a5ce651ba2b87d1dd6b",
+          "url": "https://github.com/frankarobotics/franka_ros2/blob/6cedf7f1a2ca280c433f643eae697be23eb2a15e/franka_robot_state_broadcaster/test/test_load_franka_robot_state_broadcaster.cpp"
+        }
+      },
+      "reviewed_at": "2026-09-15"
+    },
+    {
+      "repository": "https://github.com/unitreerobotics/unitree_sdk2_python",
+      "revision": "65691c8a8bc53b98d3976dba4dbf9d5d20b2e7f5",
+      "license": "BSD-3-Clause",
+      "files": {
+        "LICENSE": {
+          "sha256": "a5d73fc4aca9074e3e6fe0b1a0ba763cf9514b2249b7390ed20fe8d53630bf25",
+          "url": "https://github.com/unitreerobotics/unitree_sdk2_python/blob/65691c8a8bc53b98d3976dba4dbf9d5d20b2e7f5/LICENSE"
+        },
+        "README.md": {
+          "sha256": "0fa9e0fb386718da0619c6ddbf29b0ae01bfd49a61f36cb1c14000e4c4a7fe3d",
+          "url": "https://github.com/unitreerobotics/unitree_sdk2_python/blob/65691c8a8bc53b98d3976dba4dbf9d5d20b2e7f5/README.md"
+        },
+        "example/g1/low_level/g1_low_level_example.py": {
+          "sha256": "044dc6f9f132ec4ddcdef7f6eda0fc74118dc21abc50e64de441179a748d1984",
+          "url": "https://github.com/unitreerobotics/unitree_sdk2_python/blob/65691c8a8bc53b98d3976dba4dbf9d5d20b2e7f5/example/g1/low_level/g1_low_level_example.py"
+        }
+      },
+      "reviewed_at": "2026-09-15"
+    },
+    {
+      "repository": "https://github.com/wuji-technology/wuji-sdk",
+      "revision": "b0e48652dd94f4bc33df61cdc23a6d5dc598f93d",
+      "license": "MIT",
+      "files": {
+        "LICENSE": {
+          "sha256": "463dfb867696523ae4f880fa6ee4b8155daa5a317a6d3162b5612d9ec4e00281",
+          "url": "https://github.com/wuji-technology/wuji-sdk/blob/b0e48652dd94f4bc33df61cdc23a6d5dc598f93d/LICENSE"
+        },
+        "README.md": {
+          "sha256": "730c2d84d5824feab5d229412179e2ba625f5410decac476cbf9e829628efbe1",
+          "url": "https://github.com/wuji-technology/wuji-sdk/blob/b0e48652dd94f4bc33df61cdc23a6d5dc598f93d/README.md"
+        },
+        "examples/python/wuji_hand_2/0.subscribe_callback.py": {
+          "sha256": "86ac25110d34f19b6a7bbe7c984719facfde5074ce20fa4da219618f5841232e",
+          "url": "https://github.com/wuji-technology/wuji-sdk/blob/b0e48652dd94f4bc33df61cdc23a6d5dc598f93d/examples/python/wuji_hand_2/0.subscribe_callback.py"
+        },
+        "examples/python/wuji_hand_2/3.fingertip_typed.py": {
+          "sha256": "66c4648bf361b31671377db6c450a9460ede8d22bff5c8a0ecff9d879bf031b9",
+          "url": "https://github.com/wuji-technology/wuji-sdk/blob/b0e48652dd94f4bc33df61cdc23a6d5dc598f93d/examples/python/wuji_hand_2/3.fingertip_typed.py"
+        }
+      },
+      "reviewed_at": "2026-09-15"
+    },
+    {
+      "repository": "https://github.com/sharpa-robotics/sharpa-wave-sdk",
+      "revision": "1c48c44ab7aa08e495bf603e8b68dc5290d01328",
+      "license": "NOASSERTION - consult vendor; license not established",
+      "files": {
+        "README.md": {
+          "sha256": "38e7eb4bc30519bb431cea623267ec720cec9bf358fe9afc1c2bc48c5ca353f7",
+          "url": "https://github.com/sharpa-robotics/sharpa-wave-sdk/blob/1c48c44ab7aa08e495bf603e8b68dc5290d01328/README.md"
+        }
+      },
+      "reviewed_at": "2026-09-15"
+    },
+    {
+      "repository": "https://github.com/Interbotix/aloha",
+      "revision": "4fa6b2c4428f5334441a7bee5ab2b2e8071cff93",
+      "license": "MIT",
+      "files": {
+        "README.md": {
+          "sha256": "aa047ed829d0507d2ae4fb809a428b456d07af9d612b89a3cc296422f6df340b",
+          "url": "https://github.com/Interbotix/aloha/blob/4fa6b2c4428f5334441a7bee5ab2b2e8071cff93/README.md"
+        },
+        "LICENSE": {
+          "sha256": "4666c312da313e6c46929f6695d06cf98a2e7359b9c7dcbb0ea232d01b32cd42",
+          "url": "https://github.com/Interbotix/aloha/blob/4fa6b2c4428f5334441a7bee5ab2b2e8071cff93/LICENSE"
+        },
+        "scripts/record_episodes.py": {
+          "sha256": "91de13ddd1e5bb0ed5cbefe8151227992ec554b94155e4f43d2fc6dc05dc6d03",
+          "url": "https://github.com/Interbotix/aloha/blob/4fa6b2c4428f5334441a7bee5ab2b2e8071cff93/scripts/record_episodes.py"
+        },
+        "aloha/constants.py": {
+          "sha256": "2b553446f77b74c959e31b01d9901c21b8fc33096f87a43e3cc5462f96674ac5",
+          "url": "https://github.com/Interbotix/aloha/blob/4fa6b2c4428f5334441a7bee5ab2b2e8071cff93/aloha/constants.py"
+        },
+        "aloha/real_env.py": {
+          "sha256": "671c98da97566ccb9f6552c8195e453a95c1904fad92fa293ca015841a1f3628",
+          "url": "https://github.com/Interbotix/aloha/blob/4fa6b2c4428f5334441a7bee5ab2b2e8071cff93/aloha/real_env.py"
+        }
+      },
+      "reviewed_at": "2026-09-15"
+    }
+  ]
+}
