@@ -61,6 +61,20 @@ pal feedback list --json
 pal feedback add "[개선점] Explain the plot units" --lesson T00 --json
 ```
 
+## Cross-host continuation
+
+For Terry's authorized cross-host sessions, read the private
+[learner handoff](https://github.com/terryum/tutorial-robotics-private/blob/main/state/LEARNER_HANDOFF.md)
+or the sibling checkout's `state/LEARNER_HANDOFF.md` before choosing where to resume.
+It records reviewed learning history and the next lesson; access requires the private repository.
+Public-only learners continue with their own `.local/` state.
+
+The handoff does not restore `pal` execution receipts. Preserve existing local progress,
+check the current host, and reverify missing prerequisite evidence through the normal
+run/check/review/finish workflow. Do not create completion records from the summary alone.
+Update the private summary when the user requests progress synchronization; keep raw
+state and artifacts under ignored `.local/`.
+
 ## Evidence and course scope
 
 The catalog retains 49 IDs and legacy aliases: 25 Core lessons, 15 Simulation lessons, one offline runtime lesson and eight device lessons. Real MuJoCo models, measured contact/control, NumPy PPO and BC replace the earlier generic numerical fixtures. ACT and the VLA mock remain explicitly contract lessons.
