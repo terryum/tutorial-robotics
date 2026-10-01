@@ -8,6 +8,16 @@
 
 An action-first bilingual course for readers who know basic Python and are new to robotics. Start with one lesson, inspect the actual state and images, explain the result, compare one variable, then finish it. [English](docs/en/index.md) · [한국어](docs/ko/index.md)
 
+## Remote development setup
+
+For incremental MacBook → WS1/WS2 setup, use the
+[한국어 원격 개발 가이드](docs/ko/setup/remote-development/index.md) or
+[English remote development guide](docs/en/setup/remote-development/index.md).
+Each includes machine-specific execution prompts, existing-environment checks,
+SSH/VS Code, isolated GPU verification, and reboot recovery. Both workstations
+can develop/train in DEVELOPMENT; robot runtime remains separately gated.
+These are installation instructions, not new host acceptance or lesson completion.
+
 ## First start — no Python or pal assumed
 
 For command explanations, fresh terminals, saved-result replay and feedback, use the

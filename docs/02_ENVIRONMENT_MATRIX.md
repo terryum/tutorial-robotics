@@ -13,7 +13,11 @@
 | `gpu-lerobot` | Linux NVIDIA CUDA | not-created | — | — | ACT/VLA scale-up/server |
 | `robot-runtime` | isolated WS1 or WS2 | not-created | — | — | no concurrent development batch |
 
-A tutorial completion is shared; environment readiness is local. Never copy a virtual environment between hosts.
+These semantic roles and historical status placeholders do not inventory the
+current machine. Audit actual environments before installation. Learner progress
+follows the configured local/private progress workflow; readiness remains local.
+Never copy a virtual environment between hosts. See the
+[remote development guide](en/setup/remote-development/index.md).
 
 
 ## Capability mapping
@@ -22,7 +26,11 @@ A tutorial completion is shared; environment readiness is local. Never copy a vi
 |---|---|---|---|---|---|---|
 | MacBook | yes | optional RoboStack | yes, CPU/MPS | no | remote client | no |
 | WS2 development | yes | native Jazzy | yes | yes | yes | disabled in development mode |
+| WS1 development | yes | native Jazzy | yes | if compatible GPU verified | optional, separately verified | disabled in development mode |
 | WS2 runtime | limited runtime tools | native Jazzy | inference only | batch stopped | batch stopped | yes |
-| WS1 runtime | optional | native Jazzy | inference only | no large train | optional | yes |
+| WS1 runtime | limited runtime tools | native Jazzy | inference only | batch stopped | batch stopped | yes |
 
-WS2 therefore covers nearly all MacBook tutorial content plus GPU-only content. The only genuinely Mac-specific checks are optional portability tests.
+Either development workstation may cover portable and GPU content when its
+actual capabilities are verified. Neither requires prior MacBook completion.
+Mac-specific portability checks remain optional; training is not concurrent
+with robot-runtime operation on either workstation.

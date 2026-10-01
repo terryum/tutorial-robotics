@@ -1,6 +1,8 @@
-<p align="right"><a href="../../ko/setup/index.md">한국어</a> | <a href="../../en/setup/index.md">ENGLISH</a></p>
+[한국어](../../ko/setup/index.md) | [ENGLISH](../../en/setup/index.md)
 
-# 하드웨어 매뉴얼 자료실과 setup
+# 개발 환경과 하드웨어 매뉴얼
+
+MacBook·WS1·WS2의 추가 설치는 [원격 로봇 개발 가이드](remote-development/index.md)에서 시작합니다. 장비별 실행 요청문, SSH·VS Code, 기존 GPU 환경 재사용, 검증·복구 절차를 제공합니다. 하드웨어 연결 전에 원격 개발 환경만 준비할 수 있습니다.
 
 로컬 자료실은 저장소의 `.local/manuals/<장비>/`입니다. 원본·그림·열람용 PDF는 Git에서 제외합니다. 공개 파일에는 출처·리비전·수집 시각·SHA-256·이용 조건을 담은 `assets/manuals.json`, 코드 참조를 담은 `assets/manual-code-refs.json`과 직접 작성한 설명만 둡니다.
 

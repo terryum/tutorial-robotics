@@ -1,6 +1,10 @@
 # CUDA GPU Development Stacks
 
-A full GPU host such as WS2 must still use separate locked environments.
+A GPU-capable WS1 or WS2 in DEVELOPMENT must use separate locked environments.
+Inspect and reuse installed stacks before adding anything. Follow the
+[Ubuntu remote development guide](../docs/en/setup/remote-development/ubuntu.md)
+for incremental setup and synthetic GPU/checkpoint verification; that smoke test
+does not validate the robotics stacks below or complete their lessons.
 
 ```text
 gpu-mjlab

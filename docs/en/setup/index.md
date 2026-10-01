@@ -1,6 +1,8 @@
-<p align="right"><a href="../../ko/setup/index.md">한국어</a> | <a href="../../en/setup/index.md">ENGLISH</a></p>
+[한국어](../../ko/setup/index.md) | [ENGLISH](../../en/setup/index.md)
 
-# Hardware manual library and setup
+# Development setup and hardware manual library
+
+Start incremental MacBook/WS1/WS2 installation with the [remote robotics development guide](remote-development/index.md). It includes per-machine execution prompts, SSH/VS Code, existing GPU environment reuse, verification and recovery. Remote development can be prepared before connecting hardware.
 
 The local library is `.local/manuals/<device>/` in this checkout. Originals, images and reading PDFs stay outside Git. Public files contain source URLs, revisions, acquisition times, SHA-256 and usage terms in `assets/manuals.json`, source-code references in `assets/manual-code-refs.json`, and our own explanations.
 
