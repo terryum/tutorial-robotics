@@ -18,6 +18,9 @@ SSH/VS Code, isolated GPU verification, and reboot recovery. Both workstations
 can develop/train in DEVELOPMENT; robot runtime remains separately gated.
 These are installation instructions, not new host acceptance or lesson completion.
 
+The [2026-10-01 MacBook preparation report](docs/MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md)
+records completed local client installation and the still-pending WS connection checks.
+
 ## First start — no Python or pal assumed
 
 For command explanations, fresh terminals, saved-result replay and feedback, use the
