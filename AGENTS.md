@@ -41,3 +41,25 @@ FR3, Unitree G1, Wuji Hand 2 Beta 2, Sharpa Wave, ALOHA, Flexiv Enlight, generic
 ## Git continuity
 
 Inspect status before edits and preserve unrelated work. Use the personal `terryum` account and `terry.t.um@gmail.com`. Do not auto-push. Before repository creation, visibility changes, releases, or other consequential GitHub mutations, run `gh context` and verify `terryum`. Public source repositories use Apache-2.0 unless a vendor license requires a stricter boundary.
+
+## Credential protection — all hosts
+
+This applies equally to WS1, WS2, MacBook, Windows, Ubuntu and any future host,
+and to public and private repositories. Never commit SSH private **or public**
+keys, authorized_keys, known_hosts, passwords, API/GitHub/Tailscale tokens,
+login/authorization links, credential stores, or remote-access configuration
+containing secrets. Public keys are not cryptographic secrets, but are still
+excluded from this project's Git history. Use placeholders in examples.
+Keep real connection records under ignored `.local/` or outside the repository;
+never force-add them. Share only the needed public key through an approved
+channel; never transfer a private key. Each operator uses their own identity.
+
+On every clone/worktree, run `git config --local core.hooksPath .githooks`
+(after preserving any existing custom hooks) and
+`python3 scripts/check_credentials.py --tracked`. The pre-commit hook scans
+staged bytes, including force-added files. CI repeats the complete-index scan.
+Never disable the guard to publish a credential. Detection is a backstop, not
+proof that arbitrary text contains no secrets: inspect staged diffs before
+committing and do not print credential values during audits. If a credential
+was published, revoke/rotate it first and coordinate history cleanup; deleting
+only the latest file does not remove it from history.
