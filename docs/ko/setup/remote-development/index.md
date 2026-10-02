@@ -2,13 +2,20 @@
 
 # MacBook · WS1 · WS2 원격 로봇 개발
 
-작성·공식 자료 확인: 2026-10-01. **추가 설치 실행 안내이며 설치 완료 보고서가 아닙니다.** 각 장비에서 이 저장소의 문서를 읽고 실제 상태를 조사한 뒤 필요한 항목만 설치합니다.
+갱신: 2026-10-02. 새 네트워크·RDP 근거는 이날 확인했습니다. **추가 설치 실행 안내이며 설치 완료 보고서가 아닙니다.** 각 장비에서 이 저장소의 문서를 읽고 실제 상태를 조사한 뒤 필요한 항목만 설치합니다.
+
+기본 구성은 **Tailscale + OpenSSH/VS Code + GNOME RDP**, 작업 유지는 tmux와 작업별 checkpoint입니다. 이번 산출물은 게시된 설치 준비 문서이며 앱 설치·WS 설정·실제 접속은 미검증입니다. 다음 실행 순서는 **MacBook → WS1 → WS2**이고 각 WS 설치 후 MacBook으로 돌아와 해당 WS를 검증합니다. 설치된 NoMachine 클라이언트는 제거하지 않고 사용을 보류합니다.
+
+- [공통 네트워크·RDP·선택 근거·성능 시험](network-rdp.md)
+- [Windows·Ubuntu 노트북과 별도 실행 요청문](laptops.md)
+- [로컬 접속·결과·복구 기록 양식](records.md)
 
 ## 역할과 실행 순서
 
 | 대상 | 읽을 문서 | 역할과 범위 |
 |---|---|---|
 | MacBook | [MacBook 설정](macbook.md) | SSH·VS Code 클라이언트, 코드·결과 확인. 기존 로컬 Core 개발도 유지 |
+| Windows·Ubuntu 노트북 | [클라이언트 설정](laptops.md) | 미래 클라이언트; 각각 별도 검증 |
 | WS1 Ubuntu | [Ubuntu 설정](ubuntu.md), 역할 `ws1` | DEVELOPMENT에서 독립 GPU 개발·학습; ROBOT_RUNTIME에서는 학습 중지 |
 | WS2 Ubuntu | [Ubuntu 설정](ubuntu.md), 역할 `ws2` | DEVELOPMENT에서 독립 GPU 개발·학습; ROBOT_RUNTIME에서는 학습 중지 |
 
@@ -23,24 +30,24 @@ WS의 원격 터미널에서 실행한 코드가 WS GPU를 사용합니다. Code
 
 ## 각 컴퓨터에서 복사할 요청문
 
-해당 장비의 `tutorial-robotics` checkout에서 Codex를 시작합니다. 먼저 이 문서 변경이 그 checkout에도 있는지 확인하세요. 아직 GitHub에 게시하지 않은 변경은 `git pull`로 받을 수 없습니다. 그 경우 문서 묶음만 안전하게 전달하거나 별도로 게시한 뒤 동기화합니다. `.local/`, 인증 파일, 가상환경을 함께 복사하지 않습니다.
+해당 장비의 `tutorial-robotics` checkout에서 다음 세션을 시작하고 이 개정이 있는지 확인합니다. 동기화 전에 로컬 변경을 살펴보고 깨끗한 대응 branch에서만 `git pull --ff-only`를 사용합니다. 분기된 변경은 보존해 별도로 통합합니다. `.local/`, 인증 파일, 가상환경은 복사하지 않습니다. Private overlay가 runtime 기준을 고정했다면 공개 가이드나 별도 문서 checkout을 읽고 runtime pin은 바꾸지 않습니다.
 
 ### MacBook
 
 ```text
-docs/ko/setup/remote-development/index.md와 macbook.md를 읽고 이 MacBook의 원격 로봇 개발 환경을 실제로 추가 설치·설정·검증해줘. AGENTS.md와 기존 설정을 보존하고 필요한 변경을 먼저 보여줘. WS 정보가 없으면 앱과 SSH 공개키 준비부터 끝내줘. 기록은 .local/remote-development/macbook/에 남기고 WS1·WS2별 미검증 항목을 구분해줘. 튜토리얼 완료나 원격 장비 설치를 대신 주장하지 마.
+docs/ko/setup/remote-development/index.md, macbook.md, network-rdp.md, records.md를 읽고 이 MacBook의 원격 로봇 개발 환경을 실제로 추가 설치·설정·검증해줘. AGENTS.md와 기존 설정을 보존하고 필요한 변경을 먼저 보여줘. Personal 요금제 적용과 회사 허용을 확인한 뒤 Tailscale·Windows App을 준비하고 NoMachine은 제거하지 말고 보류해줘. 노트북 서버 기능은 추가하지 말고 WS별 Remote Login/Desktop Sharing 프로필을 나눠줘. WS 정보가 없으면 앱과 SSH 공개키 준비부터 끝내줘. 기록은 .local/remote-development/macbook/에 남기고 WS1·WS2별 미검증 항목을 구분해줘. 튜토리얼 완료나 원격 장비 설치를 대신 주장하지 마.
 ```
 
 ### WS1 Ubuntu
 
 ```text
-docs/ko/setup/remote-development/index.md와 ubuntu.md를 읽고 현재 장비를 논리 역할 ws1, DEVELOPMENT 대상으로 조사한 뒤 필요한 원격 로봇 개발 환경을 추가 설치·검증해줘. 실제 ROBOT_RUNTIME 작업이 있으면 자동으로 종료하거나 모드를 바꾸지 말고 해당 변경을 보류해줘. 기존 ROS·GPU·Isaac 환경과 lock을 재사용하고 누락된 항목만 준비해줘. 기록은 .local/remote-development/ws1/에 남겨줘. 재부팅은 영향·복구 경로·재개 기록을 준비한 뒤 승인 범위 안에서 진행해줘. 실물 로봇 연결과 제어는 하지 마.
+docs/ko/setup/remote-development/index.md, ubuntu.md, network-rdp.md, records.md를 읽고 현재 장비를 논리 역할 ws1, DEVELOPMENT 대상으로 조사한 뒤 필요한 원격 로봇 개발 환경을 추가 설치·검증해줘. 실제 ROBOT_RUNTIME 작업이 있으면 자동으로 종료하거나 모드를 바꾸지 말고 해당 변경을 보류해줘. 기존 ROS·GPU·Isaac 환경과 lock을 재사용하고 누락된 항목만 준비해줘. 회사 허용과 Personal 적용을 확인하고 OpenSSH over Tailscale·GNOME RDP 두 모드를 구성하되 기존 SSH 복구 경로를 유지해줘. Exit node·subnet route·세션 강제 종료·자동 로그인·대체 데스크톱/서버 설치는 하지 마. 설치 후 외부망 MacBook에서 두 모드를 검증하고 증거가 없으면 대기로 남겨줘. 기록은 .local/remote-development/ws1/에 남겨줘. 재부팅은 영향·복구 경로·재개 기록을 준비한 뒤 승인 범위 안에서 진행해줘. 실물 로봇 연결과 제어는 하지 마.
 ```
 
 ### WS2 Ubuntu
 
 ```text
-docs/ko/setup/remote-development/index.md와 ubuntu.md를 읽고 현재 장비를 논리 역할 ws2, DEVELOPMENT 대상으로 조사한 뒤 필요한 원격 로봇 개발 환경을 추가 설치·검증해줘. 실제 ROBOT_RUNTIME 작업이 있으면 자동으로 종료하거나 모드를 바꾸지 말고 해당 변경을 보류해줘. WS1 설정을 복제하지 말고 이 장비의 GPU·드라이버·디스크·기존 환경을 확인해줘. 기록은 .local/remote-development/ws2/에 남겨줘. 재부팅은 영향·복구 경로·재개 기록을 준비한 뒤 승인 범위 안에서 진행해줘. 실물 로봇 연결과 제어는 하지 마.
+docs/ko/setup/remote-development/index.md, ubuntu.md, network-rdp.md, records.md를 읽고 현재 장비를 논리 역할 ws2, DEVELOPMENT 대상으로 조사한 뒤 필요한 원격 로봇 개발 환경을 추가 설치·검증해줘. 실제 ROBOT_RUNTIME 작업이 있으면 자동으로 종료하거나 모드를 바꾸지 말고 해당 변경을 보류해줘. WS1 설정을 복제하지 말고 이 장비의 GPU·드라이버·디스크·기존 환경을 확인해줘. 회사 허용과 Personal 적용을 확인하고 OpenSSH over Tailscale·GNOME RDP 두 모드를 구성하되 기존 SSH 복구 경로를 유지해줘. Exit node·subnet route·세션 강제 종료·자동 로그인·대체 데스크톱/서버 설치는 하지 마. 설치 후 외부망 MacBook에서 두 모드를 검증하고 증거가 없으면 대기로 남겨줘. 기록은 .local/remote-development/ws2/에 남겨줘. 재부팅은 영향·복구 경로·재개 기록을 준비한 뒤 승인 범위 안에서 진행해줘. 실물 로봇 연결과 제어는 하지 마.
 ```
 
 <a id="codex-bootstrap"></a>
@@ -64,23 +71,28 @@ codex login status
 
 ## 기록과 완료 기준
 
-모든 경로는 해당 장비의 checkout 기준입니다. 설치가 승인된 시점에 `.local/remote-development/<host>/`를 만들고 사용자만 접근하도록 보호합니다. `<host>`는 `macbook`, `ws1`, `ws2`입니다. 읽기 전용 점검만 요청받았다면 파일을 만들지 않습니다. 재실행 시 기존 기록을 읽고 실행별 로그는 별도 하위 폴더에 보존합니다.
+모든 경로는 해당 장비의 checkout 기준입니다. 설치가 승인된 시점에 `.local/remote-development/<host>/`를 만들고 사용자만 접근하도록 보호합니다. `<host>`는 `macbook`, `ws1`, `ws2`, `windows-laptop`, `ubuntu-laptop`입니다. 읽기 전용 점검만 요청받았다면 파일을 만들지 않습니다. 재실행 시 기존 기록을 읽고 실행별 로그는 별도 하위 폴더에 보존합니다.
 
 - `RESULT.md`: 실제 host/OS, 유지·설치·변경·보류 내역, 정확한 버전·환경 경로, 아래 상태와 근거 로그.
-- `CLIENT-CONNECTION.md`: WS의 사용자·주소·포트·공개 호스트키 SHA256 지문·프로젝트/Python 절대경로. 실제 접속 정보는 Git에 넣지 않습니다.
+- `CLIENT-CONNECTION.md`: WS의 사용자·주소·포트·공개 호스트키 SHA256 지문·프로젝트/Python 절대경로, Tailscale 장치, RDP 두 포트·인증 방식·각 공개 TLS 지문. [양식](records.md)을 사용하고 실제 정보는 로컬에만 둡니다. 암호·개인키·토큰은 저장하지 않습니다.
 - `RESUME.md`: 미완료 이유, 다음 명령, 필요한 사용자 조작, 백업·복구 경로, 다시 읽을 가이드의 실제 경로.
 - `gpu-smoke-result.json`과 실행 로그: 선택 환경·GPU, FP32/BF16, optimizer 변경, checkpoint 재개 결과. MacBook에는 원격 시험을 관찰한 근거만 남깁니다.
 
 | 항목 | PASS의 근거 |
 |---|---|
-| SSH_READY | 서버 활성 + MacBook의 실제 키 인증 접속 |
+| SSH_READY | 서버 활성 + 해당 클라이언트의 실제 키 인증 접속 |
 | REMOTE_DEV_READY | 원격 폴더·WS Python·WS Codex CLI 동작 확인 |
 | GPU_READY | 실제 GPU에서 finite loss/gradient와 optimizer 갱신 |
 | CHECKPOINT_READY | 새 프로세스가 checkpoint를 읽고 학습 step을 추가 진행 |
-| GUI_READY | 실제 클라이언트의 화면·입력 확인, 라이선스·로그인 조건 기록 |
-| REBOOT_READY | boot ID 변경 + 현지 로그인 없이 재접속 + GPU 재검증 |
+| EXTERNAL_NETWORK_READY | 외부망 SSH/RDP·직접/중계 경로·허용/비허용 접근 확인 |
+| RDP_REMOTE_LOGIN_READY | 실제 클라이언트 로그인·모드별 인증·TLS 검증 |
+| RDP_DESKTOP_SHARING_READY | 현지 앱·화면·입력·한글·클립보드·해상도 확인 |
+| GUI_READY | 같은 클라이언트·WS에서 RDP 두 모드 PASS; 잠금·종료·모니터 동작 기록 |
+| TMUX_DISCONNECT_READY | SSH·RDP 종료 뒤 로그 계속 기록 |
+| GUI_RENDERING_READY | 설치된 앱의 실제 장면·렌더러·GPU와 성능 측정 |
+| REBOOT_READY | boot ID 변경·현지 로그인 없는 SSH/Remote Login·GPU/checkpoint 재검증; 현지 암호 해제 제한 기록 |
 
-상태는 `PASS / FAIL / PENDING / NOT_APPLICABLE`입니다. 서버 측만 확인한 접속은 `PENDING: CLIENT_TEST_PENDING`, 재부팅을 시험하지 않았으면 `PENDING: REBOOT_UNTESTED`로 씁니다. GPU 미탑재/선택 GUI 미구성은 이유와 함께 `NOT_APPLICABLE`; 필요한 인증·라이선스·주소가 없으면 `PENDING: NEEDS_INPUT`입니다. 다른 WS의 성공으로 대체하지 않습니다.
+상태는 `PASS / FAIL / PENDING / NOT_APPLICABLE`입니다. 서버 측만 확인한 접속은 `PENDING: CLIENT_TEST_PENDING`, 재부팅을 시험하지 않았으면 `PENDING: REBOOT_UNTESTED`로 씁니다. GPU 미탑재는 이유와 함께 `NOT_APPLICABLE`입니다. GNOME·필수 RDP 기능이 없으면 GUI를 원인과 함께 대기·실패로 남기며, 필요한 인증·주소가 없으면 `PENDING: NEEDS_INPUT`입니다. 다른 WS·클라이언트 OS의 성공으로 대체하지 않습니다. [공통 시나리오](network-rdp.md)의 세션 조건과 성능도 기록합니다.
 
 이 결과는 환경 준비 증거입니다. 수업 완료·Isaac 실행·정책 성능·하드웨어 권한을 자동 부여하지 않습니다. 기존 설치 이력과 host ledger를 새 성공으로 덮어쓰지 않으며 learner progress도 변경하지 않습니다.
 

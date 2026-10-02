@@ -14,3 +14,7 @@ Learner progress, current capabilities, runs and feedback belong under ignored `
 
 
 When sharing a new non-secret verification report, preserve every other host's newer row. Keep machine paths, credentials, networking, calibration, raw data and policies out of this ledger. A previous host's report never substitutes for checks on the current host.
+
+## 2026-10-02 remote setup documentation update
+
+The [KO](../docs/ko/setup/remote-development/index.md) / [EN](../docs/en/setup/remote-development/index.md) default is now Tailscale + OpenSSH/VS Code + GNOME RDP, including both Remote Login and Desktop Sharing. Windows App, mstsc and Remmina are the respective laptop clients. The earlier NoMachine installation row remains historical; retain that client unused by default. This is preparation material only: new app installation, WS configuration, external-network tests and RDP/reboot acceptance remain unverified. Execute MacBook → WS1 → WS2 and verify each WS from MacBook after setup.

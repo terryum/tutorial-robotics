@@ -6,7 +6,7 @@
 
 ## 1. 기존 상태와 변경 계획
 
-`sw_vers`, `uname -m`, `command -v code codex brew ssh git`로 현재 도구를 확인합니다. VS Code 확장 목록과 Tailscale/NoMachine 설치 여부, SSH config의 WS 관련 블록·Include·Host *만 조사합니다. 전체 인증 파일이나 환경변수는 출력하지 않습니다.
+`sw_vers`, `uname -m`, `command -v code codex brew ssh git`로 현재 도구를 확인합니다. VS Code 확장 목록과 Tailscale/Windows App/NoMachine 설치 여부, SSH config의 WS 관련 블록·Include·Host *만 조사합니다. 전체 인증 파일이나 환경변수는 출력하지 않습니다.
 
 기존 앱·키·VPN·설정을 재사용하고 누락된 항목, 설치 위치, 명령을 먼저 보여줍니다. 이 가이드의 실행 요청은 해당 사용자 설정과 도구의 추가 설치를 포함합니다. OS 권한은 정상 승인 절차를 따릅니다. 앱 업데이트·전체 패키지 업그레이드는 일괄 수행하지 않습니다.
 
@@ -29,9 +29,9 @@ code --install-extension ms-toolsai.jupyter
 
 Python/Jupyter 작업공간 확장은 접속 후 **SSH 대상 WS에도** 설치합니다. Codex IDE 확장은 선택 사항이며 [공식 안내](https://developers.openai.com/codex/ide/)에서 연결되는 배포본을 사용합니다. 실제 원격 실행 위치를 검증하지 않고 `remote.extensionKind`를 강제하지 않습니다. 기본 경로는 원격 터미널의 Codex CLI입니다.
 
-기존 LAN/VPN으로 접속 가능하면 Tailscale은 필요 없습니다. 필요하고 조직에서 허용한 경우 [공식 macOS 앱](https://tailscale.com/docs/install/mac)을 하나만 설치하고 사용자가 로그인합니다. 기존 tailnet·exit node·subnet route를 바꾸지 않습니다.
+외부망 기본 연결은 [공통 네트워크 안내](network-rdp.md)의 Personal 요금제 적용·회사 허용 확인 후 Tailscale을 사용합니다. 기존 설치를 재사용하고 없으면 [공식 macOS 앱](https://tailscale.com/docs/install/mac)을 하나만 설치해 사용자가 로그인합니다. 기존 복구 경로를 유지하고 exit node·subnet routing을 추가하지 않습니다.
 
-GUI가 필요하면 [NoMachine 클라이언트](https://www.nomachine.com/download)를 선택합니다. MacBook에 서버 수신 기능을 추가하지 않습니다. 클라이언트는 무료지만 현재 v10 서버에는 평가 또는 구독 라이선스가 필요합니다. 자동 구매하지 않습니다. [라이선스 근거, 확인 2026-10-01](https://kb.nomachine.com/AR03P00972).
+RDP는 [Microsoft 안내](https://learn.microsoft.com/windows-app/get-started-connect-devices-desktops-apps?pivots=remote-pc)의 공식 Mac App Store 링크에서 **Windows App**을 설치합니다. 기존 설치와 지원 macOS 버전을 확인해 재사용하며 MacBook에 수신 서버는 추가하지 않습니다. 설치된 NoMachine 클라이언트는 제거하지 않고 기본 사용만 보류합니다. [과거 보고서](../../../MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md)는 당시 결과로 보존합니다.
 
 ## 3. SSH 키와 별칭
 
@@ -90,8 +90,10 @@ ssh -N -L 127.0.0.1:8889:127.0.0.1:8888 -L 127.0.0.1:6007:127.0.0.1:6006 ws2
 
 ## 6. GUI · 재접속 · 마무리
 
-NoMachine은 WS의 실제 VPN/LAN 주소와 설정 포트로 연결합니다. 화면·키보드 입력을 시험하고 로컬 로그인 전, 잠금 상태, 모니터 없는 상태는 별도 결과로 기록합니다. GUI가 없거나 라이선스가 대기 중이어도 SSH 개발의 성공은 별도로 남깁니다. 화면이 보인다는 사실만으로 Isaac GPU 렌더링 성공을 주장하지 않습니다.
+Windows App의 **Add PC**로 `WS1 Login`, `WS1 Sharing`, `WS2 Login`, `WS2 Sharing`을 만듭니다. PC name은 `ACTUAL_WS_TAILSCALE_ADDRESS:ACTUAL_MODE_PORT`입니다. 두 모드를 켠 기본 예시는 Login 3389·Sharing 3390이지만 WS 보고서의 실제값을 사용합니다. [공통 RDP 절차](network-rdp.md)대로 두 모드의 인증 정보를 구분하고 각 인증서를 검증합니다. 접속 보고서에 암호를 쓰지 않고 프로필은 로컬에 둡니다.
 
-WS 재부팅 시험은 [Ubuntu 복구 절차](ubuntu.md)를 먼저 수행하고 승인된 경우에만 진행합니다. MacBook에서 현지 로그인 없이 새 SSH·VS Code 연결, GPU 시험, 선택 GUI 접속을 확인합니다. 재부팅하지 않았으면 `REBOOT_UNTESTED`입니다.
+[외부망·잠금/종료·모니터·성능 시험](network-rdp.md)을 WS마다 수행합니다. 두 RDP 모드가 모두 성공해야 GUI 준비 완료이며, 화면이 보인다는 사실만으로 Isaac GPU 렌더링을 입증하지 않습니다. WS 정보가 없으면 앱·공개키 준비를 끝내고 접속 의존 검사만 대기합니다. 각 WS 설치 후 여기로 돌아와 해당 MacBook 검증을 마칩니다.
 
-`RESULT.md`에 WS별 [완료 기준](index.md#records-and-acceptance), 유지/설치한 앱과 버전, 변경·백업 위치를 남깁니다. `RESUME.md`에는 아직 필요한 주소·인증·라이선스·현지 작업과 정확한 다음 명령을 씁니다. 미검증 연결을 완료로 바꾸지 않습니다.
+WS 재부팅 시험은 [Ubuntu 복구 절차](ubuntu.md)를 먼저 수행하고 승인된 경우에만 진행합니다. MacBook에서 현지 로그인 없이 새 SSH·VS Code 연결, GPU 시험과 Remote Login을 확인하고 Desktop Sharing 세션 사용 가능 시점도 따로 기록합니다. 재부팅하지 않았으면 `REBOOT_UNTESTED`입니다.
+
+`RESULT.md`에 WS별 [완료 기준](index.md#records-and-acceptance), 유지/설치한 앱과 버전, 변경·백업 위치를 남깁니다. `RESUME.md`에는 아직 필요한 주소·인증·현지 작업과 정확한 다음 명령을 씁니다. 미검증 연결을 완료로 바꾸지 않습니다.

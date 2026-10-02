@@ -15,6 +15,8 @@ MacBook·WS1·WS2의 추가 설치는 [원격 로봇 개발 가이드](remote-de
 | sharpa | [sharpa setup](sharpa.md) | 1 | — |
 | aloha | [aloha setup](aloha.md) | 10 | — |
 
+외부망 기본은 Tailscale + OpenSSH/VS Code + GNOME RDP(Remote Login·Desktop Sharing 모두)입니다. [네트워크/RDP](remote-development/network-rdp.md), [Windows·Ubuntu 노트북](remote-development/laptops.md), [로컬 양식](remote-development/records.md)을 참고하세요. 실제 설치와 클라이언트 접속 검증은 이후 작업입니다.
+
 ## 목록·가져오기·다운로드·검사
 
 ```bash

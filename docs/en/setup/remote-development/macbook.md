@@ -6,7 +6,7 @@ Read the [sequence, prompts and acceptance criteria](index.md) first. This guide
 
 ## 1. Inspect and plan the changes
 
-Inspect `sw_vers`, `uname -m` and `command -v code codex brew ssh git`. Check VS Code extensions, Tailscale/NoMachine installations, and only the relevant SSH blocks, Include directives and Host * settings. Do not dump authentication files or the full environment.
+Inspect `sw_vers`, `uname -m` and `command -v code codex brew ssh git`. Check VS Code extensions, Tailscale/Windows App/NoMachine installations, and only the relevant SSH blocks, Include directives and Host * settings. Do not dump authentication files or the full environment.
 
 Reuse apps, keys, VPN and settings. Show missing tools, installation locations and commands first. An execution request for this guide includes these user settings and incremental tools; obtain OS permissions through normal approval mechanisms. Do not bulk-upgrade apps or packages.
 
@@ -29,9 +29,9 @@ code --install-extension ms-toolsai.jupyter
 
 Install Python/Jupyter workspace extensions **on the SSH target WS** after connecting. The Codex IDE extension is optional; use the distribution linked by the [official guide](https://developers.openai.com/codex/ide/). Do not force `remote.extensionKind` without testing execution location. The default route is Codex CLI in the remote terminal.
 
-Tailscale is unnecessary when existing LAN/VPN access works. If needed and permitted by the organization, install one [official macOS app](https://tailscale.com/docs/install/mac) and let the user sign in. Preserve the tailnet, exit node and subnet routes.
+Use Tailscale as the default off-site route after checking Personal plan eligibility and company permission in the [network guide](network-rdp.md). Reuse existing installations; if missing, install one [official macOS app](https://tailscale.com/docs/install/mac) and let the user sign in. Preserve the existing recovery route and add no exit node or subnet routing.
 
-For GUI access, choose a [NoMachine client](https://www.nomachine.com/download) without enabling a MacBook server/listener. Clients are free; current v10 servers need an evaluation or subscription license. Do not purchase automatically. [License source, checked 2026-10-01](https://kb.nomachine.com/AR03P00972).
+For RDP, install Microsoft's **Windows App** from its official Mac App Store link in the [Microsoft instructions](https://learn.microsoft.com/windows-app/get-started-connect-devices-desktops-apps?pivots=remote-pc). Reuse an existing installation and verify its supported macOS version. Add no receiving server to the MacBook. Keep the previously installed NoMachine client, but leave it unused in the default setup; the [historical report](../../../MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md) remains valid for its date.
 
 ## 3. SSH keys and aliases
 
@@ -90,8 +90,10 @@ On the WS use `tmux new -As robotics-ws1` or `robotics-ws2`. Detach with `Ctrl-b
 
 ## 6. GUI, reconnection and closeout
 
-Connect NoMachine to the actual WS VPN/LAN address and configured port. Test display/input, and separately record pre-login, locked-screen and monitor-disconnected behavior. Missing GUI or a pending license does not invalidate verified SSH development. A visible desktop does not prove Isaac GPU rendering.
+In Windows App, use **Add PC** to create `WS1 Login`, `WS1 Sharing`, `WS2 Login` and `WS2 Sharing`. Set PC name to `ACTUAL_WS_TAILSCALE_ADDRESS:ACTUAL_MODE_PORT`; defaults with both modes enabled are Login 3389 and Sharing 3390, but copy actual values from the WS report. Use the two modes' credentials separately and verify their certificates through the [common RDP procedure](network-rdp.md). Store no passwords in the connection report. Keep profiles local.
 
-Before a WS reboot test, follow the [Ubuntu recovery procedure](ubuntu.md) and stay within explicit reboot approval. From MacBook verify a new SSH/VS Code connection without local login, GPU tests and optional GUI. If no reboot occurred, record `REBOOT_UNTESTED`.
+Run all [off-site, lock/disconnect, monitor and performance tests](network-rdp.md), recording each WS independently. Both RDP modes must pass for GUI readiness; a desktop alone does not prove Isaac GPU rendering. If WS details are absent, finish apps/public-key preparation and leave only connection-dependent checks pending. After each WS setup, return here to complete its MacBook tests.
 
-Write per-WS [acceptance results](index.md#records-and-acceptance), retained/installed app versions and change/backup locations in `RESULT.md`. Record missing addresses, authentication, licenses, local actions and exact next commands in `RESUME.md`. Do not promote untested connections to complete.
+Before a WS reboot test, follow the [Ubuntu recovery procedure](ubuntu.md) and stay within explicit reboot approval. From MacBook verify a new SSH/VS Code connection without local login, GPU tests and Remote Login; record Desktop Sharing session availability separately. If no reboot occurred, record `REBOOT_UNTESTED`.
+
+Write per-WS [acceptance results](index.md#records-and-acceptance), retained/installed app versions and change/backup locations in `RESULT.md`. Record missing addresses, authentication, local actions and exact next commands in `RESUME.md`. Do not promote untested connections to complete.

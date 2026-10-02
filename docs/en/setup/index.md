@@ -15,6 +15,8 @@ The local library is `.local/manuals/<device>/` in this checkout. Originals, ima
 | sharpa | [sharpa setup](sharpa.md) | 1 | — |
 | aloha | [aloha setup](aloha.md) | 10 | — |
 
+The default off-site route is Tailscale + OpenSSH/VS Code + GNOME RDP (both Remote Login and Desktop Sharing). See [network/RDP](remote-development/network-rdp.md), [Windows/Ubuntu laptops](remote-development/laptops.md), and [local templates](remote-development/records.md). Installation and client acceptance remain separate future work.
+
 ## List, import, download and verify
 
 ```bash

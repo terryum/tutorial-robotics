@@ -14,12 +14,18 @@ For incremental MacBook → WS1/WS2 setup, use the
 [한국어 원격 개발 가이드](docs/ko/setup/remote-development/index.md) or
 [English remote development guide](docs/en/setup/remote-development/index.md).
 Each includes machine-specific execution prompts, existing-environment checks,
-SSH/VS Code, isolated GPU verification, and reboot recovery. Both workstations
+Tailscale + OpenSSH/VS Code, GNOME RDP Remote Login and Desktop Sharing,
+isolated GPU verification, and reboot recovery. Future [Windows/Ubuntu clients](docs/en/setup/remote-development/laptops.md)
+use the same servers; [network/RDP choices](docs/en/setup/remote-development/network-rdp.md)
+and [local record templates](docs/en/setup/remote-development/records.md) are included. Both workstations
 can develop/train in DEVELOPMENT; robot runtime remains separately gated.
 These are installation instructions, not new host acceptance or lesson completion.
 
 The [2026-10-01 MacBook preparation report](docs/MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md)
-records completed local client installation and the still-pending WS connection checks.
+preserves the earlier local installation facts and pending WS checks. The current
+default is RDP; the installed NoMachine client is retained but held in reserve.
+This update publishes preparation material only. Execute MacBook → WS1 → WS2,
+returning to MacBook to verify each WS; no new installation or remote test is claimed.
 
 ## First start — no Python or pal assumed
 

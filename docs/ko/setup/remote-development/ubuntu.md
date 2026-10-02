@@ -32,8 +32,10 @@ Codex는 [공식 설치와 원격 인증](index.md#codex-bootstrap)을 따르고
 1. 기존 SSH 포트와 설정을 보존하고 누락된 OpenSSH만 설치합니다. 대상 Ubuntu의 service/socket 구성을 확인해 부팅 시 활성화합니다. `sudo sshd -t`로 문법을 확인한 뒤 필요한 reload만 수행합니다. 기존 연결은 새 연결 검증까지 유지합니다.
 2. MacBook 공개키를 받으면 대상 계정의 `authorized_keys`에 중복 없이 추가합니다. 기존 키는 지우지 않습니다. 키가 없으면 등록만 `NEEDS_INPUT`으로 남기고 독립된 설치를 계속합니다.
 3. root 로그인·암호 인증을 새로 완화하지 않습니다. 키 접속 검증 전에 기존 암호 인증을 끄지 않습니다. 방화벽은 실제 신뢰 LAN/VPN 또는 `tailscale0`의 필요한 포트만 허용합니다. UFW reset/disable, 접근 경로 확인 없는 신규 활성화, 공유기 포트 포워딩은 하지 않습니다.
-4. 기존 LAN/VPN이 충분하면 유지합니다. 필요하고 허용될 때만 [Tailscale Linux](https://tailscale.com/docs/install/linux)를 설치하고 부팅 서비스를 확인합니다. 사용자가 인증하며 tailnet/ACL/exit node/subnet 설정은 보존합니다. 기본은 **OpenSSH over Tailscale**이며 `tailscale up --ssh`를 자동 적용하지 않습니다. 두 WS의 장치 이름·주소를 구분하고 재인증·키 만료 조건을 기록합니다.
+4. 기존 LAN/VPN 복구 경로를 유지하고 회사 허용·Personal 적용 확인 후 외부망용 [Tailscale](network-rdp.md)을 준비합니다. 부팅 서비스·tailnet 정책·호스트 방화벽·만료/복구 조건을 확인합니다. **OpenSSH over Tailscale**을 쓰며 Tailscale SSH로 바꾸지 않습니다. Exit node·subnet route·회사/로봇 네트워크 외부 노출은 구성하지 않습니다.
 5. 사용 중인 SSH 공개 호스트키 파일의 SHA256 지문을 `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub -E sha256` 등으로 확인합니다. 해당 키가 실제 활성인지 확인하고, 다르면 실제 공개키 파일로 바꿉니다. 개인 호스트키 파일은 읽지 않습니다.
+
+누락 패키지와 권한을 검토한 뒤의 예시는 `sudo apt install openssh-server tmux`이며 **두 패키지가 없을 때만** 해당합니다. 먼저 `systemctl status ssh.service ssh.socket --no-pager`, `systemctl is-enabled ssh.service ssh.socket`으로 확인합니다. Socket activation 장비는 기존 `ssh.socket`, service 방식은 기존 `ssh.service`를 활성화합니다(`sudo systemctl enable --now ACTUAL_SSH_UNIT`). 둘을 무조건 켜거나 기존 포트를 바꾸지 않습니다. 예상 결과는 조사한 listener와 새 키 인증 연결의 성공이며 실패하면 유지한 세션과 백업 설정으로 복구합니다.
 
 로컬 `CLIENT-CONNECTION.md`에 접속 정보·공개 지문·프로젝트/Python 경로를 남깁니다. MacBook의 실제 연결 전에는 `SSH_READY=PENDING: CLIENT_TEST_PENDING`입니다. 팀원은 본인 계정과 키를 사용합니다. 관리 네트워크 접속이 로봇 NIC·ROS DDS discovery를 외부에 여는 이유가 되지 않습니다.
 
@@ -73,13 +75,11 @@ launcher는 실제 working directory·Python·GPU 선택·고유 run 폴더·unb
 
 Jupyter/TensorBoard가 필요하면 선택 환경에만 준비하고 [MacBook 포트 전달](macbook.md)을 따릅니다. loopback 바인딩과 Jupyter 인증을 유지합니다. 데이터·checkpoint·GPU UUID·실제 주소는 Git에서 제외하며 전체 데이터 복제는 별도 요청 사항입니다.
 
-## 7. 선택 GUI
+## 7. GNOME RDP: 두 모드 모두 준비
 
-기존 Ubuntu Desktop과 원격 GUI가 있으면 먼저 시험하고 유지합니다. desktop이 없으면 이 작업만을 위해 GNOME을 설치하지 않으며 `GUI_READY=NOT_APPLICABLE: desktop absent`로 기록합니다.
+[공통 네트워크·RDP 절차](network-rdp.md)로 OS/GNOME·세션·listener·인증·인증서를 조사한 뒤 **Remote Login과 Desktop Sharing**을 별도 구성합니다. 기존 GNOME Remote Desktop의 실제 포트를 사용하며 3389/3390은 예시입니다. NoMachine은 기본 설치에서 제외하고 기존 설치도 제거하지 않습니다.
 
-NoMachine이 필요하면 공식 아키텍처별 패키지와 라이선스를 확인합니다. 현재 v10 서버는 평가/구독 라이선스가 필요하고 클라이언트는 무료입니다. 구매·구독·라이선스 동의를 대행하지 않습니다. [공식 조건, 확인 2026-10-01](https://kb.nomachine.com/AR03P00972). 라이선스 대기 중에도 SSH 준비는 계속합니다.
-
-실제 서비스·포트(기본 NX 4000)를 확인하고 신뢰 네트워크 범위만 허용합니다. UPnP를 켜지 않습니다. X11/Wayland를 먼저 시험하며 display manager 전환·재시작이나 자동 로그인을 기본 해결책으로 쓰지 않습니다. MacBook에서 화면·입력을 확인하고 로그인 전·잠금·모니터 제거는 각각 시험합니다. GPU 렌더링은 별도 검증합니다. 무료 GUI가 명시적으로 필요하면 [Ubuntu Remote Login과 Desktop Sharing](https://documentation.ubuntu.com/desktop/en/24.04/how-to/share-your-desktop-remotely/)의 차이를 확인해 선택하며 여러 RDP 서버를 같은 포트에 설치하지 않습니다.
+데스크톱·기능 누락·세션 비호환이면 해당 GUI 항목을 증거와 함께 대기·실패로 남깁니다. GNOME/xrdp/다른 서버 설치, Wayland/Xorg 전환, 자동 로그인, 기존 세션 종료로 자동 해결하지 않습니다. 독립적인 SSH/GPU 작업은 계속합니다. 각 WS 설정 후 외부망 MacBook에서 시나리오를 수행하고 이후 Windows·Ubuntu 클라이언트도 각각 검증합니다. 두 모드가 모두 성공해야 `GUI_READY=PASS`입니다.
 
 ## 8. 재부팅과 복구
 
@@ -89,10 +89,10 @@ NoMachine이 필요하면 공식 아키텍처별 패키지와 라이선스를 �
 
 `RESUME.md`에 완료 단계, 백업·복구 명령, 재접속 주소, 다음 GPU 시험 명령과 가이드 경로를 남깁니다. 영향과 복구 경로를 제시한 뒤 아직 승인되지 않은 재부팅만 승인받습니다. 이미 승인된 같은 재부팅을 다시 묻지 않습니다. 현재 Codex 세션이 종료될 수 있으며 자동 재접속을 약속하지 않습니다.
 
-재부팅 후 같은 가이드를 다시 읽고 boot ID 변경, 현지 로그인 없는 MacBook SSH·VS Code 접속, `nvidia-smi`, 같은 환경의 GPU/checkpoint 시험을 확인합니다. GUI는 별도로 확인합니다. 실제 학습은 checkpoint를 확인한 후 수동 재개합니다. 미시험이면 `REBOOT_UNTESTED`, 서버 측만 확인했으면 `CLIENT_TEST_PENDING`을 유지합니다.
+재부팅 후 같은 가이드를 다시 읽고 boot ID 변경, 현지 로그인 없는 MacBook SSH·VS Code 접속, `nvidia-smi`, 같은 환경의 GPU/checkpoint 시험을 확인합니다. 현지 로그인 없는 Remote Login과 Desktop Sharing 사용 가능 시점, 잠금·종료·모니터 시험을 따로 기록합니다. 실제 학습은 checkpoint를 확인한 후 수동 재개합니다. 미시험이면 `REBOOT_UNTESTED`, 서버 측만 확인했으면 `CLIENT_TEST_PENDING`을 유지합니다.
 
 ## 9. 결과와 다음 작업
 
-[공통 결과 형식](index.md#records-and-acceptance)으로 기록하고 MacBook에 `CLIENT-CONNECTION.md`만 안전하게 전달합니다. 입력 부족·다른 GPU·선택 GUI·재부팅 미시험을 각각 구분합니다. 새 기록은 과거 성공이나 다른 호스트의 상태를 덮어쓰지 않습니다. 설치가 끝나도 lesson finish나 하드웨어 명령을 자동 실행하지 않습니다.
+[공통 결과 형식](index.md#records-and-acceptance)으로 기록하고 MacBook에 `CLIENT-CONNECTION.md`만 안전하게 전달합니다. 입력 부족·다른 GPU·필수 GUI 미완료·재부팅 미시험을 각각 구분합니다. 새 기록은 과거 성공이나 다른 호스트의 상태를 덮어쓰지 않습니다. 설치가 끝나도 lesson finish나 하드웨어 명령을 자동 실행하지 않습니다.
 
 원격 개발을 넘어 로봇 실행으로 전환할 때는 학습 작업을 정리하고 별도 runtime 환경·격리 네트워크·검증된 bundle·read-only 검사·현재 실행 승인을 확인합니다. SSH 권한은 모션 권한이 아닙니다.

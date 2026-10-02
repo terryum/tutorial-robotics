@@ -5,6 +5,8 @@ This is a sanitized installation report. Local preparation is complete;
 WS1/WS2 connection acceptance remains pending server setup. It does not
 complete a lesson or authorize hardware.
 
+> Policy update, 2026-10-02: the current [KO](ko/setup/remote-development/index.md) / [EN](en/setup/remote-development/index.md) setup uses Tailscale, OpenSSH and GNOME RDP with Windows App on MacBook. Keep the installed NoMachine client without using it by default. The facts below remain historical; this documentation update does not install Windows App/Tailscale or verify WS connections.
+
 ## Installed and retained tools
 
 | Component | Version / result | Action |

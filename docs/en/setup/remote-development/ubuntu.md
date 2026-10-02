@@ -32,8 +32,10 @@ Follow [official Codex installation and remote authentication](index.md#when-cod
 1. Preserve the SSH port/configuration and install OpenSSH only if missing. Inspect Ubuntu's actual service/socket configuration and enable it at boot. Check syntax with `sudo sshd -t` before a necessary reload. Keep the old connection until a new one succeeds.
 2. Add the MacBook public key once to the target account's `authorized_keys`, retaining existing entries. If no public key is available, leave only registration at `NEEDS_INPUT` and continue independent work.
 3. Do not weaken root/password login or disable existing password access before testing key authentication. Allow only needed ports from actual trusted LAN/VPN networks or `tailscale0`. Do not reset/disable UFW, enable it without verifying access, or create router forwarding.
-4. Retain sufficient LAN/VPN access. Install [Tailscale Linux](https://tailscale.com/docs/install/linux) only if needed and permitted, and check its boot service. The user authenticates; preserve tailnet/ACL/exit-node/subnet settings. Default to **OpenSSH over Tailscale**, not automatic `tailscale up --ssh`. Distinguish both WS device names/addresses and record reauthentication/key-expiry conditions.
+4. Keep the existing LAN/VPN recovery path and prepare [Tailscale](network-rdp.md) for off-site access after company permission and Personal eligibility checks. Verify boot service, tailnet policy, host firewall and expiry/recovery conditions. Use **OpenSSH over Tailscale**, not Tailscale SSH. Do not configure exit nodes/subnet routes or expose company/robot networks.
 5. Obtain the SHA256 fingerprint of an active SSH public host-key file, for example `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub -E sha256`. Confirm that key is enabled; otherwise select the actual public-key file. Do not read private host keys.
+
+After reviewing missing packages and permissions, an example is `sudo apt install openssh-server tmux` **only if those are missing**. Inspect `systemctl status ssh.service ssh.socket --no-pager` and `systemctl is-enabled ssh.service ssh.socket` first. On a host using socket activation, enable its existing `ssh.socket`; on a service-based host, enable its existing `ssh.service` (`sudo systemctl enable --now ACTUAL_SSH_UNIT`). Do not enable both blindly or replace the configured port. Expected: the audited listener and a fresh key-authenticated connection work; recover via the retained session and backed-up configuration if they do not.
 
 Write connection details, public fingerprints and project/Python paths into local `CLIENT-CONNECTION.md`. Until actual MacBook access, record `SSH_READY=PENDING: CLIENT_TEST_PENDING`. Teammates use their own accounts/keys. Management access does not justify exposing robot NICs or ROS DDS discovery externally.
 
@@ -73,13 +75,11 @@ A launcher must preserve the actual working directory, Python/GPU selection, uni
 
 If Jupyter/TensorBoard is needed, prepare it only in the selected environment and follow [MacBook tunneling](macbook.md). Keep loopback binding and Jupyter authentication. Exclude data, checkpoints, GPU UUIDs and real addresses from Git; whole-dataset replication requires a separate request.
 
-## 7. Optional GUI
+## 7. GNOME RDP: both modes required
 
-Test and preserve an existing Ubuntu Desktop/remote GUI first. If desktop is absent, do not install GNOME solely for this task; record `GUI_READY=NOT_APPLICABLE: desktop absent`.
+Follow the [common network/RDP procedure](network-rdp.md) to audit OS/GNOME, sessions, listeners, authentication and certificates, then prepare **Remote Login and Desktop Sharing** separately. Use existing GNOME Remote Desktop with actual ports (3389/3390 are examples). NoMachine is excluded from default installation; preserve existing installations without uninstalling them.
 
-If NoMachine is needed, verify its official architecture-specific package and license. Current v10 servers require an evaluation/subscription license; clients are free. Do not purchase, subscribe or accept licensing on the user's behalf. [Official conditions, checked 2026-10-01](https://kb.nomachine.com/AR03P00972). Continue SSH preparation while a license is pending.
-
-Inspect the actual service/port (NX defaults to 4000) and allow only trusted networks. Do not enable UPnP. Test X11/Wayland first instead of defaulting to display-manager changes/restarts or automatic login. Verify MacBook display/input; test pre-login, locked-screen and monitor-disconnected behavior separately. GPU rendering needs its own evidence. If free GUI is explicitly required, distinguish [Ubuntu Remote Login from Desktop Sharing](https://documentation.ubuntu.com/desktop/en/24.04/how-to/share-your-desktop-remotely/) and do not install competing RDP servers on one port.
+A missing desktop/feature or incompatible session leaves the affected GUI item pending/failed with evidence. Do not automatically install GNOME/xrdp/another server, switch Wayland/Xorg, enable automatic login or terminate existing sessions. Continue independent SSH/GPU work. Run the external-network scenarios from MacBook after each WS setup, and later repeat independently for Windows/Ubuntu clients. Both modes must pass before `GUI_READY=PASS`.
 
 ## 8. Reboot and recovery
 
@@ -89,10 +89,10 @@ Check whether disk unlock, Secure Boot MOK enrollment or boot recovery needs loc
 
 Write completed steps, backup/recovery commands, reconnect address, next GPU test command and guide path into `RESUME.md`. Present impact and recovery, then obtain only missing reboot approval; do not re-ask for the same approved reboot. Explain that the Codex session may end and do not promise automatic reconnection.
 
-After reboot, reread this guide and verify changed boot ID, MacBook SSH/VS Code access without local login, `nvidia-smi` and the same environment's GPU/checkpoint tests. Check GUI separately. Resume real training manually after inspecting checkpoints. Retain `REBOOT_UNTESTED` when untested and `CLIENT_TEST_PENDING` for server-only evidence.
+After reboot, reread this guide and verify changed boot ID, MacBook SSH/VS Code access without local login, `nvidia-smi` and the same environment's GPU/checkpoint tests. Verify Remote Login without local login, and record Desktop Sharing availability plus lock/disconnect/monitor tests separately. Resume real training manually after inspecting checkpoints. Retain `REBOOT_UNTESTED` when untested and `CLIENT_TEST_PENDING` for server-only evidence.
 
 ## 9. Closeout and next work
 
-Use the [common result format](index.md#records-and-acceptance), securely passing only `CLIENT-CONNECTION.md` to the MacBook. Distinguish missing input, a different GPU, optional GUI and untested reboot. New records do not overwrite historical success or other hosts' state. Setup does not automatically run lesson finish or hardware commands.
+Use the [common result format](index.md#records-and-acceptance), securely passing only `CLIENT-CONNECTION.md` to the MacBook. Distinguish missing input, a different GPU, incomplete required GUI and untested reboot. New records do not overwrite historical success or other hosts' state. Setup does not automatically run lesson finish or hardware commands.
 
 Before switching from development to robot runtime, clear training workloads and verify a separate runtime environment, isolated network, validated bundle, read-only checks and current-run approval. SSH access is not motion authority.
