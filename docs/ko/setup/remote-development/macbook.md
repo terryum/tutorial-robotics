@@ -6,7 +6,7 @@
 
 ## 1. 기존 상태와 변경 계획
 
-`sw_vers`, `uname -m`, `command -v code codex brew ssh git`로 현재 도구를 확인합니다. VS Code 확장 목록과 Tailscale/Windows App/NoMachine 설치 여부, SSH config의 WS 관련 블록·Include·Host *만 조사합니다. 전체 인증 파일이나 환경변수는 출력하지 않습니다.
+`sw_vers`, `uname -m`, `command -v code codex brew ssh git`로 현재 도구를 확인합니다. VS Code 확장 목록과 Tailscale/RustDesk/Windows App/NoMachine 설치 여부, SSH config의 WS 관련 블록·Include·Host *만 조사합니다. 전체 인증 파일이나 환경변수는 출력하지 않습니다.
 
 기존 앱·키·VPN·설정을 재사용하고 누락된 항목, 설치 위치, 명령을 먼저 보여줍니다. 이 가이드의 실행 요청은 해당 사용자 설정과 도구의 추가 설치를 포함합니다. OS 권한은 정상 승인 절차를 따릅니다. 앱 업데이트·전체 패키지 업그레이드는 일괄 수행하지 않습니다.
 
@@ -31,7 +31,7 @@ Python/Jupyter 작업공간 확장은 접속 후 **SSH 대상 WS에도** 설치�
 
 외부망 기본 연결은 [공통 네트워크 안내](network-rdp.md)의 Personal 요금제 적용·회사 허용 확인 후 Tailscale을 사용합니다. 기존 설치를 재사용하고 없으면 [공식 macOS 앱](https://tailscale.com/docs/install/mac)을 하나만 설치해 사용자가 로그인합니다. 기존 복구 경로를 유지하고 exit node·subnet routing을 추가하지 않습니다.
 
-RDP는 [Microsoft 안내](https://learn.microsoft.com/windows-app/get-started-connect-devices-desktops-apps?pivots=remote-pc)의 공식 Mac App Store 링크에서 **Windows App**을 설치합니다. 기존 설치와 지원 macOS 버전을 확인해 재사용하며 MacBook에 수신 서버는 추가하지 않습니다. 설치된 NoMachine 클라이언트는 제거하지 않고 기본 사용만 보류합니다. [과거 보고서](../../../MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md)는 당시 결과로 보존합니다.
+[RustDesk 클라이언트](rustdesk.md)를 먼저 준비하고 기존 설치·인증을 재사용합니다. 기존 연결 경로로 WS1·WS2 항목을 만듭니다. Windows App은 [선택적 RDP](network-rdp.md)를 선택할 때만 설치합니다. 노트북 수신 서버는 추가하지 않습니다. 설치된 NoMachine과 [과거 보고서](../../../MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md)의 당시 사실을 보존합니다.
 
 ## 3. SSH 키와 별칭
 
@@ -90,10 +90,10 @@ ssh -N -L 127.0.0.1:8889:127.0.0.1:8888 -L 127.0.0.1:6007:127.0.0.1:6006 ws2
 
 ## 6. GUI · 재접속 · 마무리
 
-Windows App의 **Add PC**로 `WS1 Login`, `WS1 Sharing`, `WS2 Login`, `WS2 Sharing`을 만듭니다. PC name은 `ACTUAL_WS_TAILSCALE_ADDRESS:ACTUAL_MODE_PORT`입니다. 두 모드를 켠 기본 예시는 Login 3389·Sharing 3390이지만 WS 보고서의 실제값을 사용합니다. [공통 RDP 절차](network-rdp.md)대로 두 모드의 인증 정보를 구분하고 각 인증서를 검증합니다. 접속 보고서에 암호를 쓰지 않고 프로필은 로컬에 둡니다.
+[RustDesk 안내](rustdesk.md)대로 WS1·WS2 접속 항목을 구분합니다. 접속 정보가 이미 있으면 MacBook 단계에서 바로 시험하며 WS SSH 준비를 기다릴 필요는 없습니다. 인증 정보는 기록에 넣지 않습니다.
 
-[외부망·잠금/종료·모니터·성능 시험](network-rdp.md)을 WS마다 수행합니다. 두 RDP 모드가 모두 성공해야 GUI 준비 완료이며, 화면이 보인다는 사실만으로 Isaac GPU 렌더링을 입증하지 않습니다. WS 정보가 없으면 앱·공개키 준비를 끝내고 접속 의존 검사만 대기합니다. 각 WS 설치 후 여기로 돌아와 해당 MacBook 검증을 마칩니다.
+[외부망·잠금/종료·모니터·성능 시험](network-rdp.md)을 WS마다 수행합니다. `GUI_READY`는 `RUSTDESK_READY`를 따르며 화면 성공만으로 무인접속이나 Isaac GPU 렌더링을 입증하지 않습니다. 정보가 없으면 독립적인 앱·공개키 준비를 마치고 각 WS 설정 후 돌아와 검증합니다.
 
-WS 재부팅 시험은 [Ubuntu 복구 절차](ubuntu.md)를 먼저 수행하고 승인된 경우에만 진행합니다. MacBook에서 현지 로그인 없이 새 SSH·VS Code 연결, GPU 시험과 Remote Login을 확인하고 Desktop Sharing 세션 사용 가능 시점도 따로 기록합니다. 재부팅하지 않았으면 `REBOOT_UNTESTED`입니다.
+승인된 재부팅 전에 [Ubuntu 복구](ubuntu.md)를 준비합니다. 현지 로그인 없이 SSH·VS Code, GPU/checkpoint와 RustDesk를 확인합니다. `UNATTENDED_GUI_READY`는 잠금 후 재접속과 재부팅 후 현지 개입 없는 접속이 모두 필요합니다. 미시험 재부팅은 `REBOOT_UNTESTED`로 남깁니다.
 
 `RESULT.md`에 WS별 [완료 기준](index.md#records-and-acceptance), 유지/설치한 앱과 버전, 변경·백업 위치를 남깁니다. `RESUME.md`에는 아직 필요한 주소·인증·현지 작업과 정확한 다음 명령을 씁니다. 미검증 연결을 완료로 바꾸지 않습니다.

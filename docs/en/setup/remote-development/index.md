@@ -2,10 +2,13 @@
 
 # Remote robotics development: MacBook, WS1 and WS2
 
-Updated: 2026-10-02; new network/RDP sources checked on this date. **These are incremental setup instructions, not an installation report.** On each machine, inspect the actual state and install only what is needed.
+Updated: 2026-10-02; RustDesk sources checked on this date. **These are incremental setup instructions, not an installation report.** On each machine, inspect the actual state and install only what is needed.
 
-The default is **Tailscale + OpenSSH/VS Code + GNOME RDP**, with tmux and task checkpoints. This update delivers published preparation documents only; app installation, WS configuration and actual access tests remain unverified. Next execution order: **MacBook → WS1 → WS2**, returning to MacBook to verify each WS after its setup. Preserve the installed NoMachine client without using it by default.
+The default is **RustDesk + Tailscale + OpenSSH/VS Code**, with tmux and task checkpoints. This update delivers published preparation documents only; app installation, WS configuration and actual access tests remain unverified. Next execution order: **MacBook → WS1 → WS2**, returning to MacBook to verify each WS after its setup. Preserve the installed NoMachine client without using it by default.
 
+The user confirms colleagues already use RustDesk on WS1 and WS2. Versions, server configuration and unattended access remain unverified. Reuse that connection route; Tailscale separately carries SSH/development services. Existing connection details allow an initial RustDesk test during the MacBook step. Earlier RDP preparation and NoMachine installation records remain historical facts, without conversion.
+
+- [RustDesk screen control and unattended access](rustdesk.md)
 - [Common network, RDP, software choices and performance tests](network-rdp.md)
 - [Windows / Ubuntu laptop clients and their execution prompts](laptops.md)
 - [Local connection, result and recovery templates](records.md)
@@ -35,19 +38,19 @@ Start the next session in that machine's `tutorial-robotics` checkout and confir
 ### MacBook
 
 ```text
-Read docs/en/setup/remote-development/index.md, macbook.md, network-rdp.md and records.md, then actually add, configure and verify the missing remote robotics development tools on this MacBook. Preserve AGENTS.md and existing settings, and show the necessary changes first. Prepare Tailscale and Windows App after checking Personal plan eligibility and company permission. Retain the installed NoMachine client unused, and add no laptop server. Prepare separate Remote Login/Desktop Sharing profiles per WS. If WS details are missing, finish app and SSH public-key preparation first. Record results under .local/remote-development/macbook/ and distinguish unverified items for WS1 and WS2. Do not claim lesson completion or installation on a remote machine.
+Read docs/en/setup/remote-development/index.md, macbook.md, rustdesk.md, network-rdp.md and records.md, then actually add, configure and verify the missing remote robotics development tools on this MacBook. Preserve AGENTS.md and existing settings, and show the necessary changes first. Prepare Tailscale and the RustDesk client after checking Personal plan eligibility and company permission. Retain the installed NoMachine client unused, and add no laptop server. Reuse existing RustDesk installation/authentication and create a connection entry per WS. Preserve colleagues’ settings, passwords and server keys. Do not switch to Tailscale direct-IP access or deploy a relay. RDP is optional only for a missing RustDesk feature. Test existing connections now when details are available; report GUI and unattended access separately. If WS details are missing, finish app and SSH public-key preparation first. Record results under .local/remote-development/macbook/ and distinguish unverified items for WS1 and WS2. Do not claim lesson completion or installation on a remote machine.
 ```
 
 ### WS1 Ubuntu
 
 ```text
-Read docs/en/setup/remote-development/index.md, ubuntu.md, network-rdp.md and records.md. Audit this machine as logical role ws1 for DEVELOPMENT, then add and verify the missing remote robotics development tools. If ROBOT_RUNTIME work is active, defer conflicting changes without stopping it or switching modes automatically. Reuse existing ROS/GPU/Isaac environments and locks. Check company permission and Personal eligibility, configure OpenSSH over Tailscale and both GNOME RDP modes, and retain existing SSH recovery. Do not add exit nodes/subnet routes, terminate sessions, enable automatic login or install an alternative desktop/server. Verify both modes from MacBook on an external network after setup; leave absent evidence pending. Record results under .local/remote-development/ws1/. Prepare impact, recovery and resume records before any reboot and stay within its approval. Do not connect to or control physical robots.
+Read docs/en/setup/remote-development/index.md, ubuntu.md, rustdesk.md, network-rdp.md and records.md. Audit this machine as logical role ws1 for DEVELOPMENT, then add and verify the missing remote robotics development tools. If ROBOT_RUNTIME work is active, defer conflicting changes without stopping it or switching modes automatically. Reuse existing ROS/GPU/Isaac environments and locks. Check company permission and Personal eligibility, configure OpenSSH over Tailscale and audit/reuse existing RustDesk, and retain existing SSH recovery. Do not add exit nodes/subnet routes, terminate sessions, enable automatic login or install an alternative desktop/server. First inspect RustDesk version, service/boot state, Wayland/Xorg, ID/relay server, authentication method and active sessions. Do not change colleagues’ settings/passwords/server keys, reinstall RustDesk, switch to direct-IP over Tailscale, deploy a relay or install preview builds. RDP is optional. Verify RustDesk from MacBook on an external network; test lock/reboot unattended access separately and leave absent evidence pending. Record results under .local/remote-development/ws1/. Prepare impact, recovery and resume records before any reboot and stay within its approval. Do not connect to or control physical robots.
 ```
 
 ### WS2 Ubuntu
 
 ```text
-Read docs/en/setup/remote-development/index.md, ubuntu.md, network-rdp.md and records.md. Audit this machine as logical role ws2 for DEVELOPMENT, then add and verify the missing remote robotics development tools. If ROBOT_RUNTIME work is active, defer conflicting changes without stopping it or switching modes automatically. Inspect this machine's GPU, driver, disk and environments instead of copying WS1 settings. Check company permission and Personal eligibility, configure OpenSSH over Tailscale and both GNOME RDP modes, and retain existing SSH recovery. Do not add exit nodes/subnet routes, terminate sessions, enable automatic login or install an alternative desktop/server. Verify both modes from MacBook on an external network after setup; leave absent evidence pending. Record results under .local/remote-development/ws2/. Prepare impact, recovery and resume records before any reboot and stay within its approval. Do not connect to or control physical robots.
+Read docs/en/setup/remote-development/index.md, ubuntu.md, rustdesk.md, network-rdp.md and records.md. Audit this machine as logical role ws2 for DEVELOPMENT, then add and verify the missing remote robotics development tools. If ROBOT_RUNTIME work is active, defer conflicting changes without stopping it or switching modes automatically. Inspect this machine's GPU, driver, disk and environments instead of copying WS1 settings. Check company permission and Personal eligibility, configure OpenSSH over Tailscale and audit/reuse existing RustDesk, and retain existing SSH recovery. Do not add exit nodes/subnet routes, terminate sessions, enable automatic login or install an alternative desktop/server. First inspect RustDesk version, service/boot state, Wayland/Xorg, ID/relay server, authentication method and active sessions. Do not change colleagues’ settings/passwords/server keys, reinstall RustDesk, switch to direct-IP over Tailscale, deploy a relay or install preview builds. RDP is optional. Verify RustDesk from MacBook on an external network; test lock/reboot unattended access separately and leave absent evidence pending. Record results under .local/remote-development/ws2/. Prepare impact, recovery and resume records before any reboot and stay within its approval. Do not connect to or control physical robots.
 ```
 
 ## When Codex is not installed yet
@@ -70,7 +73,7 @@ Preserve models, MCP, skills, accounts, permission policies and existing user/ma
 Paths are relative to each machine's checkout. After setup is authorized, create `.local/remote-development/<host>/` with owner-only access; `<host>` is `macbook`, `ws1`, `ws2`, `windows-laptop` or `ubuntu-laptop`. Read-only audits do not create files. On rerun, read the existing records and retain logs in separate per-run subdirectories.
 
 - `RESULT.md`: actual host/OS, retained/installed/changed/deferred items, exact versions and environment paths, statuses below and evidence logs.
-- `CLIENT-CONNECTION.md`: WS user, address, port, public host-key SHA256 fingerprint, absolute project/Python paths, Tailscale identity, both RDP ports/authentication methods and each public TLS fingerprint. Use the [templates](records.md); keep actual connection details local and never store passwords/private keys/tokens.
+- `CLIENT-CONNECTION.md`: WS user, address, port, public host-key SHA256 fingerprint, absolute project/Python paths, Tailscale identity, RustDesk version/device ID/server type and address/public-key verification route/authentication method/service state, plus selected RDP details. Use the [templates](records.md); keep actual connection details local and never store passwords/private keys/tokens.
 - `RESUME.md`: pending reasons, next commands, user actions, backup/recovery paths and the actual guide path to reopen.
 - `gpu-smoke-result.json` and logs: chosen environment/GPU, FP32/BF16, optimizer changes and checkpoint continuation. On MacBook, record only observed remote evidence.
 
@@ -80,15 +83,17 @@ Paths are relative to each machine's checkout. After setup is authorized, create
 | REMOTE_DEV_READY | Remote folder, WS Python and WS Codex CLI verified |
 | GPU_READY | Finite loss/gradients and optimizer update on the actual GPU |
 | CHECKPOINT_READY | A new process loads a checkpoint and advances training steps |
-| EXTERNAL_NETWORK_READY | Off-site SSH/RDP and direct/relay path, allowed/denied access checks |
-| RDP_REMOTE_LOGIN_READY | Actual client login, correct mode authentication and TLS verification |
-| RDP_DESKTOP_SHARING_READY | Existing local app, display/input, Korean, clipboard and resolution |
-| GUI_READY | Both RDP modes PASS for the same client/WS; lock/disconnect/monitor behavior recorded |
-| TMUX_DISCONNECT_READY | Logging continues after SSH and RDP disconnect |
+| EXTERNAL_NETWORK_READY | Off-site SSH/RustDesk and direct/relay path, allowed/denied access checks |
+| RDP_REMOTE_LOGIN_READY (optional) | Actual client login, correct mode authentication and TLS verification |
+| RDP_DESKTOP_SHARING_READY (optional) | Existing local app, display/input, Korean, clipboard and resolution |
+| RUSTDESK_READY | Actual screen, input, Korean, clipboard and resolution tests for this client/WS |
+| UNATTENDED_GUI_READY | RustDesk reconnect after lock AND after reboot without local login/intervention |
+| GUI_READY | Follows RUSTDESK_READY for the same client/WS |
+| TMUX_DISCONNECT_READY | Logging continues after SSH and RustDesk disconnect |
 | GUI_RENDERING_READY | Installed application's actual scene/renderer/GPU and measured performance |
-| REBOOT_READY | Changed boot ID, SSH and Remote Login without local login, GPU/checkpoint retest; record local unlock limitations |
+| REBOOT_READY | Changed boot ID, SSH and RustDesk without local login, GPU/checkpoint retest; record local unlock limitations |
 
-Use `PASS / FAIL / PENDING / NOT_APPLICABLE`. Server-only checks are `PENDING: CLIENT_TEST_PENDING`; an untested reboot is `PENDING: REBOOT_UNTESTED`. An absent GPU is `NOT_APPLICABLE` with its reason. Missing GNOME or a required RDP feature leaves GUI pending/failed with the cause; missing authentication or address is `PENDING: NEEDS_INPUT`. One WS or client OS cannot supply evidence for another. Record all session-edge tests and performance using the [common scenarios](network-rdp.md).
+Use `PASS / FAIL / PENDING / NOT_APPLICABLE`. Server-only checks are `PENDING: CLIENT_TEST_PENDING`; an untested reboot is `PENDING: REBOOT_UNTESTED`. An absent GPU is `NOT_APPLICABLE` with its reason. Missing required RustDesk functionality leaves GUI pending/failed with the cause; unselected RDP modes are `NOT_APPLICABLE: NOT_SELECTED`; missing authentication or address is `PENDING: NEEDS_INPUT`. One WS or client OS cannot supply evidence for another. Record all session-edge tests and performance using the [common scenarios](network-rdp.md).
 
 These results establish environment readiness only. They do not complete lessons, verify Isaac execution/policy performance or authorize hardware. Do not overwrite historical installation/host ledgers with unmeasured success or change learner progress.
 

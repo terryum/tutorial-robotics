@@ -6,7 +6,7 @@ Read the [sequence, prompts and acceptance criteria](index.md) first. This guide
 
 ## 1. Inspect and plan the changes
 
-Inspect `sw_vers`, `uname -m` and `command -v code codex brew ssh git`. Check VS Code extensions, Tailscale/Windows App/NoMachine installations, and only the relevant SSH blocks, Include directives and Host * settings. Do not dump authentication files or the full environment.
+Inspect `sw_vers`, `uname -m` and `command -v code codex brew ssh git`. Check VS Code extensions, Tailscale/RustDesk/Windows App/NoMachine installations, and only the relevant SSH blocks, Include directives and Host * settings. Do not dump authentication files or the full environment.
 
 Reuse apps, keys, VPN and settings. Show missing tools, installation locations and commands first. An execution request for this guide includes these user settings and incremental tools; obtain OS permissions through normal approval mechanisms. Do not bulk-upgrade apps or packages.
 
@@ -31,7 +31,7 @@ Install Python/Jupyter workspace extensions **on the SSH target WS** after conne
 
 Use Tailscale as the default off-site route after checking Personal plan eligibility and company permission in the [network guide](network-rdp.md). Reuse existing installations; if missing, install one [official macOS app](https://tailscale.com/docs/install/mac) and let the user sign in. Preserve the existing recovery route and add no exit node or subnet routing.
 
-For RDP, install Microsoft's **Windows App** from its official Mac App Store link in the [Microsoft instructions](https://learn.microsoft.com/windows-app/get-started-connect-devices-desktops-apps?pivots=remote-pc). Reuse an existing installation and verify its supported macOS version. Add no receiving server to the MacBook. Keep the previously installed NoMachine client, but leave it unused in the default setup; the [historical report](../../../MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md) remains valid for its date.
+Prepare the [RustDesk client](rustdesk.md) first, reusing installation and authentication. Add a WS1 and WS2 entry using the existing connection route. Install Windows App only if selecting [optional RDP](network-rdp.md). Add no incoming server to this laptop. Preserve installed NoMachine; the [historical report](../../../MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md) remains valid for its date.
 
 ## 3. SSH keys and aliases
 
@@ -90,10 +90,10 @@ On the WS use `tmux new -As robotics-ws1` or `robotics-ws2`. Detach with `Ctrl-b
 
 ## 6. GUI, reconnection and closeout
 
-In Windows App, use **Add PC** to create `WS1 Login`, `WS1 Sharing`, `WS2 Login` and `WS2 Sharing`. Set PC name to `ACTUAL_WS_TAILSCALE_ADDRESS:ACTUAL_MODE_PORT`; defaults with both modes enabled are Login 3389 and Sharing 3390, but copy actual values from the WS report. Use the two modes' credentials separately and verify their certificates through the [common RDP procedure](network-rdp.md). Store no passwords in the connection report. Keep profiles local.
+Create separate WS1/WS2 RustDesk entries following the [RustDesk guide](rustdesk.md). If details already exist, test them during this MacBook step; missing WS SSH setup need not block screen access. Keep credentials out of records.
 
-Run all [off-site, lock/disconnect, monitor and performance tests](network-rdp.md), recording each WS independently. Both RDP modes must pass for GUI readiness; a desktop alone does not prove Isaac GPU rendering. If WS details are absent, finish apps/public-key preparation and leave only connection-dependent checks pending. After each WS setup, return here to complete its MacBook tests.
+Run [external-network, lock/disconnect, monitor and performance tests](network-rdp.md) per WS. `GUI_READY` follows `RUSTDESK_READY`; a working desktop proves neither unattended access nor Isaac GPU rendering. Finish independent app/key preparation when details are missing, then return after each WS setup.
 
-Before a WS reboot test, follow the [Ubuntu recovery procedure](ubuntu.md) and stay within explicit reboot approval. From MacBook verify a new SSH/VS Code connection without local login, GPU tests and Remote Login; record Desktop Sharing session availability separately. If no reboot occurred, record `REBOOT_UNTESTED`.
+Prepare [Ubuntu recovery](ubuntu.md) before an authorized reboot. Verify SSH/VS Code, GPU/checkpoint and RustDesk without local login. `UNATTENDED_GUI_READY` requires both lock reconnect and post-reboot access without local intervention. Untested reboot remains `REBOOT_UNTESTED`.
 
 Write per-WS [acceptance results](index.md#records-and-acceptance), retained/installed app versions and change/backup locations in `RESULT.md`. Record missing addresses, authentication, local actions and exact next commands in `RESUME.md`. Do not promote untested connections to complete.

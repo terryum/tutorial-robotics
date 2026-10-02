@@ -75,11 +75,11 @@ launcher는 실제 working directory·Python·GPU 선택·고유 run 폴더·unb
 
 Jupyter/TensorBoard가 필요하면 선택 환경에만 준비하고 [MacBook 포트 전달](macbook.md)을 따릅니다. loopback 바인딩과 Jupyter 인증을 유지합니다. 데이터·checkpoint·GPU UUID·실제 주소는 Git에서 제외하며 전체 데이터 복제는 별도 요청 사항입니다.
 
-## 7. GNOME RDP: 두 모드 모두 준비
+## 7. 기존 RustDesk 재사용
 
-[공통 네트워크·RDP 절차](network-rdp.md)로 OS/GNOME·세션·listener·인증·인증서를 조사한 뒤 **Remote Login과 Desktop Sharing**을 별도 구성합니다. 기존 GNOME Remote Desktop의 실제 포트를 사용하며 3389/3390은 예시입니다. NoMachine은 기본 설치에서 제외하고 기존 설치도 제거하지 않습니다.
+[RustDesk 조사·시험](rustdesk.md)부터 수행합니다. 버전/build·서비스/부팅·Wayland/Xorg·ID/relay 서버·인증·활성 세션을 확인합니다. 동료 설정·암호·서버 키·실행 서비스를 보존하고 RustDesk를 재설치하지 않습니다. 기존 연결 경로를 재사용하며 Tailscale은 SSH·개발용으로 유지합니다. 직접 IP 전환이나 새 중계 서버 구축은 하지 않습니다.
 
-데스크톱·기능 누락·세션 비호환이면 해당 GUI 항목을 증거와 함께 대기·실패로 남깁니다. GNOME/xrdp/다른 서버 설치, Wayland/Xorg 전환, 자동 로그인, 기존 세션 종료로 자동 해결하지 않습니다. 독립적인 SSH/GPU 작업은 계속합니다. 각 WS 설정 후 외부망 MacBook에서 시나리오를 수행하고 이후 Windows·Ubuntu 클라이언트도 각각 검증합니다. 두 모드가 모두 성공해야 `GUI_READY=PASS`입니다.
+기능이 부족하면 대기·실패로 남기고 독립적인 SSH/GPU 작업을 계속합니다. Preview 설치·Xorg 전환·자동 로그인·세션 강제 종료를 기본 해결책으로 쓰지 않습니다. WS별로 MacBook에서 시험하고 미래 클라이언트도 각각 검증합니다. `GUI_READY`는 `RUSTDESK_READY`를 따르며 무인접속은 잠금·재부팅 증거가 별도로 필요합니다. [GNOME RDP](network-rdp.md)는 부족한 기능을 위한 선택적 보완이며 기본 설치·완료 조건에서 제외합니다. 기존 NoMachine도 보존합니다.
 
 ## 8. 재부팅과 복구
 
@@ -89,7 +89,7 @@ Jupyter/TensorBoard가 필요하면 선택 환경에만 준비하고 [MacBook �
 
 `RESUME.md`에 완료 단계, 백업·복구 명령, 재접속 주소, 다음 GPU 시험 명령과 가이드 경로를 남깁니다. 영향과 복구 경로를 제시한 뒤 아직 승인되지 않은 재부팅만 승인받습니다. 이미 승인된 같은 재부팅을 다시 묻지 않습니다. 현재 Codex 세션이 종료될 수 있으며 자동 재접속을 약속하지 않습니다.
 
-재부팅 후 같은 가이드를 다시 읽고 boot ID 변경, 현지 로그인 없는 MacBook SSH·VS Code 접속, `nvidia-smi`, 같은 환경의 GPU/checkpoint 시험을 확인합니다. 현지 로그인 없는 Remote Login과 Desktop Sharing 사용 가능 시점, 잠금·종료·모니터 시험을 따로 기록합니다. 실제 학습은 checkpoint를 확인한 후 수동 재개합니다. 미시험이면 `REBOOT_UNTESTED`, 서버 측만 확인했으면 `CLIENT_TEST_PENDING`을 유지합니다.
+재부팅 후 같은 가이드를 다시 읽고 boot ID 변경, 현지 로그인 없는 MacBook SSH·VS Code 접속, `nvidia-smi`, 같은 환경의 GPU/checkpoint 시험을 확인합니다. 현지 로그인 없는 RustDesk와 잠금·종료·모니터 시험을 따로 기록하고 선택한 RDP 모드도 독립적으로 기록합니다. 실제 학습은 checkpoint를 확인한 후 수동 재개합니다. 미시험이면 `REBOOT_UNTESTED`, 서버 측만 확인했으면 `CLIENT_TEST_PENDING`을 유지합니다.
 
 ## 9. 결과와 다음 작업
 

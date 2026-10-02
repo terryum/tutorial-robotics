@@ -5,7 +5,7 @@
 Use the [English remote development guide](../docs/en/setup/remote-development/index.md)
 or [한국어 원격 개발 가이드](../docs/ko/setup/remote-development/index.md).
 Those pages own MacBook/WS1/WS2 and future Windows/Ubuntu laptop prompts,
-Tailscale/OpenSSH configuration, both GNOME RDP modes, GPU tests, local result
+Tailscale/OpenSSH configuration, existing RustDesk and optional GNOME RDP, GPU tests, local result
 records and reboot recovery. Preserve installed
 environments and add only missing requirements.
 
@@ -21,8 +21,8 @@ Use the laptop for:
 
 - VS Code/Codex Remote SSH to WS2 and WS1
 - Jupyter/metrics tunnels
-- GNOME RDP Remote Login and Desktop Sharing over Tailscale
-- Windows App (Mac), mstsc (Windows), or Remmina (Ubuntu)
+- [Existing RustDesk](../docs/en/setup/remote-development/rustdesk.md) for screen/input over its current connection route
+- Optional GNOME RDP over Tailscale when a needed feature is missing: Windows App (Mac), mstsc (Windows), Remmina (Ubuntu)
 - Version-matched NVIDIA WebRTC for Isaac when separately needed
 - report, figure, video and dataset-manifest inspection
 - Git and deployment-promotion review

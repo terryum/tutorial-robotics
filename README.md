@@ -14,7 +14,7 @@ For incremental MacBook → WS1/WS2 setup, use the
 [한국어 원격 개발 가이드](docs/ko/setup/remote-development/index.md) or
 [English remote development guide](docs/en/setup/remote-development/index.md).
 Each includes machine-specific execution prompts, existing-environment checks,
-Tailscale + OpenSSH/VS Code, GNOME RDP Remote Login and Desktop Sharing,
+existing RustDesk screen control, Tailscale + OpenSSH/VS Code, tmux/checkpoints,
 isolated GPU verification, and reboot recovery. Future [Windows/Ubuntu clients](docs/en/setup/remote-development/laptops.md)
 use the same servers; [network/RDP choices](docs/en/setup/remote-development/network-rdp.md)
 and [local record templates](docs/en/setup/remote-development/records.md) are included. Both workstations
@@ -23,9 +23,12 @@ These are installation instructions, not new host acceptance or lesson completio
 
 The [2026-10-01 MacBook preparation report](docs/MACBOOK_REMOTE_DEVELOPMENT_STATUS_2026-10-01.md)
 preserves the earlier local installation facts and pending WS checks. The current
-default is RDP; the installed NoMachine client is retained but held in reserve.
+default is [RustDesk](docs/en/setup/remote-development/rustdesk.md); RDP is optional and the installed NoMachine client is retained but held in reserve.
 This update publishes preparation material only. Execute MacBook → WS1 → WS2,
-returning to MacBook to verify each WS; no new installation or remote test is claimed.
+returning to MacBook to verify each WS; existing RustDesk details allow an initial test
+during the MacBook step. Colleagues already use RustDesk on both WS according to
+the user, but versions, servers and unattended access remain unverified.
+No new installation or remote test is claimed.
 
 ## First start — no Python or pal assumed
 

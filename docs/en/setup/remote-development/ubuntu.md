@@ -75,11 +75,11 @@ A launcher must preserve the actual working directory, Python/GPU selection, uni
 
 If Jupyter/TensorBoard is needed, prepare it only in the selected environment and follow [MacBook tunneling](macbook.md). Keep loopback binding and Jupyter authentication. Exclude data, checkpoints, GPU UUIDs and real addresses from Git; whole-dataset replication requires a separate request.
 
-## 7. GNOME RDP: both modes required
+## 7. Reuse existing RustDesk
 
-Follow the [common network/RDP procedure](network-rdp.md) to audit OS/GNOME, sessions, listeners, authentication and certificates, then prepare **Remote Login and Desktop Sharing** separately. Use existing GNOME Remote Desktop with actual ports (3389/3390 are examples). NoMachine is excluded from default installation; preserve existing installations without uninstalling them.
+Follow the [RustDesk audit and tests](rustdesk.md) first: version/build, service and boot state, Wayland/Xorg, ID/relay servers, authentication and active sessions. Preserve colleagues’ settings, passwords, server keys and running services; do not reinstall RustDesk. Reuse the existing connection route and keep Tailscale for SSH/development. Do not switch to direct-IP access or build a relay.
 
-A missing desktop/feature or incompatible session leaves the affected GUI item pending/failed with evidence. Do not automatically install GNOME/xrdp/another server, switch Wayland/Xorg, enable automatic login or terminate existing sessions. Continue independent SSH/GPU work. Run the external-network scenarios from MacBook after each WS setup, and later repeat independently for Windows/Ubuntu clients. Both modes must pass before `GUI_READY=PASS`.
+Missing functionality remains pending/failed while independent SSH/GPU work continues. No preview installation, Xorg switch, automatic login or forced session termination as a default fix. Test each WS from MacBook, then independently from future clients. `GUI_READY` follows `RUSTDESK_READY`; unattended access requires separate lock and reboot evidence. [GNOME RDP](network-rdp.md) is an optional supplement for unmet needs, excluded from default installation and acceptance. Preserve installed NoMachine.
 
 ## 8. Reboot and recovery
 
@@ -89,7 +89,7 @@ Check whether disk unlock, Secure Boot MOK enrollment or boot recovery needs loc
 
 Write completed steps, backup/recovery commands, reconnect address, next GPU test command and guide path into `RESUME.md`. Present impact and recovery, then obtain only missing reboot approval; do not re-ask for the same approved reboot. Explain that the Codex session may end and do not promise automatic reconnection.
 
-After reboot, reread this guide and verify changed boot ID, MacBook SSH/VS Code access without local login, `nvidia-smi` and the same environment's GPU/checkpoint tests. Verify Remote Login without local login, and record Desktop Sharing availability plus lock/disconnect/monitor tests separately. Resume real training manually after inspecting checkpoints. Retain `REBOOT_UNTESTED` when untested and `CLIENT_TEST_PENDING` for server-only evidence.
+After reboot, reread this guide and verify changed boot ID, MacBook SSH/VS Code access without local login, `nvidia-smi` and the same environment's GPU/checkpoint tests. Verify RustDesk without local login and record lock/disconnect/monitor tests separately; record selected RDP modes independently. Resume real training manually after inspecting checkpoints. Retain `REBOOT_UNTESTED` when untested and `CLIENT_TEST_PENDING` for server-only evidence.
 
 ## 9. Closeout and next work
 

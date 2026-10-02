@@ -7,6 +7,8 @@ complete a lesson or authorize hardware.
 
 > Policy update, 2026-10-02: the current [KO](ko/setup/remote-development/index.md) / [EN](en/setup/remote-development/index.md) setup uses Tailscale, OpenSSH and GNOME RDP with Windows App on MacBook. Keep the installed NoMachine client without using it by default. The facts below remain historical; this documentation update does not install Windows App/Tailscale or verify WS connections.
 
+> Latest policy, 2026-10-02: [RustDesk first](en/setup/remote-development/rustdesk.md) supersedes the RDP-first preparation above. The user reports colleagues use RustDesk on WS1/WS2; version/server/unattended readiness remain unverified. Tailscale + OpenSSH/VS Code and tmux/checkpoints remain the development path. RDP is optional. The earlier policy note and installation facts below are retained as history; no apps or WS settings were changed by this update.
+
 ## Installed and retained tools
 
 | Component | Version / result | Action |
