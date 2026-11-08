@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/setup/fr3.md" lang="ko">한국어</a> | <a href="fr3.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 <p align="right"><a href="../../ko/setup/fr3.md">한국어</a> | <a href="../../en/setup/fr3.md">ENGLISH</a></p>
 
 # Franka Research 3 — Setup review

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="sharpa.md" lang="ko">한국어</a> | <a href="../../en/setup/sharpa.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 <p align="right"><a href="../../ko/setup/sharpa.md">한국어</a> | <a href="../../en/setup/sharpa.md">ENGLISH</a></p>
 
 # Sharpa Wave — Setup 검토

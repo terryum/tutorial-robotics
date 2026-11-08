@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import time
 from pathlib import Path
 from typing import Any
@@ -31,9 +32,14 @@ def _check_wuji(snapshot: dict[str, Any]) -> list[str]:
         errors.append("firmware-mismatch")
     if snapshot.get("sdk") != release["sdk"]:
         errors.append("sdk-mismatch")
-    if float(snapshot.get("get_rate_hz", 0.0)) > release["read_rate_hz_maximum"]:
+    read_rate = float(snapshot.get("get_rate_hz", 0.0))
+    if not math.isfinite(read_rate) or not 0 <= read_rate <= release["read_rate_hz_maximum"]:
         errors.append("get-rate-limit")
-    if float(snapshot.get("publish_rate_hz", 0.0)) > release["publish_rate_hz_maximum"]:
+    publish_rate = float(snapshot.get("publish_rate_hz", 0.0))
+    if (
+        not math.isfinite(publish_rate)
+        or not 0 <= publish_rate <= release["publish_rate_hz_maximum"]
+    ):
         errors.append("publish-rate-limit")
     return errors
 
@@ -49,33 +55,61 @@ def preflight(robot: str, snapshot_path: Path, *, read_only: bool) -> dict[str, 
     errors: list[str] = []
     if snapshot.get("model") not in EXPECTED_MODELS[robot]:
         errors.append(f"wrong-model: expected {robot}")
-    if not snapshot.get("network_ok"):
+    if snapshot.get("network_ok") is not True:
         errors.append("disconnected-device")
-    if snapshot.get("enabled"):
+    if snapshot.get("enabled") is not False:
         errors.append("device-must-be-disabled")
-    if snapshot.get("error"):
+    if snapshot.get("error") is not False:
         errors.append("device-error")
-    if not snapshot.get("estop_ready"):
+    if snapshot.get("estop_ready") is not True:
         errors.append("estop-not-ready")
-    age = time.time() - float(snapshot.get("timestamp", 0.0))
-    if age > float(snapshot.get("stale_after_s", 1.0)):
-        errors.append("stale-state")
-    if int(snapshot.get("command_authority_count", 0)) != 0:
-        errors.append("command-authority-active")
-    positions = [float(item) for item in snapshot.get("positions_rad", [])]
-    limits = snapshot.get("position_limits_rad", [])
-    if len(positions) != len(limits) or any(
-        not float(limit[0]) <= position <= float(limit[1])
-        for position, limit in zip(positions, limits, strict=True)
-    ):
-        errors.append("limit-violation")
+    try:
+        timestamp = float(snapshot.get("timestamp", 0))
+        stale_after = float(snapshot.get("stale_after_s", 0))
+        age = time.time() - timestamp
+        if (
+            not math.isfinite(timestamp)
+            or not math.isfinite(stale_after)
+            or not 0 < stale_after <= 1
+            or not 0 <= age <= stale_after
+        ):
+            errors.append("stale-state")
+        previous = snapshot.get("previous_timestamp")
+        if previous is not None and not timestamp > float(previous):
+            errors.append("stalled-state")
+        if snapshot.get("command_authority_count") != 0:
+            errors.append("command-authority-active")
+        positions = [float(item) for item in snapshot.get("positions_rad", [])]
+        limits = snapshot.get("position_limits_rad", [])
+        if (
+            not positions
+            or len(positions) != len(limits)
+            or any(
+                len(limit) != 2
+                or not all(math.isfinite(float(v)) for v in limit)
+                or not math.isfinite(position)
+                or not float(limit[0]) < float(limit[1])
+                or not float(limit[0]) <= position <= float(limit[1])
+                for position, limit in zip(positions, limits, strict=True)
+            )
+        ):
+            errors.append("limit-violation")
+        if robot in {"fr3", "enlight"} and (
+            len(positions) != 7 or snapshot.get("joint_group") != "arm"
+        ):
+            errors.append("invalid-joint-group")
+    except (TypeError, ValueError, OverflowError):
+        errors.append("malformed-state")
     if robot == "wuji":
+        try:
+            wuji_errors = _check_wuji(snapshot)
+        except (TypeError, ValueError, OverflowError):
+            wuji_errors = ["malformed-state"]
         errors.extend(
-            error
-            for error in _check_wuji(snapshot)
-            if error != "wrong-model: expected Wuji Hand 2 Beta 2"
+            error for error in wuji_errors if error != "wrong-model: expected Wuji Hand 2 Beta 2"
         )
     return {
+        "valid_until_s": timestamp + stale_after if not errors else 0.0,
         "robot": robot,
         "ready": not errors,
         "read_only": True,

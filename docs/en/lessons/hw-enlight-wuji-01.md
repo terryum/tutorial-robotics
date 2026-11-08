@@ -81,7 +81,7 @@ Completion criteria are currently unmet. Keep the lesson incomplete until an act
 <!-- pal:navigation:start -->
 ## Next lesson
 
-Course end
+[core-fr3-09](./core-fr3-09.md)
 
 This is catalog order. Use `pal course next --json` to select an eligible lesson.
 <!-- pal:navigation:end -->

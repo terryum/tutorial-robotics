@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="enlight.md" lang="ko">한국어</a> | <a href="../../en/setup/enlight.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 <p align="right"><a href="../../ko/setup/enlight.md">한국어</a> | <a href="../../en/setup/enlight.md">ENGLISH</a></p>
 
 # Enlight — Setup 검토

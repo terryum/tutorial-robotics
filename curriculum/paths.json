@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "paths": {
+    "manipulator": {
+      "title": "FR3 → Enlight simulation → Enlight hardware",
+      "title_ko": "FR3 → Enlight 시뮬레이션 → Enlight 실물",
+      "required": [
+        "core-00",
+        "core-01",
+        "core-02",
+        "core-03",
+        "core-04",
+        "core-fr3-01",
+        "core-fr3-02",
+        "core-fr3-03",
+        "core-fr3-04",
+        "core-fr3-05",
+        "core-fr3-06",
+        "core-fr3-09",
+        "sim-fr3-01",
+        "core-rl-01",
+        "core-fr3-07",
+        "core-fr3-08",
+        "core-fr3-10",
+        "sim-fr3-02",
+        "sim-fr3-03",
+        "sim-fr3-04",
+        "core-enlight-01",
+        "core-enlight-02",
+        "core-enlight-03",
+        "core-enlight-04",
+        "core-enlight-05",
+        "sim-enlight-03",
+        "sim-enlight-04",
+        "sim-enlight-05",
+        "sim-deploy-01",
+        "hw-common-01",
+        "hw-common-02",
+        "sim-ros-01",
+        "sim-enlight-01",
+        "hw-enlight-01",
+        "hw-enlight-02",
+        "hw-enlight-04",
+        "hw-enlight-05",
+        "hw-enlight-06"
+      ],
+      "follow_up": []
+    },
+    "dexterous-hand": {
+      "title": "Shadow Hand → Wuji Hand 2 Beta 2",
+      "title_ko": "Shadow Hand → Wuji Hand 2 Beta 2",
+      "required": [
+        "core-00",
+        "core-01",
+        "core-02",
+        "core-03",
+        "core-04",
+        "core-shadow-01",
+        "sim-shadow-01"
+      ],
+      "follow_up": [
+        "core-wuji-01",
+        "core-wuji-02",
+        "hw-enlight-wuji-01"
+      ]
+    },
+    "mobile-manipulator": {
+      "title": "Stretch 3 → private Friday extension",
+      "title_ko": "Stretch 3 → 비공개 Friday 확장",
+      "required": [
+        "core-00",
+        "core-01",
+        "core-02",
+        "core-03",
+        "core-04",
+        "core-stretch3-01",
+        "sim-stretch3-01"
+      ],
+      "follow_up": [
+        "private-provider-interface"
+      ]
+    }
+  }
+}

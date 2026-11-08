@@ -28,8 +28,10 @@ def validate_links() -> list[str]:
 
 
 def main() -> int:
+    from pai_lab.paths import validate_paths
+
     lessons = load_catalog()
-    errors = validate_catalog() + check_sources() + validate_links()
+    errors = validate_catalog() + validate_paths() + check_sources() + validate_links()
     for lesson in lessons:
         errors.extend(check_lesson(lesson.id))
         if lesson.implementation != implementation_status(lesson.id):

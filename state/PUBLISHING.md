@@ -53,3 +53,23 @@ Learner progress is never stored here. Local Mac development verification covers
 | hw-enlight-02 | `reader_test_required` | scaffolded | Requires actual device adapter and per-run safety evidence; not verified here |
 | hw-enlight-03 | `reader_test_required` | scaffolded | Requires actual device adapter and per-run safety evidence; not verified here |
 | hw-enlight-wuji-01 | `reader_test_required` | scaffolded | Requires actual device adapter and per-run safety evidence; not verified here |
+
+| core-fr3-09 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
+| core-fr3-10 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
+| sim-fr3-01 | `reader_test_required` | implemented | prepared; see environment verification report |
+| sim-fr3-02 | `reader_test_required` | implemented | prepared; see environment verification report |
+| sim-fr3-03 | `reader_test_required` | implemented | prepared; see environment verification report |
+| sim-fr3-04 | `reader_test_required` | implemented | prepared; see environment verification report |
+| core-enlight-03 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
+| core-enlight-04 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
+| core-enlight-05 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
+| sim-enlight-03 | `reader_test_required` | implemented | prepared; see environment verification report |
+| sim-enlight-04 | `reader_test_required` | implemented | prepared; see environment verification report |
+| sim-enlight-05 | `reader_test_required` | implemented | prepared; see environment verification report |
+| core-shadow-01 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
+| sim-shadow-01 | `reader_test_required` | implemented | prepared; see environment verification report |
+| core-stretch3-01 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
+| sim-stretch3-01 | `reader_test_required` | implemented | prepared; see environment verification report |
+| hw-enlight-04 | `reader_test_required` | scaffolded | prepared; see environment verification report |
+| hw-enlight-05 | `reader_test_required` | scaffolded | prepared; see environment verification report |
+| hw-enlight-06 | `reader_test_required` | scaffolded | prepared; see environment verification report |

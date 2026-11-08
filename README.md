@@ -107,7 +107,7 @@ artifacts to resume later; a fresh clone has its own progress. See the
 
 ## Evidence and course scope
 
-The catalog retains 49 IDs and legacy aliases: 25 Core lessons, 15 Simulation lessons, one offline runtime lesson and eight device lessons. Real MuJoCo models, measured contact/control, NumPy PPO and BC replace the earlier generic numerical fixtures. ACT and the VLA mock remain explicitly contract lessons.
+The catalog preserves the original 49 IDs and legacy aliases and adds independently selectable robot paths. See the [English](docs/en/paths.md) / [한국어](docs/ko/paths.md) path guides and `pal course paths --json`. Real MuJoCo models, measured contact/control, NumPy PPO and BC replace the earlier generic numerical fixtures. ACT and the VLA mock remain explicitly contract lessons.
 
 Mac verification covers Core plus the generated deployment candidate and offline sink. The other 14 software lessons require actual Ubuntu/ROS/GPU/Isaac environments and remain `reader_test_required` until run there. The eight device lessons remain `scaffolded`; no simulation result authorizes physical motion. See [WS1 preparation and verification](setup/WS1_HANDOFF.md).
 
@@ -188,4 +188,25 @@ The metadata generator preserves authored lesson bodies, entrypoints and tests. 
 | 47 | hw-enlight-02 / T37A | [Enlight system identification and MuJoCo calibration](docs/en/lessons/hw-enlight-02.md) | [Enlight 시스템 식별과 MuJoCo 보정](docs/ko/lessons/hw-enlight-02.md) |
 | 48 | hw-enlight-03 / T41B | [Enlight contact-task shadow and gated evaluation](docs/en/lessons/hw-enlight-03.md) | [Enlight 접촉 과제 섀도와 승인 기반 평가](docs/ko/lessons/hw-enlight-03.md) |
 | 49 | hw-enlight-wuji-01 / T38A | [Enlight and Wuji integrated read-only validation](docs/en/lessons/hw-enlight-wuji-01.md) | [Enlight와 Wuji 통합 읽기 전용 검증](docs/ko/lessons/hw-enlight-wuji-01.md) |
+| 50 | core-fr3-09 /  | [FR3 joint and TCP trajectory tracking](docs/en/lessons/core-fr3-09.md) | [FR3 관절·TCP 궤적 추종](docs/ko/lessons/core-fr3-09.md) |
+| 51 | core-fr3-10 /  | [FR3 demonstrations, BC and independent reach evaluation](docs/en/lessons/core-fr3-10.md) | [FR3 시연·BC와 독립 도달 평가](docs/ko/lessons/core-fr3-10.md) |
+| 52 | sim-fr3-01 /  | [FR3 PhysX joint and TCP control](docs/en/lessons/sim-fr3-01.md) | [FR3 PhysX 관절·TCP 제어](docs/ko/lessons/sim-fr3-01.md) |
+| 53 | sim-fr3-02 /  | [FR3 PhysX demonstrations and BC](docs/en/lessons/sim-fr3-02.md) | [FR3 PhysX 시연·BC](docs/ko/lessons/sim-fr3-02.md) |
+| 54 | sim-fr3-03 /  | [FR3 PhysX PPO and evaluation](docs/en/lessons/sim-fr3-03.md) | [FR3 PhysX PPO와 평가](docs/ko/lessons/sim-fr3-03.md) |
+| 55 | sim-fr3-04 /  | [FR3 matched-engine evidence comparison](docs/en/lessons/sim-fr3-04.md) | [FR3 동일 조건 엔진 증거 비교](docs/ko/lessons/sim-fr3-04.md) |
+| 56 | core-enlight-03 /  | [Enlight joint and TCP trajectory tracking](docs/en/lessons/core-enlight-03.md) | [Enlight 관절·TCP 궤적 추종](docs/ko/lessons/core-enlight-03.md) |
+| 57 | core-enlight-04 /  | [Enlight demonstrations, BC and independent evaluation](docs/en/lessons/core-enlight-04.md) | [Enlight 시연·BC와 독립 평가](docs/ko/lessons/core-enlight-04.md) |
+| 58 | core-enlight-05 /  | [Enlight PPO candidate and independent evaluation](docs/en/lessons/core-enlight-05.md) | [Enlight PPO 후보와 독립 평가](docs/ko/lessons/core-enlight-05.md) |
+| 59 | sim-enlight-03 /  | [Enlight PhysX joint and TCP control](docs/en/lessons/sim-enlight-03.md) | [Enlight PhysX 관절·TCP 제어](docs/ko/lessons/sim-enlight-03.md) |
+| 60 | sim-enlight-04 /  | [Enlight PhysX demonstrations and BC](docs/en/lessons/sim-enlight-04.md) | [Enlight PhysX 시연·BC](docs/ko/lessons/sim-enlight-04.md) |
+| 61 | sim-enlight-05 /  | [Enlight PhysX PPO and evaluation](docs/en/lessons/sim-enlight-05.md) | [Enlight PhysX PPO와 평가](docs/ko/lessons/sim-enlight-05.md) |
+| 62 | core-shadow-01 /  | [Shadow Hand joints, synergies and object contact](docs/en/lessons/core-shadow-01.md) | [Shadow Hand 관절·시너지·물체 접촉](docs/ko/lessons/core-shadow-01.md) |
+| 63 | sim-shadow-01 /  | [Shadow Hand PhysX introduction](docs/en/lessons/sim-shadow-01.md) | [Shadow Hand PhysX 입문](docs/ko/lessons/sim-shadow-01.md) |
+| 64 | core-stretch3-01 /  | [Stretch 3 base, arm and coordinated reach](docs/en/lessons/core-stretch3-01.md) | [Stretch 3 베이스·팔·협응 도달](docs/ko/lessons/core-stretch3-01.md) |
+| 65 | sim-stretch3-01 /  | [Stretch 3 PhysX introduction](docs/en/lessons/sim-stretch3-01.md) | [Stretch 3 PhysX 입문](docs/ko/lessons/sim-stretch3-01.md) |
+| 66 | hw-enlight-04 /  | [Enlight free-space joint and TCP execution cards](docs/en/lessons/hw-enlight-04.md) | [Enlight 자유공간 관절·TCP 실행 카드](docs/ko/lessons/hw-enlight-04.md) |
+| 67 | hw-enlight-05 /  | [Enlight probe plane-force preparation](docs/en/lessons/hw-enlight-05.md) | [Enlight 프로브 평면 힘 제어 준비](docs/ko/lessons/hw-enlight-05.md) |
+| 68 | hw-enlight-06 /  | [Enlight gripper pick-transfer-place preparation](docs/en/lessons/hw-enlight-06.md) | [Enlight 그리퍼 집기·이동·놓기 준비](docs/ko/lessons/hw-enlight-06.md) |
 <!-- pal:toc:end -->
+
+“매니퓰레이터 튜토리얼 실행해줘” selects the manipulator path and guides one lesson from saved progress. `pal course pause/resume` inspects saved teaching state; `pal train run/export/import` provides training checkpoints and hashed host transfer. See [environment verification](docs/verification/robot-paths-2026-11-08.md).

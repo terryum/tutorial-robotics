@@ -96,3 +96,57 @@ LESSON_SPECS: dict[str, LessonSpec] = {
         "offline-command-sink", "command-sink.json", "emitted_command_count", "count"
     ),
 }
+
+# Append-only extensions to the original curriculum.
+LESSON_SPECS.update(
+    {
+        "core-fr3-09": LessonSpec(
+            "core-fr3-09-experiment", "trajectory.json", "measured_result", "meter"
+        ),
+        "core-fr3-10": LessonSpec(
+            "core-fr3-10-experiment", "arm-learning.json", "measured_result", "count"
+        ),
+        "sim-fr3-01": LessonSpec(
+            "sim-fr3-01-experiment", "physx-control.json", "measured_result", "count"
+        ),
+        "sim-fr3-02": LessonSpec(
+            "sim-fr3-02-experiment", "physx-bc.json", "measured_result", "count"
+        ),
+        "sim-fr3-03": LessonSpec(
+            "sim-fr3-03-experiment", "physx-ppo.json", "measured_result", "count"
+        ),
+        "sim-fr3-04": LessonSpec(
+            "sim-fr3-04-experiment", "engine-comparison.json", "measured_result", "count"
+        ),
+        "core-enlight-03": LessonSpec(
+            "core-enlight-03-experiment", "enlight-trajectory.json", "measured_result", "meter"
+        ),
+        "core-enlight-04": LessonSpec(
+            "core-enlight-04-experiment", "enlight-bc.json", "measured_result", "count"
+        ),
+        "core-enlight-05": LessonSpec(
+            "core-enlight-05-experiment", "enlight-ppo.json", "measured_result", "count"
+        ),
+        "sim-enlight-03": LessonSpec(
+            "sim-enlight-03-experiment", "enlight-physx.json", "measured_result", "count"
+        ),
+        "sim-enlight-04": LessonSpec(
+            "sim-enlight-04-experiment", "enlight-physx-bc.json", "measured_result", "count"
+        ),
+        "sim-enlight-05": LessonSpec(
+            "sim-enlight-05-experiment", "enlight-physx-ppo.json", "measured_result", "count"
+        ),
+        "core-shadow-01": LessonSpec(
+            "core-shadow-01-experiment", "shadow-introduction.json", "joint_displacement", "rad"
+        ),
+        "sim-shadow-01": LessonSpec(
+            "sim-shadow-01-experiment", "shadow-physx.json", "measured_result", "count"
+        ),
+        "core-stretch3-01": LessonSpec(
+            "core-stretch3-01-experiment", "stretch-introduction.json", "reach_error", "meter"
+        ),
+        "sim-stretch3-01": LessonSpec(
+            "sim-stretch3-01-experiment", "stretch-physx.json", "measured_result", "count"
+        ),
+    }
+)

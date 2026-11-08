@@ -68,6 +68,8 @@ pal lesson check core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --jso
 
 ## Observe
 
+`evaluation.json`은 독립 목표 20개에서 10 mm 이내를 연속 10 제어 단계 유지한 횟수를 기록합니다. 16/20 미만이면 성능 미달이며 optimizer 검사 통과와 구분합니다. 이 기준은 실물 허용 오차가 아닙니다.
+
 먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
 
 ```bash

@@ -15,6 +15,9 @@ from scipy.spatial.transform import Rotation
 from pai_lab.catalog import ROOT
 
 MODEL_PATHS = {
+    "shadow": ("menagerie-extended", "shadow_hand/scene_right.xml"),
+    "stretch3": ("menagerie-extended", "hello_robot_stretch_3/scene.xml"),
+    "robotiq": ("menagerie-extended", "robotiq_2f85/scene.xml"),
     "fr3": ("mujoco-menagerie", "franka_fr3/scene.xml"),
     "g1": ("mujoco-menagerie", "unitree_g1/scene.xml"),
     "aloha": ("mujoco-menagerie", "aloha/scene.xml"),

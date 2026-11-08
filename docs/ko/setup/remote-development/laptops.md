@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="laptops.md" lang="ko">한국어</a> | <a href="../../../en/setup/remote-development/laptops.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/laptops.md) | [ENGLISH](../../../en/setup/remote-development/laptops.md)
 
 # Windows·Ubuntu 노트북 클라이언트

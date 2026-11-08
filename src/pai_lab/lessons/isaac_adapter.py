@@ -58,3 +58,34 @@ def import_urdf(source: Path, output: Path, *, fix_base: bool = True) -> tuple[A
     if stage is None:
         raise RuntimeError("cannot reopen imported USD")
     return stage, str(root), "5.1-kit-importer"
+
+
+def import_mjcf(source: Path, output: Path, *, fix_base: bool) -> tuple[Any, str, str]:
+    """Import pinned model into USD; PhysX runtime validation is a separate requirement."""
+    from isaacsim.core.utils.extensions import enable_extension
+
+    enable_extension("isaacsim.asset.importer.mjcf")
+    import omni.kit.commands
+    from pxr import Usd, UsdPhysics
+
+    ok, config = omni.kit.commands.execute("MJCFCreateImportConfig")
+    if not ok:
+        raise RuntimeError("MJCF importer unavailable on this Isaac version")
+    config.set_fix_base(fix_base)
+    config.set_import_sites(True)
+    ok, _ = omni.kit.commands.execute(
+        "MJCFCreateAsset",
+        mjcf_path=str(source.resolve()),
+        import_config=config,
+        prim_path="/World/Robot",
+        dest_path=str(output.resolve()),
+    )
+    if not ok:
+        raise RuntimeError("MJCF import failed; no alternate physics fallback")
+    stage = Usd.Stage.Open(str(output.resolve()))
+    if stage is None:
+        raise RuntimeError("imported USD cannot be opened")
+    roots = [p for p in stage.Traverse() if p.HasAPI(UsdPhysics.ArticulationRootAPI)]
+    if len(roots) != 1:
+        raise RuntimeError("import must produce exactly one articulation")
+    return stage, str(roots[0].GetPath()), "MJCFCreateAsset"

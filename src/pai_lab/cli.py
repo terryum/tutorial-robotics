@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -24,6 +25,7 @@ from pai_lab.hardware import preflight
 from pai_lab.host import detect_host
 from pai_lab.lessons import check_lesson, implementation_status, run_lesson
 from pai_lab.local import local_root, write_json
+from pai_lab.paths import load_paths, selected_lessons
 from pai_lab.plugins import discover_robot_plugins
 from pai_lab.progress import (
     CourseProgress,
@@ -33,6 +35,7 @@ from pai_lab.progress import (
     select_lesson,
 )
 from pai_lab.readiness import completion_gaps, gaps
+from pai_lab.session import update_session
 from pai_lab.setup_plan import (
     SETUP_PROFILES,
     SetupProfile,
@@ -96,9 +99,16 @@ def setup_apply_command(path: Path, json_output: bool) -> int:
     return code
 
 
-def course_init(through: Stage, robots: tuple[str, ...], electives: bool, json_output: bool) -> int:
+def course_init(
+    through: Stage,
+    robots: tuple[str, ...],
+    electives: bool,
+    json_output: bool,
+    path: str | None = None,
+) -> int:
     progress = load_progress()
     progress.through, progress.robots, progress.include_electives = through, robots, electives
+    progress.path = path
     save_progress(progress)
     _emit(progress.to_dict(), json_output)
     return 0
@@ -134,7 +144,7 @@ def course_list(status_only: bool, json_output: bool) -> int:
     progress = load_progress()
     rows = [
         _lesson_row(lesson, progress)
-        for lesson in load_catalog()
+        for lesson in selected_lessons()
         if select_lesson(lesson, progress)
         and (not status_only or lesson.id not in progress.completed or completion_gaps(lesson.id))
     ]
@@ -151,7 +161,7 @@ def course_list(status_only: bool, json_output: bool) -> int:
 
 def _local_capabilities() -> set[str]:
     capabilities = set(detect_host().capabilities)
-    path = ROOT / ".local" / "capabilities.json"
+    path = local_root() / "capabilities.json"
     if path.is_file():
         raw = json.loads(path.read_text(encoding="utf-8"))
         # Legacy/user-authored lists are intentionally informational only. Only a
@@ -169,11 +179,17 @@ def _local_capabilities() -> set[str]:
                 for item in raw.get("verified_capabilities", [])
                 if str(item) not in protected
             )
-    safety_root = ROOT / ".local" / "safety"
+    safety_root = local_root() / "safety"
     for robot in ("fr3", "wuji", "enlight"):
         receipt = safety_root / f"{robot}-read-only.json"
-        if receipt.is_file() and json.loads(receipt.read_text(encoding="utf-8")).get("ready"):
-            capabilities.add(f"read-only-preflight-{robot}")
+        if receipt.is_file():
+            try:
+                readiness = json.loads(receipt.read_text(encoding="utf-8"))
+                expiry = float(readiness.get("valid_until_s", 0))
+                if readiness.get("ready") is True and time.time() < expiry <= time.time() + 1:
+                    capabilities.add(f"read-only-preflight-{robot}")
+            except (OSError, ValueError, TypeError):
+                continue
     return capabilities
 
 
@@ -217,7 +233,13 @@ def course_runnable(without_hardware: bool, json_output: bool) -> int:
 def next_lesson(json_output: bool) -> int:
     progress = load_progress()
     blocked: list[dict[str, object]] = []
-    for lesson in load_catalog():
+    from pai_lab.session import resume
+
+    session_path = local_root() / "session.json"
+    if session_path.exists() and json.loads(session_path.read_text()).get("phase") == "paused":
+        _emit({"eligible": False, "reason": "paused", "resume": resume()}, json_output)
+        return 2
+    for lesson in selected_lessons():
         if not select_lesson(lesson, progress) or (
             lesson.id in progress.completed and not completion_gaps(lesson.id)
         ):
@@ -232,6 +254,8 @@ def next_lesson(json_output: bool) -> int:
                     "missing_capabilities": missing,
                 }
             )
+            if progress.path:
+                break
             continue
         result = _lesson_row(lesson, progress)
         result["eligible"] = True
@@ -292,9 +316,16 @@ def lesson_run_command(
     run_dir = output_dir or (
         local_root() / "runs" / lesson.id / datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
     )
-    write_json(
-        local_root() / "session.json",
-        {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "running"},
+    update_session(
+        lesson=lesson.id,
+        run_dir=str(run_dir.resolve()),
+        phase="running",
+        parameters=parameters or [],
+        seed=seed,
+        samples=samples,
+        variant=variant,
+        notes=None,
+        comparison_run=None,
     )
     personal_progress.notify()
     try:
@@ -309,11 +340,12 @@ def lesson_run_command(
             variant=variant,
             parameters=parse_parameters(parameters or []),
         )
+    except KeyboardInterrupt:
+        update_session(lesson=lesson.id, run_dir=str(run_dir.resolve()), phase="interrupted")
+        _emit({"status": "interrupted", "lesson": lesson.id, "run_dir": str(run_dir)}, json_output)
+        return 130
     except (PermissionError, RuntimeError, ValueError, FileNotFoundError, ImportError) as error:
-        write_json(
-            local_root() / "session.json",
-            {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "failed"},
-        )
+        update_session(lesson=lesson.id, run_dir=str(run_dir.resolve()), phase="failed")
         _emit(
             {
                 "status": "capability-unavailable"
@@ -325,10 +357,7 @@ def lesson_run_command(
             json_output,
         )
         return 2 if isinstance(error, (FileNotFoundError, ImportError)) else 1
-    write_json(
-        local_root() / "session.json",
-        {"lesson": lesson.id, "run_dir": str(run_dir), "phase": "inspect"},
-    )
+    update_session(lesson=lesson.id, run_dir=str(run_dir), phase="inspect")
     payload = {
         "status": result.status,
         "lesson": lesson.id,
@@ -367,10 +396,7 @@ def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> 
     progress = load_progress()
     mark_complete(progress, lesson, run_dir.resolve())
     save_progress(progress)
-    write_json(
-        local_root() / "session.json",
-        {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "finished"},
-    )
+    update_session(lesson=lesson.id, run_dir=str(run_dir.resolve()), phase="finished")
     personal_progress.notify()
     result: dict[str, Any] = {"status": "complete", "lesson": lesson.id, "run_dir": str(run_dir)}
     shared = personal_progress.snapshot()
@@ -401,9 +427,21 @@ def lesson_review_command(
             "reviewed_at": datetime.now(UTC).isoformat(),
         },
     )
-    write_json(
-        local_root() / "session.json",
-        {"lesson": lesson.id, "run_dir": str(run_dir.resolve()), "phase": "reviewed"},
+    update_session(
+        lesson=lesson.id,
+        run_dir=str(run_dir.resolve()),
+        phase="reviewed",
+        notes=notes,
+        baseline_run=str(run_dir.resolve()),
+        baseline_parameters=json.loads((run_dir / "experiment.json").read_text()).get(
+            "parameters", {}
+        ),
+        comparison_run=str(comparison.resolve()) if comparison else None,
+        comparison_parameters=json.loads((comparison / "experiment.json").read_text()).get(
+            "parameters", {}
+        )
+        if comparison
+        else None,
     )
     personal_progress.notify()
     _emit({"status": "reviewed", "lesson": lesson.id}, json_output)
@@ -419,6 +457,24 @@ def list_robots(json_output: bool) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="pal")
     commands = parser.add_subparsers(dest="command", required=True)
+
+    training = commands.add_parser("train")
+    training_commands = training.add_subparsers(dest="train_command", required=True)
+    train_run = training_commands.add_parser("run")
+    train_run.add_argument("--model", choices=("fr3", "enlight"), required=True)
+    train_run.add_argument("--engine", choices=("mujoco", "physx"), default="mujoco")
+    train_run.add_argument("--algorithm", choices=("bc", "ppo"), default="bc")
+    train_run.add_argument("--epochs", type=int, default=32)
+    train_run.add_argument("--seed", type=int, default=7)
+    train_run.add_argument("--learning-rate", type=float, default=0.01)
+    train_run.add_argument("--output-dir", type=Path, required=True)
+    train_run.add_argument("--resume-from", type=Path)
+    train_run.add_argument("--json", action="store_true")
+    for operation in ("export", "import"):
+        transfer = training_commands.add_parser(operation)
+        transfer.add_argument("--source", type=Path, required=True)
+        transfer.add_argument("--destination", type=Path, required=True)
+        transfer.add_argument("--json", action="store_true")
 
     host = commands.add_parser("host")
     host_commands = host.add_subparsers(dest="host_command", required=True)
@@ -447,11 +503,12 @@ def build_parser() -> argparse.ArgumentParser:
     course = commands.add_parser("course")
     course_commands = course.add_subparsers(dest="course_command", required=True)
     init = course_commands.add_parser("init")
+    init.add_argument("--path", choices=tuple(load_paths()))
     init.add_argument("--through", choices=STAGES, default="core")
     init.add_argument("--robot", action="append", default=[])
     init.add_argument("--include-electives", action="store_true")
     init.add_argument("--json", action="store_true")
-    for name in ("list", "status", "next", "summary"):
+    for name in ("list", "status", "next", "summary", "paths", "pause", "resume"):
         item = course_commands.add_parser(name)
         item.add_argument("--json", action="store_true")
     runnable = course_commands.add_parser("runnable")
@@ -462,6 +519,7 @@ def build_parser() -> argparse.ArgumentParser:
     lesson_commands = lesson.add_subparsers(dest="lesson_command", required=True)
     run = lesson_commands.add_parser("run")
     run.add_argument("lesson_id")
+    run.add_argument("--resume-from", type=Path)
     run.add_argument("--output-dir", type=Path)
     run.add_argument("--seed", type=int, default=7)
     run.add_argument("--samples", type=int, default=64)
@@ -533,7 +591,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser.add_argument("--format", choices=("text", "json"), default="text")
     tutorial = commands.add_parser("tutorial", help="deprecated: use course")
     tutorial_commands = tutorial.add_subparsers(dest="tutorial_command", required=True)
-    for name in ("list", "status", "next", "summary"):
+    for name in ("list", "status", "next", "summary", "paths", "pause", "resume"):
         tutorial_commands.add_parser(name)
     robot = commands.add_parser("robot")
     robot_commands = robot.add_subparsers(dest="robot_command", required=True)
@@ -556,14 +614,67 @@ def main(argv: list[str] | None = None) -> int:
         result = verify_setup(profile, tuple(args.robot))
         _emit(result, args.json)
         return 0 if result["ready"] else 2
+    if args.command == "train":
+        from pai_lab.training import train, transfer_export, transfer_import
+
+        try:
+            if args.train_command in {"export", "import"}:
+                operation = transfer_export if args.train_command == "export" else transfer_import
+                operation(args.source, args.destination)
+                _emit({"status": "verified", "destination": str(args.destination)}, args.json)
+            else:
+                from pai_lab.lessons.arm import Arm
+
+                if args.output_dir.exists() and any(args.output_dir.iterdir()):
+                    raise ValueError(
+                        "choose a fresh output directory; use --resume-from for saved training"
+                    )
+                args.output_dir.mkdir(parents=True, exist_ok=True)
+                request = {
+                    "algorithm": args.algorithm,
+                    "seed": args.seed,
+                    "epochs": args.epochs,
+                    "learning_rate": args.learning_rate,
+                    "resume_from": args.resume_from,
+                }
+                if args.engine == "physx":
+                    from pai_lab.lessons.isaac_tasks import train_physx
+
+                    training_result = train_physx(args.model, args.output_dir, **request)
+                else:
+                    env = Arm(args.model, args.output_dir, args.seed)
+                    training_result = train(env, args.output_dir, **request)
+                _emit(training_result, args.json)
+            return 0
+        except (OSError, ValueError, KeyError, TypeError, ImportError, RuntimeError) as error:
+            _emit({"status": "blocked", "error": str(error)}, args.json)
+            return 2
     if args.command in {"course", "lesson", "tutorial"}:
         personal_progress.exchange()
     if args.command == "course":
+        course_value: Any
+        if args.course_command == "paths":
+            _emit(load_paths(), args.json)
+            return 0
+        if args.course_command in {"pause", "resume"}:
+            from pai_lab.session import pause, resume
+
+            try:
+                course_value = pause() if args.course_command == "pause" else resume()
+                if args.course_command == "resume":
+                    update_session(phase=course_value["resume_phase"])
+                _emit(course_value, args.json)
+                return 0
+            except ValueError as error:
+                _emit({"status": "blocked", "error": str(error)}, args.json)
+                return 2
         if args.course_command == "summary":
             _emit(personal_progress.summary(), args.json)
             return 0
         if args.course_command == "init":
-            return course_init(args.through, tuple(args.robot), args.include_electives, args.json)
+            return course_init(
+                args.through, tuple(args.robot), args.include_electives, args.json, args.path
+            )
         if args.course_command == "next":
             return next_lesson(args.json)
         if args.course_command == "runnable":
@@ -596,6 +707,15 @@ def main(argv: list[str] | None = None) -> int:
             return lesson_review_command(
                 args.lesson_id, args.run_dir, args.comparison_run_dir, args.notes, args.json
             )
+        if args.resume_from:
+            from pai_lab.session import resume
+
+            try:
+                _emit(resume(args.resume_from, args.lesson_id), args.json)
+                return 0
+            except ValueError as error:
+                _emit({"status": "blocked", "error": str(error)}, args.json)
+                return 2
         return lesson_run_command(
             args.lesson_id,
             args.output_dir,
@@ -626,7 +746,7 @@ def main(argv: list[str] | None = None) -> int:
         _emit(receipt, args.json)
         return 0
     if args.command == "hardware":
-        snapshot = args.snapshot or ROOT / ".local" / "hardware" / f"{args.robot}.json"
+        snapshot = args.snapshot or local_root() / "hardware" / f"{args.robot}.json"
         if not snapshot.is_file():
             _emit(
                 {"ready": False, "status": "capability-unavailable", "snapshot": str(snapshot)},
@@ -634,13 +754,9 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 2
         result = preflight(args.robot, snapshot, read_only=args.read_only)
-        if result["ready"]:
-            result["recorded_at"] = datetime.now(UTC).isoformat()
-            safety_receipt = ROOT / ".local" / "safety" / f"{args.robot}-read-only.json"
-            safety_receipt.parent.mkdir(parents=True, exist_ok=True)
-            safety_receipt.write_text(
-                json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-            )
+        result["recorded_at"] = datetime.now(UTC).isoformat()
+        safety_receipt = local_root() / "safety" / f"{args.robot}-read-only.json"
+        write_json(safety_receipt, result)
         _emit(result, args.json)
         return 0 if result["ready"] else 3
     if args.command == "sources":

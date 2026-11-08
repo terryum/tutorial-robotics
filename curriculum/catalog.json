@@ -537,7 +537,8 @@
         "run.json",
         "frame.png",
         "policy.npz",
-        "policy-contract.json"
+        "policy-contract.json",
+        "evaluation.json"
       ],
       "source_refs": [
         "gymnasium"
@@ -2007,6 +2008,774 @@
       "source_refs": [
         "flexiv-rdk",
         "wuji-control-guide"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "core-fr3-09",
+      "aliases": [],
+      "stage": "core",
+      "track": "fr3",
+      "order": 50,
+      "title": "FR3 joint and TCP trajectory tracking",
+      "title_ko": "FR3 관절·TCP 궤적 추종",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-06"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-09/run.py",
+      "check": "pal lesson check core-fr3-09",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "trajectory.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-fr3-10",
+      "aliases": [],
+      "stage": "core",
+      "track": "fr3",
+      "order": 51,
+      "title": "FR3 demonstrations, BC and independent reach evaluation",
+      "title_ko": "FR3 시연·BC와 독립 도달 평가",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-fr3-09"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-fr3-10/run.py",
+      "check": "pal lesson check core-fr3-10",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "arm-learning.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "policy.npz",
+        "evaluation.json",
+        "training-contract.json"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-fr3-01",
+      "aliases": [],
+      "stage": "sim",
+      "track": "fr3",
+      "order": 52,
+      "title": "FR3 PhysX joint and TCP control",
+      "title_ko": "FR3 PhysX 관절·TCP 제어",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-fr3-09"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-fr3-01/run.py",
+      "check": "pal lesson check sim-fr3-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "physx-control.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-fr3-02",
+      "aliases": [],
+      "stage": "sim",
+      "track": "fr3",
+      "order": 53,
+      "title": "FR3 PhysX demonstrations and BC",
+      "title_ko": "FR3 PhysX 시연·BC",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "sim-fr3-01",
+        "core-fr3-10"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-fr3-02/run.py",
+      "check": "pal lesson check sim-fr3-02",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "physx-bc.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-fr3-03",
+      "aliases": [],
+      "stage": "sim",
+      "track": "fr3",
+      "order": 54,
+      "title": "FR3 PhysX PPO and evaluation",
+      "title_ko": "FR3 PhysX PPO와 평가",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "sim-fr3-02",
+        "core-fr3-08"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-fr3-03/run.py",
+      "check": "pal lesson check sim-fr3-03",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "physx-ppo.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-fr3-04",
+      "aliases": [],
+      "stage": "sim",
+      "track": "fr3",
+      "order": 55,
+      "title": "FR3 matched-engine evidence comparison",
+      "title_ko": "FR3 동일 조건 엔진 증거 비교",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "sim-fr3-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-fr3-04/run.py",
+      "check": "pal lesson check sim-fr3-04",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "engine-comparison.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "mujoco-menagerie"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-enlight-03",
+      "aliases": [],
+      "stage": "core",
+      "track": "enlight",
+      "order": 56,
+      "title": "Enlight joint and TCP trajectory tracking",
+      "title_ko": "Enlight 관절·TCP 궤적 추종",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-enlight-02"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-enlight-03/run.py",
+      "check": "pal lesson check core-enlight-03",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-trajectory.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-enlight-04",
+      "aliases": [],
+      "stage": "core",
+      "track": "enlight",
+      "order": 57,
+      "title": "Enlight demonstrations, BC and independent evaluation",
+      "title_ko": "Enlight 시연·BC와 독립 평가",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-enlight-03"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-enlight-04/run.py",
+      "check": "pal lesson check core-enlight-04",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-bc.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "policy.npz",
+        "evaluation.json",
+        "training-contract.json"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-enlight-05",
+      "aliases": [],
+      "stage": "core",
+      "track": "enlight",
+      "order": 58,
+      "title": "Enlight PPO candidate and independent evaluation",
+      "title_ko": "Enlight PPO 후보와 독립 평가",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-enlight-04",
+        "core-rl-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-enlight-05/run.py",
+      "check": "pal lesson check core-enlight-05",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-ppo.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "policy.npz",
+        "evaluation.json",
+        "training-contract.json"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-enlight-03",
+      "aliases": [],
+      "stage": "sim",
+      "track": "enlight",
+      "order": 59,
+      "title": "Enlight PhysX joint and TCP control",
+      "title_ko": "Enlight PhysX 관절·TCP 제어",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-enlight-03"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-enlight-03/run.py",
+      "check": "pal lesson check sim-enlight-03",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-physx.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-enlight-04",
+      "aliases": [],
+      "stage": "sim",
+      "track": "enlight",
+      "order": 60,
+      "title": "Enlight PhysX demonstrations and BC",
+      "title_ko": "Enlight PhysX 시연·BC",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "sim-enlight-03",
+        "core-enlight-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-enlight-04/run.py",
+      "check": "pal lesson check sim-enlight-04",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-physx-bc.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-enlight-05",
+      "aliases": [],
+      "stage": "sim",
+      "track": "enlight",
+      "order": 61,
+      "title": "Enlight PhysX PPO and evaluation",
+      "title_ko": "Enlight PhysX PPO와 평가",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "sim-enlight-04",
+        "core-enlight-05"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-enlight-05/run.py",
+      "check": "pal lesson check sim-enlight-05",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-physx-ppo.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-shadow-01",
+      "aliases": [],
+      "stage": "core",
+      "track": "shadow",
+      "order": 62,
+      "title": "Shadow Hand joints, synergies and object contact",
+      "title_ko": "Shadow Hand 관절·시너지·물체 접촉",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-shadow-01/run.py",
+      "check": "pal lesson check core-shadow-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "shadow-introduction.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "menagerie-extended"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-shadow-01",
+      "aliases": [],
+      "stage": "sim",
+      "track": "shadow",
+      "order": 63,
+      "title": "Shadow Hand PhysX introduction",
+      "title_ko": "Shadow Hand PhysX 입문",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-shadow-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-shadow-01/run.py",
+      "check": "pal lesson check sim-shadow-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "shadow-physx.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "menagerie-extended"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "core-stretch3-01",
+      "aliases": [],
+      "stage": "core",
+      "track": "stretch3",
+      "order": 64,
+      "title": "Stretch 3 base, arm and coordinated reach",
+      "title_ko": "Stretch 3 베이스·팔·협응 도달",
+      "platforms": [
+        "macos-arm64",
+        "linux-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco"
+      ],
+      "prerequisites": [
+        "core-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/core-stretch3-01/run.py",
+      "check": "pal lesson check core-stretch3-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "stretch-introduction.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "source_refs": [
+        "menagerie-extended"
+      ],
+      "verification": "maintainer-checked",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "sim-stretch3-01",
+      "aliases": [],
+      "stage": "sim",
+      "track": "stretch3",
+      "order": 65,
+      "title": "Stretch 3 PhysX introduction",
+      "title_ko": "Stretch 3 PhysX 입문",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "python-3.12",
+        "numpy",
+        "mujoco",
+        "isaac-sim",
+        "nvidia-cuda"
+      ],
+      "prerequisites": [
+        "core-stretch3-01"
+      ],
+      "elective": false,
+      "entrypoint": "examples/sim-stretch3-01/run.py",
+      "check": "pal lesson check sim-stretch3-01",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "stretch-physx.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "source_refs": [
+        "menagerie-extended"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "simulation",
+      "implementation": "implemented"
+    },
+    {
+      "id": "hw-enlight-04",
+      "aliases": [],
+      "stage": "hardware",
+      "track": "enlight",
+      "order": 66,
+      "title": "Enlight free-space joint and TCP execution cards",
+      "title_ko": "Enlight 자유공간 관절·TCP 실행 카드",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "enlight-hardware",
+        "read-only-preflight-enlight"
+      ],
+      "prerequisites": [
+        "hw-enlight-02",
+        "sim-enlight-05"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-enlight-04/run.py",
+      "check": "pal lesson check hw-enlight-04",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-enlight-05",
+      "aliases": [],
+      "stage": "hardware",
+      "track": "enlight",
+      "order": 67,
+      "title": "Enlight probe plane-force preparation",
+      "title_ko": "Enlight 프로브 평면 힘 제어 준비",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "enlight-hardware",
+        "read-only-preflight-enlight"
+      ],
+      "prerequisites": [
+        "hw-enlight-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-enlight-05/run.py",
+      "check": "pal lesson check hw-enlight-05",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "flexiv-description"
+      ],
+      "verification": "reader_test_required",
+      "safety_level": "motion-approval",
+      "implementation": "scaffolded"
+    },
+    {
+      "id": "hw-enlight-06",
+      "aliases": [],
+      "stage": "hardware",
+      "track": "enlight",
+      "order": 68,
+      "title": "Enlight gripper pick-transfer-place preparation",
+      "title_ko": "Enlight 그리퍼 집기·이동·놓기 준비",
+      "platforms": [
+        "ubuntu-24.04-x86_64"
+      ],
+      "capabilities": [
+        "robot-runtime",
+        "isolated-network",
+        "enlight-hardware",
+        "read-only-preflight-enlight"
+      ],
+      "prerequisites": [
+        "hw-enlight-04"
+      ],
+      "elective": false,
+      "entrypoint": "examples/hw-enlight-06/run.py",
+      "check": "pal lesson check hw-enlight-06",
+      "expected_artifacts": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "source_refs": [
+        "flexiv-description"
       ],
       "verification": "reader_test_required",
       "safety_level": "motion-approval",

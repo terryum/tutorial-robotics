@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../../ko/setup/remote-development/index.md" lang="ko">한국어</a> | <a href="index.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/index.md) | [ENGLISH](../../../en/setup/remote-development/index.md)
 
 # Remote robotics development: MacBook, WS1 and WS2

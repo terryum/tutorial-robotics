@@ -8,6 +8,9 @@ ALLOWED = {
     ROOT / "README.md",
     ROOT / "AGENTS.md",
     ROOT / "START_HERE.md",
+    ROOT / "curriculum/paths.json",
+    ROOT / "docs/en/paths.md",
+    ROOT / "docs/ko/paths.md",
     Path(__file__).resolve(),
 }
 BLOCKED = re.compile(r"friday|cosmax|pai_private_lab|tutorial-robotics-private", re.IGNORECASE)
@@ -20,7 +23,7 @@ def main() -> int:
         if (
             not path.is_file()
             or path in ALLOWED
-            or any(part in {".git", ".venv", "deps", "assets"} for part in relative.parts)
+            or any(part in {".git", ".venv", ".local", ".cache", "deps", "assets", "site"} for part in relative.parts)
         ):
             continue
         if path.suffix.lower() not in {".md", ".py", ".toml", ".yaml", ".yml", ".json", ".txt"}:

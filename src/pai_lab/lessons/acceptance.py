@@ -12,6 +12,43 @@ def measurement_errors(
 ) -> list[str]:
     payload = experiment["payload"]
     errors = []
+    if identifier in {"core-fr3-09", "core-enlight-03"}:
+        halfway = len(trace) // 2
+        rmse = float(np.sqrt(np.mean(trace[halfway:, 2] ** 2)))
+        if rmse >= 0.02 or not np.isclose(rmse, experiment["metric"]):
+            errors.append("arm trajectory exceeds 20 mm or metric inconsistent")
+        if len(payload["joint_names"]) != 7 or payload["frame"] != "world":
+            errors.append("arm joint/frame contract mismatch")
+    if identifier in {
+        "core-fr3-10",
+        "core-enlight-04",
+        "core-enlight-05",
+        "sim-fr3-02",
+        "sim-fr3-03",
+        "sim-enlight-04",
+        "sim-enlight-05",
+    }:
+        evaluation = json.loads((run_dir / "evaluation.json").read_text())
+        weights = np.load(run_dir / "policy.npz", allow_pickle=False)["weights"]
+        if weights.shape != (18, 7) or not np.isfinite(weights).all():
+            errors.append("invalid arm policy")
+        successes = 0
+        for episode in evaluation["episodes"]:
+            hold, achieved = 0, False
+            for distance in episode["errors_m"]:
+                if not np.isfinite(distance) or distance < 0:
+                    errors.append("invalid evaluation distance")
+                hold = hold + 1 if distance <= 0.01 else 0
+                achieved |= hold >= 10
+            if achieved != episode["success"]:
+                errors.append("reach success disagrees with consecutive hold")
+            successes += achieved
+        if (
+            len(evaluation["episodes"]) != 20
+            or successes != evaluation["successes"]
+            or evaluation["performance_verified"] != (successes >= 16)
+        ):
+            errors.append("reach performance gate mismatch")
     if identifier == "core-01":
         drift = float(np.max(np.abs(trace[:, 2] - trace[:, 1])))
         if drift >= 1e-5 or not np.isclose(drift, experiment["metric"], atol=1e-14, rtol=1e-8):

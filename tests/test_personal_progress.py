@@ -26,7 +26,8 @@ def test_new_learner_summary_is_zero_and_does_not_spawn_helper(monkeypatch, caps
     assert main(["course", "summary", "--json"]) == 0
     value = json.loads(capsys.readouterr().out)
     assert value["completed"] == 0
-    assert value["total"] == 49
+    from pai_lab.paths import selected_lessons
+    assert value["total"] == len(selected_lessons())
     assert value["sync"]["status"] == "disabled"
 
 

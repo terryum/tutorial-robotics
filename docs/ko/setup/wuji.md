@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="wuji.md" lang="ko">한국어</a> | <a href="../../en/setup/wuji.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 <p align="right"><a href="../../ko/setup/wuji.md">한국어</a> | <a href="../../en/setup/wuji.md">ENGLISH</a></p>
 
 # Wuji Hand 2 Beta 2 — Setup 검토

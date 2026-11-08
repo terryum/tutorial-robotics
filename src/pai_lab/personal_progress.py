@@ -146,8 +146,11 @@ def notify() -> None:
 def summary() -> dict[str, Any]:
     value = snapshot()
     if value is not None:
-        return value
-    from pai_lab.catalog import load_catalog
+        from pai_lab.progress import load_progress
+
+        if not load_progress().path:
+            return value
+    from pai_lab.paths import selected_lessons
     from pai_lab.progress import load_progress
     from pai_lab.readiness import completion_gaps
 
@@ -160,12 +163,16 @@ def summary() -> dict[str, Any]:
             "completed": lesson.id in completed,
             "needs_review": bool(completion_gaps(lesson.id)) if lesson.id in completed else False,
         }
-        for lesson in load_catalog()
+        for lesson in selected_lessons()
     ]
     count = sum(bool(row["completed"]) for row in rows)
+    verified = sum(bool(row["completed"]) and not row["needs_review"] for row in rows)
     return {
         "schema_version": 1,
         "completed": count,
+        "verified_completed": verified,
+        "path": load_progress().path,
+        "path_complete": bool(rows) and verified == len(rows),
         "total": len(rows),
         "percent": 100 * count / len(rows) if rows else 0,
         "lessons": rows,

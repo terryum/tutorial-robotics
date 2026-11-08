@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="index.md" lang="ko">한국어</a> | <a href="../../en/setup/index.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../ko/setup/index.md) | [ENGLISH](../../en/setup/index.md)
 
 # 개발 환경과 하드웨어 매뉴얼

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="records.md" lang="ko">한국어</a> | <a href="../../../en/setup/remote-development/records.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/records.md) | [ENGLISH](../../../en/setup/remote-development/records.md)
 
 # 로컬 설치·접속 기록 양식

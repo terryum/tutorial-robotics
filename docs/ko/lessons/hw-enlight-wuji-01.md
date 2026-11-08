@@ -81,7 +81,7 @@ offline replay → command sink → read-only → live shadow
 <!-- pal:navigation:start -->
 ## Next lesson
 
-과정 끝
+[core-fr3-09](./core-fr3-09.md)
 
 다음 항목은 목차 순서입니다. 실제 선택은 `pal course next --json`이 준비 상태로 결정합니다.
 <!-- pal:navigation:end -->

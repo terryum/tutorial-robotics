@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../../ko/setup/remote-development/laptops.md" lang="ko">한국어</a> | <a href="laptops.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/laptops.md) | [ENGLISH](../../../en/setup/remote-development/laptops.md)
 
 # Windows and Ubuntu laptop clients

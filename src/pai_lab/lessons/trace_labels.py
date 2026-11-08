@@ -28,4 +28,20 @@ def labels(identifier: str, units: str) -> tuple[str, str]:
         "sim-deploy-01": ("Test vector index", "Normalized first action"),
         "hw-common-01": ("Inference index", "Normalized first action"),
     }
+    if identifier in {"core-fr3-10", "core-enlight-04", "sim-fr3-02", "sim-enlight-04"}:
+        return "Training epoch", "Action MSE (normalized squared)"
+    if identifier in {"core-enlight-05", "sim-fr3-03", "sim-enlight-05"}:
+        return "PPO update", "Mean rollout reward"
+    if identifier in {
+        "core-fr3-09",
+        "core-enlight-03",
+        "sim-fr3-01",
+        "sim-enlight-03",
+        "sim-fr3-04",
+    }:
+        return "Time (s)", "TCP error (m)"
+    if identifier == "core-shadow-01":
+        return "Time (s)", "Joint displacement norm (rad)"
+    if identifier == "core-stretch3-01":
+        return "Time (s)", "TCP height or reach error (m)"
     return special.get(identifier, ("Time (s)", units))

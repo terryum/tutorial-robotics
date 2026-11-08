@@ -20,6 +20,29 @@ from pai_lab.readiness import required_models
 def engine(identifier: str) -> str:
     lesson = resolve_lesson(identifier)
     if identifier in {
+        "core-enlight-05",
+        "core-fr3-09",
+        "core-fr3-10",
+        "core-enlight-03",
+        "core-enlight-04",
+    }:
+        return "arm"
+    if identifier in {"core-stretch3-01", "core-shadow-01"}:
+        return "embodiments"
+    if identifier in {
+        "sim-fr3-01",
+        "sim-enlight-05",
+        "sim-fr3-03",
+        "sim-shadow-01",
+        "sim-fr3-02",
+        "sim-stretch3-01",
+        "sim-enlight-03",
+        "sim-enlight-04",
+    }:
+        return "isaac_tasks"
+    if identifier in {"sim-fr3-04"}:
+        return "comparison"
+    if identifier in {
         "core-rl-01",
         "core-fr3-07",
         "core-fr3-08",
@@ -129,6 +152,18 @@ def dependency_manifest(identifier: str) -> dict[str, str]:
             "lessons/learning.py",
             "lessons/physics.py",
         }
+    if selected in {"arm", "isaac_tasks"}:
+        modules |= {
+            "training.py",
+            "lessons/arm.py",
+            "lessons/learning.py",
+            "lessons/models.py",
+            "lessons/physics.py",
+        }
+    if selected in {"isaac_tasks", "arm"}:
+        modules |= {"lessons/isaac_adapter.py", "lessons/isaac_tasks.py"}
+    if selected == "comparison":
+        modules |= {"lessons/learning.py", "lessons/physics.py", "lessons/models.py"}
     result = {}
     for name in sorted(modules):
         source = (ROOT / "src/pai_lab" / name).read_text()

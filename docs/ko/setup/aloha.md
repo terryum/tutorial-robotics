@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="aloha.md" lang="ko">한국어</a> | <a href="../../en/setup/aloha.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 <p align="right"><a href="../../ko/setup/aloha.md">한국어</a> | <a href="../../en/setup/aloha.md">ENGLISH</a></p>
 
 # ALOHA — Setup 검토

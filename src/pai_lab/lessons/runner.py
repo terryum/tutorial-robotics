@@ -124,6 +124,29 @@ def run_lesson(
     spec = LESSON_SPECS[lesson.id]
     try:
         if lesson.id in {
+            "core-enlight-05",
+            "core-fr3-09",
+            "core-fr3-10",
+            "core-enlight-03",
+            "core-enlight-04",
+        }:
+            from pai_lab.lessons.arm import run
+        elif lesson.id in {"core-stretch3-01", "core-shadow-01"}:
+            from pai_lab.lessons.embodiments import run
+        elif lesson.id in {
+            "sim-fr3-01",
+            "sim-enlight-05",
+            "sim-fr3-03",
+            "sim-shadow-01",
+            "sim-fr3-02",
+            "sim-stretch3-01",
+            "sim-enlight-03",
+            "sim-enlight-04",
+        }:
+            from pai_lab.lessons.isaac_tasks import run
+        elif lesson.id in {"sim-fr3-04"}:
+            from pai_lab.lessons.comparison import run
+        elif lesson.id in {
             "core-rl-01",
             "core-fr3-07",
             "core-fr3-08",

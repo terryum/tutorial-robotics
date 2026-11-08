@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="macbook.md" lang="ko">한국어</a> | <a href="../../../en/setup/remote-development/macbook.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/macbook.md) | [ENGLISH](../../../en/setup/remote-development/macbook.md)
 
 # MacBook 원격 개발 클라이언트 설정

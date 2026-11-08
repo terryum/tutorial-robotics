@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="rustdesk.md" lang="ko">한국어</a> | <a href="../../../en/setup/remote-development/rustdesk.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/rustdesk.md) | [ENGLISH](../../../en/setup/remote-development/rustdesk.md)
 
 # RustDesk 우선 화면 제어

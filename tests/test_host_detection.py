@@ -43,6 +43,7 @@ def test_even_pal_receipt_cannot_self_authorize_protected_capability(tmp_path, m
     )
     profile = HostProfile("Test", "x86_64", "3.12.0", "test", (), {}, {})
     monkeypatch.setattr(cli_module, "ROOT", tmp_path)
+    monkeypatch.setenv("PAL_LOCAL_DIR", str(local))
     monkeypatch.setattr(cli_module, "detect_host", lambda: profile)
     capabilities = cli_module._local_capabilities()
     assert "custom-offline-tool" in capabilities

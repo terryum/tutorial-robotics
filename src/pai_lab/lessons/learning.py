@@ -43,6 +43,10 @@ class Reach:
         self.rng = np.random.default_rng(seed)
         self.target = self.data.site_xpos[0].copy()
         self.steps = 0
+        self.hold = 0
+
+    def tcp(self) -> np.ndarray:
+        return np.asarray(self.data.site_xpos[0]).copy()
 
     def observation(self) -> np.ndarray:
         return np.concatenate(
@@ -58,6 +62,7 @@ class Reach:
         mujoco.mj_forward(self.model, self.data)
         self.target = self.data.site_xpos[0] + self.rng.uniform(-0.035, 0.035, 3)
         self.steps = 0
+        self.hold = 0
         return self.observation()
 
     def step(self, action: np.ndarray) -> tuple[np.ndarray, float, bool, bool]:
@@ -69,11 +74,12 @@ class Reach:
         for _ in range(10):
             mujoco.mj_step(self.model, self.data)
         distance = float(np.linalg.norm(self.target - self.data.site_xpos[0]))
+        self.hold = self.hold + 1 if distance <= 0.01 else 0
         self.steps += 1
         return (
             self.observation(),
             -distance - 0.001 * float(np.sum(action**2)),
-            distance < 0.008,
+            self.hold >= 10,
             self.steps >= 64,
         )
 
@@ -204,6 +210,13 @@ def ppo(environment: Any, output: Path, seed: int, samples: int, variant: float)
     np.savez(output / "policy.npz", weights=weights, sigma=sigma, value_weights=value_weights)
     reloaded = np.load(output / "policy.npz")
     change = float(np.linalg.norm(weights - initial))
+    evaluation = None
+    if isinstance(environment, Reach):
+        from pai_lab.lessons.arm import evaluate
+
+        evaluation = evaluate(environment, weights)
+        write_json(output / "evaluation.json", evaluation)
+    performance_verified = evaluation["performance_verified"] if evaluation else False
     write_json(
         output / "policy-contract.json",
         {
@@ -212,7 +225,7 @@ def ppo(environment: Any, output: Path, seed: int, samples: int, variant: float)
             "action_dim": action_dim,
             "action_transform": "tanh",
             "training_scope": "optimizer-smoke",
-            "performance_verified": False,
+            "performance_verified": performance_verified,
             "seed": seed,
         },
     )
@@ -224,9 +237,10 @@ def ppo(environment: Any, output: Path, seed: int, samples: int, variant: float)
             "parameter_delta": change,
             "rollout_length": rollout_length,
             "algorithm": "PPO with GAE and clipped surrogate",
-            "performance_verified": False,
+            "performance_verified": performance_verified,
             "reload_max_error": float(np.max(np.abs(x @ weights - x @ reloaded["weights"]))),
             "source": getattr(environment, "source", "repository pendulum"),
+            "evaluation": evaluation,
         },
         {
             "parameters_updated": change > 1e-8,
@@ -235,7 +249,7 @@ def ppo(environment: Any, output: Path, seed: int, samples: int, variant: float)
         },
         environment.model,
         environment.data,
-        ["policy.npz", "policy-contract.json"],
+        ["policy.npz", "policy-contract.json"] + (["evaluation.json"] if evaluation else []),
     )
 
 

@@ -91,6 +91,30 @@
       "release": "pinned commit",
       "license": "see pinned repository LICENSE",
       "destination": "lerobot"
+    },
+    "menagerie-extended": {
+      "kind": "git",
+      "url": "https://github.com/google-deepmind/mujoco_menagerie.git",
+      "revision": "affef0836947b64cc06c4ab1cbf0152835693374",
+      "release": "pinned commit",
+      "license": "per-model LICENSE",
+      "destination": "menagerie-extended",
+      "sparse_paths": [
+        "shadow_hand",
+        "hello_robot_stretch_3",
+        "robotiq_2f85"
+      ]
+    },
+    "robotiq-isaac": {
+      "kind": "git",
+      "url": "https://github.com/robotiq/isaacsim_assets.git",
+      "revision": "991b18da479aaabe54d00ac45d0bd3c6d7f01cd3",
+      "release": "pinned commit",
+      "license": "BSD-3-Clause code; CC-BY-4.0 model; per-package third-party licenses",
+      "destination": "robotiq-isaac",
+      "sparse_paths": [
+        "grippers/Robotiq_2F_85"
+      ]
     }
   }
 }

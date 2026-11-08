@@ -85,6 +85,14 @@ def completion_gaps(identifier: str) -> list[str]:
 
 
 def required_models(identifier: str) -> tuple[str, ...]:
+    if "shadow" in identifier:
+        return ("shadow",)
+    if "stretch3" in identifier:
+        return ("stretch3",)
+    if identifier.startswith("sim-fr3"):
+        return ("fr3",)
+    if identifier.startswith("sim-enlight"):
+        return ("enlight",)
     if identifier in {"core-02", "core-03"}:
         return ("fr3", "enlight", "wuji", "sharpa", "g1", "aloha")
     if identifier.startswith("core-fr3") or identifier == "core-04":

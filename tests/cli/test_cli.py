@@ -22,15 +22,17 @@ def test_course_init_next_and_setup_plan_are_json(tmp_path, monkeypatch, capsys)
 
     assert main(["course", "runnable", "--without-hardware", "--json"]) == 0
     runnable = json.loads(capsys.readouterr().out)
-    assert len(runnable) == 41
+    from pai_lab.catalog import load_catalog
+
+    assert len(runnable) == sum(
+        l.stage != "hardware" or l.id == "hw-common-01" for l in load_catalog()
+    )
     assert all(item["hardware_free"] for item in runnable)
 
 
 def test_profile_plan_does_not_pull_unrelated_stacks(tmp_path, capsys) -> None:
     plan_path = tmp_path / "ros-plan.json"
-    assert main([
-        "setup", "plan", "--profile", "ros", "--out", str(plan_path), "--json"
-    ]) == 0
+    assert main(["setup", "plan", "--profile", "ros", "--out", str(plan_path), "--json"]) == 0
     plan = json.loads(capsys.readouterr().out)
     assert plan["profile"] == "ros"
     assert "ros" in plan["python_extras"]
@@ -38,14 +40,16 @@ def test_profile_plan_does_not_pull_unrelated_stacks(tmp_path, capsys) -> None:
 
 
 def test_missing_hardware_snapshot_is_capability_unavailable(tmp_path, capsys) -> None:
-    code = main([
-        "hardware",
-        "preflight",
-        "wuji",
-        "--read-only",
-        "--snapshot",
-        str(tmp_path / "missing.json"),
-        "--json",
-    ])
+    code = main(
+        [
+            "hardware",
+            "preflight",
+            "wuji",
+            "--read-only",
+            "--snapshot",
+            str(tmp_path / "missing.json"),
+            "--json",
+        ]
+    )
     assert code == 2
     assert json.loads(capsys.readouterr().out)["status"] == "capability-unavailable"

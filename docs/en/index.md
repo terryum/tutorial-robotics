@@ -57,3 +57,22 @@
 | 47 | [hw-enlight-02](lessons/hw-enlight-02.md) — Enlight system identification and MuJoCo calibration | `hardware` | `enlight` | `reader_test_required` |
 | 48 | [hw-enlight-03](lessons/hw-enlight-03.md) — Enlight contact-task shadow and gated evaluation | `hardware` | `enlight` | `reader_test_required` |
 | 49 | [hw-enlight-wuji-01](lessons/hw-enlight-wuji-01.md) — Enlight and Wuji integrated read-only validation | `hardware` | `enlight-wuji` | `reader_test_required` |
+| 50 | [core-fr3-09](lessons/core-fr3-09.md) — FR3 joint and TCP trajectory tracking | `core` | `fr3` | `maintainer-checked` |
+| 51 | [core-fr3-10](lessons/core-fr3-10.md) — FR3 demonstrations, BC and independent reach evaluation | `core` | `fr3` | `maintainer-checked` |
+| 52 | [sim-fr3-01](lessons/sim-fr3-01.md) — FR3 PhysX joint and TCP control | `sim` | `fr3` | `reader_test_required` |
+| 53 | [sim-fr3-02](lessons/sim-fr3-02.md) — FR3 PhysX demonstrations and BC | `sim` | `fr3` | `reader_test_required` |
+| 54 | [sim-fr3-03](lessons/sim-fr3-03.md) — FR3 PhysX PPO and evaluation | `sim` | `fr3` | `reader_test_required` |
+| 55 | [sim-fr3-04](lessons/sim-fr3-04.md) — FR3 matched-engine evidence comparison | `sim` | `fr3` | `reader_test_required` |
+| 56 | [core-enlight-03](lessons/core-enlight-03.md) — Enlight joint and TCP trajectory tracking | `core` | `enlight` | `maintainer-checked` |
+| 57 | [core-enlight-04](lessons/core-enlight-04.md) — Enlight demonstrations, BC and independent evaluation | `core` | `enlight` | `maintainer-checked` |
+| 58 | [core-enlight-05](lessons/core-enlight-05.md) — Enlight PPO candidate and independent evaluation | `core` | `enlight` | `maintainer-checked` |
+| 59 | [sim-enlight-03](lessons/sim-enlight-03.md) — Enlight PhysX joint and TCP control | `sim` | `enlight` | `reader_test_required` |
+| 60 | [sim-enlight-04](lessons/sim-enlight-04.md) — Enlight PhysX demonstrations and BC | `sim` | `enlight` | `reader_test_required` |
+| 61 | [sim-enlight-05](lessons/sim-enlight-05.md) — Enlight PhysX PPO and evaluation | `sim` | `enlight` | `reader_test_required` |
+| 62 | [core-shadow-01](lessons/core-shadow-01.md) — Shadow Hand joints, synergies and object contact | `core` | `shadow` | `maintainer-checked` |
+| 63 | [sim-shadow-01](lessons/sim-shadow-01.md) — Shadow Hand PhysX introduction | `sim` | `shadow` | `reader_test_required` |
+| 64 | [core-stretch3-01](lessons/core-stretch3-01.md) — Stretch 3 base, arm and coordinated reach | `core` | `stretch3` | `maintainer-checked` |
+| 65 | [sim-stretch3-01](lessons/sim-stretch3-01.md) — Stretch 3 PhysX introduction | `sim` | `stretch3` | `reader_test_required` |
+| 66 | [hw-enlight-04](lessons/hw-enlight-04.md) — Enlight free-space joint and TCP execution cards | `hardware` | `enlight` | `reader_test_required` |
+| 67 | [hw-enlight-05](lessons/hw-enlight-05.md) — Enlight probe plane-force preparation | `hardware` | `enlight` | `reader_test_required` |
+| 68 | [hw-enlight-06](lessons/hw-enlight-06.md) — Enlight gripper pick-transfer-place preparation | `hardware` | `enlight` | `reader_test_required` |

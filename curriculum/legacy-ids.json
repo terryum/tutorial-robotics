@@ -1,0 +1,147 @@
+{
+  "core-00": [
+    "T00"
+  ],
+  "core-01": [
+    "T01"
+  ],
+  "core-02": [
+    "T02"
+  ],
+  "core-03": [
+    "T03"
+  ],
+  "core-04": [
+    "T04"
+  ],
+  "core-fr3-01": [
+    "T05"
+  ],
+  "core-fr3-02": [
+    "T06"
+  ],
+  "core-fr3-03": [
+    "T07"
+  ],
+  "core-fr3-04": [
+    "T08"
+  ],
+  "core-fr3-05": [
+    "T09"
+  ],
+  "core-fr3-06": [
+    "T10"
+  ],
+  "core-fr3-07": [
+    "T22"
+  ],
+  "core-fr3-08": [
+    "T24"
+  ],
+  "core-enlight-01": [
+    "T08A"
+  ],
+  "core-enlight-02": [
+    "T10A"
+  ],
+  "core-wuji-01": [
+    "T14"
+  ],
+  "core-wuji-02": [
+    "T15"
+  ],
+  "core-dexterity-01": [
+    "T16"
+  ],
+  "core-dexterity-02": [
+    "T16A"
+  ],
+  "core-rl-01": [
+    "T23"
+  ],
+  "core-g1-01": [
+    "T25"
+  ],
+  "core-data-01": [
+    "T28"
+  ],
+  "core-il-01": [
+    "T29"
+  ],
+  "core-aloha-01": [
+    "T30"
+  ],
+  "core-vla-01": [
+    "T32A"
+  ],
+  "sim-ros-01": [
+    "T17"
+  ],
+  "sim-ros-02": [
+    "T19"
+  ],
+  "sim-ros-03": [
+    "T20"
+  ],
+  "sim-ros-04": [
+    "T21"
+  ],
+  "sim-g1-01": [
+    "T26"
+  ],
+  "sim-wuji-01": [
+    "T27"
+  ],
+  "sim-vla-01": [
+    "T32C"
+  ],
+  "sim-vla-02": [
+    "T32D"
+  ],
+  "sim-isaac-01": [
+    "T33"
+  ],
+  "sim-isaac-02": [
+    "T34"
+  ],
+  "sim-cross-01": [
+    "T35"
+  ],
+  "sim-deploy-01": [
+    "T35A"
+  ],
+  "sim-enlight-01": [
+    "T18"
+  ],
+  "sim-enlight-02": [
+    "T41A"
+  ],
+  "sim-wuji-02": [
+    "T42A"
+  ],
+  "hw-common-01": [
+    "T35B"
+  ],
+  "hw-common-02": [
+    "T36"
+  ],
+  "hw-fr3-01": [],
+  "hw-wuji-01": [
+    "T38"
+  ],
+  "hw-wuji-02": [
+    "T42B"
+  ],
+  "hw-enlight-01": [
+    "T37"
+  ],
+  "hw-enlight-02": [
+    "T37A"
+  ],
+  "hw-enlight-03": [
+    "T41B"
+  ],
+  "hw-enlight-wuji-01": [
+    "T38A"
+  ]
+}

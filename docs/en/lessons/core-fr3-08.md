@@ -68,6 +68,8 @@ pal lesson check core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --jso
 
 ## Observe
 
+`evaluation.json` records independent twenty-target performance: ten consecutive control steps within 10 mm, with a 16/20 gate. Fewer successes mean performance failure even if optimizer checks pass. This is not a hardware tolerance.
+
 Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
 
 ```bash

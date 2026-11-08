@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="ubuntu.md" lang="ko">한국어</a> | <a href="../../../en/setup/remote-development/ubuntu.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/ubuntu.md) | [ENGLISH](../../../en/setup/remote-development/ubuntu.md)
 
 # WS1 · WS2 Ubuntu 추가 설치와 검증

@@ -8,6 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = json.loads((ROOT / "assets/sources.json").read_text())["bundles"]
 MODELS = {
+    "shadow": ("menagerie-extended", ["shadow_hand"], "Apache-2.0"),
+    "stretch3": ("menagerie-extended", ["hello_robot_stretch_3"], "Apache-2.0"),
+    "robotiq": ("menagerie-extended", ["robotiq_2f85"], "BSD-2-Clause"),
     "fr3": ("mujoco-menagerie", ["franka_fr3"], "Apache-2.0"),
     "g1": ("mujoco-menagerie", ["unitree_g1"], "BSD-3-Clause"),
     "aloha": ("mujoco-menagerie", ["aloha"], "BSD-3-Clause"),

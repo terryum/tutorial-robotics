@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "assets": {
+    "robotiq-2f85": {
+      "bundle": "robotiq-isaac",
+      "revision": "991b18da479aaabe54d00ac45d0bd3c6d7f01cd3",
+      "root": "grippers/Robotiq_2F_85/Robotiq_2F_85.usda",
+      "physics_variant": "Physx_parallel_grip",
+      "license": "CC-BY-4.0 asset; BSD-3-Clause code; see package licenses",
+      "files": {
+        "LICENSE": {
+          "sha256": "f162a2346c734d4baaae9d7fa554317654b2af42c87b757af3c01e007e85758e"
+        },
+        "README.md": {
+          "sha256": "09d1b0a89f3403751f4818e6afcafc426ed47d0bcf66c56f03b21090b3cab3e6"
+        },
+        "grippers/Robotiq_2F_85/.thumbs/256x256/Robotiq_2F_85.usda.png": {
+          "sha256": "e12ed1ae79cd9111cefab0e4357ed5e2dde8212d385a0f36b0ed60dbc18a1c5d",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/.thumbs/256x256/Robotiq_2F_85.usda_light.png": {
+          "sha256": "ef7e877a1d49f06b714ea7054ab0bddc2af20ab108c9bd003a64095b77b985e7",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/.thumbs/256x256/Robotiq_2F_85.usda_transparent.png": {
+          "sha256": "c80027531caf3db61ddc0585bba1a2d8409fcea47d0b1f8041f3d467f4ef2c23",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/PACKAGE-LICENSES/LICENSE": {
+          "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411"
+        },
+        "grippers/Robotiq_2F_85/Robotiq_2F_85.usda": {
+          "sha256": "483b4b8e0dd237f9a5eaf92578f1b9b2d8a8e51bd65a5c662500bd6d780acd43"
+        },
+        "grippers/Robotiq_2F_85/configuration/Robotiq_2F_85_config_physics_compliant.usda": {
+          "sha256": "c7ea028ed9f7bd876f7f96f51ece9840dd0de1683a35271180c9520091d09c0e"
+        },
+        "grippers/Robotiq_2F_85/configuration/Robotiq_2F_85_config_physics_parallel_grip.usda": {
+          "sha256": "f3586de59895cb93081890e1e68caf142121b3d101f0714c983b2560836ad7a9"
+        },
+        "grippers/Robotiq_2F_85/configuration/Robotiq_2F_85_robot.usda": {
+          "sha256": "f60288330aedcd1682dcef7b9d50a5de914a7be818039a26b5da956effe2e3b6"
+        },
+        "grippers/Robotiq_2F_85/materials/LICENSE": {
+          "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411"
+        },
+        "grippers/Robotiq_2F_85/materials/materials.usd": {
+          "sha256": "48eca813596e78486469edc70f825c9bb9913836f63e4007559920820e8e9d9d"
+        },
+        "grippers/Robotiq_2F_85/newton/README.md": {
+          "sha256": "26fa3c05f5329df7329da13bf07bf786a76810707a827384fd0c24ddf6e895b2"
+        },
+        "grippers/Robotiq_2F_85/parts/Defeatured_2F_85_PAD_OPEN_Finger1step_JFT.usd": {
+          "sha256": "1d8f971e8d9e6b140ae406adbe4ebf17831c8c298ce3ce07577b7fac3590bb8c",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/parts/Defeatured_2F_85_PAD_OPEN_basestep_JFX.usd": {
+          "sha256": "a9082107ce6d92b69945ca81f22b271c24c5fba338655e6b838c517d81039826",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/parts/Defeatured_2F_85_PAD_OPEN_finger2step_JFP.usd": {
+          "sha256": "82d1355f767006bdcb1376e8fd495c222120b18776d6d9cccdb199c0ef3d240d",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/parts/Defeatured_2F_85_PAD_OPEN_finger3step_JFL.usd": {
+          "sha256": "2daaae8c788e7e74fa54a5850854b4dcd2ee6d739a2873db63c1fc5db157e87c",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/parts/Defeatured_2F_85_PAD_OPEN_finger4step_JFH.usd": {
+          "sha256": "8d7e3fce9d1c70ab65a676f3efdfa5fd1d161a66793a36bed408509e33b64fe5",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/parts/Defeatured_2F_85_PAD_OPEN_fingertipsstep_JFD.usd": {
+          "sha256": "700409224e3d2c4e0a0e2ba4b4da4f644babd74207d660c034ce53b255b3e876",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/parts/Robotiq_2F_85_dowel_pin.usda": {
+          "sha256": "87bfc3752e993f8c89bc8a4218dda93918f6dca793b5c6d6441a4bbe3d904ce5"
+        },
+        "grippers/Robotiq_2F_85/parts/TSF_85_case.usd": {
+          "sha256": "3465da112b4cd8098b0d2dc29d861db8a4efe0530cc4ad3933e52b3ca60c12fd",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_body_mass_physics.usda": {
+          "sha256": "21e46529d377d8e300d4a4e6bd3e09d9c40d1b905e3a3dfce27fb982453699db"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_compliant_physics.usda": {
+          "sha256": "a45eaf1081737cc8588537399cb535889f613e4299547efb51531bc3674b89a9"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_fingertip_physics.usda": {
+          "sha256": "ac7e592beb00e3263a9bae376a8c3cd49daa98986743c39c4bb02c004b8b475d"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_fingertip_tsf85.usda": {
+          "sha256": "aabc10f07be808c8abae93f1a8f34c3c218937916b433e7e2cc4afa4004f0789"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_kinematics_physics.usda": {
+          "sha256": "0ccc798f315e6e2b4baa7c11abfa9f58906d0c0462d3b404ea35560e135bb8a1"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_newton_common_physics.usda": {
+          "sha256": "6952bd5be763fcd121d45be062e54856eaac4b870a3963f0a0aa22d3ebb3258f"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_newton_compliant_physics.usda": {
+          "sha256": "14f68a48202ee8138f9d13dcdd268812995ea594a242a2dffcb807f1a652d59c"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_newton_fourbar_physics.usda": {
+          "sha256": "2d116a900db6ceb4d3fb9d48a208d53a6cd41bc7189896027f74689a30285137"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_newton_parallel_grip_physics.usda": {
+          "sha256": "4d9f0039d5c76faf16bf46ac8241cd526b5c7be40514e108e47fa8ce6b527145"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_parallel_grip_dowel_pins.usda": {
+          "sha256": "c4df764c154ef6086122d36694dfa4956c2f78b73ea4cf2f9749127a24a95854"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_parallel_grip_physics.usda": {
+          "sha256": "0f7e98ea8d31f584121a9cc211351b3042ce451dcf898c383d470fe05c479b99"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_physx_common_physics.usda": {
+          "sha256": "034630ddb2f47d1f1f65fa22c37031aadfa5395810754a211f19b80851566bd0"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_tactile_effective_response.usda": {
+          "sha256": "1f2a2bdb87876531b2bc00411957c95e6563d33555ff0c8378875b4e77ea6eef"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_tactile_raycast.usda": {
+          "sha256": "f21bab8e7ea3edb4f9bd0787d7620cdc5862c3c60064a5febafe8a3e52129335"
+        },
+        "grippers/Robotiq_2F_85/payloads/Robotiq_2F_85_tactile_zones.usda": {
+          "sha256": "424a6d5442762370e6a264f2522e345b398214bb680a5c3b3606bbd4ceeef54e"
+        },
+        "grippers/Robotiq_2F_85/payloads/base.usda": {
+          "sha256": "aad894840730a45edd7815b8ca8699cb9252791683af8e98d28fb2e604db2d71"
+        },
+        "grippers/Robotiq_2F_85/payloads/geometries.usd": {
+          "sha256": "43f1718720ea76cf8c69d5031de8d215806c79a54618417c431c0f17fe0758f3",
+          "lfs": true
+        },
+        "grippers/Robotiq_2F_85/payloads/instances.usda": {
+          "sha256": "f3354daa0ef1d865ac397413b732636e56d9affc5ce48240a174b30bea5309f6"
+        },
+        "grippers/Robotiq_2F_85/payloads/materials.usda": {
+          "sha256": "a5b6d1edfd4eb76df8a64f4ed694275950c5ec1d5ba56beabefbeb1cec562bb4"
+        }
+      },
+      "verification": "reader_test_required"
+    }
+  },
+  "derived_models": {
+    "fr3": {
+      "source_model": "fr3",
+      "source_lock": "model-lock.json",
+      "engine": "PhysX",
+      "adapter": "isaacsim.asset.importer.mjcf",
+      "verification": "reader_test_required",
+      "hash_receipt": "run.json artifacts for generated source.xml and robot.usda"
+    },
+    "enlight": {
+      "source_model": "enlight",
+      "source_lock": "model-lock.json",
+      "engine": "PhysX",
+      "adapter": "isaacsim.asset.importer.mjcf",
+      "verification": "reader_test_required",
+      "hash_receipt": "run.json artifacts for generated source.xml and robot.usda"
+    },
+    "shadow": {
+      "source_model": "shadow",
+      "source_lock": "model-lock.json",
+      "engine": "PhysX",
+      "adapter": "isaacsim.asset.importer.mjcf",
+      "verification": "reader_test_required",
+      "hash_receipt": "run.json artifacts for generated source.xml and robot.usda"
+    },
+    "stretch3": {
+      "source_model": "stretch3",
+      "source_lock": "model-lock.json",
+      "engine": "PhysX",
+      "adapter": "isaacsim.asset.importer.mjcf",
+      "verification": "reader_test_required",
+      "hash_receipt": "run.json artifacts for generated source.xml and robot.usda"
+    }
+  }
+}

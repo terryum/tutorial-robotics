@@ -59,7 +59,9 @@ class Lesson:
             implementation=str(
                 value.get(
                     "implementation",
-                    "scaffolded" if str(value["id"]) in {
+                    "scaffolded"
+                    if str(value["id"])
+                    in {
                         "hw-common-02",
                         "hw-fr3-01",
                         "hw-wuji-01",
@@ -68,7 +70,8 @@ class Lesson:
                         "hw-enlight-02",
                         "hw-enlight-03",
                         "hw-enlight-wuji-01",
-                    } else "implemented",
+                    }
+                    else "implemented",
                 )
             ),
         )
@@ -109,8 +112,8 @@ def validate_catalog() -> list[str]:
     ids = [lesson.id for lesson in lessons]
     aliases = [alias.lower() for lesson in lessons for alias in lesson.aliases]
     known = set(ids)
-    if len(lessons) != 49:
-        errors.append(f"expected 49 lessons, found {len(lessons)}")
+    if not lessons:
+        errors.append("catalog must contain lessons")
     if len(set(ids)) != len(ids):
         errors.append("duplicate canonical lesson id")
     if len(set(aliases)) != len(aliases):

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../../ko/setup/remote-development/records.md" lang="ko">한국어</a> | <a href="records.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 [한국어](../../../ko/setup/remote-development/records.md) | [ENGLISH](../../../en/setup/remote-development/records.md)
 
 # Local setup and connection records

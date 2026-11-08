@@ -57,3 +57,22 @@
 | 47 | [hw-enlight-02](lessons/hw-enlight-02.md) — Enlight 시스템 식별과 MuJoCo 보정 | `hardware` | `enlight` | `reader_test_required` |
 | 48 | [hw-enlight-03](lessons/hw-enlight-03.md) — Enlight 접촉 과제 섀도와 승인 기반 평가 | `hardware` | `enlight` | `reader_test_required` |
 | 49 | [hw-enlight-wuji-01](lessons/hw-enlight-wuji-01.md) — Enlight와 Wuji 통합 읽기 전용 검증 | `hardware` | `enlight-wuji` | `reader_test_required` |
+| 50 | [core-fr3-09](lessons/core-fr3-09.md) — FR3 관절·TCP 궤적 추종 | `core` | `fr3` | `maintainer-checked` |
+| 51 | [core-fr3-10](lessons/core-fr3-10.md) — FR3 시연·BC와 독립 도달 평가 | `core` | `fr3` | `maintainer-checked` |
+| 52 | [sim-fr3-01](lessons/sim-fr3-01.md) — FR3 PhysX 관절·TCP 제어 | `sim` | `fr3` | `reader_test_required` |
+| 53 | [sim-fr3-02](lessons/sim-fr3-02.md) — FR3 PhysX 시연·BC | `sim` | `fr3` | `reader_test_required` |
+| 54 | [sim-fr3-03](lessons/sim-fr3-03.md) — FR3 PhysX PPO와 평가 | `sim` | `fr3` | `reader_test_required` |
+| 55 | [sim-fr3-04](lessons/sim-fr3-04.md) — FR3 동일 조건 엔진 증거 비교 | `sim` | `fr3` | `reader_test_required` |
+| 56 | [core-enlight-03](lessons/core-enlight-03.md) — Enlight 관절·TCP 궤적 추종 | `core` | `enlight` | `maintainer-checked` |
+| 57 | [core-enlight-04](lessons/core-enlight-04.md) — Enlight 시연·BC와 독립 평가 | `core` | `enlight` | `maintainer-checked` |
+| 58 | [core-enlight-05](lessons/core-enlight-05.md) — Enlight PPO 후보와 독립 평가 | `core` | `enlight` | `maintainer-checked` |
+| 59 | [sim-enlight-03](lessons/sim-enlight-03.md) — Enlight PhysX 관절·TCP 제어 | `sim` | `enlight` | `reader_test_required` |
+| 60 | [sim-enlight-04](lessons/sim-enlight-04.md) — Enlight PhysX 시연·BC | `sim` | `enlight` | `reader_test_required` |
+| 61 | [sim-enlight-05](lessons/sim-enlight-05.md) — Enlight PhysX PPO와 평가 | `sim` | `enlight` | `reader_test_required` |
+| 62 | [core-shadow-01](lessons/core-shadow-01.md) — Shadow Hand 관절·시너지·물체 접촉 | `core` | `shadow` | `maintainer-checked` |
+| 63 | [sim-shadow-01](lessons/sim-shadow-01.md) — Shadow Hand PhysX 입문 | `sim` | `shadow` | `reader_test_required` |
+| 64 | [core-stretch3-01](lessons/core-stretch3-01.md) — Stretch 3 베이스·팔·협응 도달 | `core` | `stretch3` | `maintainer-checked` |
+| 65 | [sim-stretch3-01](lessons/sim-stretch3-01.md) — Stretch 3 PhysX 입문 | `sim` | `stretch3` | `reader_test_required` |
+| 66 | [hw-enlight-04](lessons/hw-enlight-04.md) — Enlight 자유공간 관절·TCP 실행 카드 | `hardware` | `enlight` | `reader_test_required` |
+| 67 | [hw-enlight-05](lessons/hw-enlight-05.md) — Enlight 프로브 평면 힘 제어 준비 | `hardware` | `enlight` | `reader_test_required` |
+| 68 | [hw-enlight-06](lessons/hw-enlight-06.md) — Enlight 그리퍼 집기·이동·놓기 준비 | `hardware` | `enlight` | `reader_test_required` |

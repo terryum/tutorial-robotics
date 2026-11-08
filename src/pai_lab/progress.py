@@ -21,6 +21,7 @@ class CourseProgress:
     robots: tuple[str, ...]
     include_electives: bool
     completed: dict[str, dict[str, Any]]
+    path: str | None = None
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -29,6 +30,7 @@ class CourseProgress:
             "robots": list(self.robots),
             "include_electives": self.include_electives,
             "completed": self.completed,
+            "path": self.path,
         }
 
 
@@ -52,6 +54,7 @@ def load_progress(path: Path | None = None) -> CourseProgress:
         robots=tuple(raw.get("robots", [])),
         include_electives=bool(raw.get("include_electives", False)),
         completed=completed,
+        path=raw.get("path"),
     )
 
 
@@ -69,6 +72,10 @@ def save_progress(progress: CourseProgress, path: Path | None = None) -> None:
 
 
 def select_lesson(lesson: Lesson, progress: CourseProgress) -> bool:
+    if progress.path:
+        from pai_lab.paths import path_lessons
+
+        return lesson.id in path_lessons(progress.path)
     if STAGE_RANK[lesson.stage] > STAGE_RANK[progress.through]:
         return False
     if lesson.elective and not progress.include_electives:
