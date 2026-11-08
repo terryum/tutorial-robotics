@@ -5,7 +5,7 @@ Development evidence is separate from personal learner completion. All runs used
 | Environment | Result | Limits |
 |---|---|---|
 | Mac / MuJoCo | Named-path CLI, numerical control/learning, rendering and artifact checks verified | Simulation evidence only |
-| Isaac / PhysX | Code, manifests and capability blocking prepared; runtime unverified | Mac has no Isaac runtime. The WS2 alias did not resolve in this session. No substitute engine was used to claim success |
+| Isaac / PhysX | Code, manifests and capability blocking prepared; runtime unverified | Mac has no Isaac runtime. The generic WS2 alias was unresolved; the configured verification alias was then found and its connection timed out. No substitute engine was used to claim success |
 | Enlight hardware | Mock transport approval/read-only/failure gates verified | RDK 2.1 / v3E.1 versus description v4, site transport, tools, payload, stop/watchdog and real execution remain unverified |
 
 ## Measured simulation evidence
@@ -49,3 +49,5 @@ Next on the GPU host: fetch pinned model assets, verify Isaac installation/versi
 Next on Enlight: review Elements and RDK 2.1 / v3E.1, establish model identity and description compatibility, validate offline replay/sink/read-only/shadow/torque-disabled replay, then approve a fresh exact-action card for one small movement. TCP path, calibrated probe plane force, and gripper pick/transfer/place each require their own validated tool, limits and per-run approval. Learned torques are not directly sent to hardware.
 
 See [English path guide](../en/paths.md) and [한국어 경로 안내](../ko/paths.md).
+
+CI follow-up: the existing macOS 14 job was cancelled before setup because its runner configuration is no longer supported. The matrix now uses the supported `macos-15` label ([GitHub runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)). Ubuntu and Pages succeeded on the implementation commit; final macOS/Ubuntu/Pages results are checked on the follow-up commit. The private overlay suite passed 142 tests and eight subtests with three existing environment skips; core passed nine tests and eight subtests. Only its public pin and compatibility evidence are updated.

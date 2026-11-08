@@ -54,6 +54,10 @@ Learner progress is never stored here. Local Mac development verification covers
 | hw-enlight-03 | `reader_test_required` | scaffolded | Requires actual device adapter and per-run safety evidence; not verified here |
 | hw-enlight-wuji-01 | `reader_test_required` | scaffolded | Requires actual device adapter and per-run safety evidence; not verified here |
 
+## Added robot-path lessons
+
+| Lesson | Verification | Implementation | Evidence |
+|---|---|---|---|
 | core-fr3-09 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
 | core-fr3-10 | `maintainer-checked` | implemented | Mac numerical/render/artifact checks; see environment verification report |
 | sim-fr3-01 | `reader_test_required` | implemented | prepared; see environment verification report |
