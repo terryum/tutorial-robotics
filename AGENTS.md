@@ -12,6 +12,22 @@ Build and teach the public capability-first robotics curriculum. Read, in order:
 
 The catalog and `pal` CLI are authoritative. Machine names never authorize or order work. A workstation can start at Stage 1 without a MacBook. Learner state defaults to ignored `.local/`. An explicitly enabled learner-owned JSON helper may synchronize minimal completion hashes to that learner’s private store; raw evidence and hardware authority stay local. See `docs/PERSONAL_PROGRESS.md`; `state/PUBLISHING.md` records shared publication evidence.
 
+## WS2 tutorial update shortcut
+
+On WS2, the user phrase **“튜토리얼 업데이트 해줘”** (or “update the tutorials”)
+means: sync the relevant repositories, then resume the robot-path Isaac/PhysX
+**development verification batch**, fix scoped failures, verify, document,
+commit/push and check CI. First read [the WS2 runbook](setup/WS2_TUTORIAL_UPDATE.md)
+and the actual native host/OS records; after pulling, reread updated instructions.
+The runbook owns the execution order, isolated state, checkpoint tests and handoff.
+Do not ask the user to repeat its long prompt or stop after repository sync alone.
+This request authorizes scoped verified development commits/pushes, an exception
+to the default no-auto-push learning flow; it never authorizes hardware/VR actions
+or automatic heavy-stack installation. Preserve learner history and private boundaries.
+A missing environment stays blocked, never successful. Quoting this phrase to edit
+the workflow does not itself request a WS2 run. Outside this shortcut, keep the
+ordinary capability-first, one-lesson and Git rules below.
+
 ## Execution contract
 
 - Start guided learning by opening the current lesson's GitHub page in the reader's language. Reuse that tutorial tab for subsequent lessons and reruns; follow `agent/workflow.md` for tab selection and unavailable-browser handling.
