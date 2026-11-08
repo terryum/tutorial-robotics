@@ -72,3 +72,43 @@ merged.
 - Next prerequisite-eligible tutorial remains **T00**.
 - This installation makes the host capable of later GPU tutorials; it is not
   evidence that their learning or acceptance contracts were completed.
+
+## Native Ubuntu maintenance — 2026-11-09
+
+The sections above retain the historical 2026-09-10 snapshot. Current checks used
+public work base `ea066c2`, core `f3723f9`, Ubuntu 24.04.5, Python 3.12.3,
+RTX 5090 and driver **595.99.02**. Locked base/development dependencies were
+synchronized with `uv sync --locked --inexact`, preserving existing extras.
+Required native ROS packages were already installed; no system-package, driver,
+CUDA or simulator upgrade was needed.
+Both native ROS virtualenvs were also synchronized with their existing locks.
+The public ROS environment's editable project metadata was updated from
+`pai-lab 0.1.0` to `1.0.0.dev0`; both dependency checks passed.
+
+- Public tests: **195 passed, one optional vendor-cache skip**, eight subtests.
+  Core: nine passed. Ruff, mypy, repository/release/public-boundary/credential
+  checks and strict MkDocs passed.
+- MuJoCo 3.12 deterministic pendulum: 1,000 samples, repeat error **0**,
+  finite states and nonblank EGL rendering.
+- Native Jazzy/CycloneDDS communication, TF, RViz on a virtual display and MCAP
+  record/replay passed. Replay matched exactly and emitted no commands.
+- Existing learning, LeRobot, mjlab and default Isaac environments passed
+  dependency checks and CUDA matrix multiplication. Additional smoke checks
+  passed: a 16-step PPO update, synthetic ACT GPU inference without downloading
+  weights, and ten MuJoCo-Warp GPU physics steps.
+- Existing default Isaac **6.1.0.0** / Teleop **1.3.131** passed headless PhysX
+  and RTX rendering: 182 physics steps, cube height approximately **0.100 m**,
+  nonblank **320 x 240 RGBA** image and clean process exit. Existing Isaac terms
+  consent was reused. These results supersede the historical first-launch
+  pending item above; they do not verify new robot-path lessons or live VR.
+
+The retained `gpu-isaac-modern` recovery environment still passes CUDA arithmetic
+but has **11 dependency incompatibilities**. Its Sim/Lab beta stack contains
+contradictory requirements, including coverage 7.4.4 versus 7.6.1, packaging 26.0
+versus <24, and websockets 12.0 versus >=13.1. It is preserved and is **not a
+dependency-clean supported execution environment**. Use the verified default
+Isaac environment for its documented workflow; new Lab-specific work needs a
+separately validated compatible stack.
+
+Learner history was preserved. This maintenance created no lesson completion,
+hardware authority, driver/firmware changes, remote-access changes or reboot.
