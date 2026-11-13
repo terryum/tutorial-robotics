@@ -18,5 +18,11 @@ No new WS1/WS2 execution evidence. GR00T 2 code announced for December.
 - [ ] Optional ASPIRE/Flora/SimFoundry runtime adapters
 
 ## Resume
+No additional Mac GPU installation is required. Portable FR3/data/wrapper/lesson
+implementation can be done on Mac or WS2 and remains unfinished. Actual Isaac/model
+runs, demonstration generation and long training belong on WS2 Ubuntu; independent
+evaluation belongs on WS1. Runbook checkpoints A/B/C cover next WS installation,
+post-installation FR3 work and future GR00T 2 release adoption.
+
 Read setup/LATEST_ROBOTICS_UPDATE.md, inspect actual host/OS and ignored receipts.
 Keep pending items pending until implemented and measured. No fabricated completion.

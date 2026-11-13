@@ -63,10 +63,74 @@ budget: 24 hours per model. The installer checks storage before/after synchroniz
 operators must also budget download/cache temporary peaks and data before each job.
 The installer does not yet enforce a hard filesystem quota. Do not delete user data.
 
+## MacBook remaining work and future checkpoints
+
+Updated clarification: 2026-11-13. No additional Mac GPU software installation is
+required. Reuse the existing Python 3.12/Core/MuJoCo development environment.
+Portable implementation remains unfinished and can be done on Mac **or** WS2:
+
+- FR3/Robotiq composition/configuration and camera/state capture interfaces, with
+  frame/joint/action contract tests using small fixtures or MuJoCo.
+- Episode manifests, episode-level splits, train-only normalization, LeRobot/GR00T
+  data conversion, checksums and dataset validation.
+- Model train/evaluate/resume wrappers, identity/timeout/error handling and CPU tests.
+- Full paired Korean/English lessons and catalog checks after executable entry
+  points exist. Current setup pages are pointers, not completed training lessons.
+
+These are coding tasks, not additional installation prerequisites on Mac. Moving
+them to WS2 does not complete them. Isaac/model GPU execution, real demonstration
+generation and full learning acceptance must run on native Ubuntu GPU hardware.
+Mac disk cleanup is optional; do not delete user data automatically.
+
+### A. At the next WS installation request
+
+Use the trigger and agent procedure above. Read this memo and CURRENT_TUTORIAL,
+sync repositories, inspect actual native OS/GPU/driver/VRAM/disk and check current
+official stable releases. Install isolated profiles while preserving working VR
+and vendor environments. Reuse applicable consent; do not invent new EULA consent.
+Verify CUDA kernels, dependency compatibility, official PhysX/RTX example, actual
+model inference and one training update/checkpoint reload where supported. A
+32 GB GPU does not establish N1.7 training support. Keep failed/missing capability
+blocked, update only the actual host row, commit/push scoped fixes and inspect CI.
+End after short installation acceptance; do not start a 24-hour training job.
+
+### B. After WS2 installation, on an explicit FR3 training request
+
+Finish any portable implementation listed above, then perform the FR3 checklist
+below on WS2. Compare base/trained models on identical unseen initial conditions;
+verify optimizer/RNG checkpoint resume and reject changed source/model/data/env
+identities. Transfer hashed candidates to WS1 for independent evaluation. Only
+then extend to Wuji/Sharpa/G1 with separate embodiment data and validation.
+Default budget remains 24 hours per model and 300 GB managed artifacts per machine;
+stop resumably on exhaustion. No paid external GPU/API or real robot motion.
+
+### C. After GR00T 2 code and weights are released
+
+At a later installation/update request, recheck official availability. The November
+13 December-release announcement below is historical, not proof of availability.
+This memo creates no background monitoring or scheduled installation.
+
+1. Check released code **and** weights, licenses/terms, hardware/VRAM requirements,
+   Python/CUDA/Torch compatibility, training recipe and download size.
+2. Pin immutable revisions/checksums in a new isolated profile; retain N1.7 and the
+   working Isaac/VR/vendor environments for recovery.
+3. Implement the actual published WAM interface: temporal camera history, state,
+   action representation/horizon, reset, protocol and video output where applicable.
+   Merely renaming the N1.7 model string is not a supported migration.
+4. Test identity, units/joint/camera mappings, malformed/stale/timeout responses,
+   real inference, a training update and resume. Run the same FR3 held-out evaluation
+   and report latency/VRAM/performance against N1.7 and pi05.
+5. Promote only after runtime/compatibility acceptance; otherwise keep the working
+   profile with a precise blocked checkpoint. Update bilingual lessons, registry,
+   locks, compatible private pins, actual-host evidence, commits/pushes and CI.
+
+Long training still requires an explicit training request, separate from installing.
+
 ## Remaining GPU acceptance and FR3 implementation
 
-The portable stack manager is prepared, not GPU-validated on Mac. Before claiming
-end-to-end completion, implement and verify the following on an available GPU host:
+The portable stack manager is prepared, not GPU-validated on Mac. Coding can occur
+on Mac or WS2 as above. Before claiming end-to-end completion, implement the following
+and verify actual physics, inference and training on an available GPU host:
 
 - Compose the existing pinned FR3 and Robotiq 2F-85 assets without editing vendor bytes;
   validate flange/TCP, limits, mimic coupling, contact and two-camera capture.
