@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "reviewed": "2026-11-13",
+  "budget": {
+    "training_hours_per_model": 24,
+    "managed_storage_gb": 300
+  },
+  "profiles": {
+    "isaac-modern": {
+      "repository": "isaac-sim/IsaacLab",
+      "revision": "e3f7d9ff1f5d7f8280de3ece9000b7117f66bcf4",
+      "release": "v3.0.0",
+      "extras": [
+        "isaacsim"
+      ],
+      "python": "3.12",
+      "verify": [
+        "from isaacsim import SimulationApp; app=SimulationApp({\"headless\":True}); app.update(); app.close()"
+      ]
+    },
+    "groot": {
+      "repository": "NVIDIA/Isaac-GR00T",
+      "revision": "3b49067943eb1ab2eb2203b93d461c4390c78da3",
+      "release": "N1.7",
+      "extras": [],
+      "python": "3.12",
+      "verify": [
+        "import gr00t"
+      ],
+      "weights": {
+        "repository": "nvidia/GR00T-N1.7-3B",
+        "revision": "373d34e2723d928870157d07dc216a19a624b5bb"
+      }
+    },
+    "pi05": {
+      "repository": "huggingface/lerobot",
+      "revision": "e6ffde60312365c5452c46189a26872483943154",
+      "release": "pinned main",
+      "extras": [
+        "pi",
+        "training",
+        "peft"
+      ],
+      "python": "3.12",
+      "verify": [
+        "from lerobot.policies.pi05.modeling_pi05 import PI05Policy"
+      ],
+      "weights": {
+        "repository": "lerobot/pi05_base",
+        "revision": "22c30e5b34f9e7ab738b1b34fc2fc5ecfe2d28f0"
+      }
+    },
+    "openpi-reference": {
+      "repository": "Physical-Intelligence/openpi",
+      "revision": "215abfb217dbac7d5f1273282331b9b1866c0479",
+      "release": "pinned main",
+      "extras": [],
+      "python": "3.11",
+      "verify": [
+        "import jax; assert jax.devices()[0].platform == \"gpu\"; print(jax.numpy.ones(4).sum())"
+      ]
+    }
+  }
+}

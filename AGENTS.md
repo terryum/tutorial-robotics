@@ -79,3 +79,13 @@ proof that arbitrary text contains no secrets: inspect staged diffs before
 committing and do not print credential values during audits. If a credential
 was published, revoke/rotate it first and coordinate history cleanup; deleting
 only the latest file does not remove it from history.
+
+## Latest robotics installation request
+
+For **“레포를 살펴보고 최신 버전으로 설치를 진행해줘”**, follow the public
+[latest installation runbook](https://github.com/terryum/tutorial-robotics/blob/main/setup/LATEST_ROBOTICS_UPDATE.md).
+Audit native OS and reread instructions after synchronization. This explicit request
+authorizes scoped heavy software/system installation and verified commits/pushes,
+an exception to ordinary automatic-install restrictions. It does not authorize
+reboot, new EULA consent, physical devices, motion or long training. Preserve existing
+vendor/VR environments and learner history; never equate smoke with performance.

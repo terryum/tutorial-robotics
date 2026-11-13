@@ -210,3 +210,9 @@ The metadata generator preserves authored lesson bodies, entrypoints and tests. 
 <!-- pal:toc:end -->
 
 “매니퓰레이터 튜토리얼 실행해줘” selects the manipulator path and guides one lesson from saved progress. `pal course pause/resume` inspects saved teaching state; `pal train run/export/import` provides training checkpoints and hashed host transfer. See [environment verification](docs/verification/robot-paths-2026-11-08.md).
+
+## Latest GR00T / PI / Isaac environments
+
+[Installation and cross-host update handoff](setup/LATEST_ROBOTICS_UPDATE.md)
+provides isolated pinned profiles and explicitly tracks remaining GPU and FR3 acceptance.
+Use `pal stack plan --profile pi05 --json` for a read-only plan.

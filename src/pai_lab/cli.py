@@ -601,6 +601,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if arguments and arguments[0] == "stack":
+        from pai_lab.stacks import main as stack_main
+
+        return stack_main(arguments[1:])
     args = build_parser().parse_args(argv)
     if args.command == "host":
         return host_detect(args.json)
