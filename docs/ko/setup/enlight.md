@@ -98,3 +98,21 @@ python -m pai_lab.manual_examples enlight
 ```
 
 [매뉴얼 자료실과 검증 방법](index.md). 이 검사는 장비 준비 상태나 개인 학습 기록을 갱신하지 않습니다.
+
+### WS2 Ubuntu 설치 재현 (2026-11-13)
+
+Python SDK는 기본/Isaac/ROS 환경과 분리합니다. 저장소 루트에서:
+
+```bash
+uv venv --python /usr/bin/python3 .local/venvs/enlight-rdk-2.1
+uv pip install --python .local/venvs/enlight-rdk-2.1/bin/python --require-hashes -r setup/requirements/enlight-rdk-2.1-linux-py312.txt
+.local/venvs/enlight-rdk-2.1/bin/python -c 'import flexivrdk; print(flexivrdk.JointGroup.ARM_1)'
+```
+
+requirements는 Linux x86_64 / CPython 3.12 wheel 해시를 고정합니다.
+C++ RDK 2.1 및 고정 Jazzy driver의 9개 패키지는 별도 prefix에서 빌드했고,
+공식 `mock_components/GenericSystem`에서 7관절 상태와 합성 궤적을 검증했습니다.
+교육용 DDS 어댑터의 전용 ROS context도 서비스/action/재실행으로 검증했습니다.
+[설치 증거](../../WS2_UBUNTU_INSTALLATION_STATUS.md#enlight-ws2-20261113)를 참고하세요.
+Elements Studio 제조사 패키지와 v4/v3E.1 실물 호환성은 여전히 대기입니다.
+이 결과는 학습 완료나 실물 연결 검증이 아닙니다.

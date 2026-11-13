@@ -20,6 +20,7 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
     os.environ["ROS_DOMAIN_ID"] = "217"
     import rclpy
     from geometry_msgs.msg import TransformStamped
+    from rclpy.executors import SingleThreadedExecutor
     from rclpy.node import Node
     from rclpy.qos import QoSProfile, ReliabilityPolicy
     from rclpy.serialization import deserialize_message, serialize_message
@@ -30,6 +31,8 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
     context = rclpy.Context()
     rclpy.init(context=context)
     node = Node("pal_lesson", namespace="/pal_isolated", context=context)
+    executor = SingleThreadedExecutor(context=context)
+    executor.add_node(node)
     model, data = pendulum()
     if identifier == "sim-enlight-01":
         model, data, source = load("enlight", output)
@@ -56,13 +59,13 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
         broadcaster.sendTransform(tf)
         deadline = time.monotonic() + 5
         while publisher.get_subscription_count() == 0 and time.monotonic() < deadline:
-            rclpy.spin_once(node, timeout_sec=0.05)
+            executor.spin_once(timeout_sec=0.05)
         if publisher.get_subscription_count() == 0:
             raise RuntimeError("DDS discovery timeout in isolated domain")
         if not client.wait_for_service(timeout_sec=3):
             raise RuntimeError("ROS service unavailable")
         response = client.call_async(Trigger.Request())
-        rclpy.spin_until_future_complete(node, response, timeout_sec=3)
+        executor.spin_until_future_complete(response, timeout_sec=3)
         service_ok = response.done() and response.result().success
         if identifier == "sim-ros-03":
             import rosbag2_py
@@ -98,7 +101,7 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
                 )
             deadline = time.monotonic() + 2
             while len(received) <= i and time.monotonic() < deadline:
-                rclpy.spin_once(node, timeout_sec=0.02)
+                executor.spin_once(timeout_sec=0.02)
             if len(received) <= i:
                 raise RuntimeError("ROS sample receive timeout")
             rows.append(
@@ -140,11 +143,11 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
                 goal = Fibonacci.Goal()
                 goal.order = 8
                 future = action_client.send_goal_async(goal)
-                rclpy.spin_until_future_complete(node, future, timeout_sec=3)
+                executor.spin_until_future_complete(future, timeout_sec=3)
                 if not future.done() or not future.result().accepted:
                     raise RuntimeError("action goal rejected")
                 result_future = future.result().get_result_async()
-                rclpy.spin_until_future_complete(node, result_future, timeout_sec=3)
+                executor.spin_until_future_complete(result_future, timeout_sec=3)
                 checks["action_roundtrip"] = result_future.done() and list(
                     result_future.result().result.sequence
                 ) == [0, 1, 1, 2, 3, 5, 8, 13]
@@ -195,6 +198,7 @@ def run(identifier: str, output: Path, seed: int, samples: int, variant: float =
             del writer
         node.destroy_subscription(subscription)
         node.destroy_service(service)
+        executor.shutdown()
         node.destroy_node()
         context.shutdown()
 

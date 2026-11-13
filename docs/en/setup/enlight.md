@@ -107,3 +107,21 @@ python -m pai_lab.manual_examples enlight
 ```
 
 [Manual library and verification workflow](index.md). These checks never update hardware readiness or learner progress.
+
+### WS2 Ubuntu reproduction (2026-11-13)
+
+Keep the Python SDK separate from Core, Isaac and ROS environments. From the repository root:
+
+```bash
+uv venv --python /usr/bin/python3 .local/venvs/enlight-rdk-2.1
+uv pip install --python .local/venvs/enlight-rdk-2.1/bin/python --require-hashes -r setup/requirements/enlight-rdk-2.1-linux-py312.txt
+.local/venvs/enlight-rdk-2.1/bin/python -c 'import flexivrdk; print(flexivrdk.JointGroup.ARM_1)'
+```
+
+The requirements pin Linux x86_64 / CPython 3.12 wheel hashes. C++ RDK 2.1 and
+all nine pinned Jazzy driver packages were built in a separate prefix. The official
+`mock_components/GenericSystem` passed seven-joint state and synthetic trajectory checks.
+The teaching DDS adapter's dedicated ROS context passed service/action/repeated-run checks.
+See [installation evidence](../../WS2_UBUNTU_INSTALLATION_STATUS.md#enlight-ws2-20261113).
+The manufacturer Elements Studio package and v4/v3E.1 physical compatibility remain pending.
+These checks establish neither lesson completion nor physical connection acceptance.

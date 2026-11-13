@@ -7,6 +7,13 @@ Use the [remote setup guide](../docs/en/setup/remote-development/index.md)
 Historical SIM_TRAIN and ROBOT_INTEGRATION labels are replaced by the
 current DEVELOPMENT and ROBOT_RUNTIME modes.
 
+## Current workstation assignment
+
+WS2 is assigned simulation, learning, and Flexiv Enlight connection/experiments.
+Installation acceptance covers offline replay, command sink and ROS fake hardware.
+Physical connection and each motion still follow the ROBOT_RUNTIME gates below.
+The assignment does not establish hardware compatibility or authorize a command.
+
 ## WS1 or WS2 — DEVELOPMENT
 
 Verify:
