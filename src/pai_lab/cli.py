@@ -469,6 +469,7 @@ def build_parser() -> argparse.ArgumentParser:
     train_run.add_argument("--learning-rate", type=float, default=0.01)
     train_run.add_argument("--output-dir", type=Path, required=True)
     train_run.add_argument("--resume-from", type=Path)
+    train_run.add_argument("--demonstrations", type=Path)
     train_run.add_argument("--json", action="store_true")
     for operation in ("export", "import"):
         transfer = training_commands.add_parser(operation)
@@ -642,6 +643,10 @@ def main(argv: list[str] | None = None) -> int:
                     "learning_rate": args.learning_rate,
                     "resume_from": args.resume_from,
                 }
+                if args.demonstrations is not None:
+                    if args.engine != "mujoco":
+                        raise ValueError("external demonstrations currently require MuJoCo")
+                    request["demonstrations_path"] = args.demonstrations
                 if args.engine == "physx":
                     from pai_lab.lessons.isaac_tasks import train_physx
 

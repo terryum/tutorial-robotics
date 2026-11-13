@@ -19,6 +19,8 @@ from pai_lab.readiness import required_models
 
 def engine(identifier: str) -> str:
     lesson = resolve_lesson(identifier)
+    if identifier in {"core-teleop-01", "sim-teleop-02", "sim-enlight-06"}:
+        return "teleop"
     if identifier in {
         "core-enlight-05",
         "core-fr3-09",
@@ -164,6 +166,10 @@ def dependency_manifest(identifier: str) -> dict[str, str]:
         modules |= {"lessons/isaac_adapter.py", "lessons/isaac_tasks.py"}
     if selected == "comparison":
         modules |= {"lessons/learning.py", "lessons/physics.py", "lessons/models.py"}
+    if selected == "teleop":
+        modules |= {"teleop.py", "teleop_recording.py", "teleop_sources.py", "vive_ipc.py"}
+        if identifier == "sim-enlight-06":
+            modules |= {"lessons/arm.py", "lessons/models.py", "teleop_enlight.py"}
     result = {}
     for name in sorted(modules):
         source = (ROOT / "src/pai_lab" / name).read_text()

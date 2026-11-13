@@ -13,66 +13,70 @@
 | 3 | [core-02](lessons/core-02.md) — 공개 로봇 소스 고정과 자산 매니페스트 | `core` | `common` | `maintainer-checked` |
 | 4 | [core-03](lessons/core-03.md) — 다중 모델 검사와 자산 검증 | `core` | `common` | `maintainer-checked` |
 | 5 | [core-04](lessons/core-04.md) — 통합 뷰어와 결정론적 렌더링 | `core` | `common` | `maintainer-checked` |
-| 6 | [core-fr3-01](lessons/core-fr3-01.md) — FR3 모델 구조 | `core` | `fr3` | `maintainer-checked` |
-| 7 | [core-fr3-02](lessons/core-fr3-02.md) — FR3 관절 공간 PD 제어 | `core` | `fr3` | `maintainer-checked` |
-| 8 | [core-fr3-03](lessons/core-fr3-03.md) — FR3 중력 보상과 피드포워드 | `core` | `fr3` | `maintainer-checked` |
-| 9 | [core-fr3-04](lessons/core-fr3-04.md) — FR3 기구학, 자코비안과 역기구학 | `core` | `fr3` | `maintainer-checked` |
-| 10 | [core-fr3-05](lessons/core-fr3-05.md) — FR3 작업 공간 제어 | `core` | `fr3` | `maintainer-checked` |
-| 11 | [core-fr3-06](lessons/core-fr3-06.md) — FR3 접촉과 마찰 실험실 | `core` | `fr3` | `maintainer-checked` |
-| 12 | [core-rl-01](lessons/core-rl-01.md) — 최소 연속 행동 PPO | `core` | `learning` | `maintainer-checked` |
-| 13 | [core-fr3-07](lessons/core-fr3-07.md) — ROS 없는 FR3 도달 환경 | `core` | `fr3` | `maintainer-checked` |
-| 14 | [core-fr3-08](lessons/core-fr3-08.md) — FR3 도달 과제 PPO | `core` | `fr3` | `maintainer-checked` |
-| 15 | [core-enlight-01](lessons/core-enlight-01.md) — Enlight 모델, 좌표계와 기구학 | `core` | `enlight` | `maintainer-checked` |
-| 16 | [core-enlight-02](lessons/core-enlight-02.md) — Enlight MuJoCo 초안과 형식 간 검증 | `core` | `enlight` | `maintainer-checked` |
-| 17 | [core-wuji-01](lessons/core-wuji-01.md) — Wuji Hand 2 Beta 2 관절, 자세와 시너지 | `core` | `wuji` | `maintainer-checked` |
-| 18 | [core-wuji-02](lessons/core-wuji-02.md) — Wuji 가상 촉각 관측 | `core` | `wuji` | `maintainer-checked` |
-| 19 | [core-dexterity-01](lessons/core-dexterity-01.md) — Wuji와 Sharpa 모델 비교 | `core` | `dexterity` | `maintainer-checked` |
-| 20 | [core-data-01](lessons/core-data-01.md) — MuJoCo 에피소드 데이터셋 | `core` | `learning` | `maintainer-checked` |
-| 21 | [core-dexterity-02](lessons/core-dexterity-02.md) — 손 리타게팅과 시연 기록 | `core` | `dexterity` | `maintainer-checked` |
-| 22 | [core-g1-01](lessons/core-g1-01.md) — Unitree G1 재생과 모션 데이터 | `core` | `g1` | `maintainer-checked` |
-| 23 | [core-il-01](lessons/core-il-01.md) — 행동 복제 기준선 | `core` | `learning` | `maintainer-checked` |
-| 24 | [core-aloha-01](lessons/core-aloha-01.md) — ALOHA 시뮬레이션과 ACT 계약 | `core` | `aloha` | `maintainer-checked` |
-| 25 | [core-vla-01](lessons/core-vla-01.md) — VLA 프로토콜과 모의 정책 클라이언트 | `core` | `vla` | `maintainer-checked` |
-| 26 | [sim-ros-01](lessons/sim-ros-01.md) — ROS 2 토픽, QoS, 서비스, 액션과 TF | `sim` | `ros2` | `reader_test_required` |
-| 27 | [sim-ros-02](lessons/sim-ros-02.md) — MuJoCo–ROS 2 브리지 | `sim` | `ros2` | `reader_test_required` |
-| 28 | [sim-ros-03](lessons/sim-ros-03.md) — rosbag 에피소드 기록과 결정론적 재생 | `sim` | `ros2` | `reader_test_required` |
-| 29 | [sim-ros-04](lessons/sim-ros-04.md) — 시뮬레이션과 ROS 2 공통 embodiment API | `sim` | `ros2` | `reader_test_required` |
-| 30 | [sim-g1-01](lessons/sim-g1-01.md) — Unitree G1 GPU PPO와 모션 모방 | `sim` | `g1` | `reader_test_required` |
-| 31 | [sim-wuji-01](lessons/sim-wuji-01.md) — Wuji GPU 손안 조작 PPO | `sim` | `wuji` | `reader_test_required` |
-| 32 | [sim-vla-01](lessons/sim-vla-01.md) — SmolVLA 미세조정과 정책 서버 | `sim` | `vla` | `reader_test_required` |
-| 33 | [sim-vla-02](lessons/sim-vla-02.md) — 선택형 원격 VLA 추론 | `sim` | `vla` | `reader_test_required` |
-| 34 | [sim-isaac-01](lessons/sim-isaac-01.md) — Isaac Sim 공개 로봇 자산 가져오기 | `sim` | `isaac` | `reader_test_required` |
-| 35 | [sim-isaac-02](lessons/sim-isaac-02.md) — Isaac 카메라, 조명과 합성 데이터 | `sim` | `isaac` | `reader_test_required` |
-| 36 | [sim-cross-01](lessons/sim-cross-01.md) — MuJoCo–Isaac sim-to-sim 검증 | `sim` | `cross` | `reader_test_required` |
-| 37 | [sim-deploy-01](lessons/sim-deploy-01.md) — 후보 배포 번들과 승격 게이트 | `sim` | `deployment` | `maintainer-checked` |
-| 38 | [sim-enlight-01](lessons/sim-enlight-01.md) — Enlight ROS 2 가상 하드웨어 | `sim` | `enlight` | `reader_test_required` |
-| 39 | [sim-enlight-02](lessons/sim-enlight-02.md) — Enlight 접촉 과제 시뮬레이션과 후보 번들 | `sim` | `enlight` | `reader_test_required` |
-| 40 | [sim-wuji-02](lessons/sim-wuji-02.md) — Wuji 정교 조작 후보 번들 | `sim` | `wuji` | `reader_test_required` |
-| 41 | [hw-common-01](lessons/hw-common-01.md) — 런타임 시작, 오프라인 재생과 명령 차단 | `hardware` | `common` | `maintainer-checked` |
-| 42 | [hw-common-02](lessons/hw-common-02.md) — 실물 하드웨어 읽기 전용 통합 게이트 | `hardware` | `common` | `reader_test_required` |
-| 43 | [hw-fr3-01](lessons/hw-fr3-01.md) — FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작 | `hardware` | `fr3` | `reader_test_required` |
-| 44 | [hw-wuji-01](lessons/hw-wuji-01.md) — Wuji Beta 2 읽기 전용 어댑터와 촉각 보정 | `hardware` | `wuji` | `reader_test_required` |
-| 45 | [hw-wuji-02](lessons/hw-wuji-02.md) — Wuji 섀도와 승인 기반 실물 평가 | `hardware` | `wuji` | `reader_test_required` |
-| 46 | [hw-enlight-01](lessons/hw-enlight-01.md) — Enlight 읽기 전용 어댑터와 저위험 검증 | `hardware` | `enlight` | `reader_test_required` |
-| 47 | [hw-enlight-02](lessons/hw-enlight-02.md) — Enlight 시스템 식별과 MuJoCo 보정 | `hardware` | `enlight` | `reader_test_required` |
-| 48 | [hw-enlight-03](lessons/hw-enlight-03.md) — Enlight 접촉 과제 섀도와 승인 기반 평가 | `hardware` | `enlight` | `reader_test_required` |
-| 49 | [hw-enlight-wuji-01](lessons/hw-enlight-wuji-01.md) — Enlight와 Wuji 통합 읽기 전용 검증 | `hardware` | `enlight-wuji` | `reader_test_required` |
-| 50 | [core-fr3-09](lessons/core-fr3-09.md) — FR3 관절·TCP 궤적 추종 | `core` | `fr3` | `maintainer-checked` |
-| 51 | [core-fr3-10](lessons/core-fr3-10.md) — FR3 시연·BC와 독립 도달 평가 | `core` | `fr3` | `maintainer-checked` |
-| 52 | [sim-fr3-01](lessons/sim-fr3-01.md) — FR3 PhysX 관절·TCP 제어 | `sim` | `fr3` | `reader_test_required` |
-| 53 | [sim-fr3-02](lessons/sim-fr3-02.md) — FR3 PhysX 시연·BC | `sim` | `fr3` | `reader_test_required` |
-| 54 | [sim-fr3-03](lessons/sim-fr3-03.md) — FR3 PhysX PPO와 평가 | `sim` | `fr3` | `reader_test_required` |
-| 55 | [sim-fr3-04](lessons/sim-fr3-04.md) — FR3 동일 조건 엔진 증거 비교 | `sim` | `fr3` | `reader_test_required` |
-| 56 | [core-enlight-03](lessons/core-enlight-03.md) — Enlight 관절·TCP 궤적 추종 | `core` | `enlight` | `maintainer-checked` |
-| 57 | [core-enlight-04](lessons/core-enlight-04.md) — Enlight 시연·BC와 독립 평가 | `core` | `enlight` | `maintainer-checked` |
-| 58 | [core-enlight-05](lessons/core-enlight-05.md) — Enlight PPO 후보와 독립 평가 | `core` | `enlight` | `maintainer-checked` |
-| 59 | [sim-enlight-03](lessons/sim-enlight-03.md) — Enlight PhysX 관절·TCP 제어 | `sim` | `enlight` | `reader_test_required` |
-| 60 | [sim-enlight-04](lessons/sim-enlight-04.md) — Enlight PhysX 시연·BC | `sim` | `enlight` | `reader_test_required` |
-| 61 | [sim-enlight-05](lessons/sim-enlight-05.md) — Enlight PhysX PPO와 평가 | `sim` | `enlight` | `reader_test_required` |
-| 62 | [core-shadow-01](lessons/core-shadow-01.md) — Shadow Hand 관절·시너지·물체 접촉 | `core` | `shadow` | `maintainer-checked` |
-| 63 | [sim-shadow-01](lessons/sim-shadow-01.md) — Shadow Hand PhysX 입문 | `sim` | `shadow` | `reader_test_required` |
-| 64 | [core-stretch3-01](lessons/core-stretch3-01.md) — Stretch 3 베이스·팔·협응 도달 | `core` | `stretch3` | `maintainer-checked` |
-| 65 | [sim-stretch3-01](lessons/sim-stretch3-01.md) — Stretch 3 PhysX 입문 | `sim` | `stretch3` | `reader_test_required` |
-| 66 | [hw-enlight-04](lessons/hw-enlight-04.md) — Enlight 자유공간 관절·TCP 실행 카드 | `hardware` | `enlight` | `reader_test_required` |
-| 67 | [hw-enlight-05](lessons/hw-enlight-05.md) — Enlight 프로브 평면 힘 제어 준비 | `hardware` | `enlight` | `reader_test_required` |
-| 68 | [hw-enlight-06](lessons/hw-enlight-06.md) — Enlight 그리퍼 집기·이동·놓기 준비 | `hardware` | `enlight` | `reader_test_required` |
+| 6 | [core-teleop-01](lessons/core-teleop-01.md) — 양손 입력·클러치·재생 | `core` | `common` | `ci-checked` |
+| 7 | [core-fr3-01](lessons/core-fr3-01.md) — FR3 모델 구조 | `core` | `fr3` | `maintainer-checked` |
+| 8 | [core-fr3-02](lessons/core-fr3-02.md) — FR3 관절 공간 PD 제어 | `core` | `fr3` | `maintainer-checked` |
+| 9 | [core-fr3-03](lessons/core-fr3-03.md) — FR3 중력 보상과 피드포워드 | `core` | `fr3` | `maintainer-checked` |
+| 10 | [core-fr3-04](lessons/core-fr3-04.md) — FR3 기구학, 자코비안과 역기구학 | `core` | `fr3` | `maintainer-checked` |
+| 11 | [core-fr3-05](lessons/core-fr3-05.md) — FR3 작업 공간 제어 | `core` | `fr3` | `maintainer-checked` |
+| 12 | [core-fr3-06](lessons/core-fr3-06.md) — FR3 접촉과 마찰 실험실 | `core` | `fr3` | `maintainer-checked` |
+| 13 | [core-rl-01](lessons/core-rl-01.md) — 최소 연속 행동 PPO | `core` | `learning` | `maintainer-checked` |
+| 14 | [core-fr3-07](lessons/core-fr3-07.md) — ROS 없는 FR3 도달 환경 | `core` | `fr3` | `maintainer-checked` |
+| 15 | [core-fr3-08](lessons/core-fr3-08.md) — FR3 도달 과제 PPO | `core` | `fr3` | `maintainer-checked` |
+| 16 | [core-enlight-01](lessons/core-enlight-01.md) — Enlight 모델, 좌표계와 기구학 | `core` | `enlight` | `maintainer-checked` |
+| 17 | [core-enlight-02](lessons/core-enlight-02.md) — Enlight MuJoCo 초안과 형식 간 검증 | `core` | `enlight` | `maintainer-checked` |
+| 18 | [core-wuji-01](lessons/core-wuji-01.md) — Wuji Hand 2 Beta 2 관절, 자세와 시너지 | `core` | `wuji` | `maintainer-checked` |
+| 19 | [core-wuji-02](lessons/core-wuji-02.md) — Wuji 가상 촉각 관측 | `core` | `wuji` | `maintainer-checked` |
+| 20 | [core-dexterity-01](lessons/core-dexterity-01.md) — Wuji와 Sharpa 모델 비교 | `core` | `dexterity` | `maintainer-checked` |
+| 21 | [core-data-01](lessons/core-data-01.md) — MuJoCo 에피소드 데이터셋 | `core` | `learning` | `maintainer-checked` |
+| 22 | [core-dexterity-02](lessons/core-dexterity-02.md) — 손 리타게팅과 시연 기록 | `core` | `dexterity` | `maintainer-checked` |
+| 23 | [core-g1-01](lessons/core-g1-01.md) — Unitree G1 재생과 모션 데이터 | `core` | `g1` | `maintainer-checked` |
+| 24 | [core-il-01](lessons/core-il-01.md) — 행동 복제 기준선 | `core` | `learning` | `maintainer-checked` |
+| 25 | [core-aloha-01](lessons/core-aloha-01.md) — ALOHA 시뮬레이션과 ACT 계약 | `core` | `aloha` | `maintainer-checked` |
+| 26 | [core-vla-01](lessons/core-vla-01.md) — VLA 프로토콜과 모의 정책 클라이언트 | `core` | `vla` | `maintainer-checked` |
+| 27 | [sim-ros-01](lessons/sim-ros-01.md) — ROS 2 토픽, QoS, 서비스, 액션과 TF | `sim` | `ros2` | `reader_test_required` |
+| 28 | [sim-ros-02](lessons/sim-ros-02.md) — MuJoCo–ROS 2 브리지 | `sim` | `ros2` | `reader_test_required` |
+| 29 | [sim-ros-03](lessons/sim-ros-03.md) — rosbag 에피소드 기록과 결정론적 재생 | `sim` | `ros2` | `reader_test_required` |
+| 30 | [sim-ros-04](lessons/sim-ros-04.md) — 시뮬레이션과 ROS 2 공통 embodiment API | `sim` | `ros2` | `reader_test_required` |
+| 31 | [sim-g1-01](lessons/sim-g1-01.md) — Unitree G1 GPU PPO와 모션 모방 | `sim` | `g1` | `reader_test_required` |
+| 32 | [sim-wuji-01](lessons/sim-wuji-01.md) — Wuji GPU 손안 조작 PPO | `sim` | `wuji` | `reader_test_required` |
+| 33 | [sim-vla-01](lessons/sim-vla-01.md) — SmolVLA 미세조정과 정책 서버 | `sim` | `vla` | `reader_test_required` |
+| 34 | [sim-vla-02](lessons/sim-vla-02.md) — 선택형 원격 VLA 추론 | `sim` | `vla` | `reader_test_required` |
+| 35 | [sim-isaac-01](lessons/sim-isaac-01.md) — Isaac Sim 공개 로봇 자산 가져오기 | `sim` | `isaac` | `reader_test_required` |
+| 36 | [sim-isaac-02](lessons/sim-isaac-02.md) — Isaac 카메라, 조명과 합성 데이터 | `sim` | `isaac` | `reader_test_required` |
+| 37 | [sim-cross-01](lessons/sim-cross-01.md) — MuJoCo–Isaac sim-to-sim 검증 | `sim` | `cross` | `reader_test_required` |
+| 38 | [sim-deploy-01](lessons/sim-deploy-01.md) — 후보 배포 번들과 승격 게이트 | `sim` | `deployment` | `maintainer-checked` |
+| 39 | [sim-enlight-01](lessons/sim-enlight-01.md) — Enlight ROS 2 가상 하드웨어 | `sim` | `enlight` | `reader_test_required` |
+| 40 | [sim-enlight-02](lessons/sim-enlight-02.md) — Enlight 접촉 과제 시뮬레이션과 후보 번들 | `sim` | `enlight` | `reader_test_required` |
+| 41 | [sim-wuji-02](lessons/sim-wuji-02.md) — Wuji 정교 조작 후보 번들 | `sim` | `wuji` | `reader_test_required` |
+| 42 | [hw-common-01](lessons/hw-common-01.md) — 런타임 시작, 오프라인 재생과 명령 차단 | `hardware` | `common` | `maintainer-checked` |
+| 43 | [hw-common-02](lessons/hw-common-02.md) — 실물 하드웨어 읽기 전용 통합 게이트 | `hardware` | `common` | `reader_test_required` |
+| 44 | [hw-fr3-01](lessons/hw-fr3-01.md) — FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작 | `hardware` | `fr3` | `reader_test_required` |
+| 45 | [hw-wuji-01](lessons/hw-wuji-01.md) — Wuji Beta 2 읽기 전용 어댑터와 촉각 보정 | `hardware` | `wuji` | `reader_test_required` |
+| 46 | [hw-wuji-02](lessons/hw-wuji-02.md) — Wuji 섀도와 승인 기반 실물 평가 | `hardware` | `wuji` | `reader_test_required` |
+| 47 | [hw-enlight-01](lessons/hw-enlight-01.md) — Enlight 읽기 전용 어댑터와 저위험 검증 | `hardware` | `enlight` | `reader_test_required` |
+| 48 | [hw-enlight-02](lessons/hw-enlight-02.md) — Enlight 시스템 식별과 MuJoCo 보정 | `hardware` | `enlight` | `reader_test_required` |
+| 49 | [hw-enlight-03](lessons/hw-enlight-03.md) — Enlight 접촉 과제 섀도와 승인 기반 평가 | `hardware` | `enlight` | `reader_test_required` |
+| 50 | [hw-enlight-wuji-01](lessons/hw-enlight-wuji-01.md) — Enlight와 Wuji 통합 읽기 전용 검증 | `hardware` | `enlight-wuji` | `reader_test_required` |
+| 51 | [core-fr3-09](lessons/core-fr3-09.md) — FR3 관절·TCP 궤적 추종 | `core` | `fr3` | `maintainer-checked` |
+| 52 | [core-fr3-10](lessons/core-fr3-10.md) — FR3 시연·BC와 독립 도달 평가 | `core` | `fr3` | `maintainer-checked` |
+| 53 | [sim-fr3-01](lessons/sim-fr3-01.md) — FR3 PhysX 관절·TCP 제어 | `sim` | `fr3` | `reader_test_required` |
+| 54 | [sim-fr3-02](lessons/sim-fr3-02.md) — FR3 PhysX 시연·BC | `sim` | `fr3` | `reader_test_required` |
+| 55 | [sim-fr3-03](lessons/sim-fr3-03.md) — FR3 PhysX PPO와 평가 | `sim` | `fr3` | `reader_test_required` |
+| 56 | [sim-fr3-04](lessons/sim-fr3-04.md) — FR3 동일 조건 엔진 증거 비교 | `sim` | `fr3` | `reader_test_required` |
+| 57 | [core-enlight-03](lessons/core-enlight-03.md) — Enlight 관절·TCP 궤적 추종 | `core` | `enlight` | `maintainer-checked` |
+| 58 | [core-enlight-04](lessons/core-enlight-04.md) — Enlight 시연·BC와 독립 평가 | `core` | `enlight` | `maintainer-checked` |
+| 59 | [core-enlight-05](lessons/core-enlight-05.md) — Enlight PPO 후보와 독립 평가 | `core` | `enlight` | `maintainer-checked` |
+| 60 | [sim-enlight-03](lessons/sim-enlight-03.md) — Enlight PhysX 관절·TCP 제어 | `sim` | `enlight` | `reader_test_required` |
+| 61 | [sim-enlight-04](lessons/sim-enlight-04.md) — Enlight PhysX 시연·BC | `sim` | `enlight` | `reader_test_required` |
+| 62 | [sim-enlight-05](lessons/sim-enlight-05.md) — Enlight PhysX PPO와 평가 | `sim` | `enlight` | `reader_test_required` |
+| 63 | [core-shadow-01](lessons/core-shadow-01.md) — Shadow Hand 관절·시너지·물체 접촉 | `core` | `shadow` | `maintainer-checked` |
+| 64 | [sim-shadow-01](lessons/sim-shadow-01.md) — Shadow Hand PhysX 입문 | `sim` | `shadow` | `reader_test_required` |
+| 65 | [core-stretch3-01](lessons/core-stretch3-01.md) — Stretch 3 베이스·팔·협응 도달 | `core` | `stretch3` | `maintainer-checked` |
+| 66 | [sim-stretch3-01](lessons/sim-stretch3-01.md) — Stretch 3 PhysX 입문 | `sim` | `stretch3` | `reader_test_required` |
+| 67 | [hw-enlight-04](lessons/hw-enlight-04.md) — Enlight 자유공간 관절·TCP 실행 카드 | `hardware` | `enlight` | `reader_test_required` |
+| 68 | [hw-enlight-05](lessons/hw-enlight-05.md) — Enlight 프로브 평면 힘 제어 준비 | `hardware` | `enlight` | `reader_test_required` |
+| 69 | [hw-enlight-06](lessons/hw-enlight-06.md) — Enlight 그리퍼 집기·이동·놓기 준비 | `hardware` | `enlight` | `reader_test_required` |
+| 70 | [sim-teleop-01](lessons/sim-teleop-01.md) — Ubuntu VR 설치와 읽기 전용 입력 | `sim` | `common` | `reader_test_required` |
+| 71 | [sim-teleop-02](lessons/sim-teleop-02.md) — 공간 정합과 command sink | `sim` | `common` | `ci-checked` |
+| 72 | [sim-enlight-06](lessons/sim-enlight-06.md) — Enlight 팔 텔레오퍼레이션과 수집 | `sim` | `enlight` | `ci-checked` |

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="latest-robotics.md" lang="ko">한국어</a> | <a href="../../en/setup/latest-robotics.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # 최신 로보틱스 설치
 
 맥북은 개발·원격 클라이언트, Ubuntu는 GPU 실행 장비입니다.

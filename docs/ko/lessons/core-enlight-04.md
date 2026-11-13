@@ -83,3 +83,7 @@ pal lesson finish core-enlight-04 --run-dir BASE --json
 
 다음 항목은 목차 순서입니다. 실제 선택은 `pal course next --json`이 준비 상태로 결정합니다.
 <!-- pal:navigation:end -->
+
+**Collected demonstrations / 자체 수집 데이터**
+
+[sim-enlight-06](sim-enlight-06.md) 이후 `pal train run --model enlight --algorithm bc --demonstrations BASE/collected-demonstrations.json --epochs 4 --output-dir .local/collected-bc-unique`로 자체 수집 데이터를 명시합니다. Enlight 모델 계약과 전체 에피소드별 train/validation/test 분할을 검사합니다. 기존 scripted 기본 경로는 유지합니다. 업데이트·체크포인트 재로드 성공과 독립 평가의 과제 성능을 구분합니다.

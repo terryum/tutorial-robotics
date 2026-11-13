@@ -152,10 +152,13 @@ def train(
     learning_rate: float = 0.01,
     resume_from: Path | None = None,
     stop_after: int | None = None,
+    demonstrations_path: Path | None = None,
 ) -> dict[str, Any]:
     from pai_lab.lessons.arm import demonstrations, evaluate
     from pai_lab.lessons.learning import generalized_advantage
 
+    if demonstrations_path is not None and (algorithm != "bc" or resume_from is not None):
+        raise ValueError("external demonstrations require fresh BC training")
     if algorithm not in {"bc", "ppo"} or not 1 <= epochs <= 100000:
         raise ValueError("algorithm bc/ppo and epochs 1..100000 required")
     if not np.isfinite(learning_rate) or not 0 < learning_rate <= 0.1:
@@ -168,6 +171,10 @@ def train(
     rows: list[Any] = []
     start = 0
     data = None
+    if demonstrations_path is not None:
+        from pai_lab.teleop_learning import load_demonstrations
+
+        data = load_demonstrations(demonstrations_path, env.name)
     resumed = latest_checkpoint(resume_from) if resume_from else None
     if resumed:
         assert resume_from is not None
@@ -195,6 +202,7 @@ def train(
         y = np.array([r["action"] for r in train_rows])
         # Normalize feature covariance with a fixed preconditioner; optimizer state remains explicit.
         preconditioner = np.linalg.inv(x.T @ x / len(x) + 1e-4 * np.eye(18))
+    initial_weights = weights.copy()
     with termination_flag() as stop:
         for epoch in range(start, epochs):
             # Episodes restart at an update boundary, so no mid-episode hidden state is lost.
@@ -288,10 +296,17 @@ def train(
             yv = np.array([r["action"] for r in subset])
             evaluation[name + "_mse"] = float(np.mean((xv @ weights - yv) ** 2))
     np.savez(output / "policy.npz", weights=weights, value_weights=value_weights)
+    with np.load(output / "policy.npz", allow_pickle=False) as checkpoint:
+        reload_error = float(np.max(np.abs(checkpoint["weights"] - weights)))
+    if reload_error > 1e-12:
+        raise RuntimeError("saved policy reload mismatch")
     write_json(output / "evaluation.json", evaluation)
     write_json(output / "training-contract.json", contract)
     return {
         "status": "trained",
+        "reload_error": reload_error,
+        "parameter_l1_change": float(np.abs(weights - initial_weights).sum()),
+        "demonstration_source": "external" if demonstrations_path else "scripted",
         "epoch": epochs,
         "rows": rows,
         "evaluation": evaluation,

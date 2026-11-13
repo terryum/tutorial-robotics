@@ -77,7 +77,7 @@ Save explanation, baseline, comparison and next action, then stop after one less
 <!-- pal:navigation:start -->
 ## Next lesson
 
-Course end
+[sim-teleop-01](./sim-teleop-01.md)
 
 This is catalog order. Use `pal course next --json` to select an eligible lesson.
 <!-- pal:navigation:end -->

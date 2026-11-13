@@ -12,6 +12,9 @@ class LessonSpec:
 
 
 LESSON_SPECS: dict[str, LessonSpec] = {
+    "core-teleop-01": LessonSpec("bimanual-input-contract", "teleop-contract.json", "accepted_previews", "count"),
+    "sim-teleop-02": LessonSpec("aligned-teleop-sink", "teleop-alignment.json", "accepted_previews", "count"),
+    "sim-enlight-06": LessonSpec("enlight-teleop-collection", "enlight-teleop.json", "tcp_error", "meter"),
     "core-00": LessonSpec("host-audit", "host-audit.json", "available_capability_count", "count"),
     "core-01": LessonSpec("pendulum-integrator", "pendulum-state.csv", "energy_drift", "joule"),
     "core-02": LessonSpec("source-pin-audit", "source-pins.json", "valid_source_ratio", "ratio"),

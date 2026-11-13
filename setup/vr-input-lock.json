@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "hub": {
+    "version": "1.0.3-beta",
+    "url": "https://github.com/ViveRoboticsSoftware/vivehub-linux/releases/download/v1.0.3/VIVEHub-Linux-v1.0.3-x86_64.tar.gz",
+    "sha256": "4bd87a7d7cb7d580a8dce0a5b2b5d4c32c1bd44822fec4a7bbf5971da277bc07",
+    "sdk": "included-vut-1.0.3",
+    "protocol": 1,
+    "socket": "/tmp/vut.sock",
+    "eula": "https://dl.vive.com/EULA/unified_eula_20230721_eng.pdf",
+    "eula_accepted": false,
+    "device_verified": false
+  },
+  "standalone_sdk_candidate": {
+    "repository": "https://github.com/ViveRoboticsSoftware/vive-ultimate-tracker-sdk",
+    "commit": "8685112780734c2513c66d53b9eb104db47afcf9",
+    "socket": "/tmp/vive_tracker.sock",
+    "compatible_with_hub_v1_0_3": false
+  }
+}

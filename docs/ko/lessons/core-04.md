@@ -139,7 +139,7 @@ pal lesson finish core-04 --run-dir .local/runs/core-04/baseline-01 --json
 <!-- pal:navigation:start -->
 ## Next lesson
 
-[core-fr3-01](./core-fr3-01.md)
+[core-teleop-01](./core-teleop-01.md)
 
 다음 항목은 목차 순서입니다. 실제 선택은 `pal course next --json`이 준비 상태로 결정합니다.
 <!-- pal:navigation:end -->

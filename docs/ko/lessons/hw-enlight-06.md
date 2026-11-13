@@ -77,7 +77,7 @@ pal lesson finish hw-enlight-06 --run-dir BASE --json
 <!-- pal:navigation:start -->
 ## Next lesson
 
-과정 끝
+[sim-teleop-01](./sim-teleop-01.md)
 
 다음 항목은 목차 순서입니다. 실제 선택은 `pal course next --json`이 준비 상태로 결정합니다.
 <!-- pal:navigation:end -->

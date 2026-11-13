@@ -139,7 +139,7 @@ pal lesson finish core-04 --run-dir .local/runs/core-04/baseline-01 --json
 <!-- pal:navigation:start -->
 ## Next lesson
 
-[core-fr3-01](./core-fr3-01.md)
+[core-teleop-01](./core-teleop-01.md)
 
 This is catalog order. Use `pal course next --json` to select an eligible lesson.
 <!-- pal:navigation:end -->

@@ -123,7 +123,9 @@ def run_lesson(
     inputs.set([])
     spec = LESSON_SPECS[lesson.id]
     try:
-        if lesson.id in {
+        if lesson.id in {"core-teleop-01", "sim-teleop-02", "sim-enlight-06"}:
+            from pai_lab.lessons.teleop import run
+        elif lesson.id in {
             "core-enlight-05",
             "core-fr3-09",
             "core-fr3-10",

@@ -1,3 +1,9 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="../../ko/setup/latest-robotics.md" lang="ko">한국어</a> | <a href="latest-robotics.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # Latest robotics installation
 
 Mac is a development/client host; Ubuntu executes the GPU workloads.

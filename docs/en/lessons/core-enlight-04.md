@@ -83,3 +83,7 @@ Save explanation, baseline, comparison and next action, then stop after one less
 
 This is catalog order. Use `pal course next --json` to select an eligible lesson.
 <!-- pal:navigation:end -->
+
+**Collected demonstrations / 자체 수집 데이터**
+
+After [sim-enlight-06](sim-enlight-06.md), run `pal train run --model enlight --algorithm bc --demonstrations BASE/collected-demonstrations.json --epochs 4 --output-dir .local/collected-bc-unique`. The model-bound input keeps complete episodes in separate train/validation/test splits. Scripted baseline remains the default. Optimizer update, checkpoint reload and independent task performance are separate results.

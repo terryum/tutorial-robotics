@@ -77,3 +77,8 @@ Learner progress is never stored here. Local Mac development verification covers
 | hw-enlight-04 | `reader_test_required` | scaffolded | prepared; see environment verification report |
 | hw-enlight-05 | `reader_test_required` | scaffolded | prepared; see environment verification report |
 | hw-enlight-06 | `reader_test_required` | scaffolded | prepared; see environment verification report |
+
+| core-teleop-01 | `maintainer-checked` | implemented | Synthetic contracts, episode lifecycle and watchdog regression; live input separate. |
+| sim-teleop-01 | `reader_test_required` | scaffolded | Device/entitlement/HTC review pending; Linux beta archive inspected only. |
+| sim-teleop-02 | `maintainer-checked` | implemented | Synthetic SE3/source selection and sink; physical alignment separate. |
+| sim-enlight-06 | `maintainer-checked` | implemented | Enlight MuJoCo arm-only collection; live device/gripper separate. |
