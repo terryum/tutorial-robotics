@@ -33,6 +33,7 @@ hooks:
   - scripts/mkdocs_hooks.py
 
 markdown_extensions:
+  - md_in_html
   - toc:
       slugify: !!python/name:markdown.extensions.toc.slugify_unicode
   - pymdownx.arithmatex:

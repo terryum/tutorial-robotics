@@ -28,9 +28,33 @@ A missing environment stays blocked, never successful. Quoting this phrase to ed
 the workflow does not itself request a WS2 run. Outside this shortcut, keep the
 ordinary capability-first, one-lesson and Git rules below.
 
+## Prompt-first onboarding
+
+For a generic repository URL + “install and start the tutorial” request, follow
+`agent/workflow.md` → **Prompt-first installation and start invitation**. Safely
+clone/reuse, read the checkout-local entry files and skills, show the minimal plan, reuse a currently verified Core environment without
+reapplying, or apply only the authorized necessary setup/repair, and preserve
+learner state. For a fresh learner, stop at
+**첫번째 튜토리얼을 띄울 준비가 되었습니다. 시작하시겠습니까?**
+(English: **The first tutorial is ready to open. Would you like to start?**) and
+wait for the actual reply before opening/navigating or executing the first lesson.
+Existing progress gets a resume invitation without reset. An enabled helper
+with missing/unverified/stale cache is unknown history, not a fresh learner; use
+the workflow's distinct history-check invitation and resolve registered history
+only after the actual start reply, before initializing/selecting core-00. The
+ready/skip-apply gate includes all declared Core imports plus plotting/image
+imports (NumPy, MuJoCo, gymnasium, SciPy, Matplotlib, Pillow), not only the three
+Core profile probes. An explicit T00 run
+request proceeds after readiness; a quoted prompt used for documentation does
+not execute onboarding. This preparation-only exception takes precedence over
+“open the lesson at start” below; ordinary learning, update routes and hardware
+rules remain unchanged. A fresh chat rereads disk state and readiness rather than
+assuming a fresh learner or persisting cwd/activation. Do not rewrite global
+agent settings to discover a newly cloned checkout's local skills.
+
 ## Execution contract
 
-- Start guided learning by opening the current lesson's GitHub page in the reader's language. Reuse that tutorial tab for subsequent lessons and reruns; follow `agent/workflow.md` for tab selection and unavailable-browser handling.
+- After lesson execution is authorized, start guided learning by opening the current lesson's GitHub page in the reader's language. The generic prompt-first preparation route above waits at its invitation before lesson navigation. Reuse that tutorial tab for subsequent lessons and reruns; follow `agent/workflow.md` for tab selection and unavailable-browser handling.
 - Initialize the lesson language from the conversation. Before subsequent navigation, preserve the language currently selected in the tutorial tab, including manual 한국어/ENGLISH switches; follow the language continuity rules in `agent/workflow.md`.
 - Detect the host and show the smallest setup plan before applying it.
 - Run one eligible lesson at a time unless the user asks for a broader batch.

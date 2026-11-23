@@ -8,6 +8,93 @@
 
 An action-first bilingual course for readers who know basic Python and are new to robotics. Start with one lesson, inspect the actual state and images, explain the result, compare one variable, then finish it. [English](docs/en/index.md) · [한국어](docs/ko/index.md)
 
+## First start — no Python or pal assumed
+
+**We recommend Codex or Claude Code.** Paste this sentence into the conversation; you do not need to learn terminal commands first.
+
+```text
+https://github.com/terryum/tutorial-robotics Clone this repository, install it, and help me start the tutorial.
+```
+
+The agent reuses an existing checkout or clones the repository when needed. It reads the repository instructions, checks the actual OS/environment, shows the smallest Core setup plan, and applies/verifies only the needed preparation. It preserves `.venv`, the lockfile and `.local/` progress. An existing environment that passes readiness verification on this host is reused without reinstalling. Unsupported environments or failed setup remain blocked with a concrete next action rather than a readiness claim.
+
+For a fresh learner, after readiness verification the agent says the following and **waits for your actual reply**. With existing progress, it acknowledges the saved lesson/phase and asks whether to continue; it does not reset to lesson one.
+
+> The first tutorial is ready to open. Would you like to start?
+
+The first lesson and its browser tab have not started yet. When ready, reply:
+
+```text
+Yes, start the first tutorial.
+```
+
+The agent then opens the first lesson `core-00` on GitHub in your selected language and runs, checks and explains it. If browser control is unavailable, it provides the exact link without claiming to open it. It connects results, equations and code, completes the required review, and stops after one lesson. Use the next-lesson prompt below to continue.
+
+An explicit request to run a particular lesson is separate authorization to proceed after readiness. The general install/start request above follows the two-step preparation and start invitation.
+
+During guided learning after your reply, the agent reuses the tutorial tab and preserves manual 한국어/ENGLISH switches for subsequent pages and explanations. README language switches link to the corresponding README. See the [reader guide](docs/en/READER_GUIDE.md) for browser continuity and saved-result replay.
+
+<details markdown="1">
+<summary>Optional manual preparation: terminal reference</summary>
+
+Use the [reader guide terminal reference](docs/en/READER_GUIDE.md#manual-setup) only when you want direct commands. Reuse an existing checkout and preserve its progress.
+
+```bash
+sh bootstrap.sh --plan
+sh bootstrap.sh --apply
+source .venv/bin/activate
+pal host detect --json
+pal setup verify --profile core --json
+```
+
+The reader guide explains cloning when needed and each command. Readiness is not lesson completion. In agent-guided onboarding, stop at the invitation above after verification. Minimal Core setup excludes ROS, CUDA, Isaac, firmware, large models and physical actions.
+
+</details>
+
+## Copyable prompts for each session
+
+<a id="four-copyable-prompts"></a>
+
+### Next lesson
+
+```text
+Run the next eligible lesson only.
+```
+
+### Resume in a new chat
+
+```text
+https://github.com/terryum/tutorial-robotics I cleared the previous chat. Continue in the same existing checkout. Reread the repository instructions, curriculum/catalog.json and agent/workflow.md, then inspect .local/progress.json, .local/session.json, feedback and existing run evidence. Resume the last interrupted phase for one lesson without reinstalling, recloning or resetting progress.
+```
+
+### Rerun this lesson
+
+```text
+Rerun the current lesson. Preserve existing evidence and use a fresh run directory.
+```
+
+### Check progress
+
+```text
+Show my progress: completed lessons, current phase, remaining prerequisites and the next action.
+```
+
+### Pause
+
+```text
+Pause here and save the current lesson, explanation/comparison phase, run paths and next starting point.
+```
+
+### Questions and feedback
+
+```text
+[개선점] Explain the graph axes and units more simply.
+```
+
+“[개선점] 지금 바로 고쳐줘 …” saves urgent feedback, safely interrupts the software experiment, fixes/reverifies it and resumes that lesson in a fresh run. Other feedback is collected after execution/explanation; feedback received before the next lesson belongs to the previous lesson.
+
+Codex and Claude Code follow the same [workflow](agent/workflow.md). Status, pause and resume preserve learning state and original evidence.
+
 ## Choose your learning route
 
 Read the [English learning map](docs/en/index.md) and the five common foundations
@@ -49,59 +136,6 @@ during the MacBook step. Colleagues already use RustDesk on both WS according to
 the user, but versions, servers and unattended access remain unverified.
 No new installation or remote test is claimed.
 
-## First start — no Python or pal assumed
-
-For command explanations, fresh terminals, saved-result replay and feedback, use the
-[English reader guide](docs/en/READER_GUIDE.md) or [한국어 실행 안내](docs/ko/READER_GUIDE.md).
-The [redesign verification record](state/READER_REDESIGN.md) separates local evidence from pending host checks.
-
-During guided learning, Codex and Claude Code open the current GitHub lesson in your language and reuse that tutorial tab as you advance. Keep the conversation/terminal beside the theory page; simulation replay uses a separate viewer. Without browser control, the agent provides the exact link for manual opening. Start with [한국어 T00](https://github.com/terryum/tutorial-robotics/blob/main/docs/ko/lessons/core-00.md) or [English T00](https://github.com/terryum/tutorial-robotics/blob/main/docs/en/lessons/core-00.md).
-
-The first lesson uses your conversation language. Each curriculum page has a top-right **한국어 | ENGLISH** link to the same page in the other language. After you switch, both native Next lesson links and agent-guided continuation preserve that selection. The agent checks the current tutorial tab before navigating and remembers the last observed language for reopening.
-
-```bash
-git clone https://github.com/terryum/tutorial-robotics.git
-cd tutorial-robotics
-sh bootstrap.sh --plan
-```
-
-The plan checks OS, architecture, Python, uv and free disk without creating learner state. It prints exactly what would be installed, why, where and which commands would run. Supported Core hosts are macOS arm64 and Linux x86_64.
-
-After reading that plan:
-
-```bash
-sh bootstrap.sh --apply
-source .venv/bin/activate
-pal host detect --json
-pal setup verify --profile core --json
-pal course init --through core --json
-pal course next --json
-pal lesson run T00 --headless --output-dir .local/runs/core-00/first --json
-pal lesson check T00 --run-dir .local/runs/core-00/first --json
-```
-
-Read [T00](docs/en/lessons/core-00.md) or [한국어 T00](docs/ko/lessons/core-00.md) for the explanation, source inspection, review and finish steps. Stop after T00. An execution does not complete a lesson. `course init` preserves earlier completion records; use a fresh run directory for reruns.
-
-Bootstrap reuses the Python 3.12 environment and existing lockfile. If needed, uv is installed into this checkout's .local/bin and managed Python into .local/python. It does not change system Python. ROS, GPU, learning frameworks, Isaac and large pretrained models are prepared only when their lesson needs them. System packages, drivers, firmware and physical actions retain separate approval requirements.
-
-## Four copyable prompts
-
-| Intent | 한국어 | English |
-|---|---|---|
-| First start | 처음 시작할게. bootstrap 계획을 보여주고 필요한 Core 환경을 준비한 뒤 T00 하나를 실행·검사·설명해줘. | Show the bootstrap plan, prepare the necessary Core environment, then run, inspect and explain only T00. |
-| Next lesson | 다음 단계 실행해줘. | Run the next eligible lesson only. |
-| Rerun | 다시 실행해줘. | Rerun the current lesson with a fresh execution record. |
-| Feedback | [개선점] 여기에 개선할 내용을 적습니다. | [개선점] Describe the improvement here. |
-
-“[개선점] 지금 바로 고쳐줘 …” stores urgent feedback, safely interrupts the software experiment, fixes/reverifies it and resumes the same lesson. Other feedback accumulates and is applied automatically after execution/explanation. Feedback received before starting another lesson belongs to the previous lesson.
-
-Codex and Claude Code follow the same [workflow](agent/workflow.md). Both read the same local feedback queue. You can inspect it directly:
-
-```bash
-pal feedback list --json
-pal feedback add "[개선점] Explain the plot units" --lesson T00 --json
-```
-
 ## Your local progress
 
 Each clone starts with no completed lessons. Your completed lessons and completion
@@ -110,13 +144,18 @@ times are saved in `.local/progress.json`, your last lesson and phase in
 review evidence stays in `.local/runs/`. Git ignores `.local/`; ordinary commits,
 pushes and pulls do not share or overwrite this state.
 
-Return to the same checkout, activate `.venv`, and run:
+To resume after clearing the chat, use the URL prompt above in the same checkout. Direct terminal reference:
+
+<details markdown="1">
+<summary>Optional progress commands</summary>
 
 ```bash
 pal course list --json    # All selected lessons, including completed ones
 pal course status --json  # Remaining lessons and any needing review
 pal course next --json    # Next eligible lesson
 ```
+
+</details>
 
 `pal course init` preserves completion records. A lesson becomes complete only
 after the run/check/review/finish workflow succeeds. Keep `.local/` and its run

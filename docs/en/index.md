@@ -8,6 +8,8 @@
 
 Start here if you know basic Python. Learn robotics concepts alongside executable experiments and measured plots. Read the five common foundation lessons, then choose a manipulator, robot-hand or mobile-robot path. Every lesson connects intuition → essential mathematics → code → measured artifacts → one-variable comparison → comprehension.
 
+We recommend **Codex or Claude Code**. The [reader guide](READER_GUIDE.md) starts with a copyable repository-install prompt; after verified setup the agent asks whether to start the first lesson. Reply to start, then use “Run the next eligible lesson only.” for each next step. The commands printed in lessons are the agent's execution reference; you can guide the course through prompts. A fresh chat resumes from files in the same checkout.
+
 ## Where to begin
 
 1. Read [equipment and environments](equipment.md) to distinguish local and remote work.

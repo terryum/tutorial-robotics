@@ -6,6 +6,14 @@
 
 # Robot learning paths
 
+Choose a path by pasting one prompt into Codex or Claude Code after initial setup:
+
+```text
+Run the manipulator tutorial, one eligible lesson at a time, preserving my progress.
+```
+
+For the other paths, say “Run the dexterous-hand tutorial” or “Run the mobile-manipulator tutorial.” The agent reads the path and saved state, handles its reference commands below, and stops after one lesson. You do not need to type the `pal` commands yourself.
+
 The append-only catalog preserves the original IDs and aliases. `curriculum/paths.json` defines three independent routes. A selected path includes all required stages: `--through` and elective filters continue to work for the legacy course without a path.
 
 | Path | Start | Required progression | Follow-up |
