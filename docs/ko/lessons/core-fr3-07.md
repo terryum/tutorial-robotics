@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: reinforcement-learning](../concepts/reinforcement-learning.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 FR3 도달 과제의 reset·관측·행동·보상·에피소드 경계를 사용합니다.
@@ -91,18 +93,28 @@ python -m json.tool .local/runs/core-fr3-07/baseline-01/experiment.json
 관측은 관절 위치 차이 7개, 스케일한 속도 7개, 월드 목표 오차 3개입니다. 제한된 행동 7개가 관절 위치 목표를 바꿉니다. 도달 성공은 terminated, 64스텝 시간 제한은 truncated로 구분해야 PPO bootstrap이 올바릅니다.
 
 $$
-o=[q-q_0,\;s_v\dot q,\;x^*-x]\in\mathbb R^{17}
+o=[q-q_0,\;0.1\dot q,\;10(x^*-x)]\in\mathbb R^{17}
 $$
 
-기호·단위·조건: q: rad; qdot: rad/s; x: 세계 m; sv: 선택한 수치 배율.
+기호·단위·조건: q: rad; qdot: rad/s; x: 세계 m; 0.1과 10: 관측 성분별 수치 배율.
 
 손으로 계산하는 예시(실행 측정값이 아님): 7 + 7 + 3 = 17.
 
 실전 연결: 목표 종료와 시간 제한 종료는 가치 추정 처리 방법이 다릅니다.
 
+### 입력에서 관측까지
+
+강화학습 환경은 상태·행동·보상과 종료 의미를 함께 정의하는 약속입니다. 이 수업의 관측은 [q-qhome,0.1qdot,10(x*-x)] 길이 17, 잠재 행동은 길이 7입니다. q는 rad, qdot은 rad/s, 위치 오차는 세계 m이며 수치 배율이 입력에 포함됩니다.
+
 ## Code connection
 
 `examples/core-fr3-07/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`learning.py`](../../../src/pai_lab/lessons/learning.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+실제 runner는 이 ID를 `learning.run`으로 보냅니다. `Reach`가 관절 목표 q+0.03 tanh(action)을 제한해 10회 적분하며, scripted Jacobian 제어기가 arctanh로 잠재 행동을 만듭니다. `transitions.json`의 observation/action은 적분 전, next_observation은 후입니다. 10 mm 안을 연속 10단계 유지하면 terminated, 64단계면 truncated입니다. 단순 마지막 거리 감소 검사만으로 성공 유지 조건 통과를 단정하지 않습니다.
 
 ## Try it
 
@@ -125,6 +137,10 @@ pal lesson compare core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --c
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+variant 1.5는 명령을 1.5배한 뒤 [-0.9,0.9] 제한·arctanh를 거칩니다. 계산 예시로 제한 전 값 0.8은 1.2가 되어 0.9로 잘립니다. 실제 목표 증분은 단순 1.5배가 아닐 수 있으며 종료 flag와 마지막 거리를 함께 비교합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -137,6 +153,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --comparison-run-dir .local/runs/core-fr3-07/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: observation의 마지막 3값이 원시 m 값인가요? 답: 10배한 오차입니다. 질문: timeout과 성공은 같나요? 답: truncated와 terminated로 구분합니다. 다음 PPO 수업에서 이 차이가 value bootstrap에 왜 필요한지 설명해 보세요.
 
 <!-- pal:navigation:start -->
 ## Next lesson

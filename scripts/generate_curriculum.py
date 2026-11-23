@@ -37,6 +37,29 @@ def language_switch(text: str, path: Path, relative: Path) -> str:
     )
 
 
+def readme_switch(text: str) -> str:
+    """README language choice stays at the repository entrance."""
+    opening, closing = "<!-- pal:language:start -->", "<!-- pal:language:end -->"
+    text = re.sub(
+        re.escape(opening) + r".*?" + re.escape(closing) + r"\n*", "", text, flags=re.DOTALL
+    )
+    return (
+        opening + '\n<p align="right">\n  '
+        '<a href="README.ko.md" lang="ko">한국어</a> | '
+        '<a href="README.md" lang="en">ENGLISH</a>\n</p>\n' + closing + "\n\n" + text
+    )
+
+
+def learning_goal(text: str) -> str:
+    """Use the authored first paragraph, never substitute catalog titles."""
+    match = re.search(
+        r"^## Learning goals\s*\n(.*?)(?=\n\s*\n|\n## |\Z)", text, re.MULTILINE | re.DOTALL
+    )
+    if not match or not match[1].strip():
+        raise ValueError("Lesson needs a Learning goals first paragraph")
+    return " ".join(match[1].split()).replace("|", "\\|")
+
+
 def metadata(lesson: dict) -> str:
     fields = {
         "Stage / track": f"{lesson['stage']} / {lesson['track']}",
@@ -77,10 +100,12 @@ def main() -> None:
     )
     for language in ("en", "ko"):
         rows = [
-            "# " + ("수업 목록" if language == "ko" else "Lesson index"),
-            "",
             "| # | Lesson | Stage | Track | Verification |",
             "|---:|---|---|---|---|",
+        ]
+        summaries = [
+            "| Lesson | Learning goal | Prerequisites | Platforms / capabilities | Implementation |",
+            "|---|---|---|---|---|",
         ]
         for index, lesson in enumerate(lessons):
             path = ROOT / "docs" / language / "lessons" / f"{lesson['id']}.md"
@@ -110,32 +135,44 @@ def main() -> None:
             rows.append(
                 f"| {lesson['order']} | [{lesson['id']}](lessons/{lesson['id']}.md) — {title} | `{lesson['stage']}` | `{lesson['track']}` | `{lesson['verification']}` |"
             )
-        (ROOT / "docs" / language / "index.md").write_text("\n".join(rows) + "\n")
-    readme = ROOT / "README.md"
+            summaries.append(
+                f"| [{lesson['id']}](lessons/{lesson['id']}.md) | {learning_goal(text)} | "
+                f"{', '.join(lesson['prerequisites']) or '—'} | "
+                f"{', '.join(lesson['platforms'])}; {', '.join(lesson['capabilities'])} | "
+                f"`{lesson['implementation']}` |"
+            )
+        index = ROOT / "docs" / language / "index.md"
+        text = index.read_text()
+        # Migrate the legacy table once; all other authored text survives.
+        if "<!-- pal:catalog:start -->" not in text:
+            text = re.sub(
+                r"^\| # \| Lesson \| Stage \| Track \| Verification \|\n(?:\|.*\n)+",
+                "",
+                text,
+                flags=re.MULTILINE,
+            )
+        index.write_text(managed(text, "catalog", "\n".join(rows)))
+        overview = ROOT / "docs" / language / "lessons.md"
+        if overview.exists():
+            overview.write_text(managed(overview.read_text(), "goals", "\n".join(summaries)))
     rows = ["| # | ID / alias | English | 한국어 |", "|---:|---|---|---|"]
     for lesson in lessons:
         rows.append(
             f"| {lesson['order']} | {lesson['id']} / {', '.join(lesson['aliases'])} | [{lesson['title']}](docs/en/lessons/{lesson['id']}.md) | [{lesson['title_ko']}](docs/ko/lessons/{lesson['id']}.md) |"
         )
-    text = readme.read_text()
-    opening, closing = "<!-- pal:toc:start -->", "<!-- pal:toc:end -->"
-    block = opening + "\n" + "\n".join(rows) + "\n" + closing
-    if opening in text:
-        text = re.sub(
-            re.escape(opening) + r".*?" + re.escape(closing),
-            lambda match: block,
-            text,
-            flags=re.DOTALL,
-        )
-    else:
-        text += "\n" + block + "\n"
-    readme.write_text(text)
+    for filename in ("README.md", "README.ko.md"):
+        readme = ROOT / filename
+        if readme.exists():
+            readme.write_text(managed(readme.read_text(), "toc", "\n".join(rows)))
     # Include indexes and reader guides as well as every lesson pair.
     for language in ("en", "ko"):
         for path in (ROOT / "docs" / language).rglob("*.md"):
             relative = path.relative_to(ROOT / "docs" / language)
             path.write_text(language_switch(path.read_text(), path, relative))
-    readme.write_text(language_switch(readme.read_text(), readme, Path("index.md")))
+    for filename in ("README.md", "README.ko.md"):
+        path = ROOT / filename
+        if path.exists():
+            path.write_text(readme_switch(path.read_text()))
     print(
         f"refreshed {len(lessons)} metadata/navigation pairs; authored bodies, entrypoints and tests preserved"
     )

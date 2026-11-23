@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: physx](../concepts/physx.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 고정된 공개 Wuji URDF를 실제 Isaac articulation으로 가져옵니다.
@@ -90,9 +94,19 @@ $$
 
 실전 연결: USD 저장 성공만으로 import 충실도를 검증할 수 없습니다.
 
+### 입력에서 관측까지
+
+보이는 mesh가 같아도 joint 이름·축·관성·drive가 달라지면 같은 로봇 dynamics가 아닙니다. URDF→USD import는 그 의미를 보존했는지 따져야 하는 변환입니다. 현재 수업은 실제 Isaac articulation과 카메라 관측을 만들지만 모든 import 속성의 정밀 검증을 끝내지는 않습니다.
+
 ## Code connection
 
 `examples/sim-isaac-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/isaac.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`isaac.py`](../../../src/pai_lab/lessons/isaac.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`isaac.run`은 Wuji의 파생 `wuji-local.urdf`에서 mesh 경로를 해석하고 adapter를 통해 import합니다. 원본 vendor는 유지합니다. `joint_order`를 robot.dof_names에서 찾아 `isaac_joint_indices`로 저장하므로 배열 순서를 이름으로 맞춥니다. 초기 q와 속도를 설정하고 위치를 직접 지정한 뒤 world.step을 수행합니다. `import-contract.json`과 `isaac-observations.json`의 mapping·states·image_shape를 읽습니다. 체크 all_twenty_joints는 개수 매핑이며 mass·축·coupling 전체 동등성을 뜻하지 않습니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 -
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+조명1000→1500만 바꾸면 pixel은 달라질 수 있지만 joint_order·source pin은 같아야 합니다. 20개 이름 중1개를 찾지 못하면 import mapping은 실패해야 합니다(계산 예시). 이미지가 밝아졌다고 물리 fidelity가 개선되었다고 부르지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --comparison-run-dir .local/runs/sim-isaac-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: set_joint_positions 후 step은 검증한 torque 제어인가요? 답: 위치 지정 import 실험입니다. 질문:20개 매핑이 dynamics 전체 검증인가요? 답: 별도 inertia·drive·contact 검토가 필요합니다. 실제 Isaac 없는 호스트에서는 capability-unavailable입니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

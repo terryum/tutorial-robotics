@@ -23,9 +23,13 @@
 
 PhysX에서 제어·관측·렌더링을 수행하는 코드입니다. Mac에서 실행 검증하지 않았습니다. import 성공만으로 수업을 통과하지 않습니다.
 
+선행 [개념 장](../concepts/reinforcement-learning.md)과 [장비 확장 순서](../equipment-stages.md)를 읽는다. 이 수업의 질문: 어떤 근거로 PhysX Enlight PPO 학습과 성능 통과를 구별하는가?필요한 경우 [NVIDIA 생태계 실습](../nvidia-ecosystem.md)을 참고하되, 이 수업이 쓰는 실제 엔진·프레임워크는 아래 생산자로 구별한다.
+
 ## Learning goals
 
-BC는 30개 에피소드 중 20/5/5를 학습/검증/평가로 분리합니다. PPO는 실제 팔 rollout과 GAE·clipped surrogate를 사용합니다. 목표 20회 중 16회 이상에서 10 mm 이내를 연속 10 제어 단계 유지해야 성능 게이트를 통과합니다. 짧은 실행이 게이트를 통과하지 않아도 optimizer 검사와 구분해 기록합니다. 이는 실물 허용 오차가 아닙니다.
+PPO는 미리 만든 보상 숫자가 아니라 실제 PhysX 롤아웃으로 Enlight 정책을 조정한다.
+
+어떤 근거로 PhysX Enlight PPO 학습과 성능 통과를 구별하는가?
 
 ## Preflight
 
@@ -35,11 +39,11 @@ Ubuntu NVIDIA GPU와 설치된 Isaac Sim이 필요합니다. `pal setup verify -
 
 ## Action
 
-```bash
-pal lesson run sim-enlight-05 --samples 64 --json
-```
+준비된 환경을 활성화하고 새 출력 폴더를 쓴다. 반환 실행 경로를 보존하며 실행만으로 완료되지 않는다.
 
-JSON의 run_dir를 BASE로 기록하세요. 실행은 완료 처리가 아닙니다.
+```bash
+pal lesson run sim-enlight-05 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-05/baseline-01 --json
+```
 
 ## Expected
 
@@ -49,25 +53,51 @@ JSON의 run_dir를 BASE로 기록하세요. 실행은 완료 처리가 아닙니
 
 축·단위·첫/마지막 오차·최댓값을 읽습니다. 렌더링에서 모델과 움직임을 확인하고, payload의 관절 이름·그룹·접촉을 수치와 대조합니다.
 
+### 산출물 읽기
+
+`policy.npz`, `training-contract.json`, `evaluation.json`, epoch 체크포인트를 본다. 학습 식별은 모델·소스·엔진·정규화·RNG·최적화·데이터를 연결한다. `evaluation.json`에는 시드 10007의 독립 목표 20에피소드, 개별 `errors_m`, 성공이 있다. 0.01 m 안에서 연속 10스텝을 유지해야 성공이며 16/20 이상이 `performance_verified`다. 실물 허용 오차가 아니다. 유한한 갱신 가중치·정확한 재로딩에도 0/20일 수 있다. 갱신 그래프는 평균 롤아웃 보상이며 유리한 한 점이나 손실 감소로 과제 성능을 인증하지 않는다. PhysX 관측·행동은 MuJoCo 대체 학습이 아니라 IsaacArm에서 나와야 한다.
+
 ## How it works
 
-BC는 30개 에피소드 중 20/5/5를 학습/검증/평가로 분리합니다. PPO는 실제 팔 rollout과 GAE·clipped surrogate를 사용합니다. 목표 20회 중 16회 이상에서 10 mm 이내를 연속 10 제어 단계 유지해야 성능 게이트를 통과합니다. 짧은 실행이 게이트를 통과하지 않아도 optimizer 검사와 구분해 기록합니다. 이는 실물 허용 오차가 아닙니다.
+### 직관
+
+PPO는 미리 만든 보상 숫자가 아니라 실제 PhysX 롤아웃으로 Enlight 정책을 조정한다. 정책 갱신과 독립 성능 통과는 다른 주장이다. 과제는 작은 월드 TCP 거리에 보상하고 변환 전 큰 행동에 벌점을 준다. 모델별 동역학·구동기 의미도 환경의 일부다.
+
+### 계산과 단위
+
+$$
+L=\mathbb E[\min(\rho A,\operatorname{clip}(\rho,0.8,1.2)A)],\qquad r=-\|x^*-x\|_2-0.001\sum_j a_j^2
+$$
+
+가능도 비율 ρ와 제한 구간은 무차원이며 어드밴티지 A는 보상 점수 스케일이다. 관측 17개와 행동 7개를 사용하며 0.03 tanh(a)가 rad로 변환한다. 보상은 설계 점수이며 J가 아니다. 롤아웃 데이터가 아닌 계산으로 거리 0.02 m, 행동 제곱합 2이면 보상 −0.022다.
+
+```python
+import numpy as np
+reward = -0.02 - 0.001 * 2
+assert np.isclose(reward, -0.022)
+```
 
 ## Code connection
 
-[`isaac_tasks.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/isaac_tasks.py)
+### 소스 추적
 
-`pai_lab.training`이 체크포인트·독립 평가를 기록합니다.
+[`src/pai_lab/training.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/training.py)
+
+`examples/sim-enlight-05/run.py`는 공통 runner로 위임하며 runner는 카탈로그 구현·역량을 확인한 뒤 분기한다. 위 소스가 여기의 양을 계산한다. 메타데이터 파일 이름만으로 계산 내용을 판단하면 안 된다.
+
+[공개 경로 검증](../../verification/robot-paths-2026-11-08.md)은 기존 시뮬레이션 근거와 미검증 외부·장치 실행을 구별한다.
 
 ## Try it
 
-variant 하나만 바꾸고 나머지 조건을 유지합니다.
+### 통제된 비교
+
+모델·시드·샘플 수·독립 목표 집합을 고정하고 `variant`만 1→0.8로 바꿔 학습률 0.01→0.008을 만든다. 학습 진단과 보류 롤아웃 성공을 별도로 비교한다. 이전 체크포인트를 보존한다. 재개는 같은 엔진·데이터·소스·설정을 요구하며 전체 epoch 목표 증가는 별도의 명시 작업이다.
 
 ```bash
-pal lesson run sim-enlight-05 --samples 64 --variant 0.8 --json
-pal lesson check sim-enlight-05 --run-dir BASE --json
-pal lesson review sim-enlight-05 --run-dir BASE --comparison-run-dir COMPARISON --notes "측정값과 비교 해석"
-pal lesson finish sim-enlight-05 --run-dir BASE --json
+pal lesson run sim-enlight-05 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/sim-enlight-05/comparison-01 --json
+pal lesson check sim-enlight-05 --run-dir .local/runs/sim-enlight-05/baseline-01 --json
+pal lesson check sim-enlight-05 --run-dir .local/runs/sim-enlight-05/comparison-01 --json
+pal lesson compare sim-enlight-05 --run-dir .local/runs/sim-enlight-05/baseline-01 --comparison-run-dir .local/runs/sim-enlight-05/comparison-01 --output-dir .local/comparisons/sim-enlight-05/comparison-01 --json
 ```
 
 ## Recovery
@@ -76,7 +106,16 @@ pal lesson finish sim-enlight-05 --run-dir BASE --json
 
 ## Checkpoint
 
-설명·기준 실행·비교 실행·다음 행동을 저장한 뒤 한 수업에서 멈춥니다. 도구 또는 모델 호환성이 미확인이면 대기합니다.
+### 이해 확인
+
+최적화 검사 뒤 새로운 목표를 평가하는 이유는? 가중치 갱신은 실행을 증명하며 과제 성공은 독립 측정해야 하기 때문이다. 16/20이 실물 검증 기준인가? 아니다. 이 시뮬레이션 도달 과제의 게이트다.
+
+두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
+
+```bash
+pal lesson review sim-enlight-05 --run-dir .local/runs/sim-enlight-05/baseline-01 --comparison-run-dir .local/runs/sim-enlight-05/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
+pal lesson finish sim-enlight-05 --run-dir .local/runs/sim-enlight-05/baseline-01 --json
+```
 
 <!-- pal:navigation:start -->
 ## Next lesson

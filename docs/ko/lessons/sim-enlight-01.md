@@ -25,9 +25,13 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+선행 [개념 장](../concepts/ros.md)과 [장비 확장 순서](../equipment-stages.md)를 읽는다. 이 수업의 질문: 가상 하드웨어는 장비 연결 전에 무엇을 검증하는가?필요한 경우 [NVIDIA 생태계 실습](../nvidia-ecosystem.md)을 참고하되, 이 수업이 쓰는 실제 엔진·프레임워크는 아래 생산자로 구별한다.
+
 ## Learning goals
 
-실제 로컬 ROS 메시지로 Enlight-L 가상 하드웨어를 실행합니다.
+Fake hardware는 통신과 실물 권한을 분리한다.
+
+가상 하드웨어는 장비 연결 전에 무엇을 검증하는가?
 
 ## Preflight
 
@@ -43,6 +47,8 @@ pal lesson check sim-enlight-01 --json
 ```
 
 ## Action
+
+준비된 환경을 활성화하고 새 출력 폴더를 쓴다. 반환 실행 경로를 보존하며 실행만으로 완료되지 않는다.
 
 ```bash
 pal lesson run sim-enlight-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-01/baseline-01 --json
@@ -78,44 +84,51 @@ open .local/runs/sim-enlight-01/baseline-01/plot.png
 python -m json.tool .local/runs/sim-enlight-01/baseline-01/experiment.json
 ```
 
+### 산출물 읽기
+
+`experiment.json`의 `qos`, `domain`, `localhost_only`, `source`, 토픽·서비스 그래프와 최상위 `checks`를 읽는다. Reliable depth 10, localhost-only domain 217, 서비스·수신 마감을 사용한다. `state_equal`, `all_messages_received`, `tf_received`, `service_roundtrip`은 실제 DDS 트래픽에 대응해야 한다. 정적 항등 TF는 실물 팔 보정이 아니다.
+
 ## How it works
 
-공개 Enlight 초안이 시뮬레이션 관절 상태를 제공합니다. reset 서비스와 JointState는 실제 DDS 통신을 사용하며 구동은 MuJoCo 안에서만 이뤄집니다. 이 최소 교육용 가상 어댑터는 production Flexiv driver 검증을 주장하지 않습니다.
+### 직관
+
+Fake hardware는 통신과 실물 권한을 분리한다. `ros.run`은 Enlight MuJoCo 초안을 불러와 시뮬레이션 동역학을 진행하고 격리 ROS 환경에서 이름 있는 관절 상태를 발행한다. Trigger reset 서비스는 시뮬레이션을 초기화하며 생산용 Flexiv 드라이버를 열거나 RDK·펌웨어 호환성을 검증하지 않는다.
+
+### 계산과 단위
 
 $$
-e=\max_{t,j}|q^{sent}_{t,j}-q^{received}_{t,j}|
+e_{msg}=\max_i|q^{sent}_{i,0}-q^{received}_{i,0}|
 $$
 
-기호·단위·조건: q rad; t는 대응 sequence/time; 값보다 이름을 먼저 대조.
+첫 관절 위치는 rad, 타임스탬프는 ROS 초·나노초로 나눈 시뮬레이션 시간이며 속도는 rad/s다. 최대 송수신 오차는 전송 검사이지 목표 추종 오차가 아니다. DDS 측정이 아닌 계산 예제로 0.2 rad를 보내고 받으면 오차는 0이다.
 
-손으로 계산하는 예시(실행 측정값이 아님): sent 0.2 rad, received 0.199 rad → error 0.001 rad.
-
-실전 연결: 상태 수신 성공은 명령 발행이나 물리적 정지 증거와 다릅니다.
+```python
+sent_rad, received_rad = 0.2, 0.2
+assert abs(sent_rad - received_rad) == 0.0
+```
 
 ## Code connection
 
-`examples/sim-enlight-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+### 소스 추적
+
+[`src/pai_lab/lessons/ros.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/ros.py)
+
+`examples/sim-enlight-01/run.py`는 공통 runner로 위임하며 runner는 카탈로그 구현·역량을 확인한 뒤 분기한다. 위 소스가 여기의 양을 계산한다. 메타데이터 파일 이름만으로 계산 내용을 판단하면 안 된다.
+
+[공개 경로 검증](../../verification/robot-paths-2026-11-08.md)은 기존 시뮬레이션 근거와 미검증 외부·장치 실행을 구별한다.
 
 ## Try it
 
-시뮬레이션 액추에이터 계약의 정현파 명령 진폭을 0.1 → 0.15로 바꿉니다. 메시지 수와 QoS는 같습니다.
+### 통제된 비교
+
+시드·샘플 수·모델을 유지하고 시뮬레이션 사인 입력 배율 `variant`만 바꾼다. 위치는 달라져도 메시지 일치는 유지될 수 있다. Reliable QoS를 실시간 제어 보장으로 해석하지 않는다.
 
 ```bash
-pal lesson run sim-enlight-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-01/comparison-01 --variant 1.5 --json
-```
-
-seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
-
-```bash
+pal lesson run sim-enlight-01 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/sim-enlight-01/comparison-01 --json
+pal lesson check sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --json
+pal lesson check sim-enlight-01 --run-dir .local/runs/sim-enlight-01/comparison-01 --json
 pal lesson compare sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --comparison-run-dir .local/runs/sim-enlight-01/comparison-01 --output-dir .local/comparisons/sim-enlight-01/comparison-01 --json
 ```
-
-<details>
-<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
-
-본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
-
-</details>
 
 ## Recovery
 
@@ -123,10 +136,14 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 
 ## Checkpoint
 
-명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
+### 이해 확인
+
+통신 오차 0인데 운동은 나쁠 수 있는 이유는? 원하지 않는 상태도 충실히 전송할 수 있기 때문이다. 실물 Flexiv 네트워크를 검사하는가? 아니다.
+
+두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
 
 ```bash
-pal lesson review sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --comparison-run-dir .local/runs/sim-enlight-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
+pal lesson review sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --comparison-run-dir .local/runs/sim-enlight-01/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
 pal lesson finish sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --json
 ```
 

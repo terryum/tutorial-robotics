@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: vla](../concepts/vla.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 준비된 SmolVLA 가중치를 실제 로컬 데이터로 미세조정하고 추론 서버를 실행합니다.
@@ -90,9 +94,19 @@ $$
 
 실전 연결: 실제 학습은 가중치를 바꾸고 재로드해야 하며 짧은 smoke로 성공률을 보장하지 않습니다.
 
+### 입력에서 관측까지
+
+실제 VLA 미세조정에는 언어·영상·상태를 모델 규약으로 변환하는 processor와 행동을 다시 해석하는 postprocessor가 필요합니다. weights만 복사하면 같은 정책을 실행한다고 보장할 수 없습니다. 이 수업은 준비된 로컬 데이터와 checkpoint를 사용하며 자동 다운로드로 빈 부분을 채우지 않습니다.
+
 ## Code connection
 
 `examples/sim-vla-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/vla.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`vla.py`](../../../src/pai_lab/lessons/vla.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`vla.run`은 pinned LeRobot 설치 경로를 확인하고 offline 모드·CUDA에서 SmolVLA를 불러옵니다. batch_size2, chunk_size/fps 기반 action 시간창을 사용하고 AdamW 갱신은 samples64일 때8회입니다. gradient norm은10으로 제한됩니다. policy와 두 processor를 저장·재로딩한 뒤 loopback HTTP로 같은 처리된 batch의 추론을 확인합니다. `server-response.json`, `policy/`, loss·parameter_delta·action_shape를 읽습니다. 이는 독립 heldout rollout 평가가 아니며 performance_verified는 false입니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-vla-01 --run-dir .local/runs/sim-vla-01/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+variant1.5는 AdamW 학습률1e-4→1.5e-4만 바꿉니다. 예시로 fps30·chunk_size16이면 마지막 action offset은15/30=0.5 s입니다. 배치·dataset·시간창은 같은 조건으로 유지하고 loss 감소를 정책 성능으로 부르지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-vla-01 --run-dir .local/runs/sim-vla-01/baseline-01 --comparison-run-dir .local/runs/sim-vla-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-vla-01 --run-dir .local/runs/sim-vla-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: loopback 응답이면 remote 모델 성능인가요? 답: 재로딩한 로컬 모델입니다. 질문: processor를 왜 저장하나요? 답: 같은 정규화·행동 의미를 보존합니다. 실제 tensor shape·loss·응답과 미실행 평가를 나누어 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

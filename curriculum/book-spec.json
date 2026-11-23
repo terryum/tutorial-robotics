@@ -1,0 +1,3551 @@
+{
+  "schema_version": 1,
+  "lesson_count": 72,
+  "lessons": [
+    {
+      "id": "core-00",
+      "question": {
+        "en": "Which host facts determine the smallest reproducible setup?",
+        "ko": "재현 가능한 최소 환경은 어떤 호스트 정보로 결정하는가?"
+      },
+      "objectives": {
+        "en": "Separate host readiness, local runs, and course completion.",
+        "ko": "호스트 준비 상태, 로컬 실행 기록, 학습 완료를 구분합니다."
+      },
+      "prerequisites": [],
+      "prerequisite_concepts": [
+        "simulation"
+      ],
+      "implementation_sources": [
+        "examples/core-00/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_00.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "host-audit.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/simulation.md"
+      ]
+    },
+    {
+      "id": "core-01",
+      "question": {
+        "en": "How does timestep affect a deterministic pendulum trace?",
+        "ko": "시간 간격은 결정론적 진자 궤적에 어떤 영향을 주는가?"
+      },
+      "objectives": {
+        "en": "Measure pendulum state and numerical energy drift.",
+        "ko": "진자 상태와 수치 적분의 에너지 오차를 측정합니다."
+      },
+      "prerequisites": [
+        "core-00"
+      ],
+      "prerequisite_concepts": [
+        "simulation"
+      ],
+      "implementation_sources": [
+        "examples/core-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "pendulum-state.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/simulation.md"
+      ]
+    },
+    {
+      "id": "core-02",
+      "question": {
+        "en": "Why must robot sources be pinned and hashed?",
+        "ko": "로봇 소스의 리비전과 해시를 왜 고정해야 하는가?"
+      },
+      "objectives": {
+        "en": "Verify immutable source revisions and model bytes.",
+        "ko": "불변 소스 커밋과 실제 모델 파일의 바이트를 검증합니다."
+      },
+      "prerequisites": [
+        "core-00"
+      ],
+      "prerequisite_concepts": [
+        "simulation"
+      ],
+      "implementation_sources": [
+        "examples/core-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_02.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "source-pins.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/simulation.md"
+      ]
+    },
+    {
+      "id": "core-03",
+      "question": {
+        "en": "How can model dimensions and asset hashes reveal an invalid import?",
+        "ko": "모델 차원과 자산 해시로 잘못된 가져오기를 어떻게 찾는가?"
+      },
+      "objectives": {
+        "en": "Load six robot models and inspect their actual dimensions.",
+        "ko": "여섯 로봇 모델을 로드하고 실제 차원을 검사합니다."
+      },
+      "prerequisites": [
+        "core-01",
+        "core-02"
+      ],
+      "prerequisite_concepts": [
+        "simulation"
+      ],
+      "implementation_sources": [
+        "examples/core-03/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_03.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "model-inventory.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/simulation.md"
+      ]
+    },
+    {
+      "id": "core-04",
+      "question": {
+        "en": "What can a deterministic rendering establish about a model?",
+        "ko": "결정론적 렌더링은 모델의 어떤 특성을 확인하는가?"
+      },
+      "objectives": {
+        "en": "Render the actual FR3 scene and inspect the camera result.",
+        "ko": "실제 FR3 장면을 렌더링하고 카메라 결과를 확인합니다."
+      },
+      "prerequisites": [
+        "core-03"
+      ],
+      "prerequisite_concepts": [
+        "simulation"
+      ],
+      "implementation_sources": [
+        "examples/core-04/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_04.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "frame.pgm",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/simulation.md"
+      ]
+    },
+    {
+      "id": "core-teleop-01",
+      "question": {
+        "en": "How do clutch, timestamps and replay keep bimanual input interpretable?",
+        "ko": "클러치·타임스탬프·재생은 양손 입력의 의미를 어떻게 보존하는가?"
+      },
+      "objectives": {
+        "en": "Learn a bimanual data contract without buying a headset.",
+        "ko": "헤드셋 구매 없이 양손 데이터 계약을 배운다."
+      },
+      "prerequisites": [
+        "core-04"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/core-teleop-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/teleop.py"
+      ],
+      "test": "tests/lessons/test_core_teleop_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "teleop-contract.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "core-fr3-01",
+      "question": {
+        "en": "How do FR3 joints, actuators and frames map to state arrays?",
+        "ko": "FR3 관절·액추에이터·좌표계는 상태 배열과 어떻게 대응하는가?"
+      },
+      "objectives": {
+        "en": "Map FR3 joints, bodies, actuators and the tool site.",
+        "ko": "FR3 관절·링크·구동기와 말단 사이트를 연결합니다."
+      },
+      "prerequisites": [
+        "core-04"
+      ],
+      "prerequisite_concepts": [
+        "kinematics"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "fr3-joints.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/kinematics.md"
+      ]
+    },
+    {
+      "id": "core-fr3-02",
+      "question": {
+        "en": "How do proportional gain, damping and torque clipping shape joint response?",
+        "ko": "비례 이득·감쇠·토크 포화는 관절 응답을 어떻게 바꾸는가?"
+      },
+      "objectives": {
+        "en": "Apply bounded joint PD torque on the FR3 dynamics.",
+        "ko": "FR3 동역학에 제한된 관절 PD 토크를 적용합니다."
+      },
+      "prerequisites": [
+        "core-fr3-01"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_02.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "pd-response.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "core-fr3-03",
+      "question": {
+        "en": "Why does gravity feedforward reduce static tracking error?",
+        "ko": "중력 피드포워드는 왜 정상 상태 추종 오차를 줄이는가?"
+      },
+      "objectives": {
+        "en": "Measure how gravity feedforward changes tracking error.",
+        "ko": "중력 피드포워드가 추종 오차를 어떻게 바꾸는지 측정합니다."
+      },
+      "prerequisites": [
+        "core-fr3-02"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-03/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_03.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "gravity-torque.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "core-fr3-04",
+      "question": {
+        "en": "How does a Jacobian turn Cartesian position error into a joint update?",
+        "ko": "자코비안은 직교 좌표 위치 오차를 어떻게 관절 갱신량으로 바꾸는가?"
+      },
+      "objectives": {
+        "en": "Check a geometric Jacobian and solve a small IK displacement.",
+        "ko": "기하 자코비안을 검증하고 작은 변위의 IK를 풉니다."
+      },
+      "prerequisites": [
+        "core-fr3-03"
+      ],
+      "prerequisite_concepts": [
+        "kinematics"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-04/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_04.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "jacobian.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/kinematics.md"
+      ]
+    },
+    {
+      "id": "core-fr3-05",
+      "question": {
+        "en": "How is a Cartesian spring force mapped into joint torque?",
+        "ko": "직교 좌표 스프링 힘은 어떻게 관절 토크로 변환되는가?"
+      },
+      "objectives": {
+        "en": "Control a world-frame tool position using operational inertia.",
+        "ko": "작업 공간 관성을 사용해 월드 좌표의 말단 위치를 제어합니다."
+      },
+      "prerequisites": [
+        "core-fr3-04"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-05/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_05.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "task-space-response.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "core-fr3-06",
+      "question": {
+        "en": "How does friction affect measured contact and sliding?",
+        "ko": "마찰은 측정된 접촉과 미끄러짐에 어떤 영향을 주는가?"
+      },
+      "objectives": {
+        "en": "Measure probe/table contact force and vary friction.",
+        "ko": "말단 탐침과 테이블의 접촉력을 측정하고 마찰을 바꿉니다."
+      },
+      "prerequisites": [
+        "core-fr3-05"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-06/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_06.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "friction-sweep.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "core-rl-01",
+      "question": {
+        "en": "What changes during a PPO update, and what does its loss prove?",
+        "ko": "PPO 갱신에서 무엇이 바뀌며 손실은 무엇을 입증하는가?"
+      },
+      "objectives": {
+        "en": "Follow a complete minimal continuous-action PPO update.",
+        "ko": "최소 연속 행동 PPO의 전체 갱신 과정을 따라갑니다."
+      },
+      "prerequisites": [
+        "core-01"
+      ],
+      "prerequisite_concepts": [
+        "reinforcement-learning"
+      ],
+      "implementation_sources": [
+        "examples/core-rl-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/learning.py"
+      ],
+      "test": "tests/lessons/test_core_rl_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "policy-update.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "policy.npz",
+        "policy-contract.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/reinforcement-learning.md"
+      ]
+    },
+    {
+      "id": "core-fr3-07",
+      "question": {
+        "en": "How do observations, actions and rewards define FR3 reach?",
+        "ko": "관측·행동·보상은 FR3 도달 과제를 어떻게 정의하는가?"
+      },
+      "objectives": {
+        "en": "Use reset, observation, action, reward and episode boundaries for FR3 reach.",
+        "ko": "FR3 도달 과제의 reset·관측·행동·보상·에피소드 경계를 사용합니다."
+      },
+      "prerequisites": [
+        "core-fr3-04"
+      ],
+      "prerequisite_concepts": [
+        "reinforcement-learning"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-07/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/learning.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_07.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "reach-rollout.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/reinforcement-learning.md"
+      ]
+    },
+    {
+      "id": "core-fr3-08",
+      "question": {
+        "en": "How can PPO execution be distinguished from independent reach performance?",
+        "ko": "PPO 실행과 독립 도달 성능을 어떻게 구별하는가?"
+      },
+      "objectives": {
+        "en": "Train, save and reload PPO on the actual FR3 reach environment.",
+        "ko": "실제 FR3 도달 환경에서 PPO를 학습·저장·재로딩합니다."
+      },
+      "prerequisites": [
+        "core-fr3-07",
+        "core-rl-01"
+      ],
+      "prerequisite_concepts": [
+        "reinforcement-learning"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-08/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/learning.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_08.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "ppo-learning.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "policy.npz",
+        "policy-contract.json",
+        "evaluation.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/reinforcement-learning.md"
+      ]
+    },
+    {
+      "id": "core-enlight-01",
+      "question": {
+        "en": "How do Enlight frames and joint order differ from another arm?",
+        "ko": "Enlight 좌표계와 관절 순서는 다른 팔과 어떻게 다른가?"
+      },
+      "objectives": {
+        "en": "Build Enlight-L frames from the public vendor parameters.",
+        "ko": "공개 vendor 파라미터로 Enlight-L 좌표계를 구성합니다."
+      },
+      "prerequisites": [
+        "core-02"
+      ],
+      "prerequisite_concepts": [
+        "kinematics"
+      ],
+      "implementation_sources": [
+        "examples/core-enlight-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_enlight_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-frames.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/kinematics.md"
+      ]
+    },
+    {
+      "id": "core-enlight-02",
+      "question": {
+        "en": "Which cross-format checks make an Enlight MuJoCo draft usable?",
+        "ko": "어떤 형식 간 검사가 Enlight MuJoCo 초안을 사용할 근거가 되는가?"
+      },
+      "objectives": {
+        "en": "Compare independent vendor forward kinematics against compiled MJCF.",
+        "ko": "독립적인 vendor 순기구학과 컴파일된 MJCF를 비교합니다."
+      },
+      "prerequisites": [
+        "core-enlight-01"
+      ],
+      "prerequisite_concepts": [
+        "simulation"
+      ],
+      "implementation_sources": [
+        "examples/core-enlight-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/physics.py"
+      ],
+      "test": "tests/lessons/test_core_enlight_02.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "cross-format.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/simulation.md"
+      ]
+    },
+    {
+      "id": "core-wuji-01",
+      "question": {
+        "en": "How does a low-dimensional synergy move many hand joints?",
+        "ko": "저차원 시너지는 여러 손 관절을 어떻게 움직이는가?"
+      },
+      "objectives": {
+        "en": "Create bounded open, half and closed poses using a hand synergy.",
+        "ko": "손 시너지로 제한된 open·half·closed 자세를 만듭니다."
+      },
+      "prerequisites": [
+        "core-02",
+        "core-04"
+      ],
+      "prerequisite_concepts": [
+        "robot-hands"
+      ],
+      "implementation_sources": [
+        "examples/core-wuji-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/hands.py"
+      ],
+      "test": "tests/lessons/test_core_wuji_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "named-poses.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/robot-hands.md"
+      ]
+    },
+    {
+      "id": "core-wuji-02",
+      "question": {
+        "en": "What does virtual tactile contact measure and omit?",
+        "ko": "가상 촉각 접촉은 무엇을 측정하고 무엇을 생략하는가?"
+      },
+      "objectives": {
+        "en": "Read virtual contact forces at a Wuji fingertip.",
+        "ko": "Wuji 손끝의 가상 접촉력을 읽습니다."
+      },
+      "prerequisites": [
+        "core-wuji-01"
+      ],
+      "prerequisite_concepts": [
+        "robot-hands"
+      ],
+      "implementation_sources": [
+        "examples/core-wuji-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/hands.py"
+      ],
+      "test": "tests/lessons/test_core_wuji_02.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "tactile-grid.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/robot-hands.md"
+      ]
+    },
+    {
+      "id": "core-dexterity-01",
+      "question": {
+        "en": "Which hand-model differences prevent direct joint-array reuse?",
+        "ko": "어떤 손 모델 차이 때문에 관절 배열을 그대로 재사용할 수 없는가?"
+      },
+      "objectives": {
+        "en": "Compare Wuji and Sharpa using measured model properties.",
+        "ko": "측정된 모델 속성으로 Wuji와 Sharpa를 비교합니다."
+      },
+      "prerequisites": [
+        "core-wuji-01"
+      ],
+      "prerequisite_concepts": [
+        "robot-hands"
+      ],
+      "implementation_sources": [
+        "examples/core-dexterity-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/hands.py"
+      ],
+      "test": "tests/lessons/test_core_dexterity_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "hand-comparison.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/robot-hands.md"
+      ]
+    },
+    {
+      "id": "core-data-01",
+      "question": {
+        "en": "What must an episode store to preserve observation-action timing?",
+        "ko": "관측·행동 시점을 보존하려면 에피소드에 무엇을 저장해야 하는가?"
+      },
+      "objectives": {
+        "en": "Record real MuJoCo state/action/next-state transitions.",
+        "ko": "실제 MuJoCo 상태·행동·다음 상태 전이를 기록합니다."
+      },
+      "prerequisites": [
+        "core-01"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/core-data-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/learning.py"
+      ],
+      "test": "tests/lessons/test_core_data_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "episode.jsonl",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "core-dexterity-02",
+      "question": {
+        "en": "How can a human hand target be retargeted within robot limits?",
+        "ko": "사람 손 목표를 로봇 한계 안으로 어떻게 리타게팅하는가?"
+      },
+      "objectives": {
+        "en": "Retarget observed fingertip displacement and record the result.",
+        "ko": "관측한 손끝 변위를 리타게팅하고 결과를 기록합니다."
+      },
+      "prerequisites": [
+        "core-dexterity-01",
+        "core-data-01"
+      ],
+      "prerequisite_concepts": [
+        "robot-hands"
+      ],
+      "implementation_sources": [
+        "examples/core-dexterity-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/hands.py"
+      ],
+      "test": "tests/lessons/test_core_dexterity_02.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "retargeted-demo.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/robot-hands.md"
+      ]
+    },
+    {
+      "id": "core-g1-01",
+      "question": {
+        "en": "What does G1 motion playback verify without learning a balance policy?",
+        "ko": "G1 모션 재생은 균형 정책 학습 없이 무엇을 확인하는가?"
+      },
+      "objectives": {
+        "en": "Record and replay a bounded G1 joint-motion cycle.",
+        "ko": "제한된 G1 관절 모션 주기를 기록하고 재생합니다."
+      },
+      "prerequisites": [
+        "core-03",
+        "core-04"
+      ],
+      "prerequisite_concepts": [
+        "mobile-motion"
+      ],
+      "implementation_sources": [
+        "examples/core-g1-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/hands.py"
+      ],
+      "test": "tests/lessons/test_core_g1_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "g1-motion.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "motion.npz"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/mobile-motion.md"
+      ]
+    },
+    {
+      "id": "core-il-01",
+      "question": {
+        "en": "Why does low cloning loss not ensure successful closed-loop behavior?",
+        "ko": "행동 복제 손실이 작아도 왜 폐루프 성공을 보장하지 않는가?"
+      },
+      "objectives": {
+        "en": "Fit behavioral cloning to the completed episode dataset.",
+        "ko": "완료한 에피소드 데이터셋으로 행동 복제를 학습합니다."
+      },
+      "prerequisites": [
+        "core-data-01"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/core-il-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/learning.py"
+      ],
+      "test": "tests/lessons/test_core_il_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "bc-loss.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "policy.npz"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "core-aloha-01",
+      "question": {
+        "en": "What does an ACT chunk contract establish without ACT training?",
+        "ko": "ACT 청크 계약은 ACT 학습 없이 무엇을 확인하는가?"
+      },
+      "objectives": {
+        "en": "Run the dual-arm ALOHA model and build an ACT-shaped batch.",
+        "ko": "양팔 ALOHA 모델을 실행하고 ACT 형식의 batch를 만듭니다."
+      },
+      "prerequisites": [
+        "core-data-01",
+        "core-il-01"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/core-aloha-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/learning.py"
+      ],
+      "test": "tests/lessons/test_core_aloha_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "act-schema.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "core-vla-01",
+      "question": {
+        "en": "Which protocol properties can a mock VLA client verify?",
+        "ko": "모의 VLA 클라이언트는 어떤 프로토콜 특성을 검증하는가?"
+      },
+      "objectives": {
+        "en": "Round-trip the explicitly mocked VLA protocol without a device.",
+        "ko": "명시적인 모의 VLA 프로토콜을 장치 없이 왕복시킵니다."
+      },
+      "prerequisites": [
+        "core-data-01"
+      ],
+      "prerequisite_concepts": [
+        "vla"
+      ],
+      "implementation_sources": [
+        "examples/core-vla-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/learning.py"
+      ],
+      "test": "tests/lessons/test_core_vla_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "vla-request-response.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/vla.md"
+      ]
+    },
+    {
+      "id": "sim-ros-01",
+      "question": {
+        "en": "How do QoS, services, actions and TF divide communication responsibilities?",
+        "ko": "QoS·서비스·액션·TF는 통신 책임을 어떻게 나누는가?"
+      },
+      "objectives": {
+        "en": "Exchange real ROS topics, service calls, actions and TF in an isolated domain.",
+        "ko": "격리된 도메인에서 실제 ROS 토픽·서비스·액션·TF를 교환합니다."
+      },
+      "prerequisites": [
+        "core-00",
+        "core-02"
+      ],
+      "prerequisite_concepts": [
+        "ros"
+      ],
+      "implementation_sources": [
+        "examples/sim-ros-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_ros_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "ros2-jazzy"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "ros-graph.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/ros.md"
+      ]
+    },
+    {
+      "id": "sim-ros-02",
+      "question": {
+        "en": "How does the bridge preserve joint names, timestamps and state meaning?",
+        "ko": "브리지는 관절 이름·타임스탬프·상태 의미를 어떻게 보존하는가?"
+      },
+      "objectives": {
+        "en": "Bridge measured MuJoCo state into ROS JointState messages.",
+        "ko": "측정된 MuJoCo 상태를 ROS JointState 메시지로 연결합니다."
+      },
+      "prerequisites": [
+        "core-04",
+        "sim-ros-01"
+      ],
+      "prerequisite_concepts": [
+        "ros"
+      ],
+      "implementation_sources": [
+        "examples/sim-ros-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_ros_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "ros2-jazzy"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "joint-state-bridge.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/ros.md"
+      ]
+    },
+    {
+      "id": "sim-ros-03",
+      "question": {
+        "en": "What makes recorded episode replay comparable to its source?",
+        "ko": "기록된 에피소드 재생을 원본과 비교하려면 무엇이 필요한가?"
+      },
+      "objectives": {
+        "en": "Record actual ROS messages and replay a rosbag2 database.",
+        "ko": "실제 ROS 메시지를 기록하고 rosbag2 데이터베이스를 재생합니다."
+      },
+      "prerequisites": [
+        "sim-ros-02"
+      ],
+      "prerequisite_concepts": [
+        "ros"
+      ],
+      "implementation_sources": [
+        "examples/sim-ros-03/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_ros_03.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "ros2-jazzy"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "record-replay.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/ros.md"
+      ]
+    },
+    {
+      "id": "sim-ros-04",
+      "question": {
+        "en": "What must a common embodiment API preserve across backends?",
+        "ko": "공통 embodiment API는 백엔드 사이에서 무엇을 보존해야 하는가?"
+      },
+      "objectives": {
+        "en": "Inspect a common reset/observe/act/close interface over simulation and ROS.",
+        "ko": "시뮬레이션과 ROS의 공통 reset·observe·act·close 인터페이스를 확인합니다."
+      },
+      "prerequisites": [
+        "sim-ros-02"
+      ],
+      "prerequisite_concepts": [
+        "ros"
+      ],
+      "implementation_sources": [
+        "examples/sim-ros-04/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_ros_04.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "ros2-jazzy"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "embodiment-contract.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/ros.md"
+      ]
+    },
+    {
+      "id": "sim-g1-01",
+      "question": {
+        "en": "What evidence distinguishes GPU motion-imitation training from playback?",
+        "ko": "어떤 근거로 GPU 모션 모방 학습과 재생을 구별하는가?"
+      },
+      "objectives": {
+        "en": "Train a G1 motion-imitation PPO task and evaluate its saved checkpoint.",
+        "ko": "G1 모션 모방 PPO를 학습하고 저장 checkpoint를 평가합니다."
+      },
+      "prerequisites": [
+        "core-g1-01"
+      ],
+      "prerequisite_concepts": [
+        "mobile-motion"
+      ],
+      "implementation_sources": [
+        "examples/sim-g1-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_g1_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "motion-imitation.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "initial.pt",
+        "policy.pt",
+        "evaluation.png",
+        "evaluation-actions.npz"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/mobile-motion.md"
+      ]
+    },
+    {
+      "id": "sim-wuji-01",
+      "question": {
+        "en": "What evidence is required to evaluate an in-hand GPU policy?",
+        "ko": "손안 조작 GPU 정책 평가에는 어떤 근거가 필요한가?"
+      },
+      "objectives": {
+        "en": "Train and evaluate the pinned Wuji MJLab reorientation task.",
+        "ko": "고정된 Wuji MJLab 재배향 과제를 학습·평가합니다."
+      },
+      "prerequisites": [
+        "core-wuji-02",
+        "core-rl-01"
+      ],
+      "prerequisite_concepts": [
+        "robot-hands"
+      ],
+      "implementation_sources": [
+        "examples/sim-wuji-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_wuji_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "inhand-learning.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "initial.pt",
+        "policy.pt",
+        "evaluation.png",
+        "evaluation-actions.npz"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/robot-hands.md"
+      ]
+    },
+    {
+      "id": "sim-vla-01",
+      "question": {
+        "en": "How are fine-tuning data, policy weights and server responses connected?",
+        "ko": "미세조정 데이터·정책 가중치·서버 응답은 어떻게 연결되는가?"
+      },
+      "objectives": {
+        "en": "Fine-tune prepared SmolVLA weights on real local data and serve inference.",
+        "ko": "준비된 SmolVLA 가중치를 실제 로컬 데이터로 미세조정하고 추론 서버를 실행합니다."
+      },
+      "prerequisites": [
+        "core-vla-01"
+      ],
+      "prerequisite_concepts": [
+        "vla"
+      ],
+      "implementation_sources": [
+        "examples/sim-vla-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_vla_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "finetune-metrics.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "training-observation.png",
+        "server-response.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/vla.md"
+      ]
+    },
+    {
+      "id": "sim-vla-02",
+      "question": {
+        "en": "How can remote policy latency and response validity be checked?",
+        "ko": "원격 정책 지연과 응답 유효성을 어떻게 확인하는가?"
+      },
+      "objectives": {
+        "en": "Validate an explicitly configured optional remote policy response.",
+        "ko": "명시적으로 설정한 선택형 원격 정책 응답을 검증합니다."
+      },
+      "prerequisites": [
+        "sim-vla-01"
+      ],
+      "prerequisite_concepts": [
+        "vla"
+      ],
+      "implementation_sources": [
+        "examples/sim-vla-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_vla_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "remote-inference.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/vla.md"
+      ]
+    },
+    {
+      "id": "sim-isaac-01",
+      "question": {
+        "en": "Which imported asset properties need actual PhysX verification?",
+        "ko": "가져온 자산의 어떤 특성을 실제 PhysX에서 검증해야 하는가?"
+      },
+      "objectives": {
+        "en": "Import the pinned public Wuji URDF into an actual Isaac articulation.",
+        "ko": "고정된 공개 Wuji URDF를 실제 Isaac articulation으로 가져옵니다."
+      },
+      "prerequisites": [
+        "core-04"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-isaac-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_isaac_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "isaac-sim"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "import-contract.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "camera-depth.npy",
+        "imported.usda"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "sim-isaac-02",
+      "question": {
+        "en": "How do camera, light and annotations define synthetic observations?",
+        "ko": "카메라·조명·주석은 합성 관측을 어떻게 정의하는가?"
+      },
+      "objectives": {
+        "en": "Measure RGB and depth observations while changing light intensity.",
+        "ko": "조명 세기를 바꾸며 RGB·깊이 관측을 측정합니다."
+      },
+      "prerequisites": [
+        "sim-isaac-01"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-isaac-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_isaac_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "isaac-sim"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "synthetic-camera.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "camera-depth.npy",
+        "imported.usda"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "sim-cross-01",
+      "question": {
+        "en": "Which conditions must match before comparing two physics engines?",
+        "ko": "두 물리 엔진을 비교하기 전에 어떤 조건을 맞춰야 하는가?"
+      },
+      "objectives": {
+        "en": "Compare two actual engines using matched initial state and the same applied effort.",
+        "ko": "같은 초기 상태와 적용 힘으로 실제 엔진 두 개를 비교한다."
+      },
+      "prerequisites": [
+        "core-fr3-08",
+        "sim-isaac-01"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-cross-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_cross_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "isaac-sim"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "sim-parity.csv",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "camera-depth.npy",
+        "imported.usda"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "sim-deploy-01",
+      "question": {
+        "en": "What evidence and hashes make a deployment candidate reproducible?",
+        "ko": "어떤 근거와 해시가 배포 후보의 재현성을 뒷받침하는가?"
+      },
+      "objectives": {
+        "en": "Packaging preserves the meaning of learned numbers across a process boundary.",
+        "ko": "패키징은 프로세스 경계를 넘어 학습 숫자의 뜻을 보존한다."
+      },
+      "prerequisites": [
+        "core-fr3-08"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/sim-deploy-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/deployment.py"
+      ],
+      "test": "tests/lessons/test_sim_deploy_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "bundle-verification.json",
+        "sample_candidate/manifest.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "sim-enlight-01",
+      "question": {
+        "en": "What does fake hardware verify before any device connection?",
+        "ko": "가상 하드웨어는 장비 연결 전에 무엇을 검증하는가?"
+      },
+      "objectives": {
+        "en": "Fake hardware separates communication from physical authority.",
+        "ko": "Fake hardware는 통신과 실물 권한을 분리한다."
+      },
+      "prerequisites": [
+        "core-enlight-01",
+        "sim-ros-01"
+      ],
+      "prerequisite_concepts": [
+        "ros"
+      ],
+      "implementation_sources": [
+        "examples/sim-enlight-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_enlight_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "ros2-jazzy"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "fake-hardware.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/ros.md"
+      ]
+    },
+    {
+      "id": "sim-enlight-02",
+      "question": {
+        "en": "Why does a contact-task bundle remain a candidate until gated evaluation?",
+        "ko": "접촉 과제 번들은 왜 게이트 평가 전까지 후보로 남는가?"
+      },
+      "objectives": {
+        "en": "This candidate is a known controller, not a learned policy.",
+        "ko": "이 후보는 학습 정책이 아니라 알려진 제어기다."
+      },
+      "prerequisites": [
+        "core-enlight-02",
+        "sim-deploy-01"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/sim-enlight-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/deployment.py"
+      ],
+      "test": "tests/lessons/test_sim_enlight_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "contact-candidate.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "frame.png",
+        "contact-actions.npz",
+        "candidate-controller.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "sim-wuji-02",
+      "question": {
+        "en": "Which model and policy identities belong in a dexterity candidate?",
+        "ko": "정교 조작 후보에는 어떤 모델·정책 식별 정보가 필요한가?"
+      },
+      "objectives": {
+        "en": "The dexterity candidate consumes an actual completed `sim-wuji-01` checkpoint, loads it into the same pinned registered vendor task in play mode, evaluates it, then copies exact policy bytes.",
+        "ko": "정교 조작 후보는 완료된 실제 `sim-wuji-01` 체크포인트를 읽고 동일한 고정 벤더 과제를 play 모드로 구성해 평가한 뒤 정확한 정책 바이트를 복사한다."
+      },
+      "prerequisites": [
+        "sim-wuji-01",
+        "sim-deploy-01"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/sim-wuji-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/deployment.py"
+      ],
+      "test": "tests/lessons/test_sim_wuji_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "dexterity-candidate.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "evaluation.png",
+        "evaluation-actions.npz"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-common-01",
+      "question": {
+        "en": "How does a command sink prove receipt without physical output?",
+        "ko": "명령 차단 수신기는 물리 출력 없이 수신을 어떻게 확인하는가?"
+      },
+      "objectives": {
+        "en": "An inference sink exercises a policy while making the output boundary visible.",
+        "ko": "추론 sink는 출력 경계를 드러내며 정책을 실행한다."
+      },
+      "prerequisites": [
+        "sim-deploy-01"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-common-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/deployment.py"
+      ],
+      "test": "tests/lessons/test_hw_common_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "command-sink.json",
+        "lesson-report.md",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "inference.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-common-02",
+      "question": {
+        "en": "Which read-only checks must precede any device action?",
+        "ko": "장비 동작 전에 어떤 읽기 전용 검사가 필요한가?"
+      },
+      "objectives": {
+        "en": "A read-only snapshot answers whether observed state is coherent, fresh and disabled.",
+        "ko": "읽기 전용 스냅샷은 관측 상태가 일관되고 최신이며 비활성인지 답한다."
+      },
+      "prerequisites": [
+        "hw-common-01"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-common-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_common_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-fr3-01",
+      "question": {
+        "en": "Why do shadow checks and a fresh run card remain separate gates?",
+        "ko": "왜 섀도 검사와 새 실행 카드를 별도 게이트로 유지하는가?"
+      },
+      "objectives": {
+        "en": "FR3 simulation and offline replay establish software behavior; read-only device state must separately confirm the real arm's joint order, signs, units and stop boundary.",
+        "ko": "FR3 시뮬레이션·오프라인 재생은 소프트웨어 동작을 확인하며 실물의 관절 순서·부호·단위·정지 경계는 읽기 전용 상태로 별도 확인해야 한다."
+      },
+      "prerequisites": [
+        "hw-common-02",
+        "core-fr3-06"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-fr3-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_fr3_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "fr3-hardware",
+          "read-only-preflight-fr3"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-wuji-01",
+      "question": {
+        "en": "What identity and tactile-calibration evidence is needed for the real hand?",
+        "ko": "실물 손에는 어떤 식별·촉각 보정 근거가 필요한가?"
+      },
+      "objectives": {
+        "en": "A real tactile stream needs sensor identity and calibration, not only contact-shaped numbers.",
+        "ko": "실물 촉각에는 접촉 모양 숫자뿐 아니라 센서 식별·보정이 필요하다."
+      },
+      "prerequisites": [
+        "hw-common-02",
+        "core-wuji-02"
+      ],
+      "prerequisite_concepts": [
+        "robot-hands"
+      ],
+      "implementation_sources": [
+        "examples/hw-wuji-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_wuji_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "wuji-hardware",
+          "read-only-preflight-wuji"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/robot-hands.md"
+      ]
+    },
+    {
+      "id": "hw-wuji-02",
+      "question": {
+        "en": "What separates shadow agreement from an approved real evaluation?",
+        "ko": "섀도 일치와 승인된 실물 평가를 무엇으로 구별하는가?"
+      },
+      "objectives": {
+        "en": "A dexterity checkpoint evaluated on a vendor simulation task is a candidate.",
+        "ko": "벤더 시뮬레이션 과제에서 평가한 정교 조작 체크포인트는 후보다."
+      },
+      "prerequisites": [
+        "hw-wuji-01",
+        "sim-wuji-02"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-wuji-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_wuji_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "wuji-hardware",
+          "read-only-preflight-wuji"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-enlight-01",
+      "question": {
+        "en": "What can read-only Enlight state establish about readiness?",
+        "ko": "읽기 전용 Enlight 상태로 준비 상태의 무엇을 확인할 수 있는가?"
+      },
+      "objectives": {
+        "en": "Read-only Enlight readiness starts from the physical controller identity, not an MJCF model label.",
+        "ko": "Enlight 읽기 전용 준비는 MJCF 라벨이 아니라 물리 제어기 식별에서 시작한다."
+      },
+      "prerequisites": [
+        "hw-common-02",
+        "sim-enlight-01"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-enlight-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_enlight_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "enlight-hardware",
+          "read-only-preflight-enlight"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-enlight-02",
+      "question": {
+        "en": "Which measurements are needed before calibrating a simulated arm?",
+        "ko": "시뮬레이션 팔 보정 전에 어떤 측정이 필요한가?"
+      },
+      "objectives": {
+        "en": "System identification asks which model parameters explain measured motion and effort.",
+        "ko": "시스템 식별은 어떤 모델 파라미터가 측정 운동·힘을 설명하는지 묻는다."
+      },
+      "prerequisites": [
+        "hw-enlight-01",
+        "core-enlight-02"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/hw-enlight-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_enlight_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "enlight-hardware",
+          "read-only-preflight-enlight"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "hw-enlight-03",
+      "question": {
+        "en": "Which contact-task risks remain after simulation and shadow?",
+        "ko": "시뮬레이션과 섀도 이후 어떤 접촉 과제 위험이 남는가?"
+      },
+      "objectives": {
+        "en": "Contact-task shadow compares a candidate's interpretation with read-only device observations while retaining no actuation authority.",
+        "ko": "접촉 과제 shadow는 구동 권한 없이 후보 해석과 읽기 전용 장치 관측을 비교한다."
+      },
+      "prerequisites": [
+        "hw-enlight-01",
+        "sim-enlight-02"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-enlight-03/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_enlight_03.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "enlight-hardware",
+          "read-only-preflight-enlight"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-enlight-wuji-01",
+      "question": {
+        "en": "How are arm and hand identity, timing and stop boundaries checked together?",
+        "ko": "팔과 손의 식별·시점·정지 경계를 어떻게 함께 검사하는가?"
+      },
+      "objectives": {
+        "en": "Combining arm and hand adds synchronization and stop-boundary questions; two independent green badges do not establish an integrated system.",
+        "ko": "팔과 손 결합에는 동기화·정지 경계가 추가되며 개별 배지 두 개가 통합 시스템을 증명하지 않는다."
+      },
+      "prerequisites": [
+        "hw-enlight-01",
+        "hw-wuji-01"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-enlight-wuji-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_enlight_wuji_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "enlight-hardware",
+          "read-only-preflight-enlight",
+          "wuji-hardware",
+          "read-only-preflight-wuji"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "core-fr3-09",
+      "question": {
+        "en": "How do joint and TCP trajectory errors differ?",
+        "ko": "관절 궤적 오차와 TCP 궤적 오차는 어떻게 다른가?"
+      },
+      "objectives": {
+        "en": "A joint-space trajectory and a Cartesian trajectory ask different questions.",
+        "ko": "관절 궤적과 직교 좌표 궤적은 다른 질문이다."
+      },
+      "prerequisites": [
+        "core-fr3-06"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-09/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/arm.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_09.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "trajectory.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "core-fr3-10",
+      "question": {
+        "en": "How do held-out episodes and independent reach tests constrain BC claims?",
+        "ko": "보류 에피소드와 독립 도달 검사는 BC 성능 주장을 어떻게 제한하는가?"
+      },
+      "objectives": {
+        "en": "Behavioral cloning learns FR3's observation-to-action mapping from demonstrations generated on its own MuJoCo environment.",
+        "ko": "행동 복제는 FR3 자체 MuJoCo 환경에서 생성한 시연으로 관측·행동 대응을 배운다."
+      },
+      "prerequisites": [
+        "core-fr3-09"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/core-fr3-10/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/arm.py"
+      ],
+      "test": "tests/lessons/test_core_fr3_10.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "arm-learning.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "policy.npz",
+        "evaluation.json",
+        "training-contract.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "sim-fr3-01",
+      "question": {
+        "en": "How do imported PhysX joints track the same joint and TCP targets?",
+        "ko": "가져온 PhysX 관절은 같은 관절·TCP 목표를 어떻게 추종하는가?"
+      },
+      "objectives": {
+        "en": "A joint-space trajectory and a Cartesian trajectory ask different questions.",
+        "ko": "관절 궤적과 직교 좌표 궤적은 다른 질문이다."
+      },
+      "prerequisites": [
+        "core-fr3-09"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-fr3-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_fr3_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "physx-control.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "sim-fr3-02",
+      "question": {
+        "en": "What must be preserved when collecting PhysX demonstrations for BC?",
+        "ko": "BC용 PhysX 시연을 수집할 때 무엇을 보존해야 하는가?"
+      },
+      "objectives": {
+        "en": "Behavioral cloning learns FR3's observation-to-action mapping from demonstrations generated on its own PhysX environment.",
+        "ko": "행동 복제는 FR3 자체 PhysX 환경에서 생성한 시연으로 관측·행동 대응을 배운다."
+      },
+      "prerequisites": [
+        "sim-fr3-01",
+        "core-fr3-10"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/sim-fr3-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_fr3_02.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "physx-bc.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "sim-fr3-03",
+      "question": {
+        "en": "How is PhysX PPO performance tested independently of training?",
+        "ko": "PhysX PPO 성능을 학습과 독립적으로 어떻게 검사하는가?"
+      },
+      "objectives": {
+        "en": "PPO adjusts a FR3 policy using actual PhysX rollouts, not prerecorded reward numbers.",
+        "ko": "PPO는 미리 만든 보상 숫자가 아니라 실제 PhysX 롤아웃으로 FR3 정책을 조정한다."
+      },
+      "prerequisites": [
+        "sim-fr3-02",
+        "core-fr3-08"
+      ],
+      "prerequisite_concepts": [
+        "reinforcement-learning"
+      ],
+      "implementation_sources": [
+        "examples/sim-fr3-03/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_fr3_03.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "physx-ppo.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/reinforcement-learning.md"
+      ]
+    },
+    {
+      "id": "sim-fr3-04",
+      "question": {
+        "en": "What does matched-engine TCP error difference establish?",
+        "ko": "동일 조건 엔진 간 TCP 오차 차이는 무엇을 확인하는가?"
+      },
+      "objectives": {
+        "en": "Match target arrays, initial pose, world frame and control period in two completed runs. Compare TCP error RMS difference, joint errors and measured contact forces. Investigate import, drive and engine differences without inferring hardware safety.",
+        "ko": "완료한 두 실행에서 목표 배열·초기 자세·월드 좌표계·제어 주기를 일치시킨 뒤 TCP 오차 RMS 차이, 관절 오차와 측정 접촉력을 비교합니다. 값이 다를 때 import·구동기·물리 엔진 원인을 구분하며 실물 안전성을 추론하지 않습니다."
+      },
+      "prerequisites": [
+        "sim-fr3-01"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-fr3-04/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/comparison.py"
+      ],
+      "test": "tests/lessons/test_sim_fr3_04.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "engine-comparison.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "core-enlight-03",
+      "question": {
+        "en": "How does Enlight track joint and TCP targets on its own model?",
+        "ko": "Enlight는 자체 모델에서 관절·TCP 목표를 어떻게 추종하는가?"
+      },
+      "objectives": {
+        "en": "A joint-space trajectory and a Cartesian trajectory ask different questions.",
+        "ko": "관절 궤적과 직교 좌표 궤적은 다른 질문이다."
+      },
+      "prerequisites": [
+        "core-enlight-02"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/core-enlight-03/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/arm.py"
+      ],
+      "test": "tests/lessons/test_core_enlight_03.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-trajectory.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "core-enlight-04",
+      "question": {
+        "en": "Why must Enlight BC use its own demonstrations and evaluation?",
+        "ko": "Enlight BC는 왜 자체 시연·평가를 사용해야 하는가?"
+      },
+      "objectives": {
+        "en": "Behavioral cloning learns Enlight's observation-to-action mapping from demonstrations generated on its own MuJoCo environment.",
+        "ko": "행동 복제는 Enlight 자체 MuJoCo 환경에서 생성한 시연으로 관측·행동 대응을 배운다."
+      },
+      "prerequisites": [
+        "core-enlight-03"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/core-enlight-04/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/arm.py"
+      ],
+      "test": "tests/lessons/test_core_enlight_04.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-bc.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "policy.npz",
+        "evaluation.json",
+        "training-contract.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "core-enlight-05",
+      "question": {
+        "en": "Which independent criterion can an Enlight PPO candidate fail?",
+        "ko": "Enlight PPO 후보는 어떤 독립 기준을 통과하지 못할 수 있는가?"
+      },
+      "objectives": {
+        "en": "PPO adjusts a Enlight policy using actual MuJoCo rollouts, not prerecorded reward numbers.",
+        "ko": "PPO는 미리 만든 보상 숫자가 아니라 실제 MuJoCo 롤아웃으로 Enlight 정책을 조정한다."
+      },
+      "prerequisites": [
+        "core-enlight-04",
+        "core-rl-01"
+      ],
+      "prerequisite_concepts": [
+        "reinforcement-learning"
+      ],
+      "implementation_sources": [
+        "examples/core-enlight-05/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/arm.py"
+      ],
+      "test": "tests/lessons/test_core_enlight_05.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-ppo.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "policy.npz",
+        "evaluation.json",
+        "training-contract.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/reinforcement-learning.md"
+      ]
+    },
+    {
+      "id": "sim-enlight-03",
+      "question": {
+        "en": "Which Enlight control properties must be rechecked in PhysX?",
+        "ko": "PhysX에서 Enlight 제어의 어떤 특성을 다시 검사해야 하는가?"
+      },
+      "objectives": {
+        "en": "A joint-space trajectory and a Cartesian trajectory ask different questions.",
+        "ko": "관절 궤적과 직교 좌표 궤적은 다른 질문이다."
+      },
+      "prerequisites": [
+        "core-enlight-03"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-enlight-03/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_enlight_03.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-physx.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "sim-enlight-04",
+      "question": {
+        "en": "How is PhysX Enlight BC evaluated without transferring FR3 weights?",
+        "ko": "FR3 가중치를 옮기지 않고 PhysX Enlight BC를 어떻게 평가하는가?"
+      },
+      "objectives": {
+        "en": "Behavioral cloning learns Enlight's observation-to-action mapping from demonstrations generated on its own PhysX environment.",
+        "ko": "행동 복제는 Enlight 자체 PhysX 환경에서 생성한 시연으로 관측·행동 대응을 배운다."
+      },
+      "prerequisites": [
+        "sim-enlight-03",
+        "core-enlight-04"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/sim-enlight-04/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_enlight_04.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-physx-bc.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "sim-enlight-05",
+      "question": {
+        "en": "Which evidence separates PhysX Enlight PPO training from a performance pass?",
+        "ko": "어떤 근거로 PhysX Enlight PPO 학습과 성능 통과를 구별하는가?"
+      },
+      "objectives": {
+        "en": "PPO adjusts a Enlight policy using actual PhysX rollouts, not prerecorded reward numbers.",
+        "ko": "PPO는 미리 만든 보상 숫자가 아니라 실제 PhysX 롤아웃으로 Enlight 정책을 조정한다."
+      },
+      "prerequisites": [
+        "sim-enlight-04",
+        "core-enlight-05"
+      ],
+      "prerequisite_concepts": [
+        "reinforcement-learning"
+      ],
+      "implementation_sources": [
+        "examples/sim-enlight-05/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_enlight_05.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-physx-ppo.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/reinforcement-learning.md"
+      ]
+    },
+    {
+      "id": "core-shadow-01",
+      "question": {
+        "en": "How do Shadow joint synergies produce object contact?",
+        "ko": "Shadow 관절 시너지는 어떻게 물체 접촉을 만드는가?"
+      },
+      "objectives": {
+        "en": "The introduction holds the wrist, exercises one finger, then closes/opens a shared finger synergy.",
+        "ko": "입문은 손목을 고정하고 손가락 하나를 움직인 뒤 공유 손가락 시너지로 닫고 연다."
+      },
+      "prerequisites": [
+        "core-04"
+      ],
+      "prerequisite_concepts": [
+        "robot-hands"
+      ],
+      "implementation_sources": [
+        "examples/core-shadow-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/embodiments.py"
+      ],
+      "test": "tests/lessons/test_core_shadow_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "shadow-introduction.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/robot-hands.md"
+      ]
+    },
+    {
+      "id": "sim-shadow-01",
+      "question": {
+        "en": "Which Shadow coupling and contact properties need PhysX evidence?",
+        "ko": "Shadow의 어떤 결합·접촉 특성에 PhysX 근거가 필요한가?"
+      },
+      "objectives": {
+        "en": "The PhysX introduction must preserve Shadow named joints, drive semantics, coupling and real object contacts after import.",
+        "ko": "PhysX 입문은 가져온 Shadow의 관절 이름·드라이브 의미·결합·실제 물체 접촉을 보존해야 한다."
+      },
+      "prerequisites": [
+        "core-shadow-01"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-shadow-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_shadow_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "shadow-physx.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "core-stretch3-01",
+      "question": {
+        "en": "How do base and arm motions combine to reach a target?",
+        "ko": "베이스와 팔 동작은 도달 목표에서 어떻게 합쳐지는가?"
+      },
+      "objectives": {
+        "en": "A mobile manipulator can use both base and arm to reduce tool error.",
+        "ko": "이동형 매니퓰레이터는 베이스와 팔을 함께 써 도구 오차를 줄일 수 있다."
+      },
+      "prerequisites": [
+        "core-04"
+      ],
+      "prerequisite_concepts": [
+        "mobile-motion"
+      ],
+      "implementation_sources": [
+        "examples/core-stretch3-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/embodiments.py"
+      ],
+      "test": "tests/lessons/test_core_stretch3_01.py",
+      "environment": {
+        "platforms": [
+          "macos-arm64",
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "stretch-introduction.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/mobile-motion.md"
+      ]
+    },
+    {
+      "id": "sim-stretch3-01",
+      "question": {
+        "en": "How can Stretch base-arm behavior be verified after PhysX import?",
+        "ko": "PhysX로 가져온 Stretch의 베이스·팔 동작을 어떻게 검증하는가?"
+      },
+      "objectives": {
+        "en": "After PhysX import, Stretch must retain a free base and named wheel, lift and telescoping-joint controls.",
+        "ko": "PhysX 가져오기 뒤 Stretch는 자유 베이스와 이름 있는 바퀴·리프트·신축 관절 제어를 보존해야 한다."
+      },
+      "prerequisites": [
+        "core-stretch3-01"
+      ],
+      "prerequisite_concepts": [
+        "physx"
+      ],
+      "implementation_sources": [
+        "examples/sim-stretch3-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/isaac_tasks.py"
+      ],
+      "test": "tests/lessons/test_sim_stretch3_01.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco",
+          "isaac-sim",
+          "nvidia-cuda"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "stretch-physx.json",
+        "plot.png",
+        "experiment.json",
+        "run.json",
+        "isaac-frame.png",
+        "physx-observations.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/physx.md"
+      ]
+    },
+    {
+      "id": "hw-enlight-04",
+      "question": {
+        "en": "What must an exact free-space action card specify before approval?",
+        "ko": "승인 전에 정확한 자유공간 동작 카드에 무엇을 명시해야 하는가?"
+      },
+      "objectives": {
+        "en": "An exact-action card binds one reviewed device and one action to fresh state, limits and a single-use approval.",
+        "ko": "정확한 행동 카드는 검토한 장치·행동 하나를 최신 상태·한도·일회 승인에 연결한다."
+      },
+      "prerequisites": [
+        "hw-enlight-02",
+        "sim-enlight-05"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-enlight-04/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_enlight_04.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "enlight-hardware",
+          "read-only-preflight-enlight"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "hw-enlight-05",
+      "question": {
+        "en": "What must be established before any probe plane-force controller can run?",
+        "ko": "프로브 평면 힘 제어기를 실행하기 전에 무엇을 확인해야 하는가?"
+      },
+      "objectives": {
+        "en": "Review probe TCP, payload, force limits and plane calibration. A separately validated force controller is required; policy torque is not sent directly to hardware.",
+        "ko": "프로브의 툴 좌표계·하중·허용력·평면 보정을 검토해야 합니다. 학습 정책 토크를 실물에 직접 보내지 않습니다. 검증한 별도 힘 제어기가 필요합니다."
+      },
+      "prerequisites": [
+        "hw-enlight-04"
+      ],
+      "prerequisite_concepts": [
+        "control-contact"
+      ],
+      "implementation_sources": [
+        "examples/hw-enlight-05/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_enlight_05.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "enlight-hardware",
+          "read-only-preflight-enlight"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/control-contact.md"
+      ]
+    },
+    {
+      "id": "hw-enlight-06",
+      "question": {
+        "en": "Which tool and payload checks block a real pick-transfer-place action?",
+        "ko": "실물 집기·이동·놓기에서 어떤 도구·하중 검사가 동작을 차단하는가?"
+      },
+      "objectives": {
+        "en": "Pick-transfer-place needs a width-based gripper contract, verified mount/tool/payload and task-specific stop/recovery behavior.",
+        "ko": "집기·이동·놓기에는 폭 기반 그리퍼 계약·검증된 장착/도구/하중·과제별 정지/복구가 필요하다."
+      },
+      "prerequisites": [
+        "hw-enlight-04"
+      ],
+      "prerequisite_concepts": [
+        "deployment-hardware"
+      ],
+      "implementation_sources": [
+        "examples/hw-enlight-06/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/hardware/run_card.py"
+      ],
+      "test": "tests/lessons/test_hw_enlight_06.py",
+      "environment": {
+        "platforms": [
+          "ubuntu-24.04-x86_64"
+        ],
+        "capabilities": [
+          "robot-runtime",
+          "isolated-network",
+          "enlight-hardware",
+          "read-only-preflight-enlight"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/deployment-hardware.md"
+      ]
+    },
+    {
+      "id": "sim-teleop-01",
+      "question": {
+        "en": "Which live-input evidence is still missing after a software protocol check?",
+        "ko": "소프트웨어 프로토콜 검사 이후에도 어떤 실제 입력 근거가 필요한가?"
+      },
+      "objectives": {
+        "en": "Read-only input acceptance needs actual Quest, MANUS and VIVE identities, firmware/SDK compatibility, calibration and simultaneous stream measurements.",
+        "ko": "읽기 전용 입력 검증에는 실제 Quest·MANUS·VIVE 식별·펌웨어/SDK 호환·보정·동시 스트림 측정이 필요하다."
+      },
+      "prerequisites": [
+        "core-teleop-01"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/sim-teleop-01/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/stacks.py"
+      ],
+      "test": "tests/lessons/test_sim_teleop_01.py",
+      "environment": {
+        "platforms": [
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "device-input.json"
+      ],
+      "verification": "reader_test_required",
+      "implementation": "scaffolded",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    },
+    {
+      "id": "sim-teleop-02",
+      "question": {
+        "en": "How do calibrated SE3 transforms and a stale-input sink constrain retargeting?",
+        "ko": "보정된 SE3 변환과 오래된 입력 차단 수신기는 리타게팅을 어떻게 제한하는가?"
+      },
+      "objectives": {
+        "en": "Spatial alignment is an explicit transform chain, not a pose-array copy.",
+        "ko": "공간 정합은 명시적인 변환 체인이며 자세 배열 복사가 아니다."
+      },
+      "prerequisites": [
+        "core-teleop-01"
+      ],
+      "prerequisite_concepts": [
+        "kinematics"
+      ],
+      "implementation_sources": [
+        "examples/sim-teleop-02/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/teleop.py"
+      ],
+      "test": "tests/lessons/test_sim_teleop_02.py",
+      "environment": {
+        "platforms": [
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "teleop-alignment.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/kinematics.md"
+      ]
+    },
+    {
+      "id": "sim-enlight-06",
+      "question": {
+        "en": "How are timestamped simulated Enlight episodes collected without physical authority?",
+        "ko": "물리 동작 승인 없이 시뮬레이션 Enlight 에피소드를 어떻게 시점 정보와 함께 수집하는가?"
+      },
+      "objectives": {
+        "en": "Collection closes a data loop in simulation: synthetic wrist pose → Enlight-only IK → bounded arm action → camera/state/target episode → model-bound BC input.",
+        "ko": "수집은 시뮬레이션 데이터 루프를 잇는다."
+      },
+      "prerequisites": [
+        "core-enlight-05",
+        "sim-teleop-02"
+      ],
+      "prerequisite_concepts": [
+        "data-imitation"
+      ],
+      "implementation_sources": [
+        "examples/sim-enlight-06/run.py",
+        "src/pai_lab/lessons/runner.py",
+        "src/pai_lab/lessons/teleop.py"
+      ],
+      "test": "tests/lessons/test_sim_enlight_06.py",
+      "environment": {
+        "platforms": [
+          "linux-x86_64"
+        ],
+        "capabilities": [
+          "python-3.12",
+          "numpy",
+          "mujoco"
+        ]
+      },
+      "observe": [
+        "summary.json",
+        "trace.csv",
+        "lesson-report.md",
+        "enlight-teleop.json",
+        "plot.png",
+        "experiment.json",
+        "run.json"
+      ],
+      "verification": "maintainer-checked",
+      "implementation": "implemented",
+      "evidence_scope": "catalog publication badge; local execution not asserted by this manifest",
+      "concept_chapters": [
+        "docs/{language}/concepts/data-imitation.md"
+      ]
+    }
+  ]
+}

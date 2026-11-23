@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED = {
     ROOT / "README.md",
+    ROOT / "README.ko.md",
     ROOT / "AGENTS.md",
     ROOT / "START_HERE.md",
     ROOT / "curriculum/paths.json",
@@ -23,12 +24,28 @@ def main() -> int:
         if (
             not path.is_file()
             or path in ALLOWED
-            or any(part in {".git", ".venv", ".local", ".cache", "deps", "assets", "site"} for part in relative.parts)
+            or any(
+                part
+                in {
+                    ".git",
+                    ".venv",
+                    ".local",
+                    ".cache",
+                    "deps",
+                    "assets",
+                    "site",
+                    ".harness",
+                    "_workspace",
+                }
+                for part in relative.parts
+            )
         ):
             continue
         if path.suffix.lower() not in {".md", ".py", ".toml", ".yaml", ".yml", ".json", ".txt"}:
             continue
-        for line_number, line in enumerate(path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1):
+        for line_number, line in enumerate(
+            path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1
+        ):
             if BLOCKED.search(line):
                 failures.append(f"{path.relative_to(ROOT)}:{line_number}")
     if failures:

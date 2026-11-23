@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: ros](../concepts/ros.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 격리된 도메인에서 실제 ROS 토픽·서비스·액션·TF를 교환합니다.
@@ -90,9 +94,19 @@ $$
 
 실전 연결: 상태 수신 성공은 명령 발행이나 물리적 정지 증거와 다릅니다.
 
+### 입력에서 관측까지
+
+토픽은 상태 흐름, 서비스는 한 요청의 응답, 액션은 목표의 결과, TF는 좌표계 관계를 표현합니다. 이를 같은 단어처럼 쓰지 않아야 로봇 통신에서 무엇이 검증되었는지 알 수 있습니다. 이 수업의 액션은 Fibonacci 계산이며 로봇 동작이 아닙니다.
+
 ## Code connection
 
 `examples/sim-ros-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`ros.py`](../../../src/pai_lab/lessons/ros.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+현재 `ros.run`은 ROS_LOCALHOST_ONLY=1,domain217의 별도 context와 SingleThreadedExecutor를 만듭니다. reliable depth10 JointState, reset Trigger, pal_world→pal_base identity TF를 확인합니다. `ros-graph.json`의 topics·services·qos·action_result와 checks의 service_roundtrip·tf_received·action_roundtrip을 따로 읽습니다. 계산 예시 order8의 결과는 [0,1,1,2,3,5,8,13]이며 이 배열의 단위는 정수입니다. q trace의 단위(rad)와 다릅니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-ros-01 --run-dir .local/runs/sim-ros-01/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+기존 variant는 pendulum 제어 진폭0.1→0.15 Nm만 바꾸며 QoS·domain·action order는 유지합니다. 따라서 상태 곡선은 달라져도 송수신 오차는0일 수 있습니다. 이 비교로 다른 QoS 정책의 성능을 결론 내리지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-ros-01 --run-dir .local/runs/sim-ros-01/baseline-01 --comparison-run-dir .local/runs/sim-ros-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-ros-01 --run-dir .local/runs/sim-ros-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: reliable이면 시간 초과가 없나요? 답: discovery·service·수신 timeout을 별도로 검사합니다. 질문: action 성공은 물리 행동인가요? 답: 정수 계산입니다. 필요한 Jazzy·DDS 환경이 없으면 capability-unavailable이며 Mac 수치로 대체하지 않습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

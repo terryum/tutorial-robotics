@@ -4,8 +4,37 @@
 </p>
 <!-- pal:language:end -->
 
-# Lesson index
+# Robotics learning map
 
+Start here if you know basic Python. Learn robotics concepts alongside executable experiments and measured plots. Read the five common foundation lessons, then choose a manipulator, robot-hand or mobile-robot path. Every lesson connects intuition → essential mathematics → code → measured artifacts → one-variable comparison → comprehension.
+
+## Where to begin
+
+1. Read [equipment and environments](equipment.md) to distinguish local and remote work.
+2. Open the [reader guide](READER_GUIDE.md) and [core-00](lessons/core-00.md) for the smallest setup plan.
+3. Use the [path guide](paths.md) for purpose, prerequisites, sequence and host transition points.
+4. Read the relevant [common concept chapter](#eleven-common-concept-chapters), then return to the lesson.
+5. Compare goals, prerequisites and environments in the [complete 72-lesson guide](lessons.md).
+
+Execution alone does not complete a lesson. Inspect artifacts and record an explanation and one-variable comparison. `pal course next --json` chooses an eligible next lesson from actual readiness and progress. The table below is catalog order, which can differ from the selected path's teaching order.
+
+## Eleven common concept chapters
+
+1. [Simulation and reproducibility](concepts/simulation.md)
+2. [Frames, kinematics and Jacobians](concepts/kinematics.md)
+3. [Control and contact](concepts/control-contact.md)
+4. [Reinforcement learning](concepts/reinforcement-learning.md)
+5. [Data and imitation learning](concepts/data-imitation.md)
+6. [Robot hands](concepts/robot-hands.md)
+7. [Mobile robots and motion](concepts/mobile-motion.md)
+8. [ROS communication](concepts/ros.md)
+9. [PhysX and engine comparison](concepts/physx.md)
+10. [Vision-language-action protocols](concepts/vla.md)
+11. [Deployment and physical verification](concepts/deployment-hardware.md)
+
+## Catalog of all lessons
+
+<!-- pal:catalog:start -->
 | # | Lesson | Stage | Track | Verification |
 |---:|---|---|---|---|
 | 1 | [core-00](lessons/core-00.md) — Repository bootstrap and host audit | `core` | `common` | `maintainer-checked` |
@@ -13,7 +42,7 @@
 | 3 | [core-02](lessons/core-02.md) — Pinned public robot sources | `core` | `common` | `maintainer-checked` |
 | 4 | [core-03](lessons/core-03.md) — Multi-model inspection and asset validation | `core` | `common` | `maintainer-checked` |
 | 5 | [core-04](lessons/core-04.md) — Unified viewer and deterministic rendering | `core` | `common` | `maintainer-checked` |
-| 6 | [core-teleop-01](lessons/core-teleop-01.md) — Bimanual input, clutch and replay | `core` | `common` | `ci-checked` |
+| 6 | [core-teleop-01](lessons/core-teleop-01.md) — Bimanual input, clutch and replay | `core` | `common` | `maintainer-checked` |
 | 7 | [core-fr3-01](lessons/core-fr3-01.md) — FR3 model anatomy | `core` | `fr3` | `maintainer-checked` |
 | 8 | [core-fr3-02](lessons/core-fr3-02.md) — FR3 joint-space PD control | `core` | `fr3` | `maintainer-checked` |
 | 9 | [core-fr3-03](lessons/core-fr3-03.md) — FR3 gravity compensation and feedforward | `core` | `fr3` | `maintainer-checked` |
@@ -78,5 +107,10 @@
 | 68 | [hw-enlight-05](lessons/hw-enlight-05.md) — Enlight probe plane-force preparation | `hardware` | `enlight` | `reader_test_required` |
 | 69 | [hw-enlight-06](lessons/hw-enlight-06.md) — Enlight gripper pick-transfer-place preparation | `hardware` | `enlight` | `reader_test_required` |
 | 70 | [sim-teleop-01](lessons/sim-teleop-01.md) — Ubuntu VR installation and read-only input | `sim` | `common` | `reader_test_required` |
-| 71 | [sim-teleop-02](lessons/sim-teleop-02.md) — Spatial alignment and command sink | `sim` | `common` | `ci-checked` |
-| 72 | [sim-enlight-06](lessons/sim-enlight-06.md) — Enlight arm teleoperation and collection | `sim` | `enlight` | `ci-checked` |
+| 71 | [sim-teleop-02](lessons/sim-teleop-02.md) — Spatial alignment and command sink | `sim` | `common` | `maintainer-checked` |
+| 72 | [sim-enlight-06](lessons/sim-enlight-06.md) — Enlight arm teleoperation and collection | `sim` | `enlight` | `maintainer-checked` |
+<!-- pal:catalog:end -->
+
+## Progress from minimal equipment
+
+Follow [laptop → GPU → optional collection equipment → real robots last](equipment-stages.md). The [NVIDIA experience workbook](nvidia-ecosystem.md) connects Isaac Sim, Lab, Teleop/Capture, GR00T and ROS/deployment through exercises and evidence. Consider XR, a gripper or UMI only for the later tasks that need them.

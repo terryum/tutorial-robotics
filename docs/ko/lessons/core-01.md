@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: simulation](../concepts/simulation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 진자 상태와 수치 적분의 에너지 오차를 측정합니다.
@@ -92,9 +94,19 @@ $$
 
 실전 연결: 제어기 조정 전에 적분 오차를 찾아냅니다.
 
+### 입력에서 관측까지
+
+에너지 보존은 시뮬레이터가 운동을 얼마나 일관되게 적분하는지 보는 출발점입니다. 모델은 1 kg 분포 질량 capsule의 단일 회전 관절이고 초기 각도는 0.35 rad입니다. q와 qdot은 길이 1 배열이며, E는 MuJoCo가 계산한 운동·위치 에너지의 합(J)입니다. 점질량 진자의 관성 공식을 그대로 대입하면 다른 모델을 분석하게 됩니다.
+
 ## Code connection
 
 `examples/core-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`physics.pendulum`은 RK4·마찰 없는 관절을 정의하고, `physics.run`은 표본마다 10회 적분한 뒤 `mj_forward`로 에너지를 갱신합니다. `experiment.json`의 `state` 행은 [time_s,q,qdot], `dt_s`는 적분 간격입니다. `trace.csv`의 기준은 E(0), 관찰값은 E(t)입니다. drift는 마지막 값만의 차이가 아니라 모든 저장 표본의 최대 절댓값 차이입니다. 64표본·0.002 s이면 마지막 시각은 1.28 s입니다(계산).
 
 ## Try it
 
@@ -117,6 +129,10 @@ pal lesson compare core-01 --run-dir .local/runs/core-01/baseline-01 --compariso
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+간격만 0.004 s로 바꾸면 표본당 0.04 s, 마지막 시각 2.56 s입니다. 기존 비교 명령은 간격이라는 한 CLI 입력을 바꾸지만 관찰 시간도 함께 바뀝니다. 두 최종 자세를 같은 시각의 상태로 해석하지 말고 에너지 오차와 각 축을 읽습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -129,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-01 --run-dir .local/runs/core-01/baseline-01 --comparison-run-dir .local/runs/core-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-01 --run-dir .local/runs/core-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 한 표본 사이에 몇 번 적분하나요? 답: 10회입니다. 질문: drift가 작으면 제어기·접촉도 검증되었나요? 답: 무구동 진자의 수치 일관성만 확인했습니다. 비교 기록에는 dt·마지막 시각·최대 drift(J)를 함께 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

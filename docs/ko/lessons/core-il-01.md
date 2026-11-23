@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: data-imitation](../concepts/data-imitation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 완료한 에피소드 데이터셋으로 행동 복제를 학습합니다.
@@ -92,9 +94,19 @@ $$
 
 실전 연결: 작은 모방 오차가 시연 분포 밖의 상태까지 보장하지는 않습니다.
 
+### 입력에서 관측까지
+
+행동 복제는 시연 상태에서 전문가 토크를 예측하는 회귀 문제입니다. 여기서 배운 것은 폐루프 정책의 안정성 전체가 아니라 저장된 분포에서의 입력-출력 관계입니다. x=[q,qdot,1]은 길이3, W는 3×1, 예측 토크는 길이1(Nm)입니다.
+
 ## Code connection
 
 `examples/core-il-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`learning.py`](../../../src/pai_lab/lessons/learning.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`learning.previous_run`이 완료한 core-data-01의 해시 검증된 `episode.jsonl`을 읽습니다. episode0~5는 train,6~7은 heldout이며 `source_sha256`가 데이터 정체성을 남깁니다. `bc-loss.csv`는 train MSE(Nm²), `heldout_mse`는 다른 episode의 MSE이고 `reload_max_error`는 같은 입력에서 저장 전후 예측 차이입니다. samples64에서는 max(64,4samples)=256회 갱신입니다. 세 지표가 각각 일반화·직렬화의 다른 측면을 봅니다.
 
 ## Try it
 
@@ -117,6 +129,10 @@ pal lesson compare core-il-01 --run-dir .local/runs/core-il-01/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+학습률 0.15→0.225만 바꾸어도 더 큰 update가 더 좋은 heldout 오차를 보장하지 않습니다. 원본 dataset 해시가 같아야 비교가 학습률 효과를 겨냥합니다. 시연 밖 상태나 실물 접촉으로 결과를 일반화하지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -129,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-il-01 --run-dir .local/runs/core-il-01/baseline-01 --comparison-run-dir .local/runs/core-il-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-il-01 --run-dir .local/runs/core-il-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: reload 오차0이면 MSE도0인가요? 답: 같은 부정확한 예측을 정확하게 복구할 수도 있습니다. 질문: train loss 감소만으로 안정 제어기인가요? 답: 별도 rollout 평가가 필요합니다. train·heldout·reload 값을 나누어 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

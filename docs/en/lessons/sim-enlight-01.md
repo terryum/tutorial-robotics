@@ -25,9 +25,13 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the prerequisite [concept chapter](../concepts/ros.md) and [equipment progression](../equipment-stages.md). This lesson addresses: What does fake hardware verify before any device connection? Follow the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) where relevant; the actual producer below identifies which engine/framework this lesson uses.
+
 ## Learning goals
 
-Exercise Enlight-L fake hardware through real local ROS messages.
+Fake hardware separates communication from physical authority.
+
+What does fake hardware verify before any device connection?
 
 ## Preflight
 
@@ -43,6 +47,8 @@ pal lesson check sim-enlight-01 --json
 ```
 
 ## Action
+
+Activate the prepared environment and use a fresh output directory. Preserve the returned run path; execution does not mark completion.
 
 ```bash
 pal lesson run sim-enlight-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-01/baseline-01 --json
@@ -78,44 +84,51 @@ On other systems, open the same PNG in your file manager. Read the raw values fr
 python -m json.tool .local/runs/sim-enlight-01/baseline-01/experiment.json
 ```
 
+### Reading the artifacts
+
+Read `qos`, `domain`, `localhost_only`, `source`, topic/service graph and top-level `checks` in `experiment.json`. This path uses reliable depth 10, localhost-only domain 217, service and receive deadlines. `state_equal`, `all_messages_received`, `tf_received` and `service_roundtrip` must correspond to actual DDS traffic. A static identity TF does not calibrate the real arm.
+
 ## How it works
 
-The public Enlight draft supplies simulated joint state. The reset service and JointState stream use real DDS communication, while actuation remains in MuJoCo. This minimal fake-hardware teaching adapter does not claim to validate the production Flexiv driver.
+### Intuition
+
+Fake hardware separates communication from physical authority. Here `ros.run` loads the Enlight MuJoCo draft, steps its simulated dynamics and publishes named joint state in an isolated ROS context. The Trigger reset service resets simulation. It does not open a production Flexiv driver or establish RDK/firmware compatibility.
+
+### Calculation and units
 
 $$
-e=\max_{t,j}|q^{sent}_{t,j}-q^{received}_{t,j}|
+e_{msg}=\max_i|q^{sent}_{i,0}-q^{received}_{i,0}|
 $$
 
-Symbols, units and assumptions: q rad; t is matched sequence/time; compare names before values.
+First-joint position is rad, timestamp is simulated seconds split into ROS seconds/nanoseconds, and velocity is rad/s. The maximum sent/received error is a transport check, not tracking-to-target error. Worked calculation, not DDS measurement: sending and receiving 0.2 rad gives zero error.
 
-Worked calculation (not a measured run result): sent 0.2 rad, received 0.199 rad → error 0.001 rad.
-
-Practical connection: A live state stream is distinct from a command publisher or physical stop proof.
+```python
+sent_rad, received_rad = 0.2, 0.2
+assert abs(sent_rad - received_rad) == 0.0
+```
 
 ## Code connection
 
-`examples/sim-enlight-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+### Source trace
+
+[`src/pai_lab/lessons/ros.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/ros.py)
+
+`examples/sim-enlight-01/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
+
+The [public robot-path verification](../../verification/robot-paths-2026-11-08.md) separates historical simulation evidence from unverified external/device execution.
 
 ## Try it
 
-Sinusoidal simulation control amplitude: 0.1 → 0.15 in the actuator contract; message count and QoS stay fixed.
+### Controlled comparison
+
+Change only the sinusoidal simulated input multiplier `variant`; keep seed, sample count and model fixed. Positions may change while message equality remains exact. Do not interpret reliable QoS as a real-time control guarantee.
 
 ```bash
-pal lesson run sim-enlight-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-01/comparison-01 --variant 1.5 --json
-```
-
-Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
-
-```bash
+pal lesson run sim-enlight-01 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/sim-enlight-01/comparison-01 --json
+pal lesson check sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --json
+pal lesson check sim-enlight-01 --run-dir .local/runs/sim-enlight-01/comparison-01 --json
 pal lesson compare sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --comparison-run-dir .local/runs/sim-enlight-01/comparison-01 --output-dir .local/comparisons/sim-enlight-01/comparison-01 --json
 ```
-
-<details>
-<summary>Optional: what changes when the assumptions fail?</summary>
-
-Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
-
-</details>
 
 ## Recovery
 
@@ -123,10 +136,14 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+### Check understanding
+
+Why can zero communication error coexist with poor motion? The bridge can faithfully transmit an undesirable state. Does fake hardware test the real Flexiv network? No.
+
+Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
 
 ```bash
-pal lesson review sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --comparison-run-dir .local/runs/sim-enlight-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --comparison-run-dir .local/runs/sim-enlight-01/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
 pal lesson finish sim-enlight-01 --run-dir .local/runs/sim-enlight-01/baseline-01 --json
 ```
 

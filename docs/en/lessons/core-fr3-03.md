@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [control-contact concept chapter](../concepts/control-contact.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Measure how gravity feedforward changes tracking error.
@@ -102,9 +104,19 @@ Worked calculation (not a measured run result): 21.6 Nm PD + 4 Nm bias = 25.6 Nm
 
 Practical connection: qfrc_bias includes velocity terms as well as gravity; incorrect payload breaks compensation.
 
+### From input to observation
+
+Under gravity, holding still requires load-supporting torque in addition to error-driven PD torque. Adding model-predicted bias reduces the error needed for PD to support the load. qfrc_bias contains gravity at rest and velocity-dependent bias during motion.
+
 ## Code connection
 
 `examples/core-fr3-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`physics.run` reloads the same model for PD and gravity `arm_control` runs. q, qdot, bias and torque are length-7 arrays with units rad, rad/s, Nm and Nm. The saved trace is the compensated branch; `without_compensation_error` stores the uncompensated final result. Compare it with payload `final_error` and read `gravity_reduces_error`. Bias is added before final clipping, so calculated 21.6+4=25.6 Nm need not be the applied value.
 
 ## Try it
 
@@ -127,6 +139,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+variant=1.5 changes both kp and kd=2√kp. It varies one CLI input but does not isolate kp alone. Distinguish equal gains between compensation branches from coupled gain changes between baseline and comparison.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -139,6 +155,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --comparison-run-dir .local/runs/core-fr3-03/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does low compensated error establish a correct real payload? Answer: Only simulation model consistency is checked. Question: Does the trace contain both responses? Answer: It stores the compensated run; read the other final value separately. Report both final errors(rad) and clipping evidence.
 
 <!-- pal:navigation:start -->
 ## Next lesson

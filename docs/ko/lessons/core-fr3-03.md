@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: control-contact](../concepts/control-contact.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 중력 피드포워드가 추종 오차를 어떻게 바꾸는지 측정합니다.
@@ -102,9 +104,19 @@ $$
 
 실전 연결: qfrc_bias는 중력과 속도 항을 포함하며 하중 오차는 보상 오차로 이어집니다.
 
+### 입력에서 관측까지
+
+중력 아래 정지하려면 위치 오차를 만드는 PD 토크 외에 하중을 지탱하는 토크가 필요합니다. 모델이 예측한 bias를 미리 더하면 PD가 그 역할을 오차만으로 맡지 않아도 됩니다. 단, qfrc_bias는 정지 시 중력뿐 아니라 속도가 있을 때의 bias도 포함합니다.
+
 ## Code connection
 
 `examples/core-fr3-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`physics.run`은 같은 모델을 새로 불러 PD와 gravity 두 `arm_control` 실행을 비교합니다. q·qdot·bias·torque는 각각 길이 7이며 단위는 rad·rad/s·Nm·Nm입니다. 저장 trace는 보상 branch의 전체 오차이고 무보상 최종값은 `without_compensation_error`입니다. payload의 `final_error`와 대조하고 `gravity_reduces_error`를 읽습니다. 보상 항도 최종 토크 제한 전에 더해지므로 21.6+4=25.6 Nm 계산이 곧 적용값은 아닙니다.
 
 ## Try it
 
@@ -127,6 +139,10 @@ pal lesson compare core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --c
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+variant=1.5는 kp와 kd=2√kp를 함께 바꿉니다. 한 CLI 입력 비교이지만 순수한 kp 효과 실험이 아닙니다. 두 보상 branch 내부의 같은 이득 조건과, baseline 대비 결합된 이득 변화 조건을 구분해 적습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -139,6 +155,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --comparison-run-dir .local/runs/core-fr3-03/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 보상 후 오차가 작으면 실물 payload가 맞나요? 답: 시뮬레이션 내부 모델 일치만 확인합니다. 질문: 전체 trace에 무보상 응답도 있나요? 답: 저장 trace는 보상 실행이며 무보상 최종값을 별도로 읽습니다. 두 최종 오차(rad)와 포화 여부를 근거로 설명합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

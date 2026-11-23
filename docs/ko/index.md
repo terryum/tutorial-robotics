@@ -4,8 +4,37 @@
 </p>
 <!-- pal:language:end -->
 
-# 수업 목록
+# 로봇공학 학습 지도
 
+기초 Python을 알고 있다면 이 지도에서 시작하세요. 코드를 실행하고 그래프를 읽는 것과 로봇공학 개념을 함께 배웁니다. 먼저 공통 기초 다섯 수업을 읽고 매니퓰레이터·로봇 손·이동형 로봇 경로를 선택하세요. 각 수업은 직관 → 핵심 수식 → 코드 → 측정 결과 → 한 변수 비교 → 이해 확인을 연결합니다.
+
+## 어디서 시작할까요?
+
+1. [장비·환경 안내](equipment.md)에서 로컬 실행과 원격 실행 범위를 확인합니다.
+2. [실행 안내](READER_GUIDE.md)와 [core-00](lessons/core-00.md)에서 최소 환경 계획을 확인합니다.
+3. [경로 안내](paths.md)에서 목적·선행 지식·수업 순서·장비 전환점을 확인합니다.
+4. 필요한 [공통 개념 장](#공통-개념-11장)을 읽고 개별 수업으로 돌아옵니다.
+5. [전체 72개 수업 안내](lessons.md)에서 목표·선행 조건·환경을 비교합니다.
+
+수업 실행만으로 완료되지 않습니다. 산출물을 검사하고 설명·한 변수 비교를 기록해야 합니다. `pal course next --json`이 현재 준비 상태와 진도로 실제 다음 수업을 정합니다. 아래 표는 카탈로그 순서이며 선택한 경로의 학습 순서와 다를 수 있습니다.
+
+## 공통 개념 11장
+
+1. [시뮬레이션과 재현성](concepts/simulation.md)
+2. [좌표계·기구학·자코비안](concepts/kinematics.md)
+3. [제어와 접촉](concepts/control-contact.md)
+4. [강화학습](concepts/reinforcement-learning.md)
+5. [데이터와 모방학습](concepts/data-imitation.md)
+6. [로봇 손](concepts/robot-hands.md)
+7. [이동형 로봇과 모션](concepts/mobile-motion.md)
+8. [ROS 통신](concepts/ros.md)
+9. [PhysX와 엔진 비교](concepts/physx.md)
+10. [비전·언어·행동 프로토콜](concepts/vla.md)
+11. [배포와 실물 검증](concepts/deployment-hardware.md)
+
+## 전체 수업 목록
+
+<!-- pal:catalog:start -->
 | # | Lesson | Stage | Track | Verification |
 |---:|---|---|---|---|
 | 1 | [core-00](lessons/core-00.md) — 저장소 시작과 호스트 점검 | `core` | `common` | `maintainer-checked` |
@@ -13,7 +42,7 @@
 | 3 | [core-02](lessons/core-02.md) — 공개 로봇 소스 고정과 자산 매니페스트 | `core` | `common` | `maintainer-checked` |
 | 4 | [core-03](lessons/core-03.md) — 다중 모델 검사와 자산 검증 | `core` | `common` | `maintainer-checked` |
 | 5 | [core-04](lessons/core-04.md) — 통합 뷰어와 결정론적 렌더링 | `core` | `common` | `maintainer-checked` |
-| 6 | [core-teleop-01](lessons/core-teleop-01.md) — 양손 입력·클러치·재생 | `core` | `common` | `ci-checked` |
+| 6 | [core-teleop-01](lessons/core-teleop-01.md) — 양손 입력·클러치·재생 | `core` | `common` | `maintainer-checked` |
 | 7 | [core-fr3-01](lessons/core-fr3-01.md) — FR3 모델 구조 | `core` | `fr3` | `maintainer-checked` |
 | 8 | [core-fr3-02](lessons/core-fr3-02.md) — FR3 관절 공간 PD 제어 | `core` | `fr3` | `maintainer-checked` |
 | 9 | [core-fr3-03](lessons/core-fr3-03.md) — FR3 중력 보상과 피드포워드 | `core` | `fr3` | `maintainer-checked` |
@@ -78,5 +107,10 @@
 | 68 | [hw-enlight-05](lessons/hw-enlight-05.md) — Enlight 프로브 평면 힘 제어 준비 | `hardware` | `enlight` | `reader_test_required` |
 | 69 | [hw-enlight-06](lessons/hw-enlight-06.md) — Enlight 그리퍼 집기·이동·놓기 준비 | `hardware` | `enlight` | `reader_test_required` |
 | 70 | [sim-teleop-01](lessons/sim-teleop-01.md) — Ubuntu VR 설치와 읽기 전용 입력 | `sim` | `common` | `reader_test_required` |
-| 71 | [sim-teleop-02](lessons/sim-teleop-02.md) — 공간 정합과 command sink | `sim` | `common` | `ci-checked` |
-| 72 | [sim-enlight-06](lessons/sim-enlight-06.md) — Enlight 팔 텔레오퍼레이션과 수집 | `sim` | `enlight` | `ci-checked` |
+| 71 | [sim-teleop-02](lessons/sim-teleop-02.md) — 공간 정합과 command sink | `sim` | `common` | `maintainer-checked` |
+| 72 | [sim-enlight-06](lessons/sim-enlight-06.md) — Enlight 팔 텔레오퍼레이션과 수집 | `sim` | `enlight` | `maintainer-checked` |
+<!-- pal:catalog:end -->
+
+## 장비가 늘어나는 학습 순서
+
+[노트북 → GPU → 선택형 수집 장비 → 마지막 실물](equipment-stages.md) 순서로 읽으세요. [NVIDIA 경험 워크북](nvidia-ecosystem.md)은 Isaac Sim·Lab·Teleop/Capture·GR00T·ROS/배포를 실습과 검증 산출물로 연결합니다. XR·그리퍼·UMI는 필요한 후반 과제에서만 검토합니다.

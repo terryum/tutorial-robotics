@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: ros](../concepts/ros.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 실제 ROS 메시지를 기록하고 rosbag2 데이터베이스를 재생합니다.
@@ -90,9 +94,19 @@ $$
 
 실전 연결: 상태 수신 성공은 명령 발행이나 물리적 정지 증거와 다릅니다.
 
+### 입력에서 관측까지
+
+실행 중 보았던 값을 나중에 다시 읽을 수 있어야 실험 기록이 됩니다. rosbag 재생은 저장된 메시지의 재구성이고 물리 세계의 재실행이 아닙니다. 이 baseline은 SQLite3 저장소를 명시적으로 사용하며 historical operation 이름의 mcap은 실제 포맷을 결정하지 않습니다.
+
 ## Code connection
 
 `examples/sim-ros-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`ros.py`](../../../src/pai_lab/lessons/ros.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`ros.run`의 이 분기는 CDR로 직렬화한 JointState를 `/pal_isolated/joint_states`와 시뮬레이션 timestamp(ns)로 `episode_bag`에 씁니다. writer를 닫은 뒤 SequentialReader가 역직렬화하고 저장 순서별 position 배열을 비교합니다. `record-replay.json`의 storage_id·messages_written·messages_replayed와 `bag_replay_exact`를 읽습니다. 현재 검사는 position·개수 일치이며 timestamp·속도 모든 필드의 전체 equality 검사는 아닙니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-ros-03 --run-dir .local/runs/sim-ros-03/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+같은64표본에서 actuator 진폭만 바꾸면 저장 메시지 수64는 유지되고 position 값은 달라질 수 있습니다. replay exact는 각각의 원본 기록에 대한 비교이며 서로 다른 두 실험이 같은 궤적이어야 한다는 조건이 아닙니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-ros-03 --run-dir .local/runs/sim-ros-03/baseline-01 --comparison-run-dir .local/runs/sim-ros-03/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-ros-03 --run-dir .local/runs/sim-ros-03/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: sqlite3와 mcap을 같은 파일 포맷이라고 불러도 되나요? 답: 실제 storage_id를 보고합니다. 질문: replay 성공이면 물리 운동 재현인가요? 답: 메시지 재구성입니다. 원본·재생 개수와 검사한 필드를 명시합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

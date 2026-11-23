@@ -25,6 +25,10 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [ros concept chapter](../concepts/ros.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
+See the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) for connections to ROS, GPU, Isaac and VLA. Distinguish its extension activities from this lesson's implemented and verified scope.
+
 ## Learning goals
 
 Record actual ROS messages and replay a rosbag2 database.
@@ -90,9 +94,19 @@ Worked calculation (not a measured run result): sent 0.2 rad, received 0.199 rad
 
 Practical connection: A live state stream is distinct from a command publisher or physical stop proof.
 
+### From input to observation
+
+An experiment record must be readable after execution. Rosbag replay reconstructs stored messages, not physical-world motion. This baseline explicitly uses SQLite3; the historical mcap operation name does not determine actual format.
+
 ## Code connection
 
 `examples/sim-ros-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`ros.py`](../../../src/pai_lab/lessons/ros.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+This `ros.run` branch writes CDR JointState to `/pal_isolated/joint_states` with simulation timestamps(ns) in `episode_bag`. After closing the writer, SequentialReader deserializes and compares position arrays in saved order. Read storage_id, messages_written, messages_replayed in `record-replay.json` and `bag_replay_exact`. Current checks compare positions/counts, not complete equality of every timestamp and velocity field.
 
 ## Try it
 
@@ -115,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only actuator amplitude with 64 samples preserves64 messages while positions can change. Exact replay compares each recording with its own original, not whether two different experiments have identical trajectories.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -127,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review sim-ros-03 --run-dir .local/runs/sim-ros-03/baseline-01 --comparison-run-dir .local/runs/sim-ros-03/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish sim-ros-03 --run-dir .local/runs/sim-ros-03/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Are sqlite3 and mcap interchangeable labels? Answer: Report actual storage_id. Question: Does exact replay reproduce physical motion? Answer: It reconstructs messages. State original/replayed counts and precisely checked fields.
 
 <!-- pal:navigation:start -->
 ## Next lesson

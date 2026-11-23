@@ -22,6 +22,10 @@ jobs:
       - run: uv run --no-sync mypy src
       - run: uv run --no-sync python scripts/validate_repository.py
       - run: uv run --no-sync python scripts/validate_release.py
+      - run: uv run --no-sync python scripts/check_public_boundary.py
+      - run: uv run --no-sync python .agents/skills/harness/scripts/validate.py --project .
+      - run: uv run --no-sync python scripts/validate_book.py
+      - run: uv run --no-sync python scripts/check_harness_vendor.py
 
   pages:
     runs-on: ubuntu-24.04
@@ -33,6 +37,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - run: uv sync --locked --extra docs
       - run: uv run --no-sync mkdocs build --strict
+      - run: uv run --no-sync python scripts/validate_book.py --site site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

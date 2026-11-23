@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: vla](../concepts/vla.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 명시적으로 설정한 선택형 원격 정책 응답을 검증합니다.
@@ -78,21 +82,31 @@ python -m json.tool .local/runs/sim-vla-02/baseline-01/experiment.json
 
 ## How it works
 
-전송 방식·timeout·모델 식별·행동 차원·한계가 추론 계약입니다. 준비된 요청 파일과 HTTPS endpoint 또는 로컬 테스트 서버를 지정합니다. 반환 행동을 검증·기록하며 로봇으로 전달하지 않습니다.
+전송 방식·timeout·행동 차원·한계는 검사하며 모델 식별은 별도 호환성 검토를 위해 기록합니다. 준비된 요청 파일과 HTTPS endpoint 또는 로컬 테스트 서버를 지정합니다. 반환 행동을 검증·기록하며 로봇으로 전달하지 않습니다.
 
 $$
 \forall i,\quad a_i\in\mathbb R,\quad |a_i|\leq a_{max}
 $$
 
-기호·단위·조건: a: 정규화 행동; 제한: 같은 단위; 유한값 필수.
+기호·단위·조건: a: 설정한 행동 값; 제한: 같은 설정 단위; 유한값 필수.
 
 손으로 계산하는 예시(실행 측정값이 아님): limit 1.0, action 1.2 → reject.
 
 실전 연결: 전송 검증은 신경망 정책의 성능 검증과 다릅니다.
 
+### 입력에서 관측까지
+
+원격 정책에서는 응답이 왔다는 사실과 안전하게 해석할 수 있다는 사실이 다릅니다. actions는 시간/chunk×action_dimension의 2차원 배열이어야 하며 finite·한계 검사가 필요합니다. 물리 단위와 축·좌표계는 별도 모델 계약으로 확정해야 합니다.
+
 ## Code connection
 
 `examples/sim-vla-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/vla.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`vla.py`](../../../src/pai_lab/lessons/vla.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`vla.run`은 준비된 request_file을 HTTPS 또는127.0.0.1 HTTP endpoint로 보내고5초 timeout·2MB read bound를 둡니다. `remote-inference.json`은 actions·request_sha256·model_identity·command_sink를 기록합니다. 현재 코드는 identity를 기대값과 비교하지 않고 응답 units도 강제하지 않습니다. 이를 검증했다고 주장하지 않습니다. scalar metric은 요청 왕복 시간(s), trace는 펼친 action 값이므로 두 축의 의미를 구별합니다. 응답은 로봇으로 전송되지 않습니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-vla-02 --run-dir .local/runs/sim-vla-02/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+seed7→8은 request bytes나 remote 난수에 전달되지 않습니다. 같은 request_sha256라도 server 상태·지연은 달라질 수 있으므로 seed 효과로 원인을 단정하지 않습니다. 계산 예시 action_limit1·action1.2는 거부 조건이지만 단위는 설정 계약과 대조해야 합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-vla-02 --run-dir .local/runs/sim-vla-02/baseline-01 --comparison-run-dir .local/runs/sim-vla-02/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-vla-02 --run-dir .local/runs/sim-vla-02/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: model_identity가 있으면 검증된 identity인가요? 답: 현재는 기록만 합니다. 질문: bound 통과는 좋은 정책인가요? 답: 구조·수치 검증입니다. timeout·shape·request identity·행동 단위 미검증 범위를 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

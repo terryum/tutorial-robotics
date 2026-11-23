@@ -26,6 +26,7 @@ def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
     shutil.copytree(ROOT / "docs", tmp_path / "docs")
     shutil.copytree(ROOT / "curriculum", tmp_path / "curriculum")
     shutil.copyfile(ROOT / "README.md", tmp_path / "README.md")
+    shutil.copyfile(ROOT / "README.ko.md", tmp_path / "README.ko.md")
     test = tmp_path / "tests/lessons/test_core_00.py"
     test.parent.mkdir(parents=True)
     test.write_text("# authored test sentinel\n")
@@ -34,11 +35,30 @@ def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
     entry.write_text("# authored entry sentinel\n")
     doc = tmp_path / "docs/en/lessons/core-00.md"
     doc.write_text(doc.read_text().replace("## Action", "Authored body sentinel.\n\n## Action"))
+    index = tmp_path / "docs/en/index.md"
+    index.write_text(index.read_text() + "\nAuthored learning map sentinel.\n")
+    overview = tmp_path / "docs/en/lessons.md"
+    overview.write_text(overview.read_text() + "\nAuthored overview sentinel.\n")
+    # The summary must follow authored learning goals, including Markdown table escaping.
+    doc.write_text(
+        doc.read_text().replace(
+            "## Learning goals\n\n", "## Learning goals\n\nA new goal with a | delimiter.\n\n", 1
+        )
+    )
     generator.ROOT = tmp_path
     generator.main()
     first = doc.read_bytes()
+    generated = {
+        str(path.relative_to(tmp_path)): path.read_bytes() for path in tmp_path.rglob("*.md")
+    }
     generator.main()
     assert doc.read_bytes() == first
+    assert generated == {
+        str(path.relative_to(tmp_path)): path.read_bytes() for path in tmp_path.rglob("*.md")
+    }
+    assert "Authored learning map sentinel." in index.read_text()
+    assert "Authored overview sentinel." in overview.read_text()
+    assert "A new goal with a \\| delimiter." in overview.read_text()
     assert "Authored body sentinel." in doc.read_text()
     assert test.read_text() == "# authored test sentinel\n"
     assert entry.read_text() == "# authored entry sentinel\n"
@@ -64,3 +84,7 @@ def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
                 assert target.is_file()
             assert page.count("<!-- pal:language:start -->") == 1
             assert page.index('<p align="right">') < page.index("# ")
+    for filename in ("README.md", "README.ko.md"):
+        parser = LanguageLinks()
+        parser.feed((tmp_path / filename).read_text().split("<!-- pal:language:end -->")[0])
+        assert parser.links == {"ko": "README.ko.md", "en": "README.md"}

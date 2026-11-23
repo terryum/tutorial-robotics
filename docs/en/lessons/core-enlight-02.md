@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Compare independent vendor forward kinematics against compiled MJCF.
@@ -104,11 +106,21 @@ Worked calculation (not a measured run result): difference [0.001,0,0] m → err
 
 Practical connection: Agreement tests conversion, not physical calibration or contact.
 
+### From input to observation
+
+Applying two FK implementations to the same joint vector can reveal transform order, axis and flange mistakes. One path multiplies 4×4 vendor transforms; the other reads a compiled MuJoCo site. Both depend on the same public parameters, so agreement is not independent physical calibration.
+
 ## Code connection
 
 Visual OBJ files contain multiple objects. The local adapter retains every vertex/face in one derived object for MuJoCo and preserves the vendor files; collision geometry and full inertia remain separate.
 
 `examples/core-enlight-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`physics.run` feeds the same seeded length-7 q into both paths. `models.enlight_fk(q)[:3,3]` and `data.site_xpos[0]` are length-3 world positions(m). `fk_error_m` in `cross-format.json` contains samples errors; the metric is their maximum. Even one 2e-9 m error among 64 exceeds the 1e-9 m criterion(calculation). The algorithm does not validate physical collision or safe joint configurations.
 
 ## Try it
 
@@ -131,6 +143,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+variant=1.5 expands q sampling from ±0.4 to ±0.6 rad. Same-seed joint values scale by 1.5, but nonlinear tool positions need not. Maximum disagreement may remain tiny; that does not establish improved dynamics.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -143,6 +159,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --comparison-run-dir .local/runs/core-enlight-02/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Is residual measured in rad? Answer: It is distance between positions, in m. Question: Does FK agreement validate mass and friction? Answer: It tests transform conversion. Record q shape, both position frames and maximum residual.
 
 <!-- pal:navigation:start -->
 ## Next lesson

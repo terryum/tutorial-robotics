@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: robot-hands](../concepts/robot-hands.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 Wuji 손끝의 가상 접촉력을 읽습니다.
@@ -98,15 +100,25 @@ $$
 \bar f_n=\frac1N\sum_{i=1}^{N}f_{n,i}
 $$
 
-기호·단위·조건: fn: 접촉 좌표계 N; N: 표본 접촉 수.
+기호·단위·조건: fn: 접촉 좌표계 N; N: 저장 시간 표본 수; fn은 그 시점의 접촉 법선 성분 절댓값 합.
 
-손으로 계산하는 예시(실행 측정값이 아님): contacts 2 N and 4 N → mean 3 N.
+손으로 계산하는 예시(실행 측정값이 아님): time-sample force sums 2 N and 4 N → time mean 3 N.
 
 실전 연결: 충돌 접촉은 보정된 촉각 센서 taxel 값과 다릅니다.
+
+### 입력에서 관측까지
+
+가상 접촉은 충돌 기하와 물리 solver가 만든 힘 관측입니다. 실제 촉각 센서의 taxel 배치·전압·영점 보정과는 다른 문제입니다. 이름이 tactile-grid.csv여도 현재 파일은 시간별 스칼라 힘 trace이지 2차원 촉각 이미지가 아닙니다.
 
 ## Code connection
 
 `examples/core-wuji-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`hands.py`](../../../src/pai_lab/lessons/hands.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`hands.run`은 두 번째 tip 위치에 radius=0.012×variant m인 stimulus sphere를 놓습니다. 각 시간 t에서 stimulus가 포함된 접촉만 선택해 F_t=Σ_c |f_contact,c[0]|를 구하고 저장 시간 N개에 대해 평균합니다. N은 접촉 개수가 아니라 시간 표본 수입니다. 예시로 두 시간의 접촉 합이 2 N·4 N이면 평균 3 N입니다. `payload.contacts`의 `position_world_m`는 길이 3, `force_contact_N`는 길이 6의 wrench이며 앞 3개는 힘, 뒤 3개는 토크 성분입니다. 필드 이름과 실제 단위(N·Nm)를 구별합니다.
 
 ## Try it
 
@@ -129,6 +141,10 @@ pal lesson compare core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 -
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+반지름만 0.012→0.018 m로 바꾸면 접촉 수·침투·힘 모두 영향을 받을 수 있습니다. 반지름 1.5배가 힘 1.5배라는 법칙은 없습니다. 자극 geom 필터와 시간 평균을 기준으로 비교합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -141,6 +157,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 --comparison-run-dir .local/runs/core-wuji-02/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 접촉 없는 표본도 평균에 들어가나요? 답: 그 시점 합 0으로 포함됩니다. 질문: force_contact_N 전체 6값이 모두 N인가요? 답: torque 성분은 Nm입니다. 접촉 위치의 world frame과 wrench의 contact frame도 구분합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

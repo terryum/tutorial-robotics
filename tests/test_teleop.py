@@ -173,10 +173,17 @@ def test_partial_receive_and_server_stop_do_not_block_watchdog():
 
 @pytest.mark.parametrize("identifier", ["core-teleop-01", "sim-teleop-02", "sim-enlight-06"])
 def test_synthetic_lessons_numeric_artifacts(identifier, tmp_path, monkeypatch):
-    # Development integration bypasses learner prerequisite history only. This
-    # executes synthetic, command-free lessons and never records a completion.
+    # Portable synthetic integration bypasses host/prerequisite readiness, but
+    # must retain real model provenance. Missing optional assets are not execution.
     from pai_lab.lessons import runner
     from pai_lab.lessons.evidence import validate_run
+    from pai_lab.lessons.models import provenance
+
+    if identifier == "sim-enlight-06":
+        try:
+            provenance("enlight")
+        except FileNotFoundError:
+            pytest.skip("Optional pinned Flexiv source unavailable; numeric integration not executed")
 
     monkeypatch.setattr(runner, "gaps", lambda lesson: [])
     output = tmp_path / identifier

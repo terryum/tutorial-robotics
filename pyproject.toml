@@ -63,6 +63,8 @@ addopts = "-q"
 
 [tool.ruff]
 line-length = 100
+# Preserve the pinned third-party Harness byte-for-byte; validate it with its own checker.
+extend-exclude = [".agents/skills/harness"]
 
 [tool.mypy]
 python_version = "3.12"

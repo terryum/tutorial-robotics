@@ -25,6 +25,10 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [physx concept chapter](../concepts/physx.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
+See the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) for connections to ROS, GPU, Isaac and VLA. Distinguish its extension activities from this lesson's implemented and verified scope.
+
 ## Learning goals
 
 Import the pinned public Wuji URDF into an actual Isaac articulation.
@@ -90,9 +94,19 @@ Worked calculation (not a measured run result): 20 expected joint names, 19 matc
 
 Practical connection: Successful USD export alone does not verify importer fidelity.
 
+### From input to observation
+
+Identical-looking meshes can have different joint names, axes, inertia or drives. URDF→USD import must preserve those meanings. This lesson creates a real Isaac articulation and camera observations, but does not complete a precision audit of every imported property.
+
 ## Code connection
 
 `examples/sim-isaac-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/isaac.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`isaac.py`](../../../src/pai_lab/lessons/isaac.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`isaac.run` resolves mesh paths in derived `wuji-local.urdf` and imports through the adapter, preserving vendor files. It finds `joint_order` names in robot.dof_names and records `isaac_joint_indices`. It sets initial q/velocity, directly assigns joint positions and steps the world. Inspect mapping, states and image_shape in `import-contract.json`/`isaac-observations.json`. all_twenty_joints checks mapping count, not complete mass, axis or coupling equivalence.
 
 ## Try it
 
@@ -115,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only light1000→1500 can change pixels while joint_order and source pin remain fixed. Missing 1 of 20 names must fail mapping(calculation). A brighter image does not establish better physical fidelity.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -127,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --comparison-run-dir .local/runs/sim-isaac-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish sim-isaac-01 --run-dir .local/runs/sim-isaac-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does set_joint_positions plus stepping validate torque control? Answer: This is a position-assignment import experiment. Question: Does 20-name mapping validate all dynamics? Answer: Inertia, drives and contact need separate review. Without real Isaac, report capability-unavailable.
 
 <!-- pal:navigation:start -->
 ## Next lesson

@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: control-contact](../concepts/control-contact.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 말단 탐침과 테이블의 접촉력을 측정하고 마찰을 바꿉니다.
@@ -100,9 +102,19 @@ $$
 
 실전 연결: 측정 접촉력은 solver·마찰·도구 보정의 영향을 받습니다.
 
+### 입력에서 관측까지
+
+마찰은 표면을 따라 미끄러지려는 힘과 법선 하중의 관계를 바꾸지만, 법선력 자체가 마찰계수에 비례하지는 않습니다. 실험은 구형 프로브와 테이블의 접촉만 골라 힘을 읽습니다. 접촉 좌표계의 법선축과 세계 z축을 같은 축이라고 가정하지 않습니다.
+
 ## Code connection
 
 `examples/core-fr3-06/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`physics.run`은 vendor scene을 읽어 로컬 파생 MjSpec에 probe/table을 추가합니다. 세계 힘 [1,0,-5] N의 Jᵀ 토크와 PD·bias가 함께 적용됩니다. 각 저장 시점의 `normal_force_N`은 두 지정 geom 사이 접촉들의 |force[0]| 합이며, `contact_counts`는 모든 접촉 수라 같은 필터가 아닙니다. `friction-sweep.csv`의 기준 5 N은 하향 지령 크기이고 관찰값은 동역학·구속에서 나온 힘입니다. 같은 값일 필요가 없습니다.
 
 ## Try it
 
@@ -125,6 +137,10 @@ pal lesson compare core-fr3-06 --run-dir .local/runs/core-fr3-06/baseline-01 --c
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+마찰계수 0.6→0.9만 바꾸어도 정상 하중 위주의 상태에서는 force 곡선이 거의 같을 수 있습니다. 계산 예시로 법선 5 N일 때 이상적인 접선 한계는 3→4.5 N이지만 이 곱이 실제 접선력 측정값은 아닙니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -137,6 +153,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-fr3-06 --run-dir .local/runs/core-fr3-06/baseline-01 --comparison-run-dir .local/runs/core-fr3-06/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-fr3-06 --run-dir .local/runs/core-fr3-06/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: contacts>0이면 probe가 테이블에 닿았나요? 답: geom 이름 필터를 확인해야 합니다. 질문: 법선력이 같으면 마찰이 무효인가요? 답: 현재 자극으로 차이가 드러나지 않을 수 있습니다. 필터·힘 좌표·표본별 합을 근거로 설명합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

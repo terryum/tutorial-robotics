@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [data-imitation concept chapter](../concepts/data-imitation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Run the dual-arm ALOHA model and build an ACT-shaped batch.
@@ -104,9 +106,19 @@ Worked calculation (not a measured run result): 16 × 14 = 224 action values per
 
 Practical connection: A schema and camera frame do not constitute ACT training.
 
+### From input to observation
+
+An action chunk bundles multiple future actions into one array contract. Here each chunk is16×14 and samples64 stores actions64×16×14. Constructing that shape is separate from training an ACT network.
+
 ## Code connection
 
 `examples/core-aloha-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`learning.py`](../../../src/pai_lab/lessons/learning.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`learning.run` tiles model ctrl home across 16 rows and adds the same sinusoidal offset to actuator0. In this implementation, all 16 future rows in a chunk are identical and only `chunk[0]` is applied. Observations use actuator joint addresses, not necessarily the entire qpos layout. Connect `act-batch.npz`, shapes/chunk_horizon/contract_only/ACT_trained in `act-schema.json` and observation.png. Real MuJoCo state and camera are used, but no ACT loss or optimizer exists.
 
 ## Try it
 
@@ -129,6 +141,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only actuator0 offset0.05→0.075 rad preserves shape and changes values. At i0, sin0=0 makes the first chunks identical. Inspect a nonzero phase before concluding all chunks match.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -141,6 +157,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --comparison-run-dir .local/runs/core-aloha-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Are all 224 values independently predicted? Answer: They repeat a template here. Question: Does an image establish ACT training? Answer: contract_only=true and ACT_trained=false. Record shape, action units and which row is applied.
 
 <!-- pal:navigation:start -->
 ## Next lesson

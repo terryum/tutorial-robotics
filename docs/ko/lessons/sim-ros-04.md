@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: ros](../concepts/ros.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 시뮬레이션과 ROS의 공통 reset·observe·act·close 인터페이스를 확인합니다.
@@ -90,9 +94,19 @@ $$
 
 실전 연결: 상태 수신 성공은 명령 발행이나 물리적 정지 증거와 다릅니다.
 
+### 입력에서 관측까지
+
+reset→observe→act→close라는 공통 이름은 교체 가능한 구현의 시작점입니다. 하지만 구현이 무엇을 reset하고 act가 어떤 단위를 받는지 선언해야 동일 API를 안전하게 비교할 수 있습니다. 여기의 대상은 MuJoCo 진자와 로컬 ROS 그래프입니다.
+
 ## Code connection
 
 `examples/sim-ros-04/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`ros.py`](../../../src/pai_lab/lessons/ros.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`ros.run`은 reset Trigger가 MuJoCo 상태를 초기화하게 하고 observe를 JointState 수신으로, act를 data.ctrl의 토크(Nm) 변경으로 구현합니다. `embodiment-contract.json`의 embodiment에는 reset 결과·observe/act 횟수·close 설명과 observation_units=[rad,rad/s]가 기록됩니다. executor·subscription·node·context 정리는 finally 경로입니다. 각 상태의 finite 값과 호출 순서, 리소스 정리는 별도 계약이며 그 이름만으로 실제 하드웨어 adapter와 같은 권한을 갖지 않습니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-ros-04 --run-dir .local/runs/sim-ros-04/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+진폭만 변경한 두 실행에서 reset 성공·close 설명·단위는 같아야 하고 상태 값은 달라질 수 있습니다. 계산 예시64 action 호출이 모두 수신되면 observe count64입니다. 호출 수가 같아도 동일 시간 지연을 입증하지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-ros-04 --run-dir .local/runs/sim-ros-04/baseline-01 --comparison-run-dir .local/runs/sim-ros-04/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-ros-04 --run-dir .local/runs/sim-ros-04/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: act는 실제 로봇 command publisher인가요? 답: 시뮬레이터 토크입니다. 질문: 공통 API가 장비 readiness를 대체하나요? 답: 모델·단위·오류·stop 검증이 별도입니다. lifecycle과 상태 전달의 경계를 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: reinforcement-learning](../concepts/reinforcement-learning.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 최소 연속 행동 PPO의 전체 갱신 과정을 따라갑니다.
@@ -92,9 +94,19 @@ $$
 
 실전 연결: 업데이트 성공은 optimizer 동작 증거이며 저장 정책 평가는 별도입니다.
 
+### 입력에서 관측까지
+
+PPO는 더 좋은 행동을 직접 정답으로 받지 않고 실제 rollout의 보상에서 갱신 방향을 추정합니다. 진자의 관측은 [q,0.2qdot] 길이 2, bias를 붙인 입력은 길이 3이며 actor W는 3×1입니다. 잠재 가우시안 행동 u에 tanh를 적용한 3tanh(u) Nm가 actuator 입력입니다.
+
 ## Code connection
 
 `examples/core-rl-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`learning.py`](../../../src/pai_lab/lessons/learning.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`learning.ppo`는 σ=0.3, 128전이 rollout, actor 갱신 4회와 선형 critic을 사용합니다. `generalized_advantage`는 terminal에서는 다음 value를 없애고 truncated 경계에서는 value bootstrap을 남기되 다음 episode의 이점을 이어 붙이지 않습니다. `policy.npz`의 weights·value_weights·sigma와 `experiment.json`의 updates·parameter_delta·reload_max_error를 연결합니다. trace는 평균 rollout 보상이고 이름 objective_gain인 scalar도 마지막 보상-첫 보상입니다.
 
 ## Try it
 
@@ -117,6 +129,10 @@ pal lesson compare core-rl-01 --run-dir .local/runs/core-rl-01/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+actor 학습률 0.01→0.015만 비교하되 가중치 변화·reload 정확성과 보상 추이를 따로 봅니다. 예시에서 확률비 1.3·양의 이점 2의 clip 값은 2.4지만 음의 이점이면 min 선택의 의미가 달라집니다. 단일 seed의 보상 상승은 정책 해결 판정이 아닙니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -129,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-rl-01 --run-dir .local/runs/core-rl-01/baseline-01 --comparison-run-dir .local/runs/core-rl-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-rl-01 --run-dir .local/runs/core-rl-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: samples64는 전이64개인가요? 답: 8업데이트×128전이를 수집합니다. 질문: clipping이 관절 토크 제한과 같은가요? 답: PPO 확률비 제한과 tanh actuator 변환은 별개입니다. 학습 실행과 독립 성능 평가를 구분합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

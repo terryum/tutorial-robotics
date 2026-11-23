@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [data-imitation concept chapter](../concepts/data-imitation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Record real MuJoCo state/action/next-state transitions.
@@ -92,9 +94,19 @@ Worked calculation (not a measured run result): 8 episodes × 64 transitions = 5
 
 Practical connection: Split by episode to keep correlated adjacent frames out of held-out evaluation.
 
+### From input to observation
+
+One demonstration row binds a current state and action to the resulting next state. Mixing time order teaches the wrong relationship regardless of dataset size. This pendulum uses state=[angle,velocity] and action=[torque], shapes (2,) and (1,).
+
 ## Code connection
 
 `examples/core-data-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`learning.py`](../../../src/pai_lab/lessons/learning.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`learning.run` resets 8 episodes, saves pre-action observation, applies clipped PD torque and integrates 10 times. Record `time_s` is post-step time, while observation is pre-step state. `episode.jsonl` contains episode, step, observation, action, next_observation, terminated and truncated. Only the last step truncates; terminated stays false. samples64 gives 512 rows, later BC split into 384 training and 128 held-out rows(calculation).
 
 ## Try it
 
@@ -117,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only demonstrator kp2→3 Nm/rad changes unclipped torque at the same state. At q=0.2 rad and qdot0 it changes -0.4→-0.6 Nm(calculation). Torque bounds ±3 Nm and episode count stay fixed; later states change through dynamics.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -129,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --comparison-run-dir .local/runs/core-data-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Do observation and time_s denote the same instant? Answer: Observation precedes the step; timestamp follows it. Question: Why avoid random row splits? Answer: Correlated adjacent states can leak across train/evaluation. Record episode boundaries first.
 
 <!-- pal:navigation:start -->
 ## Next lesson

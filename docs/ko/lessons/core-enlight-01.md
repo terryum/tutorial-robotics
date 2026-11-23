@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: kinematics](../concepts/kinematics.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 공개 vendor 파라미터로 Enlight-L 좌표계를 구성합니다.
@@ -58,7 +60,7 @@ pal lesson run core-enlight-01 --headless --seed 7 --samples 64 --output-dir .lo
 
 ![core-enlight-01 measured plot](../../assets/examples/core-enlight-01-plot.png)
 
-월드를 포함한 여덟 body frame, 일곱 관절, flange site와 총질량을 확인합니다. 공개 시뮬레이션 초안이며 보정된 실물 모델은 아닙니다.
+월드를 포함한 아홉 body frame, 일곱 관절, flange site와 총질량을 확인합니다. 공개 시뮬레이션 초안이며 보정된 실물 모델은 아닙니다.
 
 공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
 
@@ -100,11 +102,21 @@ $$
 
 실전 연결: vendor FK와 도구 센서를 비교할 때 고정 flange offset도 필요합니다.
 
+### 입력에서 관측까지
+
+다른 7축 팔도 관절 수가 같다는 이유만으로 FR3 배열을 옮길 수는 없습니다. Enlight의 고정 origin, 회전축, flange offset을 순서대로 곱해야 해당 모델의 끝 위치가 나옵니다. 변환은 4×4, q는 길이 7(rad), translation은 m이고 회전행렬은 무차원입니다.
+
 ## Code connection
 
 시각 OBJ에는 여러 객체가 있습니다. 로컬 변환기는 모든 정점·면을 한 파생 객체에 보존해 MuJoCo로 읽으며 vendor 원본은 유지합니다. 충돌 형상과 전체 관성은 별도로 사용합니다.
 
 `examples/core-enlight-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`models.enlight_parameters`는 공개 YAML의 기구학·관성·한계·초기값을 읽고 `enlight_xml`이 run 안에 파생 XML을 씁니다. `enlight-frames.json`의 `body_names`, `joint_names`, `frame_positions_m`를 대응합니다. 현재 생성기는 world+base_link+link1~7의 9 body를 만듭니다. nbody는 flange site 개수가 아니며 metric의 frame_count 이름만으로 임의의 8개 frame을 가정하지 않습니다. visual mesh는 충돌용 기하와 역할이 다릅니다.
 
 ## Try it
 
@@ -117,6 +129,10 @@ $$
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+한 변수 계산으로 flange의 로컬 offset만 바꾸면 툴 위치가 변하지만 upstream 관절 수는 그대로입니다. 실제 감사는 모델을 고정하므로 seed 변경이 변환을 바꾸지 않습니다. 변경할 수 없는 vendor 데이터를 실물 보정값으로 덮어쓰지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -126,9 +142,15 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
 
 ```bash
-pal lesson review core-enlight-01 --run-dir .local/runs/core-enlight-01/baseline-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
+pal lesson review core-enlight-01 --run-dir .local/runs/core-enlight-01/baseline-01 --notes "검사한 이름·단위·구조·제한과 실제 근거를 자신의 값으로 적으세요." --json
 pal lesson finish core-enlight-01 --run-dir .local/runs/core-enlight-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: nbody=9는 9개 구동 관절인가요? 답: world와 고정 base도 포함합니다. 질문: XML 생성은 RDK 하드웨어 검증인가요? 답: 공개 시뮬레이션 초안입니다. 관절 이름·축·flange 위치를 기록하고 형식 간 FK 검사로 연결합니다.
+
+이 구조 감사는 `evidence.comparison_errors`의 명시적 예외여서 별도 comparison run이 필수가 아닙니다. 위 review 명령은 baseline만 전달합니다. 종이 계산을 실행된 비교 산출물로 꾸미지 않고 실제로 확인한 감사 근거를 notes에 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

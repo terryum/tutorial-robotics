@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [kinematics chapter](../concepts/kinematics.md) for frames and Jacobians. First predict which world-frame direction the end effector moves when one joint moves a little; then compare two ways of calculating that motion.
+
 ## Learning goals
 
 Check a geometric Jacobian and solve a small IK displacement.
@@ -100,9 +102,31 @@ Worked calculation (not a measured run result): J=0.5 m/rad, Δx=0.01 m, λ=0.00
 
 Practical connection: Near singularities a small Cartesian request can require large joint motion.
 
+### The position function and its derivative
+
+Forward kinematics $x=f(q)$ maps a length-7 joint array(rad) into a length-3 end-effector position array(m). Here $x$ is `site_xpos[0]`, expressed in the world frame. This lesson does not solve full end-effector orientation or tool-frame velocity. Column $j$ of the translational Jacobian $J\in\mathbb{R}^{3\times7}$ is $\partial x/\partial q_j$, with units m/rad.
+
+Central differences hold other joints fixed while perturbing $q_j$ in both directions.
+
+$$
+J_{:,j}^{FD}=\frac{f(q+\epsilon e_j)-f(q-\epsilon e_j)}{2\epsilon},\qquad \epsilon=10^{-6}\ \mathrm{rad}.
+$$
+
+Here $e_j$ is a length-7 vector with only component $j$ equal to 1. An overly large interval includes curvature effects; an overly small interval amplifies floating-point subtraction error. Smaller is not always more accurate.
+
+### IK takes repeated local solves
+
+Recompute the current position error $\Delta x$ after each update. The implementation uses regularization coefficient $\lambda=10^{-4}$, rather than $\lambda^2$ in this notation. $JJ^T+\lambda I$ is 3×3, its solved vector has length 3, and the resulting $\Delta q$ has length 7. Each component of the increment is clipped to ±0.08 rad, then joint positions are limited to their ranges. This numerical IK reduces position residual; it does not perform collision avoidance, force control or physical path validation.
+
 ## Code connection
 
-`examples/core-fr3-04/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+Read [`run.py`](../../../examples/core-fr3-04/run.py) → [`runner.py`](../../../src/pai_lab/lessons/runner.py) → `jacobian`, `inverse_kinematics` and the selected `run` branch in [`physics.py`](../../../src/pai_lab/lessons/physics.py).
+
+The code independently computes an analytic array with `mj_jacSite` and an array from actual ±ε joint perturbations. Both describe the original configuration, restored after the difference calculation. IK starts there and makes 100 updates toward a fixed offset of `[0.03, 0.02, 0.01]` m. Finite-difference ε is not passed into IK, so changing ε can leave the IK residual curve unchanged.
+
+### Arrays and axes to inspect
+
+In `jacobian.json` or `experiment.json`'s payload, `analytic` and `finite_difference` are 3×7 arrays. `jacobian_max_error` is the largest absolute component difference(m/rad), while `ik_errors_m` contains 100 position residuals(m). The first `trace.csv` column is the IK iteration index, not elapsed seconds. The observed curve in `plot.png` shows those residuals. Its zero reference line is the desired residual, not another controller execution.
 
 ## Try it
 
@@ -125,6 +149,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before comparing
+
+In this branch, `--variant 2` changes only ε to 2×10⁻⁶ rad. `jacobian_max_error` can change while the IK target, regularization and iteration count stay fixed. Identical plots may show the separation between the calculations rather than a failed experiment. The [historical verification](../../verification/reader-experience.md) records an IK residual near 1.387779×10⁻¹⁶ m for both conditions. That historical value is not a required exact result for today's run.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -137,6 +165,16 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --comparison-run-dir .local/runs/core-fr3-04/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --json
 ```
+
+### Check your understanding
+
+1. What do the second row and third column of the 3×7 array mean?
+2. Why is multiplying by $J^T$ alone different from solving the regularized system?
+3. If the Jacobian difference changes with ε but the IK curve does not, which code connection explains that result?
+
+State the frame, m/rad units, `analytic` array shape and final position residual.
+
+Answer guide: Row two is world-y displacement and column three describes the third joint's infinitesimal rotation. The regularized solve accounts for axis scaling and coupling. Epsilon is used only in the verification difference, so IK can produce the same residual from the same target and Jacobian function.
 
 <!-- pal:navigation:start -->
 ## Next lesson

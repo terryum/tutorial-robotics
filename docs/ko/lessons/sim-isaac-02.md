@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: physx](../concepts/physx.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 조명 세기를 바꾸며 RGB·깊이 관측을 측정합니다.
@@ -90,9 +94,19 @@ $$
 
 실전 연결: 카메라 좌표계와 clipping을 합성 dataset의 규칙에 맞춥니다.
 
+### 입력에서 관측까지
+
+정책이 보는 영상은 장면뿐 아니라 카메라·조명·annotation 규약에도 의존합니다. RGB가 바뀌어도 depth 기하가 그대로일 수 있으므로 두 관측을 구분합니다. distance_to_camera는 광학축 z와 일반적으로 같지 않은 카메라 거리(m)입니다.
+
 ## Code connection
 
 `examples/sim-isaac-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/isaac.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`isaac.py`](../../../src/pai_lab/lessons/isaac.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`isaac.run`은 camera 위치(0.35,-0.45,0.3),look_at 원점으로480×360 render product를 만들고 rgb·distance_to_camera annotator를 연결합니다.8회 orchestrator step 뒤 `isaac-frame.png`, `camera-depth.npy`를 저장합니다. 실제 image_shape는 alpha 채널이 있을 수 있으므로 PNG는 앞3채널을 사용합니다. `depth_finite_count`는 유한 depth 수이고 전체172800개를 모두 유효라고 가정하지 않습니다. 현재 scalar metric imported_joint_count는 camera 품질 점수가 아닙니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 -
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+조명1000→1500만 바꾸고 camera·모델을 고정하면 appearance 변화와 geometric 관측 불변을 예측할 수 있습니다. 렌더러·tone mapping 때문에 pixel이 정확히1.5배가 될 필요는 없습니다. pixel_std·depth 유한값·전경 구도를 함께 비교합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --comparison-run-dir .local/runs/sim-isaac-02/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: depth 유한값 하나면 모든 물체가 잘 보이나요? 답: 최소 비어 있지 않음 검사입니다. 질문: 밝기 비교가 정책 강인성인가요? 답: 관측 변화만 확인합니다. 카메라 위치·크기·거리 단위·타이밍을 결과와 함께 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

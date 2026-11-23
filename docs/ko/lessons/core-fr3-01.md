@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: kinematics](../concepts/kinematics.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 FR3 관절·링크·구동기와 말단 사이트를 연결합니다.
@@ -100,9 +102,19 @@ $$
 
 실전 연결: 센서 상태와 화면의 관절 이름·좌표계가 같아야 합니다.
 
+### 입력에서 관측까지
+
+제어 전에는 배열의 어느 성분이 어느 관절인지 알아야 합니다. 일곱 관절의 home qpos는 길이 7 배열이고 회전 관절 위치·범위는 rad입니다. attachment_site는 마지막 링크의 기준점이며 TCP를 특정 물리 툴의 끝으로 보정했다는 뜻은 아닙니다.
+
 ## Code connection
 
 `examples/core-fr3-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`models.inventory`가 저장한 `joint_names`, `joint_ranges`, `site_names`, `body_names`와 `mass_kg`를 `fr3-joints.json`에서 읽습니다. `physics.run`의 `frame_positions_m`는 세계 좌표 위치(m)입니다. 4×4 동차 변환은 [x,y,z,1] 길이 4 열벡터에 작용하고 그 결과의 앞 세 값이 세계 위치입니다. 물체 방향의 회전 부분과 위치의 평행이동 부분을 구별합니다. 그래프에서 겹친 두 곡선은 같은 home 값의 표시이며 별도 센서 측정이 아닙니다.
 
 ## Try it
 
@@ -115,6 +127,10 @@ $$
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+오프라인 한 변수 계산으로 변환의 평행이동 x성분만 0.1 m 늘리면 같은 점의 세계 x도 0.1 m 늘어납니다. 이 감사의 seed는 home 자세를 바꾸지 않습니다. 실제 모델·툴 offset을 변경하는 실험은 이 고정 구조 검사와 분리합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -124,9 +140,15 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
 
 ```bash
-pal lesson review core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
+pal lesson review core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --notes "검사한 이름·단위·구조·제한과 실제 근거를 자신의 값으로 적으세요." --json
 pal lesson finish core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 인덱스가 같으면 다른 팔의 같은 관절인가요? 답: 이름·축·순서를 확인해야 합니다. 질문: attachment_site의 세계 위치와 툴 로컬 좌표는 같은가요? 답: 변환으로 연결됩니다. 이름 하나와 범위·단위를 기록한 뒤 PD 수업으로 연결합니다.
+
+이 구조 감사는 `evidence.comparison_errors`의 명시적 예외여서 별도 comparison run이 필수가 아닙니다. 위 review 명령은 baseline만 전달합니다. 종이 계산을 실행된 비교 산출물로 꾸미지 않고 실제로 확인한 감사 근거를 notes에 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

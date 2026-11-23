@@ -25,6 +25,10 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [ros concept chapter](../concepts/ros.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
+See the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) for connections to ROS, GPU, Isaac and VLA. Distinguish its extension activities from this lesson's implemented and verified scope.
+
 ## Learning goals
 
 Inspect a common reset/observe/act/close interface over simulation and ROS.
@@ -90,9 +94,19 @@ Worked calculation (not a measured run result): sent 0.2 rad, received 0.199 rad
 
 Practical connection: A live state stream is distinct from a command publisher or physical stop proof.
 
+### From input to observation
+
+Common reset→observe→act→close names begin a replaceable interface. Their meaning still requires declaring what resets and which units act consumes. This implementation targets a MuJoCo pendulum and local ROS graph.
+
 ## Code connection
 
 `examples/sim-ros-04/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`ros.py`](../../../src/pai_lab/lessons/ros.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`ros.run` resets MuJoCo through Trigger, implements observe through received JointState and act by changing data.ctrl torque(Nm). In `embodiment-contract.json`, embodiment records reset result, observe/act counts, close description and observation_units=[rad,rad/s]. Executor, subscription, node and context cleanup occur in finally. Finite state, call ordering and cleanup are separate contracts; method names do not grant physical-adapter authority.
 
 ## Try it
 
@@ -115,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only amplitude should preserve reset success, close description and units while state values may change. If all 64 actions are received, observe count is64(calculation). Equal counts do not establish equal latency.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -127,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review sim-ros-04 --run-dir .local/runs/sim-ros-04/baseline-01 --comparison-run-dir .local/runs/sim-ros-04/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish sim-ros-04 --run-dir .local/runs/sim-ros-04/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Is act a physical command publisher? Answer: It changes simulator torque. Question: Does a common API replace device readiness? Answer: Model, unit, fault and stop checks remain separate. Describe lifecycle and state-transfer boundaries.
 
 <!-- pal:navigation:start -->
 ## Next lesson

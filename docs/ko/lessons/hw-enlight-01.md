@@ -25,9 +25,13 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+선행 [개념 장](../concepts/deployment-hardware.md)과 [장비 확장 순서](../equipment-stages.md)를 읽는다. 이 수업의 질문: 읽기 전용 Enlight 상태로 준비 상태의 무엇을 확인할 수 있는가?
+
 ## Learning goals
 
-Enlight 읽기 전용 어댑터와 저위험 검증에 필요한 관측·선행 조건과 실행별 안전 경계를 검토합니다.
+Enlight 읽기 전용 준비는 MJCF 라벨이 아니라 물리 제어기 식별에서 시작한다.
+
+읽기 전용 Enlight 상태로 준비 상태의 무엇을 확인할 수 있는가?
 
 ## Preflight
 
@@ -37,46 +41,70 @@ Enlight 읽기 전용 어댑터와 저위험 검증에 필요한 관측·선행 
 
 [하드웨어 안전 절차](../../07_SAFETY.md)를 읽고 로컬 snapshot에서 모델·펌웨어 식별, torque-disabled, 오류·E-stop, 관절/힘 한계, 통신 timeout, timestamp 신선도, 격리 네트워크를 확인합니다. 비공개 serial·IP·보정값은 .local/에만 둡니다.
 
+[하드웨어 안전](../../07_SAFETY.md)을 읽는다. 이 장은 근거를 준비하며 장치 동작을 요청·허가하지 않는다.
+
 ## Action
+
+정식 명령 `pal lesson run hw-enlight-01`는 의도적으로 사용할 수 없다. runner는 준비 검사·출력 생성 전에 이 scaffold를 거부한다. 실행하지 않는다.
+
+준비 교재다. 카탈로그·준비 보고서를 확인한다. 현재 runner는 이 scaffold에 `NotImplementedError`를 반환하며 성공 장치 실행을 만들지 않는다. 준비·계약 검사는 실물 실행이나 수업 완료가 아니다.
 
 ```bash
 pal lesson check hw-enlight-01 --json
-pal lesson run hw-enlight-01 --headless --json
 ```
-
-현재 entrypoint는 실행 가능한 실물 어댑터가 없어 종료 코드 2를 반환해야 합니다. 이는 완료가 아닙니다. 검증을 위해 모의 성공 기록을 만들지 않습니다.
 
 ## Expected
 
 실물 검증 증거가 없다는 구체적인 사유를 읽습니다. 장비가 준비되면 모델 정체성·상태 수신율·단위/축/관절 순서·신선도와 중단 경로를 읽기 전용으로 먼저 측정해야 합니다.
 
+### 산출물 읽기
+
+이 scaffold는 성공 실행 산출물을 약속하지 않는다. 무시되는 로컬 근거 목록에 정확한 모델·좌우·펌웨어/SDK, `positions_rad`, `position_limits_rad`, `joint_group`, `timestamp`, `previous_timestamp`, `stale_after_s`, `enabled=False`, `error=False`, `estop_ready=True`, `command_authority_count=0`, 네트워크, 독립 stop/watchdog/timeout 시험을 준비한다. `ready`, `errors`, `valid_until_s`는 데이터 검사 결과이며 실행 허가가 아니다. 비공개 장치 식별·보정을 게시하지 않는다.
+
 ## How it works
 
-```text
-offline replay → command sink → read-only → live shadow
-→ torque-disabled replay → fresh run card → one explicitly approved action
+### 직관
+
+Enlight 읽기 전용 준비는 MJCF 라벨이 아니라 물리 제어기 식별에서 시작한다. RDK 2.1/v3E.1 하드웨어 기준을 보존하고 공개 description-v4 호환성은 실제 장치 근거 검토 전까지 미해결로 둔다. 비활성·최신 7관절 스냅샷이 로컬 검사를 통과해도 현장 전송·도구·비상정지는 미검증일 수 있다.
+
+### 계산과 단위
+
+$$
+t_{age}=t_{now}-t_{snapshot},\qquad 0\leq t_{age}\leq t_{stale}
+$$
+
+시간은 같은 벽시계 도메인의 초 단위다. `preflight`는 추가로 (0,1] s 범위의 유한 stale window와 `previous_timestamp`가 있을 때 증가한 시각을 요구한다. Teleop의 monotonic 100 ms sink와 다른 계약이다. 실물 근거가 아닌 종이 계산에서 나이 0.3 s는 선언한 0.1 s를 초과해 거부된다. 설명 숫자로 장치 한도를 설정하지 않는다.
+
+```python
+snapshot_age_s, declared_window_s = 0.3, 0.1
+assert not (0 <= snapshot_age_s <= declared_window_s)
 ```
-
-각 단계는 이전 단계의 결과를 소비하지만 다음 단계의 동작 권한을 자동 부여하지 않습니다. contact·실물 평가·시스템 식별·통합 장치 작업은 정확한 로봇과 행동에 대한 새로운 승인이 필요합니다. 두 장치 통합 과제는 각각의 읽기 전용 검증을 모두 요구합니다.
-
-예상 질문: 상태가 보이면 동작해도 되나요? 아닙니다. 수신 timestamp의 age, 모델 identity, fault·disabled 상태와 개별 run card를 확인해야 합니다. 예를 들어 state age가 0.3 s이고 허용 최대가 0.1 s면 관찰 값은 stale입니다. 이 숫자는 설명용이며 장치 제한을 새로 정하지 않습니다.
 
 ## Code connection
 
-`examples/hw-enlight-01/run.py` → `src/pai_lab/lessons/runner.py`;
-`src/pai_lab/hardware/preflight.py` checks supplied read-only snapshots.
+### 소스 추적
+
+[`src/pai_lab/hardware/preflight.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/hardware/preflight.py)
+
+`examples/hw-enlight-01/run.py`는 공통 runner로 위임하며 runner는 카탈로그 구현·역량을 확인한 뒤 분기한다. 위 소스가 여기의 양을 계산한다. 메타데이터 파일 이름만으로 계산 내용을 판단하면 안 된다.
 
 ## Try it
 
-로컬 snapshot 복사본에서 timestamp 하나만 과거로 바꾸고 stale-state 검사가 거부하는지 확인합니다. 실제 컨트롤러의 시간·한계·watchdog를 바꾸지 않습니다. 읽기 전용 검사의 실패를 숨기지 않습니다.
+### 통제된 비교
+
+종이 비교만 한다. 식별·관절값·한도를 고정하고 가상의 스냅샷 나이만 stale window 경계 너머로 늘린다. 거부를 예측하고 없는 장치 근거를 나열한다. 실물 시험·시계/watchdog 변경·완료 영수증 생성을 하지 않는다. 수업 runner는 장치 동작 전에 scaffolded 실행을 거부한다.
 
 ## Recovery
 
-모델 불일치, enable 상태, fault, 오래된 상태, 격리 실패가 있으면 장치로 명령을 보내지 않고 중단합니다. vendor의 E-stop·복구 절차를 따릅니다. 펌웨어 갱신·torque enable·한계 확대·충돌 검사 우회는 자동 실행하지 않습니다.
+실패 준비 기록·중단 에피소드 근거를 보존한다. 식별·최신 여부·추적·비활성/오류/E-stop·격리 네트워크가 실패하면 차단을 유지한다. 재연결에는 새 읽기 전용 확인·해당 로컬 rearm이 필요하며 실물 운동을 재개하지 않는다. 벤더 복구 절차를 따르며 펌웨어·토크·한도·watchdog을 자동 변경하지 않는다. `pal course resume --json`은 저장 학습 상태만 확인한다.
 
 ## Checkpoint
 
-현재 완료 기준은 충족되지 않았습니다. 실제 어댑터 구현과 새 실행 증거, 필요한 개별 승인이 갖춰지기 전에는 이 수업을 완료 처리하지 않습니다. 개인 상태는 .local/, 공유 출판 증거만 state/PUBLISHING.md에 둡니다.
+### 이해 확인
+
+최신 비활성 스냅샷만으로 움직일 수 없는 이유는? 관측 상태 하나만 검사했으며 명령 전송·행동별 제어기·실물 한도·새 실행별 승인은 별도이기 때문이다. 종이 계산 뒤 수업이 완료되는가? 아니다.
+
+준비·미해결 게이트를 로컬에 기록한다. 실제 장치·입력 근거와 해당 실행별 승인이 생기기 전에는 미완료로 유지한다. 실물 명령 없이 여기서 멈춘다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

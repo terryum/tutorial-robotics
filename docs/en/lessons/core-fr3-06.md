@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [control-contact concept chapter](../concepts/control-contact.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Measure probe/table contact force and vary friction.
@@ -100,9 +102,19 @@ Worked calculation (not a measured run result): μ=0.5, fn=10 N → tangential l
 
 Practical connection: Measured contact force depends on solver, friction and tool calibration.
 
+### From input to observation
+
+Friction changes the relationship between tangential load and normal load; normal force itself need not be proportional to friction coefficient. The experiment selects contacts between a spherical probe and a table. Do not assume the contact normal axis equals world z.
+
 ## Code connection
 
 `examples/core-fr3-06/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`physics.run` derives a local MjSpec from vendor scene and adds probe/table geometry. It applies Jᵀ torque from world force [1,0,-5] N along with PD and bias. At each saved time, `normal_force_N` sums |force[0]| over contacts between those two geoms, whereas `contact_counts` counts all contacts. `friction-sweep.csv` reference 5 N is the downward command magnitude; observed force comes from dynamics and constraints and need not equal it.
 
 ## Try it
 
@@ -125,6 +137,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing friction 0.6→0.9 may leave the force trace nearly unchanged under mostly normal loading. For a calculated normal load of 5 N, ideal tangential capacity changes from 3 to 4.5 N; that product is not a measured tangential force.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -137,6 +153,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-fr3-06 --run-dir .local/runs/core-fr3-06/baseline-01 --comparison-run-dir .local/runs/core-fr3-06/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-fr3-06 --run-dir .local/runs/core-fr3-06/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does contacts>0 prove probe/table contact? Answer: Inspect geom-name filtering. Question: Does equal normal force mean friction has no effect? Answer: This loading may not expose its effect. Explain the filter, force frame and per-sample sum.
 
 <!-- pal:navigation:start -->
 ## Next lesson

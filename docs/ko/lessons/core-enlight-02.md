@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: simulation](../concepts/simulation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 독립적인 vendor 순기구학과 컴파일된 MJCF를 비교합니다.
@@ -104,11 +106,21 @@ $$
 
 실전 연결: 변환 일치 검사이며 실물 보정이나 접촉 검증은 아닙니다.
 
+### 입력에서 관측까지
+
+두 구현의 순기구학을 같은 관절 배열에 적용하면 변환 순서·축·flange 누락을 수치로 찾을 수 있습니다. vendor 경로는 4×4 동차 변환의 곱이고 MuJoCo 경로는 컴파일한 모델의 site 위치입니다. 두 경로의 같은 공개 파라미터 의존성을 실물 독립 보정으로 오해하지 않습니다.
+
 ## Code connection
 
 시각 OBJ에는 여러 객체가 있습니다. 로컬 변환기는 모든 정점·면을 한 파생 객체에 보존해 MuJoCo로 읽으며 vendor 원본은 유지합니다. 충돌 형상과 전체 관성은 별도로 사용합니다.
 
 `examples/core-enlight-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`physics.run`은 seed로 생성한 길이 7 q를 두 경로에 넣습니다. `models.enlight_fk(q)[:3,3]`와 `data.site_xpos[0]`는 각각 길이 3 세계 위치(m)입니다. `cross-format.json`의 `fk_error_m`는 samples개 오차이며 metric은 최댓값입니다. 64개 중 하나만 2e-9 m여도 1e-9 m 기준을 넘습니다(계산 예시). 관절 범위 내 안전한 물리 자세나 충돌 여부를 검사하는 알고리즘은 아닙니다.
 
 ## Try it
 
@@ -131,6 +143,10 @@ pal lesson compare core-enlight-02 --run-dir .local/runs/core-enlight-02/baselin
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+variant=1.5는 q의 난수 구간을 ±0.4→±0.6 rad로 넓힙니다. 같은 seed의 난수 성분은 1.5배지만 말단 위치는 비선형이므로 1.5배가 아닙니다. 최대 오차가 여전히 작을 수 있고 동역학 정확도가 향상되었다고 해석하지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -143,6 +159,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --comparison-run-dir .local/runs/core-enlight-02/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-enlight-02 --run-dir .local/runs/core-enlight-02/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 오차 단위는 rad인가요? 답: 두 위치의 거리이므로 m입니다. 질문: FK 일치로 질량·마찰도 검증했나요? 답: 좌표 변환의 일치만 검사합니다. q 차원·두 위치 frame·최대 잔차를 기록합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

@@ -25,6 +25,10 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [ros concept chapter](../concepts/ros.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
+See the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) for connections to ROS, GPU, Isaac and VLA. Distinguish its extension activities from this lesson's implemented and verified scope.
+
 ## Learning goals
 
 Bridge measured MuJoCo state into ROS JointState messages.
@@ -90,9 +94,19 @@ Worked calculation (not a measured run result): sent 0.2 rad, received 0.199 rad
 
 Practical connection: A live state stream is distinct from a command publisher or physical stop proof.
 
+### From input to observation
+
+A simulator-to-ROS bridge must transmit names, units and time alongside values. Here JointState position and velocity are length-1 pendulum arrays in rad and rad/s. This is not a production driver reading physical robot state.
+
 ## Code connection
 
 `examples/sim-ros-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`ros.py`](../../../src/pai_lab/lessons/ros.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+After 10 MuJoCo steps, `ros.run` splits data.time into sec/nanosec and publishes JointState. Its executor waits up to 2 seconds for reception. In `joint-state-bridge.csv`, reference is sent position[0] and observed is received position[0]. The experiment graph records QoS, domain and source; state_equal checks this first-joint trace. Do not expand that into a claim of cross-validation of every joint name and velocity.
 
 ## Try it
 
@@ -115,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Amplitude0.1→0.15 Nm can change sent physical motion without introducing serialization error. A calculated timestamp0.024 s becomes sec0,nanosec24000000. Do not confuse simulation stamps with host wall time.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -127,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --comparison-run-dir .local/runs/sim-ros-02/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Do overlapping curves mean no motion? Answer: They can show correct transmission of moving state. Question: Does bridge equality validate a stop path? Answer: That is separate. Record state units, sample timing and receive error.
 
 <!-- pal:navigation:start -->
 ## Next lesson

@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [reinforcement-learning concept chapter](../concepts/reinforcement-learning.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Follow a complete minimal continuous-action PPO update.
@@ -92,9 +94,19 @@ Worked calculation (not a measured run result): r=1.3, A=2 → min(2.6,2.4)=2.4.
 
 Practical connection: A successful update proves optimizer mechanics; evaluate a reloaded policy separately.
 
+### From input to observation
+
+PPO estimates updates from rewards in actual rollouts rather than labeled best actions. Pendulum observation [q,0.2qdot] has length 2; adding bias gives length 3 and actor W is 3×1. Gaussian latent action u becomes actuator torque 3tanh(u) Nm.
+
 ## Code connection
 
 `examples/core-rl-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`learning.py`](../../../src/pai_lab/lessons/learning.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`learning.ppo` uses σ=0.3, 128-transition rollouts, four actor updates and a linear critic. `generalized_advantage` removes next value at terminals; truncation retains value bootstrap but prevents carrying advantage from another episode. Connect weights/value_weights/sigma in `policy.npz` to updates, parameter_delta and reload_max_error in `experiment.json`. The trace is mean rollout reward; even scalar objective_gain is last minus first mean reward.
 
 ## Try it
 
@@ -117,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Compare actor learning rates 0.01→0.015 while separating parameter change, exact reload and reward trends. Ratio1.3 with positive advantage 2 gives clipped value 2.4, but negative advantage changes which minimum is active. One seed with increased reward is not a solved-policy result.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -129,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-rl-01 --run-dir .local/runs/core-rl-01/baseline-01 --comparison-run-dir .local/runs/core-rl-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-rl-01 --run-dir .local/runs/core-rl-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does samples64 mean 64 transitions? Answer: It collects 8×128 transitions. Question: Is PPO clipping the torque limit? Answer: Probability-ratio clipping and actuator tanh are separate. Distinguish optimizer execution from independent performance evaluation.
 
 <!-- pal:navigation:start -->
 ## Next lesson

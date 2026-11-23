@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+[기구학 개념](../concepts/kinematics.md)에서 좌표계와 자코비안의 의미를 확인합니다. “관절 하나를 아주 조금 움직였을 때 말단은 세계 좌표계의 어느 방향으로 움직이는가?”를 먼저 예측하고 두 계산을 대조합니다.
+
 ## Learning goals
 
 기하 자코비안을 검증하고 작은 변위의 IK를 풉니다.
@@ -100,9 +102,31 @@ $$
 
 실전 연결: 특이점 근처에서는 작은 위치 변경에도 큰 관절 변화가 필요합니다.
 
+### 위치 함수와 미분의 크기
+
+순기구학 $x=f(q)$는 길이 7인 관절 배열(rad)을 길이 3인 말단 위치 배열(m)로 바꿉니다. 이 수업의 $x$는 `site_xpos[0]`이며 세계 좌표계 기준입니다. 말단 자세 전체나 툴 좌표계 속도를 풀지 않습니다. 병진 자코비안 $J\in\mathbb{R}^{3\times7}$의 열 $j$는 $\partial x/\partial q_j$이고 단위는 m/rad입니다.
+
+중앙 차분은 다른 관절을 고정한 채 $q_j$만 양·음 방향으로 바꿉니다.
+
+$$
+J_{:,j}^{FD}=\frac{f(q+\epsilon e_j)-f(q-\epsilon e_j)}{2\epsilon},\qquad \epsilon=10^{-6}\ \mathrm{rad}.
+$$
+
+여기서 $e_j$는 $j$번째 성분만 1인 길이 7 벡터입니다. 차분 간격을 너무 크게 잡으면 곡률의 영향을 받고 너무 작게 잡으면 부동소수점 뺄셈 오차가 커집니다. 더 작은 간격이 항상 더 정확하지는 않습니다.
+
+### IK는 역행렬 한 번으로 끝나지 않습니다
+
+현재 위치와 목표의 차이 $\Delta x$를 반복해서 다시 계산합니다. 구현의 정규화 계수는 $\lambda=10^{-4}$이며, 표기상 $\lambda^2$가 아닙니다. $JJ^T+\lambda I$는 3×3, 선형계의 해는 길이 3, 최종 $\Delta q$는 길이 7입니다. 각 반복의 관절 증분은 ±0.08 rad로 잘리고 관절 범위 안으로 제한됩니다. 이 절차는 위치 잔차를 줄이는 수치 IK이며 충돌 회피·힘 제어·실물 경로 검증을 수행하지 않습니다.
+
 ## Code connection
 
-`examples/core-fr3-04/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+[`run.py`](../../../examples/core-fr3-04/run.py) → [`runner.py`](../../../src/pai_lab/lessons/runner.py) → [`physics.py`](../../../src/pai_lab/lessons/physics.py)의 `jacobian`, `inverse_kinematics`, `run` 분기를 읽습니다.
+
+`mj_jacSite`로 얻은 해석적 배열과 관절을 실제로 ±ε 변위한 배열을 독립적으로 계산합니다. 둘 다 원래 자세에서 구하고, 차분 뒤에는 `original`을 복구합니다. IK는 그 자세의 말단 위치에서 `[0.03, 0.02, 0.01]` m 이동한 고정 목표에 100회 반복합니다. 차분의 ε는 IK 계산에 전달되지 않으므로 ε를 바꾸어도 같은 IK 잔차 곡선을 얻을 수 있습니다.
+
+### 관찰할 배열과 축
+
+`jacobian.json` 또는 `experiment.json`의 `payload.analytic`과 `payload.finite_difference`는 3×7 배열입니다. `jacobian_max_error`는 모든 성분의 최대 절댓값 차이(m/rad), `ik_errors_m`는 100개 위치 잔차(m)입니다. `trace.csv`의 첫 열은 IK 반복 인덱스이고 시간(초)이 아닙니다. `plot.png`의 관찰 곡선은 이 잔차를 그립니다. 기준 0선은 목표 잔차이며 별도로 실행한 제어기의 응답이 아닙니다.
 
 ## Try it
 
@@ -125,6 +149,10 @@ pal lesson compare core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --c
 
 </details>
 
+### 비교 전에 적을 예측
+
+`--variant 2`는 이 분기에서 ε만 2×10⁻⁶ rad로 바꿉니다. `jacobian_max_error`는 달라질 수 있지만 IK 목표·정규화·반복 횟수는 그대로입니다. 그래프가 같다면 비교 실패가 아니라 두 계산 경로의 분리를 보여주는 결과일 수 있습니다. [과거 검증](../../verification/reader-experience.md)의 IK 잔차는 두 조건 모두 약 1.387779×10⁻¹⁶ m였습니다. 그 값은 당시 실행 기록이며 지금도 동일해야 하는 승인 기준은 아닙니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -137,6 +165,16 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --comparison-run-dir .local/runs/core-fr3-04/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --json
 ```
+
+### 이해 확인
+
+1. 3×7 배열의 두 번째 행과 세 번째 열은 각각 무엇을 뜻하나요?
+2. $J^T\Delta x$만 사용하는 방법과 정규화된 선형계를 푸는 방법은 왜 다른가요?
+3. ε를 바꾼 뒤 Jacobian 차이는 변했지만 IK 곡선이 같다면 코드의 어떤 연결이 그 결과를 설명하나요?
+
+답에는 좌표계, m/rad 단위, `analytic`의 배열 크기와 최종 위치 잔차를 적습니다.
+
+답의 기준: 두 번째 행은 세계 y 변위, 세 번째 열은 세 번째 관절의 미소 회전 효과입니다. 정규화 선형계는 축 사이의 스케일·결합을 반영합니다. ε는 검증용 차분에만 쓰이므로 IK는 같은 목표와 같은 Jacobian 함수로 같은 잔차를 만들 수 있습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

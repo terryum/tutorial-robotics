@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [data-imitation concept chapter](../concepts/data-imitation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Fit behavioral cloning to the completed episode dataset.
@@ -92,9 +94,19 @@ Worked calculation (not a measured run result): torque errors 1 and 2 Nm → MSE
 
 Practical connection: Low imitation error does not cover states outside the demonstration distribution.
 
+### From input to observation
+
+Behavioral cloning regresses expert torque from demonstration states. It learns an input/output relationship on the recorded distribution, not complete closed-loop stability. x=[q,qdot,1] has length 3, W is 3×1 and predicted torque has length 1(Nm).
+
 ## Code connection
 
 `examples/core-il-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`learning.py`](../../../src/pai_lab/lessons/learning.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`learning.previous_run` loads hash-validated `episode.jsonl` from completed core-data-01. Episodes 0–5 train and 6–7 are held out; `source_sha256` records data identity. `bc-loss.csv` is training MSE(Nm²), `heldout_mse` uses separate episodes, and `reload_max_error` compares predictions before/after saving on identical inputs. samples64 gives max(64,4samples)=256 updates. These metrics distinguish fitting, held-out prediction and serialization.
 
 ## Try it
 
@@ -117,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only learning rate0.15→0.225 does not guarantee lower held-out error. Keep source dataset hashes equal for a learning-rate comparison. Do not generalize to unseen state regions or physical contact.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -129,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-il-01 --run-dir .local/runs/core-il-01/baseline-01 --comparison-run-dir .local/runs/core-il-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-il-01 --run-dir .local/runs/core-il-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does zero reload error imply zero MSE? Answer: An inaccurate predictor can reload exactly. Question: Does decreasing train loss establish stable control? Answer: Separate rollouts are needed. Report train, held-out and reload results separately.
 
 <!-- pal:navigation:start -->
 ## Next lesson

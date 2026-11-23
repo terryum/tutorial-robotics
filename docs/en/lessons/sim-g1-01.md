@@ -25,6 +25,10 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [mobile-motion concept chapter](../concepts/mobile-motion.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
+See the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) for connections to ROS, GPU, Isaac and VLA. Distinguish its extension activities from this lesson's implemented and verified scope.
+
 ## Learning goals
 
 Train a G1 motion-imitation PPO task and evaluate its saved checkpoint.
@@ -92,9 +96,19 @@ Worked calculation (not a measured run result): θ=1, η=0.01, gradient=2 → ne
 
 Practical connection: Real training must change weights and reload them; short smoke does not establish success rate.
 
+### From input to observation
+
+Learning reference-motion tracking is a stronger requirement than replaying saved Core poses. A policy generates actions from observations and the GPU environment returns rewards. Read shapes and units from the selected upstream task rather than applying FR3's17/7 layout.
+
 ## Code connection
 
 `examples/sim-g1-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/gpu.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`gpu.py`](../../../src/pai_lab/lessons/gpu.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`gpu.environment` requires CUDA and loads pinned Unitree task `Unitree-G1-Tracking-No-State-Estimation`. A prepared motion_file is mandatory; training uses 32 environments. `gpu.run` compares matching floating tensors in initial.pt/policy.pt and records the largest change norm as `parameter_delta`, then reloads for inference. `evaluation-actions.npz` has time×environment×action axes; inspect actual sizes. `evaluation_rewards` averages environments per step and `performance_verified` remains false.
 
 ## Try it
 
@@ -117,6 +131,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+samples64→96 changes optimizer iterations8→12 and inference length64→96 together. This varies one budget input, not training amount in isolation. `variant` is not a learning-rate control on this path. Performance claims need separate fixed evaluation.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -129,6 +147,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --comparison-run-dir .local/runs/sim-g1-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does parameter_delta>0 prove walking? Answer: It proves optimizer activity. Question: Can CPU substitute for GPU success? Answer: This lesson rejects missing CUDA. Record task pin, motion identity, rewards, render and remaining performance criteria.
 
 <!-- pal:navigation:start -->
 ## Next lesson

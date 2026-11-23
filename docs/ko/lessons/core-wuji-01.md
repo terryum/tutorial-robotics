@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: robot-hands](../concepts/robot-hands.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 손 시너지로 제한된 open·half·closed 자세를 만듭니다.
@@ -100,9 +102,19 @@ $$
 
 실전 연결: 자세를 만든 것만으로 파지력이나 물체 유지가 보장되지 않습니다.
 
+### 입력에서 관측까지
+
+시너지는 많은 관절을 적은 변수로 표현하는 방법입니다. 여기서는 20개 관절의 자세를 스칼라 amplitude 하나로 만듭니다. 손끝 위치는 세계 m의 5×3 배열이며 자세 이름 open·half·closed는 물체 유지 성능을 뜻하지 않습니다.
+
 ## Code connection
 
 `examples/core-wuji-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`hands.py`](../../../src/pai_lab/lessons/hands.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`hands.run`은 이름에 abd가 있으면 계수 0.3, 나머지는 0.6을 사용합니다. 수치 계수는 rad 기준 자세를 정하고 amplitude와 variant는 무차원 배율입니다. 예시로 half·variant1이면 비포화 굴곡은 0.6×0.5=0.3 rad입니다. `named-poses.json`의 `poses.<name>.qpos`와 `tips_m`를 함께 읽고 그래프의 pose norm을 개별 관절각과 혼동하지 않습니다. `mj_forward`만 호출하므로 정적 자세 구성입니다.
 
 ## Try it
 
@@ -125,6 +137,10 @@ pal lesson compare core-wuji-01 --run-dir .local/runs/core-wuji-01/baseline-01 -
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+variant를 1.5로 바꾸어도 이미 한계에 도달한 관절은 같을 수 있습니다. tip 위치 변화도 비선형입니다. pose_count=3이 유지되는 것은 새 자세 수를 늘리지 않았기 때문이며 시너지가 무효인 증거가 아닙니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -137,6 +153,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-wuji-01 --run-dir .local/runs/core-wuji-01/baseline-01 --comparison-run-dir .local/runs/core-wuji-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-wuji-01 --run-dir .local/runs/core-wuji-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: q norm=1 rad이면 모든 관절이 1 rad인가요? 답: 벡터 노름 요약입니다. 질문: closed가 성공한 파지인가요? 답: 동역학·물체 유지 검사가 없습니다. 관절 하나의 포화 전 계산과 저장값을 비교하세요.
 
 <!-- pal:navigation:start -->
 ## Next lesson

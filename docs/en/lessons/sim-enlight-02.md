@@ -25,9 +25,13 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the prerequisite [concept chapter](../concepts/deployment-hardware.md) and [equipment progression](../equipment-stages.md). This lesson addresses: Why does a contact-task bundle remain a candidate until gated evaluation? Follow the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) where relevant; the actual producer below identifies which engine/framework this lesson uses.
+
 ## Learning goals
 
-Evaluate an Enlight contact controller and record a candidate configuration.
+This candidate is a known controller, not a learned policy.
+
+Why does a contact-task bundle remain a candidate until gated evaluation?
 
 ## Preflight
 
@@ -43,6 +47,8 @@ pal lesson check sim-enlight-02 --json
 ```
 
 ## Action
+
+Activate the prepared environment and use a fresh output directory. Preserve the returned run path; execution does not mark completion.
 
 ```bash
 pal lesson run sim-enlight-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-02/baseline-01 --json
@@ -78,44 +84,52 @@ On other systems, open the same PNG in your file manager. Read the raw values fr
 python -m json.tool .local/runs/sim-enlight-02/baseline-01/experiment.json
 ```
 
+### Reading the artifacts
+
+`contact-actions.npz` stores actual clipped commands. `candidate-controller.json` and `experiment.json` → `payload` report gains, `mean_normal_force_N`, `candidate_only=True`, `hardware_compatible=False` and rollback. The normal-force scalar averages sampled sums for the named probe/table pair; it is neither a learned checkpoint nor calibrated hardware force.
+
 ## How it works
 
-The public Enlight dynamics and local probe/table scene supply state and contact force. Torch evaluates PD, bias compensation and Jacobian force on CUDA. This is a controller candidate with known gains, not a trained-policy checkpoint.
+### Intuition
+
+This candidate is a known controller, not a learned policy. `enlight_contact` creates a derived probe/table scene from the Enlight model. MuJoCo integrates dynamics while Torch computes a 28-value controller input on CUDA. GPU arithmetic here is not PhysX simulation or Isaac Lab training.
+
+### Calculation and units
 
 $$
-\tau=80(q^*-q)-12\dot q+c+g+J^TF
+\tau=\operatorname{clip}(80(q^*-q)-12\dot q+b+J^T[0,0,-2v]^T,\tau_{min},\tau_{max})
 $$
 
-Symbols, units and assumptions: q rad; qdot rad/s; Kp Nm/rad; Kd Nm s/rad; F world N.
+Seven position errors, seven velocities, seven bias terms and seven Jacobian-force terms form 28 inputs. Angles use rad, velocities rad/s, bias/torque N m and force world-frame N; v is dimensionless `variant`. Worked calculation, not measured contact: 80×0.01−12×0.02=0.56 N m before bias and force terms.
 
-Worked calculation (not a measured run result): 80 × 0.01 − 12 × 0.02 = 0.56 Nm before bias and contact terms.
-
-Practical connection: Known controller gains produce a controller candidate, not a learned policy.
+```python
+import numpy as np
+raw_nm = 80 * 0.01 - 12 * 0.02
+assert np.isclose(raw_nm, 0.56)
+```
 
 ## Code connection
 
-`examples/sim-enlight-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/gpu.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+### Source trace
+
+[`src/pai_lab/lessons/gpu.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/gpu.py)
+
+`examples/sim-enlight-02/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
+
+The [public robot-path verification](../../verification/robot-paths-2026-11-08.md) separates historical simulation evidence from unverified external/device execution.
 
 ## Try it
 
-Requested downward tool force: 2 → 3 N. Inspect measured contact force and CUDA controller output.
+### Controlled comparison
+
+Change only `variant` from 1 to 1.5: requested downward world force changes 2→3 N while PD gains remain 80 and 12. Compare measured force and applied torque; saturation or geometry may prevent a proportional response. Missing CUDA remains unavailable even though dynamics use MuJoCo.
 
 ```bash
-pal lesson run sim-enlight-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-02/comparison-01 --variant 1.5 --json
-```
-
-Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
-
-```bash
+pal lesson run sim-enlight-02 --headless --seed 7 --samples 64 --variant 1.5 --output-dir .local/runs/sim-enlight-02/comparison-01 --json
+pal lesson check sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --json
+pal lesson check sim-enlight-02 --run-dir .local/runs/sim-enlight-02/comparison-01 --json
 pal lesson compare sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --comparison-run-dir .local/runs/sim-enlight-02/comparison-01 --output-dir .local/comparisons/sim-enlight-02/comparison-01 --json
 ```
-
-<details>
-<summary>Optional: what changes when the assumptions fail?</summary>
-
-Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
-
-</details>
 
 ## Recovery
 
@@ -123,10 +137,14 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+### Check understanding
+
+What was trained? Nothing in this path; gains are fixed. What does positive contact prove? Simulated named probe/table contact occurred, not safe physical force control.
+
+Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
 
 ```bash
-pal lesson review sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --comparison-run-dir .local/runs/sim-enlight-02/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --comparison-run-dir .local/runs/sim-enlight-02/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
 pal lesson finish sim-enlight-02 --run-dir .local/runs/sim-enlight-02/baseline-01 --json
 ```
 

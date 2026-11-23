@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: mobile-motion](../concepts/mobile-motion.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 제한된 G1 관절 모션 주기를 기록하고 재생합니다.
@@ -104,9 +106,21 @@ $$
 
 실전 연결: 지정한 FK 재생으로 균형이나 학습 보행을 입증할 수 없습니다.
 
+### 입력에서 관측까지
+
+모션 파일을 저장·재생하는 것은 학습이나 균형 제어에 앞서 상태 순서를 확인하는 단계입니다. 자유 베이스 qpos에는 위치와 quaternion이 포함되므로 hinge 관절만 따로 주소를 찾아야 합니다. 저장 행은 전체 nq 길이 배열이고 일부 회전 관절만 변합니다.
+
 ## Code connection
 
 `examples/core-g1-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`hands.py`](../../../src/pai_lab/lessons/hands.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`hands.run`은 hinge id의 `jnt_qposadr`에 0.08×variant×sin(phase)를 더하고 한계로 자릅니다. 각 표본은 `mj_forward`로 평가하며 물리적 보행을 적분하지 않습니다. `motion.npz`의 qpos shape=(samples,nq), dt=0.02 s와 `replay_max_error`를 읽습니다. phase는 samples개 점에서 0~2π이므로 마지막 시각은 (samples-1)×0.02 s입니다. endpoint가 같은 자세라는 closed_cycle 검사와 재로딩 오차 검사는 다른 질문입니다.
+
+scalar의 loop_error라는 이름은 현재 반환된 replay error를 나타내며 payload.loop_error의 endpoint 노름과 이름이 겹칩니다. 두 값을 필드 위치와 함께 보고합니다.
 
 ## Try it
 
@@ -129,6 +143,10 @@ pal lesson compare core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+진폭 0.08→0.12 rad만 바꾸면 hinge 변위는 커지지만 free base는 고정입니다. loop_error나 replay 오차가 계속 0이어도 진폭 변화가 없었다는 뜻은 아닙니다. 최대 hinge 변위와 두 끝점을 따로 비교합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -141,6 +159,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --comparison-run-dir .local/runs/core-g1-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: loop가 닫히면 로봇이 넘어지지 않나요? 답: 동적 균형 검사가 없습니다. 질문: qvel에 같은 주소를 써도 되나요? 답: configuration·velocity 주소가 다를 수 있습니다. 다음 GPU 수업은 별도의 reference motion과 학습 환경을 요구합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

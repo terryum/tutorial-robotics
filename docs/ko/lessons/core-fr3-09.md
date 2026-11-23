@@ -23,9 +23,13 @@
 
 실제 MuJoCo 팔 상태에서 관절·TCP 오차를 측정합니다. 학습 수업은 팔의 시연 또는 rollout을 사용하고 독립 목표 20개를 평가합니다.
 
+선행 [개념 장](../concepts/control-contact.md)과 [장비 확장 순서](../equipment-stages.md)를 읽는다. 이 수업의 질문: 관절 궤적 오차와 TCP 궤적 오차는 어떻게 다른가?
+
 ## Learning goals
 
-첫 절반은 첫 관절의 0.06 rad 사인파, 후반은 월드 좌표계의 12 mm 원형 TCP 경로입니다. 감쇠 최소제곱 IK로 위치 목표를 만듭니다.
+관절 궤적과 직교 좌표 궤적은 다른 질문이다.
+
+관절 궤적 오차와 TCP 궤적 오차는 어떻게 다른가?
 
 ## Preflight
 
@@ -33,11 +37,11 @@
 
 ## Action
 
-```bash
-pal lesson run core-fr3-09 --samples 64 --json
-```
+준비된 환경을 활성화하고 새 출력 폴더를 쓴다. 반환 실행 경로를 보존하며 실행만으로 완료되지 않는다.
 
-JSON의 run_dir를 BASE로 기록하세요. 실행은 완료 처리가 아닙니다.
+```bash
+pal lesson run core-fr3-09 --headless --seed 7 --samples 64 --output-dir .local/runs/core-fr3-09/baseline-01 --json
+```
 
 ## Expected
 
@@ -47,25 +51,52 @@ JSON의 run_dir를 BASE로 기록하세요. 실행은 완료 처리가 아닙니
 
 축·단위·첫/마지막 오차·최댓값을 읽습니다. 렌더링에서 모델과 움직임을 확인하고, payload의 관절 이름·그룹·접촉을 수치와 대조합니다.
 
+### 산출물 읽기
+
+`experiment.json` → `payload`의 `joint_targets_rad`, `joint_errors_rad`, `tcp_targets_m`, `tcp_rmse_m`, `time_s`, `initial_q_rad`, `frame`, `control_dt_s`, 접촉 배열을 읽는다. `tcp_rmse_m`는 후반부만 평균하지만 그래프 오차는 두 단계를 포함한다. 기준 개수는 max(160,64×4)=256이며 제어 명령마다 물리 10스텝을 진행한다. MuJoCo 접촉 필드는 norm 같은 이름이지만 모든 접촉 법선력 절댓값의 합이다.
+
 ## How it works
 
-첫 절반은 첫 관절의 0.06 rad 사인파, 후반은 월드 좌표계의 12 mm 원형 TCP 경로입니다. 감쇠 최소제곱 IK로 위치 목표를 만듭니다.
+### 직관
+
+관절 궤적과 직교 좌표 궤적은 다른 질문이다. 전반부는 FR3 첫 관절을 사인파로 움직이고 후반부는 TCP에 월드 x/y 평면의 원을 추종하게 한다. 다른 팔의 관절 배열을 옮기지 않고 FR3 모델을 사용한다. FR3 위치 구동기에 관절 목표를 보낸다.
+
+### 계산과 단위
+
+$$
+x^*(\theta)=x_0+0.012v[\sin\theta,1-\cos\theta,0]^T,\qquad e_i=\|x_i^*-x_i\|_2
+$$
+
+x는 월드 m 단위 3원소, 관절 목표는 rad 단위 7각도, v는 무차원 `variant`다. 원의 반지름은 0.012v m이고 x0에서 중심이 이동해 θ=π에서 y 변위는 0.024v m이다. 전반부 관절 진폭은 0.06v rad다. 측정 실행이 아닌 계산으로 v=0.8이면 반지름 0.0096 m, 관절 진폭 0.048 rad이다.
+
+```python
+import numpy as np
+v = 0.8
+assert np.isclose(0.012 * v, 0.0096)
+assert np.isclose(0.06 * v, 0.048)
+```
 
 ## Code connection
 
-[`arm.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/arm.py)
+### 소스 추적
 
-`pai_lab.training`이 체크포인트·독립 평가를 기록합니다.
+[`src/pai_lab/lessons/arm.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/arm.py)
+
+`examples/core-fr3-09/run.py`는 공통 runner로 위임하며 runner는 카탈로그 구현·역량을 확인한 뒤 분기한다. 위 소스가 여기의 양을 계산한다. 메타데이터 파일 이름만으로 계산 내용을 판단하면 안 된다.
+
+[공개 경로 검증](../../verification/robot-paths-2026-11-08.md)은 기존 시뮬레이션 근거와 미검증 외부·장치 실행을 구별한다.
 
 ## Try it
 
-variant 하나만 바꾸고 나머지 조건을 유지합니다.
+### 통제된 비교
+
+샘플 수·시드를 고정하고 `variant`만 1→0.8로 바꾼다. CLI 변수 하나가 관절 파형과 TCP 반지름을 함께 바꾸므로 두 물리 변화를 명시한다. 이득만 바꾸는 실험은 아니다. 단계별 오차·극값을 비교한다. 경로가 작아 오차가 줄어도 제어기 자체가 개선된 것은 아니다.
 
 ```bash
-pal lesson run core-fr3-09 --samples 64 --variant 0.8 --json
-pal lesson check core-fr3-09 --run-dir BASE --json
-pal lesson review core-fr3-09 --run-dir BASE --comparison-run-dir COMPARISON --notes "측정값과 비교 해석"
-pal lesson finish core-fr3-09 --run-dir BASE --json
+pal lesson run core-fr3-09 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/core-fr3-09/comparison-01 --json
+pal lesson check core-fr3-09 --run-dir .local/runs/core-fr3-09/baseline-01 --json
+pal lesson check core-fr3-09 --run-dir .local/runs/core-fr3-09/comparison-01 --json
+pal lesson compare core-fr3-09 --run-dir .local/runs/core-fr3-09/baseline-01 --comparison-run-dir .local/runs/core-fr3-09/comparison-01 --output-dir .local/comparisons/core-fr3-09/comparison-01 --json
 ```
 
 ## Recovery
@@ -74,7 +105,16 @@ pal lesson finish core-fr3-09 --run-dir BASE --json
 
 ## Checkpoint
 
-설명·기준 실행·비교 실행·다음 행동을 저장한 뒤 한 수업에서 멈춥니다. 도구 또는 모델 호환성이 미확인이면 대기합니다.
+### 이해 확인
+
+rad와 m인 양은 각각 무엇인가? 관절 오차와 TCP 위치 오차다. FR3 원 추종이 다른 팔·실물 전이를 보장하는가? 아니다. 이 모델·엔진의 궤적 동작만 확인한다.
+
+두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
+
+```bash
+pal lesson review core-fr3-09 --run-dir .local/runs/core-fr3-09/baseline-01 --comparison-run-dir .local/runs/core-fr3-09/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
+pal lesson finish core-fr3-09 --run-dir .local/runs/core-fr3-09/baseline-01 --json
+```
 
 <!-- pal:navigation:start -->
 ## Next lesson

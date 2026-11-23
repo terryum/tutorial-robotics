@@ -25,9 +25,13 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+선행 [개념 장](../concepts/deployment-hardware.md)과 [장비 확장 순서](../equipment-stages.md)를 읽는다. 이 수업의 질문: 명령 차단 수신기는 물리 출력 없이 수신을 어떻게 확인하는가?
+
 ## Learning goals
 
-실제 후보를 오프라인 추론하고 모든 행동을 sink에 보관합니다.
+추론 sink는 출력 경계를 드러내며 정책을 실행한다.
+
+명령 차단 수신기는 물리 출력 없이 수신을 어떻게 확인하는가?
 
 ## Preflight
 
@@ -39,6 +43,8 @@ pal lesson check hw-common-01 --json
 ```
 
 ## Action
+
+준비된 환경을 활성화하고 새 출력 폴더를 쓴다. 반환 실행 경로를 보존하며 실행만으로 완료되지 않는다.
 
 ```bash
 pal lesson run hw-common-01 --headless --seed 7 --samples 64 --output-dir .local/runs/hw-common-01/baseline-01 --json
@@ -78,44 +84,50 @@ open .local/runs/hw-common-01/baseline-01/plot.png
 python -m json.tool .local/runs/hw-common-01/baseline-01/experiment.json
 ```
 
+### 산출물 읽기
+
+`inference.json`의 `actions`, `replay`와 `experiment.json` → `payload`의 `command_sink=enabled`, `emitted_command_count=0`, `inference_count`, `manifest_sha256`, `replay_exact`를 확인한다. 지표는 의도적으로 실물 명령 0개다. 빈 반복을 근거로 가장하지 않게 추론이 비어 있지 않은지도 본다.
+
 ## How it works
 
-런타임은 후보 해시를 검증하고 policy.npz를 로드해 결정론적 입력을 두 번 평가합니다. sink는 publisher·socket·SDK·장치 callback이 없는 메모리 목록입니다. 전송 명령이 0개라는 것만으로 충분하지 않고 실제 추론이 실행되어야 합니다.
+### 직관
+
+추론 sink는 출력 경계를 드러내며 정책을 실행한다. 검증된 후보를 불러와 저장 관측마다 두 번 평가하고 행동 배열을 메모리에 모아 저장한다. 의도적으로 publisher·소켓·SDK·실물 콜백이 없다. 하드웨어 단계에서 구현된 오프라인 예외다.
+
+### 계산과 단위
 
 $$
-e=\|\pi_{loaded}(o)-a_{expected}\|_{\infty}
+e_{replay}=\max_{i,j}|a^{first}_{ij}-a^{replay}_{ij}|
 $$
 
-기호·단위·조건: o와 a는 저장된 정책 계약 사용; 별도 선언 없으면 정규화 출력.
+두 배열의 크기는 (테스트 벡터 수, 7)이며 행동은 정규화 단위다. 결정론적 추론이 같으면 차이는 0이지만 행동 자체가 전부 0이라는 뜻은 아니다. 런타임 출력이 아닌 계산 예제에서 [0.2,-0.1]을 자신과 비교한 차이는 0이다.
 
-손으로 계산하는 예시(실행 측정값이 아님): expected [0.1,0.2], loaded [0.1,0.2] → e=0.
-
-실전 연결: 체크섬·입력 순서·시험 벡터가 같은 checkpoint를 가리켜야 합니다.
+```python
+import numpy as np
+a = np.array([0.2, -0.1])
+assert np.max(np.abs(a - a.copy())) == 0.0
+```
 
 ## Code connection
 
-`examples/hw-common-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/deployment.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+### 소스 추적
+
+[`src/pai_lab/lessons/deployment.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/deployment.py)
+
+`examples/hw-common-01/run.py`는 공통 runner로 위임하며 runner는 카탈로그 구현·역량을 확인한 뒤 분기한다. 위 소스가 여기의 양을 계산한다. 메타데이터 파일 이름만으로 계산 내용을 판단하면 안 된다.
 
 ## Try it
 
-seed를 7 → 8로 바꿉니다. 구조 검사·고정 모델 화면·결정론적 추론은 동일할 수 있습니다. 원격 서비스는 로컬 seed와 별개로 변할 수 있으므로 이 한계를 기록합니다.
+### 통제된 비교
+
+번들을 고정하고 문서 CLI 입력 하나만 바꾼다. 이 생산자는 매니페스트 테스트 벡터를 재생하며 `variant`·시드·`samples`를 사용하지 않아 정확한 불변이 예상된다. 다른 벡터 집합은 해시 번들을 몰래 편집하지 말고 상위 단계의 새 후보로 만든다.
 
 ```bash
-pal lesson run hw-common-01 --headless --samples 64 --output-dir .local/runs/hw-common-01/comparison-01 --seed 8 --json
-```
-
-seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
-
-```bash
+pal lesson run hw-common-01 --headless --seed 8 --samples 64 --output-dir .local/runs/hw-common-01/comparison-01 --json
+pal lesson check hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --json
+pal lesson check hw-common-01 --run-dir .local/runs/hw-common-01/comparison-01 --json
 pal lesson compare hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --comparison-run-dir .local/runs/hw-common-01/comparison-01 --output-dir .local/comparisons/hw-common-01/comparison-01 --json
 ```
-
-<details>
-<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
-
-본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
-
-</details>
 
 ## Recovery
 
@@ -123,10 +135,14 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 
 ## Checkpoint
 
-명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
+### 이해 확인
+
+추론은 0이 아닌데 명령 수는 0일 수 있는 이유는? 숫자를 계산하지만 실물 출력 경로가 없기 때문이다. 로봇 stop 회로를 검증하는가? 아니다.
+
+두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
 
 ```bash
-pal lesson review hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --comparison-run-dir .local/runs/hw-common-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
+pal lesson review hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --comparison-run-dir .local/runs/hw-common-01/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
 pal lesson finish hw-common-01 --run-dir .local/runs/hw-common-01/baseline-01 --json
 ```
 

@@ -23,9 +23,13 @@
 
 This prepared runtime controls, observes and renders in PhysX. Execution is unverified on Mac. Import success alone does not pass this lesson.
 
+Read the prerequisite [concept chapter](../concepts/physx.md) and [equipment progression](../equipment-stages.md). This lesson addresses: Which Shadow coupling and contact properties need PhysX evidence? Follow the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) where relevant; the actual producer below identifies which engine/framework this lesson uses.
+
 ## Learning goals
 
-Inspect actual single-finger and open/close synergy responses. Check object-filtered contact forces, dynamic joint coupling and rendering; incomplete coupling import blocks execution.
+The PhysX introduction must preserve Shadow named joints, drive semantics, coupling and real object contacts after import.
+
+Which Shadow coupling and contact properties need PhysX evidence?
 
 ## Preflight
 
@@ -35,11 +39,11 @@ Requires an Ubuntu NVIDIA GPU host with Isaac Sim installed. Run `pal setup veri
 
 ## Action
 
-```bash
-pal lesson run sim-shadow-01 --samples 64 --json
-```
+Activate the prepared environment and use a fresh output directory. Preserve the returned run path; execution does not mark completion.
 
-Save the returned run_dir as BASE. Execution alone does not mark completion.
+```bash
+pal lesson run sim-shadow-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-shadow-01/baseline-01 --json
+```
 
 ## Expected
 
@@ -49,25 +53,50 @@ Inspect `shadow-physx.json`, `trace.csv`, `plot.png` and `experiment.json`. The 
 
 Read axes, units, initial/final error and extrema. Inspect rendering and compare named joints, groups and contacts in the payload with the measurements.
 
+### Reading the artifacts
+
+Inspect `physx-observations.json`: `joint_states`, `commands`, `couplings_required`, `object_contact_forces_N` and source/engine identity. The contact sensor filters palm against the named object, and positive finite measured force is required. Imported coupling failures stay blocked. The trace is target/observed first joint; inspect force separately.
+
 ## How it works
 
-Inspect actual single-finger and open/close synergy responses. Check object-filtered contact forces, dynamic joint coupling and rendering; incomplete coupling import blocks execution.
+### Intuition
+
+The PhysX introduction must preserve Shadow named joints, drive semantics, coupling and real object contacts after import. The wrist joints are excluded from the prescribed finger close/open. The importer rejects unverified mimic/tendon mapping; observed dynamic coupling is checked again, rather than inferred from a visually plausible hand.
+
+### Calculation and units
+
+$$
+c(\phi)=\frac{1-\cos(2\pi\phi)}2,\qquad \phi\in[0,1]
+$$
+
+The dimensionless ramp multiplies 0.7×variant in commanded joint-angle targets (rad). Actual drive response and object force remain measured quantities. Source equality-joint polynomials are checked to within 0.05 rad; a present schema alone is insufficient. Worked calculation, not a run: c(0.5)=1.
+
+```python
+import numpy as np
+phase = 0.5
+ramp = (1 - np.cos(2 * np.pi * phase)) / 2
+assert np.isclose(ramp, 1.0)
+```
 
 ## Code connection
 
-[`isaac_tasks.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/isaac_tasks.py)
+### Source trace
 
-`pai_lab.training` records checkpoints and independent evaluation.
+[`src/pai_lab/lessons/isaac_tasks.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/isaac_tasks.py)
+
+`examples/sim-shadow-01/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
 
 ## Try it
 
-Change only variant; keep the other conditions fixed.
+### Controlled comparison
+
+Change only `variant` 1→0.8 with source, seed and samples fixed. It reduces prescribed closure amplitude; limits and contact may make actual displacement nonlinear. Explain object-contact and per-joint changes separately. Smaller closure is not automatically a better grasp.
 
 ```bash
-pal lesson run sim-shadow-01 --samples 64 --variant 0.8 --json
-pal lesson check sim-shadow-01 --run-dir BASE --json
-pal lesson review sim-shadow-01 --run-dir BASE --comparison-run-dir COMPARISON --notes "measured comparison and interpretation"
-pal lesson finish sim-shadow-01 --run-dir BASE --json
+pal lesson run sim-shadow-01 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/sim-shadow-01/comparison-01 --json
+pal lesson check sim-shadow-01 --run-dir .local/runs/sim-shadow-01/baseline-01 --json
+pal lesson check sim-shadow-01 --run-dir .local/runs/sim-shadow-01/comparison-01 --json
+pal lesson compare sim-shadow-01 --run-dir .local/runs/sim-shadow-01/baseline-01 --comparison-run-dir .local/runs/sim-shadow-01/comparison-01 --output-dir .local/comparisons/sim-shadow-01/comparison-01 --json
 ```
 
 ## Recovery
@@ -76,7 +105,16 @@ Preserve interrupted evidence. `pal course pause`, `pal course resume` and `pal 
 
 ## Checkpoint
 
-Save explanation, baseline, comparison and next action, then stop after one lesson. Unverified tools or model compatibility keep the stage blocked.
+### Check understanding
+
+Why distinguish object contact from self-contact? A folded finger may touch the hand without touching the task object. Does one positive contact prove stable grasping? No.
+
+Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
+
+```bash
+pal lesson review sim-shadow-01 --run-dir .local/runs/sim-shadow-01/baseline-01 --comparison-run-dir .local/runs/sim-shadow-01/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
+pal lesson finish sim-shadow-01 --run-dir .local/runs/sim-shadow-01/baseline-01 --json
+```
 
 <!-- pal:navigation:start -->
 ## Next lesson

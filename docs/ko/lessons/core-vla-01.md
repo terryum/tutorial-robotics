@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: vla](../concepts/vla.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 명시적인 모의 VLA 프로토콜을 장치 없이 왕복시킵니다.
@@ -86,15 +88,25 @@ $$
 \forall i,\quad a_i\in\mathbb R,\quad |a_i|\leq a_{max}
 $$
 
-기호·단위·조건: a: 정규화 행동; 제한: 같은 단위; 유한값 필수.
+기호·단위·조건: a: 모의 행동 rad; 제한: rad; 유한값 필수.
 
 손으로 계산하는 예시(실행 측정값이 아님): limit 1.0, action 1.2 → reject.
 
 실전 연결: 전송 검증은 신경망 정책의 성능 검증과 다릅니다.
 
+### 입력에서 관측까지
+
+언어·영상·상태를 정책에 보내는 통신 형식부터 확인하면, 잘못된 단위나 누락 필드를 학습 문제와 구분할 수 있습니다. 여기의 영상은 mock-image 식별자 fixture이고 실제 vision encoder 입력이 아닙니다. 상태7개도 모두0인 고정 배열입니다.
+
 ## Code connection
 
 `examples/core-vla-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`learning.py`](../../../src/pai_lab/lessons/learning.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`learning.run`은 request를 JSON encode/decode하고 response.actions를 observation×variant로 구성합니다. actions shape는1×7, response units는 rad이며 `mock=true`, `command_sink=true`입니다. `vla-request-response.json`의 request timeout_s=0.1은 필드일 뿐 이 분기에 실제 HTTP 시간 초과 시험은 없습니다. schema_fields10은 request6개+response4개의 개수이며 정책의 정답률이 아닙니다. 경계1.0도 이 mock의 rad 숫자 한계입니다.
 
 ## Try it
 
@@ -117,6 +129,10 @@ pal lesson compare core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --c
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+seed7→8은 이 분기의 고정 상태나 출력을 바꾸지 않습니다. 0×variant도 항상0입니다. 한 변수 종이 계산으로 action1.2 rad만 바꾸어 생각하면 bound1.0을 넘지만 이것을 실제 서버 호출·학습 실행으로 기록하지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -129,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --comparison-run-dir .local/runs/core-vla-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: mock=true로 무엇을 확인하나요? 답: 데이터 경로·schema입니다. 질문: request에 instruction이 있으면 VLA 추론인가요? 답: 신경망이 실행되지 않습니다. 실제 SmolVLA와 remote 추론은 별도 준비·runtime 수업으로 연결합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

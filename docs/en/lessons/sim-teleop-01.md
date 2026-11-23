@@ -21,50 +21,84 @@
 
 ## Reader route
 
-This optional route preserves the existing VR-free lessons. Synthetic replay is labelled synthetic and does not verify physical input. The entry point writes into a fresh run directory. Inspect raw device clocks, xyz+xyzw in meters/radians, explicit left/right identity, calibration ID, clutch and deadman. At 100 ms without valid input the sink latches hold; release both switches, rearm locally, then press again. A reconnect or tracking loss requires the same procedure.
+Read-only input acceptance needs actual Quest, MANUS and VIVE identities, firmware/SDK compatibility, calibration and simultaneous stream measurements. A downloaded Linux Hub archive or parsed synthetic packet does not prove USB devices work. This lesson remains scaffolded; ordinary runner dispatch rejects execution before manufacturing device-input evidence. Preserve existing VR-free routes and vendor environments.
 
-Live input remains capability-unavailable until Quest → MANUS → VIVE read-only checks and simultaneous 60-second evidence pass. Follow the setup guide below. No fabricated device evidence is emitted. This physical-input lesson is scaffolded until reader testing.
+Read the prerequisite [concept chapter](../concepts/data-imitation.md) and [equipment progression](../equipment-stages.md). This lesson addresses: Which live-input evidence is still missing after a software protocol check?
 
 ## Learning goals
 
-Understand source selection, calibrated coordinates, local hold and episode integrity.
+Read-only input acceptance needs actual Quest, MANUS and VIVE identities, firmware/SDK compatibility, calibration and simultaneous stream measurements.
+
+Which live-input evidence is still missing after a software protocol check?
 
 ## Preflight
 
-Use `pal setup verify --profile core --json`. See [Ubuntu VR setup](../setup/vr-teleop.md). Mac supports contracts, transforms, replay and small MuJoCo examples; WS2 Ubuntu owns input/simulation/learning. WS1 Ubuntu applies verified collection to hardware in a separate approved run. Windows is an optional vendor recovery path. Preserve calibration and data under ignored `.local/`.
+Use a host matching the catalog platforms and capabilities; computer names do not grant readiness. `core-teleop-01` supports macOS arm64 and Linux x86_64; the later optional input/collection lessons are cataloged for Linux x86_64. Read [VR setup](../setup/vr-teleop.md), [equipment stages](../equipment-stages.md) and the synthetic/live distinction in [verification](../../verification/vr-teleop-2026-11-13.md). Preserve devices, calibration and raw episodes under ignored `.local/`; no automatic vendor installation or device consent is implied.
 
 ## Action
 
+The canonical command `pal lesson run sim-teleop-01` is intentionally unavailable: the runner refuses this scaffold before readiness checks or output creation. Do not execute it.
+
+This is preparation-only. Inspect the catalog and the readiness report; the current runner raises `NotImplementedError` for this scaffold and creates no successful device run. A readiness/contract check does not execute hardware or complete the lesson.
+
 ```bash
-pal lesson run sim-teleop-01 --samples 16 --json
+pal lesson check sim-teleop-01 --json
 ```
 
 ## Expected
 
-Inspect `device-input.json`, `experiment.json`, `trace.csv` and episode manifests when available. Device input requires actual 60-second rate, maximum gap, tracking validity, occlusion, release, reconnect and 100 ms timeout evidence.
+Execution remains blocked. Do not expect a successful run directory or numeric device evidence from this scaffold.
+
+### Reading the artifacts
+
+Prepare rate, maximum gap, tracking-valid ratio, occlusion, side identity, release/reconnect and independent 100 ms hold evidence for each stream and simultaneous operation. `rate_report` computes `full_60s`, `rate_hz`, `maximum_gap_ns`, `tracking_valid_ratio`; these fields must come from real ordered receive records before claiming live acceptance. The public VR report states actual devices were absent.
 
 ## How it works
 
-The common contract uses receiver monotonic freshness and explicit source identities. Device clocks are preserved without cross-host subtraction.
+### Intuition
+
+Read-only input acceptance needs actual Quest, MANUS and VIVE identities, firmware/SDK compatibility, calibration and simultaneous stream measurements. A downloaded Linux Hub archive or parsed synthetic packet does not prove USB devices work. This lesson remains scaffolded; ordinary runner dispatch rejects execution before manufacturing device-input evidence. Preserve existing VR-free routes and vendor environments.
+
+### Calculation and units
+
+$$
+f=\frac{N-1}{t_{last}-t_{first}},\qquad g_{max}=\max_i(t_{i+1}-t_i)
+$$
+
+Use one ordered source/side stream and local receive times converted from ns to s. Rate f is Hz and maximum gap g is s; elapsed duration must cover at least 60 s for the full acceptance record. Worked calculation, not device data: 6001 samples over 60 s give 100 Hz. Average rate alone can conceal a long dropout.
+
+```python
+samples, duration_s = 6001, 60.0
+assert (samples - 1) / duration_s == 100.0
+```
 
 ## Code connection
 
-`pai_lab.teleop`, `teleop_sources`, `teleop_recording` and `lessons.teleop`.
+### Source trace
+
+[`src/pai_lab/teleop_sources.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/teleop_sources.py)
+
+`examples/sim-teleop-01/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
+
+See also [`teleop.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/teleop.py), [`teleop_recording.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/teleop_recording.py) and the [VR verification record](../../verification/vr-teleop-2026-11-13.md).
 
 ## Try it
 
-```bash
-pal lesson run sim-teleop-01 --samples 16 --variant 0.8 --json
-pal lesson check sim-teleop-01 --run-dir BASE --json
-```
+### Controlled comparison
+
+Paper-only comparison: keep hypothetical sample times fixed and change one tracking-valid flag; predict a changed validity ratio while average rate stays unchanged. No vendor installation, EULA consent, haptics or live device operation is implied. Do not save a synthetic rate report as device acceptance.
 
 ## Recovery
 
-Keep interrupted episodes; saved, discarded and aborted states are distinct. Never overwrite an existing episode or resume control after reconnect without local rearm.
+Preserve failed readiness records and interrupted episode evidence. If identity, freshness, tracking, disabled/error/E-stop state or network isolation fails, remain blocked. Reconnection requires new read-only checks and any applicable local rearm; it never resumes physical motion. Follow the documented vendor recovery procedure without automatic firmware, torque, limit or watchdog changes. `pal course resume --json` inspects saved teaching state only.
 
 ## Checkpoint
 
-Compare numeric artifacts and replay before review. Development tests never create learner completion. Hardware teleoperation requires simulation completion and separate safety review and per-run approval.
+### Check understanding
+
+Why measure maximum gap in addition to mean rate? A burst can mask a stale interval. Do software tests complete this live-input lesson? No; actual device evidence remains required.
+
+Record preparation and unresolved gates locally. Keep the lesson incomplete until actual device/input evidence and applicable per-run approval exist. Stop here without physical commands.
 
 <!-- pal:navigation:start -->
 ## Next lesson

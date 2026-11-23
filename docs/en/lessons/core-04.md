@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Render the actual FR3 scene and inspect the camera result.
@@ -98,9 +100,19 @@ Worked calculation (not a measured run result): 360 × 480 × 3 = 518400 channel
 
 Practical connection: A nonblank image still needs the tool and ground visible.
 
+### From input to observation
+
+Rendering connects model, state and camera to pixels a person can inspect. Changing the viewpoint changes occlusion even with identical joint state, so read images alongside numerical state. In a 360×480×3 uint8 array, axes are rows, columns and RGB channels.
+
 ## Code connection
 
 `examples/core-04/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`physics.run` reads the FR3 home pose; `runner.run_lesson` produces frame.png through `experiment.render`. Match `frame_positions_m`, `joint_names` and qpos to the tool, ground and whole arm in the image. The plot shows position(rad) by joint index, not camera motion. Pixel variance and useful framing are separate conditions. Current navigation includes an optional teleop lesson; robot paths remain available without VR.
 
 ## Try it
 
@@ -123,6 +135,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only camera_azimuth from 135° to 165° changes pixels and occlusion while joint arrays, mass and joint count stay fixed. The viewpoint rotates 30°, approximately 0.5236 rad(calculation); the object itself has not rotated by 30°.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -135,6 +151,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-04 --run-dir .local/runs/core-04/baseline-01 --comparison-run-dir .local/runs/core-04/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-04 --run-dir .local/runs/core-04/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does headless mean no image? Answer: Rendering uses an offscreen graphics context. Question: Does the camera comparison improve physics performance? Answer: It changes visibility. Identify the same joint names and tool in both images.
 
 <!-- pal:navigation:start -->
 ## Next lesson

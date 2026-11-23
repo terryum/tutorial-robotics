@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: ros](../concepts/ros.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 측정된 MuJoCo 상태를 ROS JointState 메시지로 연결합니다.
@@ -90,9 +94,19 @@ $$
 
 실전 연결: 상태 수신 성공은 명령 발행이나 물리적 정지 증거와 다릅니다.
 
+### 입력에서 관측까지
+
+시뮬레이터의 배열을 ROS 메시지로 옮길 때 값뿐 아니라 이름·단위·시각도 전달해야 합니다. 이 baseline의 JointState position과 velocity는 단일 진자의 길이1 배열이며 rad·rad/s입니다. 실제 로봇의 상태를 구독하는 production driver가 아닙니다.
+
 ## Code connection
 
 `examples/sim-ros-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/ros.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`ros.py`](../../../src/pai_lab/lessons/ros.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`ros.run`은10회 MuJoCo 적분 뒤 data.time을 sec/nanosec로 나누고 JointState를 publish합니다. 같은 context의 executor가 수신할 때까지 최대2초 기다립니다. `joint-state-bridge.csv`의 reference는 송신 position[0], observed는 수신 position[0]입니다. `experiment.json`의 graph에는 QoS·domain·source가 있고 checks의 state_equal은 현재 첫 관절 trace의 일치를 검사합니다. 모든 관절의 이름·속도를 교차 검증했다고 확대하지 않습니다.
 
 ## Try it
 
@@ -115,6 +129,10 @@ pal lesson compare sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --com
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+진폭0.1→0.15 Nm로 바꾸면 송신 물리 궤적은 바뀔 수 있지만 직렬화 오류가 생겨야 하는 것은 아닙니다. 시간 계산 예시0.024 s는 sec0,nanosec24000000입니다. 수신 시각을 host wall time으로 혼동하지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -127,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --comparison-run-dir .local/runs/sim-ros-02/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-ros-02 --run-dir .local/runs/sim-ros-02/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: reference와 observed가 겹치면 운동이 없었나요? 답: 같은 움직임을 전송했을 수 있습니다. 질문: bridge 상태 일치는 stop 경로 검증인가요? 답: 별도입니다. 상태 단위·표본 시각·수신 오차를 함께 기록합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

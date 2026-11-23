@@ -53,3 +53,28 @@ Robotiq 2F-85 is the gripper simulation baseline. The [manufacturer's Isaac asse
 Enlight retains RDK 2.1 / v3E.1 as the hardware baseline. The public description's v4 compatibility remains unverified. Review Elements, then offline replay, command sink, read-only, live shadow and torque-disabled replay before a fresh exact-action card. Hardware lesson commands stay blocked. The injected run-card executor provides no vendor connection or enable API. A site adapter must separately validate watchdog, timeout, stop, identity, limits and tool/payload. Probe and gripper stages remain blocked without those tools and reviews. Read [hardware safety](../07_SAFETY.md).
 
 On an installed Isaac host, use `pal train run --engine physx --model fr3 --algorithm bc --epochs 64 --output-dir .local/train/physx-fr3 --json`. Resume checkpoints only on the same engine. See [environment verification](../verification/robot-paths-2026-11-08.md).
+
+## How to read a path
+
+The five common foundations teach reproducibility, models, state and rendering. The manipulator route builds from joints/frames into control, learning and independent evaluation. The hand route connects joints/synergies to contact. The mobile route composes base and arm coordinates. Check prerequisite lessons and return to the relevant [concept chapter](index.md#eleven-common-concept-chapters) when a new idea appears.
+
+Move from Mac to a capable WS at the first required PhysX, ROS or GPU lesson. Required Isaac work cannot be skipped to finish a path. Physical stages require separate tool/payload/safety review and fresh per-run approval. Read [equipment guidance](equipment.md) first.
+
+Below is the required order from `curriculum/paths.json`, which can differ from global catalog order. Ask `pal course next --json` for actual selection.
+
+### manipulator
+
+[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-fr3-01](lessons/core-fr3-01.md) → [core-fr3-02](lessons/core-fr3-02.md) → [core-fr3-03](lessons/core-fr3-03.md) → [core-fr3-04](lessons/core-fr3-04.md) → [core-fr3-05](lessons/core-fr3-05.md) → [core-fr3-06](lessons/core-fr3-06.md) → [core-fr3-09](lessons/core-fr3-09.md) → [sim-fr3-01](lessons/sim-fr3-01.md) → [core-rl-01](lessons/core-rl-01.md) → [core-fr3-07](lessons/core-fr3-07.md) → [core-fr3-08](lessons/core-fr3-08.md) → [core-fr3-10](lessons/core-fr3-10.md) → [sim-fr3-02](lessons/sim-fr3-02.md) → [sim-fr3-03](lessons/sim-fr3-03.md) → [sim-fr3-04](lessons/sim-fr3-04.md) → [core-enlight-01](lessons/core-enlight-01.md) → [core-enlight-02](lessons/core-enlight-02.md) → [core-enlight-03](lessons/core-enlight-03.md) → [core-enlight-04](lessons/core-enlight-04.md) → [core-enlight-05](lessons/core-enlight-05.md) → [sim-enlight-03](lessons/sim-enlight-03.md) → [sim-enlight-04](lessons/sim-enlight-04.md) → [sim-enlight-05](lessons/sim-enlight-05.md) → [sim-deploy-01](lessons/sim-deploy-01.md) → [hw-common-01](lessons/hw-common-01.md) → [hw-common-02](lessons/hw-common-02.md) → [sim-ros-01](lessons/sim-ros-01.md) → [sim-enlight-01](lessons/sim-enlight-01.md) → [hw-enlight-01](lessons/hw-enlight-01.md) → [hw-enlight-02](lessons/hw-enlight-02.md) → [hw-enlight-04](lessons/hw-enlight-04.md) → [hw-enlight-05](lessons/hw-enlight-05.md) → [hw-enlight-06](lessons/hw-enlight-06.md)
+
+### dexterous-hand
+
+[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-shadow-01](lessons/core-shadow-01.md) → [sim-shadow-01](lessons/sim-shadow-01.md)
+
+### mobile-manipulator
+
+[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-stretch3-01](lessons/core-stretch3-01.md) → [sim-stretch3-01](lessons/sim-stretch3-01.md)
+
+
+## Progress from minimal equipment
+
+Follow [laptop → GPU → optional collection equipment → real robots last](equipment-stages.md). The [NVIDIA experience workbook](nvidia-ecosystem.md) connects Isaac Sim, Lab, Teleop/Capture, GR00T and ROS/deployment through exercises and evidence. Consider XR, a gripper or UMI only for the later tasks that need them.

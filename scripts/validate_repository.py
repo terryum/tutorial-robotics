@@ -14,7 +14,10 @@ LINK = re.compile(r"!?\[[^]]*]\(([^)]+)\)")
 def validate_links() -> list[str]:
     errors: list[str] = []
     for path in ROOT.rglob("*.md"):
-        if any(part in {".git", ".venv", ".local", ".cache", "vendor"} for part in path.parts):
+        if any(
+            part in {".git", ".venv", ".local", ".cache", "vendor", ".harness", "_workspace"}
+            for part in path.parts
+        ):
             continue
         text = path.read_text(encoding="utf-8")
         for target in LINK.findall(text):

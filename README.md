@@ -1,12 +1,31 @@
 <!-- pal:language:start -->
 <p align="right">
-  <a href="docs/ko/index.md" lang="ko">한국어</a> | <a href="docs/en/index.md" lang="en">ENGLISH</a>
+  <a href="README.ko.md" lang="ko">한국어</a> | <a href="README.md" lang="en">ENGLISH</a>
 </p>
 <!-- pal:language:end -->
 
 # Tutorial Robotics
 
 An action-first bilingual course for readers who know basic Python and are new to robotics. Start with one lesson, inspect the actual state and images, explain the result, compare one variable, then finish it. [English](docs/en/index.md) · [한국어](docs/ko/index.md)
+
+## Choose your learning route
+
+Read the [English learning map](docs/en/index.md) and the five common foundations
+(`core-00`–`core-04`), then choose a path. Basic Python is enough to begin; the
+[11 concept chapters](docs/en/index.md#eleven-common-concept-chapters) explain
+required mathematics beside the experiments.
+
+| Goal | Path | First specialization | Host transition |
+|---|---|---|---|
+| Control an arm and study learning | [Manipulator](docs/en/paths.md) | FR3, then independently trained Enlight | Genuine PhysX, then separately gated device preparation |
+| Understand dexterous hands | [Robot hand](docs/en/paths.md) | Shadow Hand, then Wuji | PhysX before device follow-up |
+| Coordinate a base and arm | [Mobile manipulator](docs/en/paths.md) | Stretch 3 | PhysX after local MuJoCo |
+
+The [equipment guide](docs/en/equipment.md) separates MacBook-local and remote
+work. Mac execution covers 33 Core lessons plus deployment and offline sink;
+matched-engine analysis additionally needs genuine external PhysX evidence.
+WS1/WS2 are host labels: actual Ubuntu, ROS, CUDA, Isaac and runtime capabilities
+determine readiness. Browse all [72 lesson goals and prerequisites](docs/en/lessons.md).
 
 ## Remote development setup
 
@@ -109,7 +128,12 @@ artifacts to resume later; a fresh clone has its own progress. See the
 
 The catalog preserves the original 49 IDs and legacy aliases and adds independently selectable robot paths. See the [English](docs/en/paths.md) / [한국어](docs/ko/paths.md) path guides and `pal course paths --json`. Real MuJoCo models, measured contact/control, NumPy PPO and BC replace the earlier generic numerical fixtures. ACT and the VLA mock remain explicitly contract lessons.
 
-Mac verification covers Core plus the generated deployment candidate and offline sink. The other 14 software lessons require actual Ubuntu/ROS/GPU/Isaac environments and remain `reader_test_required` until run there. The eight device lessons remain `scaffolded`; no simulation result authorizes physical motion. See [WS1 preparation and verification](setup/WS1_HANDOFF.md).
+The current catalog contains 33 Core, 27 Sim and 12 Hardware lessons. Mac-local
+scope includes Core plus the deployment candidate and offline sink. Eleven
+physical lessons remain `scaffolded`; required GPU/ROS/Isaac lessons retain their
+catalog badges until appropriate evidence exists. An implemented lesson is not a
+claim of host readiness, independent policy performance or hardware approval.
+See [equipment and verification boundaries](docs/en/equipment.md).
 
 Read the [measured verification report and reviewed figures](docs/verification/reader-experience.md) for exact results, source revision and remaining external checks.
 
@@ -220,3 +244,27 @@ The metadata generator preserves authored lesson bodies, entrypoints and tests. 
 [Installation and cross-host update handoff](setup/LATEST_ROBOTICS_UPDATE.md)
 provides isolated pinned profiles and explicitly tracks remaining GPU and FR3 acceptance.
 Use `pal stack plan --profile pi05 --json` for a read-only plan.
+
+## Equipment progression and NVIDIA experience
+
+Begin on a laptop, then use a verified GPU workstation, add optional Quest 3/MANUS/VIVE or UMI collection only when useful, and study actual FR3/Enlight operation last. Read the [staged equipment guide](docs/en/equipment-stages.md) and [NVIDIA experience workbook](docs/en/nvidia-ecosystem.md) for Isaac Sim, Isaac Lab, Isaac Teleop/Capture, GR00T and deployment exercises. Existing VR-free routes remain available.
+
+## Textbook production with Codex Harness
+
+This repository uses a project-local copy of
+[Codex Harness](https://github.com/revfactory/codex-harness) at revision
+`80f8217b5b6d3f220a31f05f9c0adaf09dac40f4` to coordinate scoped authors,
+independent review and execution QA. Three robotics book skills connect source
+code, measured artifacts, concept chapters and Korean/English lessons. This
+production workflow does not run learner lessons or authorize devices.
+
+The imported skill and five role definitions are Apache-2.0; the full
+[license](third_party/codex-harness/LICENSE), original
+[NOTICE](third_party/codex-harness/NOTICE), and
+[provenance and local additions](third_party/codex-harness/PROVENANCE.md) accompany
+redistribution. The authors retain their attribution; no endorsement is implied.
+Robot assets keep their individual licenses. Start production at the
+[book orchestrator](.agents/skills/robotics-book-orchestrator/SKILL.md).
+Run outputs and communications stay ignored; reusable skills and checks are tracked.
+
+[Textbook production verification and remaining external checks](docs/verification/book-production-2026-11-23.md).

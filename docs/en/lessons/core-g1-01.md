@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [mobile-motion concept chapter](../concepts/mobile-motion.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Record and replay a bounded G1 joint-motion cycle.
@@ -104,9 +106,21 @@ Worked calculation (not a measured run result): A=0.1 rad, phase=π/2 → offset
 
 Practical connection: Prescribed FK playback cannot establish balance or learned walking.
 
+### From input to observation
+
+Saving and replaying motion checks state ordering before learning or balance control. Floating-base qpos includes translation and quaternion, so hinge addresses must be selected separately. Each saved row has full nq length while only hinge coordinates vary.
+
 ## Code connection
 
 `examples/core-g1-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`hands.py`](../../../src/pai_lab/lessons/hands.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`hands.run` adds 0.08×variant×sin(phase) at hinge `jnt_qposadr` entries, then clips to limits. Each sample uses `mj_forward` rather than dynamic walking integration. Read qpos shape=(samples,nq), dt=0.02 s in `motion.npz` and `replay_max_error`. Phase spans 0–2π over samples points, so final time is (samples-1)×0.02 s. closed_cycle checks matching endpoint poses; replay error checks saved-state reproduction.
+
+The scalar named loop_error currently receives replay error; payload.loop_error separately stores the endpoint norm. Report each value with its field location.
 
 ## Try it
 
@@ -129,6 +143,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing amplitude 0.08→0.12 rad enlarges hinge motion while keeping the free base fixed. Zero loop/replay errors do not mean amplitude stayed unchanged. Compare maximum hinge displacement separately from endpoints.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -141,6 +159,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --comparison-run-dir .local/runs/core-g1-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-g1-01 --run-dir .local/runs/core-g1-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does a closed loop prove the robot stays upright? Answer: No dynamic balance is tested. Question: Can qvel use identical addresses? Answer: Configuration and velocity addresses may differ. GPU learning next needs separate reference motion and runtime.
 
 <!-- pal:navigation:start -->
 ## Next lesson

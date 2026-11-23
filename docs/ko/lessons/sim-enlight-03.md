@@ -23,9 +23,13 @@
 
 PhysX에서 제어·관측·렌더링을 수행하는 코드입니다. Mac에서 실행 검증하지 않았습니다. import 성공만으로 수업을 통과하지 않습니다.
 
+선행 [개념 장](../concepts/physx.md)과 [장비 확장 순서](../equipment-stages.md)를 읽는다. 이 수업의 질문: PhysX에서 Enlight 제어의 어떤 특성을 다시 검사해야 하는가?필요한 경우 [NVIDIA 생태계 실습](../nvidia-ecosystem.md)을 참고하되, 이 수업이 쓰는 실제 엔진·프레임워크는 아래 생산자로 구별한다.
+
 ## Learning goals
 
-Enlight의 joint1…joint7과 attachment_site를 별도로 대응시켜 관절 사인파·TCP 원형 경로·프로브 접촉을 PhysX에서 실행합니다. Enlight 모델의 관절·구동기·좌표계가 기준이며 FR3 가중치를 사용하지 않습니다.
+관절 궤적과 직교 좌표 궤적은 다른 질문이다.
+
+PhysX에서 Enlight 제어의 어떤 특성을 다시 검사해야 하는가?
 
 ## Preflight
 
@@ -35,11 +39,11 @@ Ubuntu NVIDIA GPU와 설치된 Isaac Sim이 필요합니다. `pal setup verify -
 
 ## Action
 
-```bash
-pal lesson run sim-enlight-03 --samples 64 --json
-```
+준비된 환경을 활성화하고 새 출력 폴더를 쓴다. 반환 실행 경로를 보존하며 실행만으로 완료되지 않는다.
 
-JSON의 run_dir를 BASE로 기록하세요. 실행은 완료 처리가 아닙니다.
+```bash
+pal lesson run sim-enlight-03 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-enlight-03/baseline-01 --json
+```
 
 ## Expected
 
@@ -49,25 +53,52 @@ JSON의 run_dir를 BASE로 기록하세요. 실행은 완료 처리가 아닙니
 
 축·단위·첫/마지막 오차·최댓값을 읽습니다. 렌더링에서 모델과 움직임을 확인하고, payload의 관절 이름·그룹·접촉을 수치와 대조합니다.
 
+### 산출물 읽기
+
+`physx-observations.json`과 `experiment.json` → `payload`의 `tcp_targets_m`, `tcp_errors_m`, `joint_errors_rad`, `initial_q_rad`, `frame`, `control_dt_s`, `joint_reaction_forces`, `contact_force_norms_N`, 별도의 `probe_contact_forces_N`를 읽는다. 반력에는 중력이 포함되며 접촉 센서가 아니다. 궤적 뒤 별도 충돌 프로브 실험에서 양의 유한 PhysX 힘이 나와야 한다. 렌더링이나 USD 가져오기만으로 동역학·접촉 요구를 만족할 수 없다. 실제 GPU 실행은 별도 검증 게이트다.
+
 ## How it works
 
-Enlight의 joint1…joint7과 attachment_site를 별도로 대응시켜 관절 사인파·TCP 원형 경로·프로브 접촉을 PhysX에서 실행합니다. Enlight 모델의 관절·구동기·좌표계가 기준이며 FR3 가중치를 사용하지 않습니다.
+### 직관
+
+관절 궤적과 직교 좌표 궤적은 다른 질문이다. 전반부는 Enlight 첫 관절을 사인파로 움직이고 후반부는 TCP에 월드 x/y 평면의 원을 추종하게 한다. 다른 팔의 관절 배열을 옮기지 않고 Enlight 모델을 사용한다. 이름 있는 PhysX 관절에 위치 드라이브 목표를 보낸다. TCP 운동·자코비안·관측 상태는 PhysX에서 얻으며 MuJoCo는 고정 소스 메타데이터·내보내기에만 쓴다.
+
+### 계산과 단위
+
+$$
+x^*(\theta)=x_0+0.012v[\sin\theta,1-\cos\theta,0]^T,\qquad e_i=\|x_i^*-x_i\|_2
+$$
+
+x는 월드 m 단위 3원소, 관절 목표는 rad 단위 7각도, v는 무차원 `variant`다. 원의 반지름은 0.012v m이고 x0에서 중심이 이동해 θ=π에서 y 변위는 0.024v m이다. 전반부 관절 진폭은 0.06v rad다. 측정 실행이 아닌 계산으로 v=0.8이면 반지름 0.0096 m, 관절 진폭 0.048 rad이다.
+
+```python
+import numpy as np
+v = 0.8
+assert np.isclose(0.012 * v, 0.0096)
+assert np.isclose(0.06 * v, 0.048)
+```
 
 ## Code connection
 
-[`isaac_tasks.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/isaac_tasks.py)
+### 소스 추적
 
-`pai_lab.training`이 체크포인트·독립 평가를 기록합니다.
+[`src/pai_lab/lessons/isaac_tasks.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/isaac_tasks.py)
+
+`examples/sim-enlight-03/run.py`는 공통 runner로 위임하며 runner는 카탈로그 구현·역량을 확인한 뒤 분기한다. 위 소스가 여기의 양을 계산한다. 메타데이터 파일 이름만으로 계산 내용을 판단하면 안 된다.
+
+[공개 경로 검증](../../verification/robot-paths-2026-11-08.md)은 기존 시뮬레이션 근거와 미검증 외부·장치 실행을 구별한다.
 
 ## Try it
 
-variant 하나만 바꾸고 나머지 조건을 유지합니다.
+### 통제된 비교
+
+샘플 수·시드를 고정하고 `variant`만 1→0.8로 바꾼다. CLI 변수 하나가 관절 파형과 TCP 반지름을 함께 바꾸므로 두 물리 변화를 명시한다. 이득만 바꾸는 실험은 아니다. 단계별 오차·극값을 비교한다. 경로가 작아 오차가 줄어도 제어기 자체가 개선된 것은 아니다.
 
 ```bash
-pal lesson run sim-enlight-03 --samples 64 --variant 0.8 --json
-pal lesson check sim-enlight-03 --run-dir BASE --json
-pal lesson review sim-enlight-03 --run-dir BASE --comparison-run-dir COMPARISON --notes "측정값과 비교 해석"
-pal lesson finish sim-enlight-03 --run-dir BASE --json
+pal lesson run sim-enlight-03 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/sim-enlight-03/comparison-01 --json
+pal lesson check sim-enlight-03 --run-dir .local/runs/sim-enlight-03/baseline-01 --json
+pal lesson check sim-enlight-03 --run-dir .local/runs/sim-enlight-03/comparison-01 --json
+pal lesson compare sim-enlight-03 --run-dir .local/runs/sim-enlight-03/baseline-01 --comparison-run-dir .local/runs/sim-enlight-03/comparison-01 --output-dir .local/comparisons/sim-enlight-03/comparison-01 --json
 ```
 
 ## Recovery
@@ -76,7 +107,16 @@ pal lesson finish sim-enlight-03 --run-dir BASE --json
 
 ## Checkpoint
 
-설명·기준 실행·비교 실행·다음 행동을 저장한 뒤 한 수업에서 멈춥니다. 도구 또는 모델 호환성이 미확인이면 대기합니다.
+### 이해 확인
+
+rad와 m인 양은 각각 무엇인가? 관절 오차와 TCP 위치 오차다. Enlight 원 추종이 다른 팔·실물 전이를 보장하는가? 아니다. 이 모델·엔진의 궤적 동작만 확인한다.
+
+두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
+
+```bash
+pal lesson review sim-enlight-03 --run-dir .local/runs/sim-enlight-03/baseline-01 --comparison-run-dir .local/runs/sim-enlight-03/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
+pal lesson finish sim-enlight-03 --run-dir .local/runs/sim-enlight-03/baseline-01 --json
+```
 
 <!-- pal:navigation:start -->
 ## Next lesson

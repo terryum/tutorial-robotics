@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: data-imitation](../concepts/data-imitation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 실제 MuJoCo 상태·행동·다음 상태 전이를 기록합니다.
@@ -92,9 +94,19 @@ $$
 
 실전 연결: 인접 프레임 누출을 막기 위해 episode 단위로 학습·평가를 나눕니다.
 
+### 입력에서 관측까지
+
+시연 한 행은 현재 상태에서 행동을 적용했을 때 다음 상태가 어떻게 생겼는지를 묶습니다. 시점 순서가 뒤섞이면 아무리 큰 데이터셋이어도 모방학습이 잘못된 관계를 배웁니다. 이 진자는 state=[각도,속도], action=[토크]이며 shape는 각각 (2,), (1,)입니다.
+
 ## Code connection
 
 `examples/core-data-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`learning.py`](../../../src/pai_lab/lessons/learning.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`learning.run`은 8개 episode를 reset하고 각 step의 observation을 저장한 뒤 clipped PD 토크를 적용해 10회 적분합니다. record의 `time_s`는 적분 후 시각이며 observation은 전 상태라는 점을 구별합니다. `episode.jsonl`은 episode·step·observation·action·next_observation·terminated·truncated를 가집니다. 마지막 step만 truncated이고 terminated는 false입니다. samples64이면 512행, 다음 BC의 episode 분할은 train384·heldout128행입니다(계산).
 
 ## Try it
 
@@ -117,6 +129,10 @@ pal lesson compare core-data-01 --run-dir .local/runs/core-data-01/baseline-01 -
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+PD kp만 2→3 Nm/rad로 바꾸면 같은 상태의 비포화 토크는 달라집니다. 예시 q=0.2 rad·qdot=0이면 -0.4→-0.6 Nm입니다. torque 한계 ±3 Nm와 episode 수는 같고 이후 상태는 동역학 때문에 함께 변합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -129,6 +145,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --comparison-run-dir .local/runs/core-data-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-data-01 --run-dir .local/runs/core-data-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 한 줄의 observation과 time_s는 같은 시점인가요? 답: observation은 전, time_s는 후입니다. 질문: 무작위 행 분할이 왜 위험한가요? 답: 인접한 상관 상태가 train·검증에 새어 들어갑니다. episode 단위 경계를 먼저 기록합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

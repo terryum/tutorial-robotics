@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [vla concept chapter](../concepts/vla.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Round-trip the explicitly mocked VLA protocol without a device.
@@ -86,15 +88,25 @@ $$
 \forall i,\quad a_i\in\mathbb R,\quad |a_i|\leq a_{max}
 $$
 
-Symbols, units and assumptions: a: normalized action; limit: same units; finite values required.
+Symbols, units and assumptions: a: mock action in rad; limit: rad; finite values required.
 
 Worked calculation (not a measured run result): limit 1.0, action 1.2 → reject.
 
 Practical connection: Transport validation does not establish a neural policy is useful.
 
+### From input to observation
+
+Checking the language/image/state protocol first separates missing fields and wrong units from learning problems. The image here is a mock-image identity fixture, not input to a vision encoder. The 7-value state is also fixed at zero.
+
 ## Code connection
 
 `examples/core-vla-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`learning.py`](../../../src/pai_lab/lessons/learning.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`learning.run` JSON-encodes/decodes request, then constructs response.actions as observation×variant. Actions have shape 1×7 with response units rad, `mock=true` and `command_sink=true`. request timeout_s=0.1 in `vla-request-response.json` is a field, not an exercised HTTP deadline here. schema_fields10 counts6 request plus4 response fields, not policy accuracy. Bound1.0 is this mock's numerical rad bound.
 
 ## Try it
 
@@ -117,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Seed7→8 does not change this branch's fixed state or output; zero×variant stays zero. As a paper one-variable example, action1.2 rad exceeds bound 1.0. Do not record that calculation as a real server call or training run.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -129,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --comparison-run-dir .local/runs/core-vla-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-vla-01 --run-dir .local/runs/core-vla-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: What does mock=true establish? Answer: A data path and schema. Question: Does an instruction field imply VLA inference? Answer: No network is run here. Real SmolVLA and remote inference require separate preparation and lessons.
 
 <!-- pal:navigation:start -->
 ## Next lesson

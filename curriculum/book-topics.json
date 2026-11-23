@@ -1,0 +1,362 @@
+{
+  "core-00": [
+    "simulation",
+    "Which host facts determine the smallest reproducible setup?",
+    "재현 가능한 최소 환경은 어떤 호스트 정보로 결정하는가?"
+  ],
+  "core-01": [
+    "simulation",
+    "How does timestep affect a deterministic pendulum trace?",
+    "시간 간격은 결정론적 진자 궤적에 어떤 영향을 주는가?"
+  ],
+  "core-02": [
+    "simulation",
+    "Why must robot sources be pinned and hashed?",
+    "로봇 소스의 리비전과 해시를 왜 고정해야 하는가?"
+  ],
+  "core-03": [
+    "simulation",
+    "How can model dimensions and asset hashes reveal an invalid import?",
+    "모델 차원과 자산 해시로 잘못된 가져오기를 어떻게 찾는가?"
+  ],
+  "core-04": [
+    "simulation",
+    "What can a deterministic rendering establish about a model?",
+    "결정론적 렌더링은 모델의 어떤 특성을 확인하는가?"
+  ],
+  "core-fr3-01": [
+    "kinematics",
+    "How do FR3 joints, actuators and frames map to state arrays?",
+    "FR3 관절·액추에이터·좌표계는 상태 배열과 어떻게 대응하는가?"
+  ],
+  "core-fr3-02": [
+    "control-contact",
+    "How do proportional gain, damping and torque clipping shape joint response?",
+    "비례 이득·감쇠·토크 포화는 관절 응답을 어떻게 바꾸는가?"
+  ],
+  "core-fr3-03": [
+    "control-contact",
+    "Why does gravity feedforward reduce static tracking error?",
+    "중력 피드포워드는 왜 정상 상태 추종 오차를 줄이는가?"
+  ],
+  "core-fr3-04": [
+    "kinematics",
+    "How does a Jacobian turn Cartesian position error into a joint update?",
+    "자코비안은 직교 좌표 위치 오차를 어떻게 관절 갱신량으로 바꾸는가?"
+  ],
+  "core-fr3-05": [
+    "control-contact",
+    "How is a Cartesian spring force mapped into joint torque?",
+    "직교 좌표 스프링 힘은 어떻게 관절 토크로 변환되는가?"
+  ],
+  "core-fr3-06": [
+    "control-contact",
+    "How does friction affect measured contact and sliding?",
+    "마찰은 측정된 접촉과 미끄러짐에 어떤 영향을 주는가?"
+  ],
+  "core-rl-01": [
+    "reinforcement-learning",
+    "What changes during a PPO update, and what does its loss prove?",
+    "PPO 갱신에서 무엇이 바뀌며 손실은 무엇을 입증하는가?"
+  ],
+  "core-fr3-07": [
+    "reinforcement-learning",
+    "How do observations, actions and rewards define FR3 reach?",
+    "관측·행동·보상은 FR3 도달 과제를 어떻게 정의하는가?"
+  ],
+  "core-fr3-08": [
+    "reinforcement-learning",
+    "How can PPO execution be distinguished from independent reach performance?",
+    "PPO 실행과 독립 도달 성능을 어떻게 구별하는가?"
+  ],
+  "core-enlight-01": [
+    "kinematics",
+    "How do Enlight frames and joint order differ from another arm?",
+    "Enlight 좌표계와 관절 순서는 다른 팔과 어떻게 다른가?"
+  ],
+  "core-enlight-02": [
+    "simulation",
+    "Which cross-format checks make an Enlight MuJoCo draft usable?",
+    "어떤 형식 간 검사가 Enlight MuJoCo 초안을 사용할 근거가 되는가?"
+  ],
+  "core-wuji-01": [
+    "robot-hands",
+    "How does a low-dimensional synergy move many hand joints?",
+    "저차원 시너지는 여러 손 관절을 어떻게 움직이는가?"
+  ],
+  "core-wuji-02": [
+    "robot-hands",
+    "What does virtual tactile contact measure and omit?",
+    "가상 촉각 접촉은 무엇을 측정하고 무엇을 생략하는가?"
+  ],
+  "core-dexterity-01": [
+    "robot-hands",
+    "Which hand-model differences prevent direct joint-array reuse?",
+    "어떤 손 모델 차이 때문에 관절 배열을 그대로 재사용할 수 없는가?"
+  ],
+  "core-data-01": [
+    "data-imitation",
+    "What must an episode store to preserve observation-action timing?",
+    "관측·행동 시점을 보존하려면 에피소드에 무엇을 저장해야 하는가?"
+  ],
+  "core-dexterity-02": [
+    "robot-hands",
+    "How can a human hand target be retargeted within robot limits?",
+    "사람 손 목표를 로봇 한계 안으로 어떻게 리타게팅하는가?"
+  ],
+  "core-g1-01": [
+    "mobile-motion",
+    "What does G1 motion playback verify without learning a balance policy?",
+    "G1 모션 재생은 균형 정책 학습 없이 무엇을 확인하는가?"
+  ],
+  "core-il-01": [
+    "data-imitation",
+    "Why does low cloning loss not ensure successful closed-loop behavior?",
+    "행동 복제 손실이 작아도 왜 폐루프 성공을 보장하지 않는가?"
+  ],
+  "core-aloha-01": [
+    "data-imitation",
+    "What does an ACT chunk contract establish without ACT training?",
+    "ACT 청크 계약은 ACT 학습 없이 무엇을 확인하는가?"
+  ],
+  "core-vla-01": [
+    "vla",
+    "Which protocol properties can a mock VLA client verify?",
+    "모의 VLA 클라이언트는 어떤 프로토콜 특성을 검증하는가?"
+  ],
+  "sim-ros-01": [
+    "ros",
+    "How do QoS, services, actions and TF divide communication responsibilities?",
+    "QoS·서비스·액션·TF는 통신 책임을 어떻게 나누는가?"
+  ],
+  "sim-ros-02": [
+    "ros",
+    "How does the bridge preserve joint names, timestamps and state meaning?",
+    "브리지는 관절 이름·타임스탬프·상태 의미를 어떻게 보존하는가?"
+  ],
+  "sim-ros-03": [
+    "ros",
+    "What makes recorded episode replay comparable to its source?",
+    "기록된 에피소드 재생을 원본과 비교하려면 무엇이 필요한가?"
+  ],
+  "sim-ros-04": [
+    "ros",
+    "What must a common embodiment API preserve across backends?",
+    "공통 embodiment API는 백엔드 사이에서 무엇을 보존해야 하는가?"
+  ],
+  "sim-g1-01": [
+    "mobile-motion",
+    "What evidence distinguishes GPU motion-imitation training from playback?",
+    "어떤 근거로 GPU 모션 모방 학습과 재생을 구별하는가?"
+  ],
+  "sim-wuji-01": [
+    "robot-hands",
+    "What evidence is required to evaluate an in-hand GPU policy?",
+    "손안 조작 GPU 정책 평가에는 어떤 근거가 필요한가?"
+  ],
+  "sim-vla-01": [
+    "vla",
+    "How are fine-tuning data, policy weights and server responses connected?",
+    "미세조정 데이터·정책 가중치·서버 응답은 어떻게 연결되는가?"
+  ],
+  "sim-vla-02": [
+    "vla",
+    "How can remote policy latency and response validity be checked?",
+    "원격 정책 지연과 응답 유효성을 어떻게 확인하는가?"
+  ],
+  "sim-isaac-01": [
+    "physx",
+    "Which imported asset properties need actual PhysX verification?",
+    "가져온 자산의 어떤 특성을 실제 PhysX에서 검증해야 하는가?"
+  ],
+  "sim-isaac-02": [
+    "physx",
+    "How do camera, light and annotations define synthetic observations?",
+    "카메라·조명·주석은 합성 관측을 어떻게 정의하는가?"
+  ],
+  "sim-cross-01": [
+    "physx",
+    "Which conditions must match before comparing two physics engines?",
+    "두 물리 엔진을 비교하기 전에 어떤 조건을 맞춰야 하는가?"
+  ],
+  "sim-deploy-01": [
+    "deployment-hardware",
+    "What evidence and hashes make a deployment candidate reproducible?",
+    "어떤 근거와 해시가 배포 후보의 재현성을 뒷받침하는가?"
+  ],
+  "sim-enlight-01": [
+    "ros",
+    "What does fake hardware verify before any device connection?",
+    "가상 하드웨어는 장비 연결 전에 무엇을 검증하는가?"
+  ],
+  "sim-enlight-02": [
+    "deployment-hardware",
+    "Why does a contact-task bundle remain a candidate until gated evaluation?",
+    "접촉 과제 번들은 왜 게이트 평가 전까지 후보로 남는가?"
+  ],
+  "sim-wuji-02": [
+    "deployment-hardware",
+    "Which model and policy identities belong in a dexterity candidate?",
+    "정교 조작 후보에는 어떤 모델·정책 식별 정보가 필요한가?"
+  ],
+  "hw-common-01": [
+    "deployment-hardware",
+    "How does a command sink prove receipt without physical output?",
+    "명령 차단 수신기는 물리 출력 없이 수신을 어떻게 확인하는가?"
+  ],
+  "hw-common-02": [
+    "deployment-hardware",
+    "Which read-only checks must precede any device action?",
+    "장비 동작 전에 어떤 읽기 전용 검사가 필요한가?"
+  ],
+  "hw-fr3-01": [
+    "deployment-hardware",
+    "Why do shadow checks and a fresh run card remain separate gates?",
+    "왜 섀도 검사와 새 실행 카드를 별도 게이트로 유지하는가?"
+  ],
+  "hw-wuji-01": [
+    "robot-hands",
+    "What identity and tactile-calibration evidence is needed for the real hand?",
+    "실물 손에는 어떤 식별·촉각 보정 근거가 필요한가?"
+  ],
+  "hw-wuji-02": [
+    "deployment-hardware",
+    "What separates shadow agreement from an approved real evaluation?",
+    "섀도 일치와 승인된 실물 평가를 무엇으로 구별하는가?"
+  ],
+  "hw-enlight-01": [
+    "deployment-hardware",
+    "What can read-only Enlight state establish about readiness?",
+    "읽기 전용 Enlight 상태로 준비 상태의 무엇을 확인할 수 있는가?"
+  ],
+  "hw-enlight-02": [
+    "control-contact",
+    "Which measurements are needed before calibrating a simulated arm?",
+    "시뮬레이션 팔 보정 전에 어떤 측정이 필요한가?"
+  ],
+  "hw-enlight-03": [
+    "deployment-hardware",
+    "Which contact-task risks remain after simulation and shadow?",
+    "시뮬레이션과 섀도 이후 어떤 접촉 과제 위험이 남는가?"
+  ],
+  "hw-enlight-wuji-01": [
+    "deployment-hardware",
+    "How are arm and hand identity, timing and stop boundaries checked together?",
+    "팔과 손의 식별·시점·정지 경계를 어떻게 함께 검사하는가?"
+  ],
+  "core-fr3-09": [
+    "control-contact",
+    "How do joint and TCP trajectory errors differ?",
+    "관절 궤적 오차와 TCP 궤적 오차는 어떻게 다른가?"
+  ],
+  "core-fr3-10": [
+    "data-imitation",
+    "How do held-out episodes and independent reach tests constrain BC claims?",
+    "보류 에피소드와 독립 도달 검사는 BC 성능 주장을 어떻게 제한하는가?"
+  ],
+  "sim-fr3-01": [
+    "physx",
+    "How do imported PhysX joints track the same joint and TCP targets?",
+    "가져온 PhysX 관절은 같은 관절·TCP 목표를 어떻게 추종하는가?"
+  ],
+  "sim-fr3-02": [
+    "data-imitation",
+    "What must be preserved when collecting PhysX demonstrations for BC?",
+    "BC용 PhysX 시연을 수집할 때 무엇을 보존해야 하는가?"
+  ],
+  "sim-fr3-03": [
+    "reinforcement-learning",
+    "How is PhysX PPO performance tested independently of training?",
+    "PhysX PPO 성능을 학습과 독립적으로 어떻게 검사하는가?"
+  ],
+  "sim-fr3-04": [
+    "physx",
+    "What does matched-engine TCP error difference establish?",
+    "동일 조건 엔진 간 TCP 오차 차이는 무엇을 확인하는가?"
+  ],
+  "core-enlight-03": [
+    "control-contact",
+    "How does Enlight track joint and TCP targets on its own model?",
+    "Enlight는 자체 모델에서 관절·TCP 목표를 어떻게 추종하는가?"
+  ],
+  "core-enlight-04": [
+    "data-imitation",
+    "Why must Enlight BC use its own demonstrations and evaluation?",
+    "Enlight BC는 왜 자체 시연·평가를 사용해야 하는가?"
+  ],
+  "core-enlight-05": [
+    "reinforcement-learning",
+    "Which independent criterion can an Enlight PPO candidate fail?",
+    "Enlight PPO 후보는 어떤 독립 기준을 통과하지 못할 수 있는가?"
+  ],
+  "sim-enlight-03": [
+    "physx",
+    "Which Enlight control properties must be rechecked in PhysX?",
+    "PhysX에서 Enlight 제어의 어떤 특성을 다시 검사해야 하는가?"
+  ],
+  "sim-enlight-04": [
+    "data-imitation",
+    "How is PhysX Enlight BC evaluated without transferring FR3 weights?",
+    "FR3 가중치를 옮기지 않고 PhysX Enlight BC를 어떻게 평가하는가?"
+  ],
+  "sim-enlight-05": [
+    "reinforcement-learning",
+    "Which evidence separates PhysX Enlight PPO training from a performance pass?",
+    "어떤 근거로 PhysX Enlight PPO 학습과 성능 통과를 구별하는가?"
+  ],
+  "core-shadow-01": [
+    "robot-hands",
+    "How do Shadow joint synergies produce object contact?",
+    "Shadow 관절 시너지는 어떻게 물체 접촉을 만드는가?"
+  ],
+  "sim-shadow-01": [
+    "physx",
+    "Which Shadow coupling and contact properties need PhysX evidence?",
+    "Shadow의 어떤 결합·접촉 특성에 PhysX 근거가 필요한가?"
+  ],
+  "core-stretch3-01": [
+    "mobile-motion",
+    "How do base and arm motions combine to reach a target?",
+    "베이스와 팔 동작은 도달 목표에서 어떻게 합쳐지는가?"
+  ],
+  "sim-stretch3-01": [
+    "physx",
+    "How can Stretch base-arm behavior be verified after PhysX import?",
+    "PhysX로 가져온 Stretch의 베이스·팔 동작을 어떻게 검증하는가?"
+  ],
+  "hw-enlight-04": [
+    "deployment-hardware",
+    "What must an exact free-space action card specify before approval?",
+    "승인 전에 정확한 자유공간 동작 카드에 무엇을 명시해야 하는가?"
+  ],
+  "hw-enlight-05": [
+    "control-contact",
+    "What must be established before any probe plane-force controller can run?",
+    "프로브 평면 힘 제어기를 실행하기 전에 무엇을 확인해야 하는가?"
+  ],
+  "hw-enlight-06": [
+    "deployment-hardware",
+    "Which tool and payload checks block a real pick-transfer-place action?",
+    "실물 집기·이동·놓기에서 어떤 도구·하중 검사가 동작을 차단하는가?"
+  ],
+  "core-teleop-01": [
+    "data-imitation",
+    "How do clutch, timestamps and replay keep bimanual input interpretable?",
+    "클러치·타임스탬프·재생은 양손 입력의 의미를 어떻게 보존하는가?"
+  ],
+  "sim-teleop-01": [
+    "data-imitation",
+    "Which live-input evidence is still missing after a software protocol check?",
+    "소프트웨어 프로토콜 검사 이후에도 어떤 실제 입력 근거가 필요한가?"
+  ],
+  "sim-teleop-02": [
+    "kinematics",
+    "How do calibrated SE3 transforms and a stale-input sink constrain retargeting?",
+    "보정된 SE3 변환과 오래된 입력 차단 수신기는 리타게팅을 어떻게 제한하는가?"
+  ],
+  "sim-enlight-06": [
+    "data-imitation",
+    "How are timestamped simulated Enlight episodes collected without physical authority?",
+    "물리 동작 승인 없이 시뮬레이션 Enlight 에피소드를 어떻게 시점 정보와 함께 수집하는가?"
+  ]
+}

@@ -25,9 +25,13 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the prerequisite [concept chapter](../concepts/deployment-hardware.md) and [equipment progression](../equipment-stages.md). This lesson addresses: What separates shadow agreement from an approved real evaluation?
+
 ## Learning goals
 
-Review the observations, prerequisites and per-run safety boundary for wuji shadow and gated real evaluation.
+A dexterity checkpoint evaluated on a vendor simulation task is a candidate.
+
+What separates shadow agreement from an approved real evaluation?
 
 ## Preflight
 
@@ -37,46 +41,70 @@ This lesson remains scaffolded / reader_test_required until device evidence exis
 
 Read [hardware safety](../../07_SAFETY.md). A local snapshot must establish model/firmware identity, torque-disabled state, faults/E-stop, joint/force limits, communication timeout, fresh timestamps and isolated networking. Keep serials, private IPs and calibration only under .local/.
 
+Read [hardware safety](../../07_SAFETY.md). This chapter prepares evidence; it does not request or authorize a device action.
+
 ## Action
+
+The canonical command `pal lesson run hw-wuji-02` is intentionally unavailable: the runner refuses this scaffold before readiness checks or output creation. Do not execute it.
+
+This is preparation-only. Inspect the catalog and the readiness report; the current runner raises `NotImplementedError` for this scaffold and creates no successful device run. A readiness/contract check does not execute hardware or complete the lesson.
 
 ```bash
 pal lesson check hw-wuji-02 --json
-pal lesson run hw-wuji-02 --headless --json
 ```
-
-The current entrypoint must return exit code 2 because an executable device adapter has not been verified. This is not completion. Do not manufacture a mock success receipt.
 
 ## Expected
 
 Read the explicit reason that real-device verification evidence is absent. When equipment is ready, first measure identity, state rate, units/axes/joint order, freshness and stop paths read-only.
 
+### Reading the artifacts
+
+No successful run artifacts are promised by this scaffold. Prepare an ignored local evidence checklist: exact model/side and firmware/SDK, `positions_rad`, `position_limits_rad`, `joint_group`, `timestamp`, `previous_timestamp`, `stale_after_s`, `enabled=False`, `error=False`, `estop_ready=True`, `command_authority_count=0`, networking and independently tested stop/watchdog/timeout. Read `ready`, `errors` and `valid_until_s` as data-check results, never execution permission. Do not publish private device identity/calibration.
+
 ## How it works
 
-```text
-offline replay → command sink → read-only → live shadow
-→ torque-disabled replay → fresh run card → one explicitly approved action
+### Intuition
+
+A dexterity checkpoint evaluated on a vendor simulation task is a candidate. Live shadow must establish the real Beta 2 joint, timing, tactile and actuator contract before a separate real evaluation is approved. A policy hash binds bytes, not embodiment equivalence. Keep the exact candidate, read-only calibration, rollback and stop evidence associated with the same device and run.
+
+### Calculation and units
+
+$$
+t_{age}=t_{now}-t_{snapshot},\qquad 0\leq t_{age}\leq t_{stale}
+$$
+
+All times here use the same wall-clock domain in seconds. `preflight` additionally requires a finite declared stale window in (0,1] s and an advancing timestamp if `previous_timestamp` exists. This is distinct from teleop's monotonic 100 ms sink. Paper calculation, not live evidence: snapshot age 0.3 s exceeds a declared 0.1 s window and is rejected. These illustrative numbers set no device limits.
+
+```python
+snapshot_age_s, declared_window_s = 0.3, 0.1
+assert not (0 <= snapshot_age_s <= declared_window_s)
 ```
-
-Each stage consumes the previous evidence without automatically granting authority for the next action. Contact, real evaluation, system identification and integrated-device work need fresh approval for the exact robot and action. An integrated task requires both devices' individual read-only gates.
-
-Reader question: does receiving state authorize motion? No. Check timestamp age, model identity, fault/disabled state and the individual run card. For example, age 0.3 s exceeds a declared 0.1 s maximum and is stale. These illustrative numbers do not set device limits.
 
 ## Code connection
 
-`examples/hw-wuji-02/run.py` → `src/pai_lab/lessons/runner.py`;
-`src/pai_lab/hardware/preflight.py` checks supplied read-only snapshots.
+### Source trace
+
+[`src/pai_lab/hardware/preflight.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/hardware/preflight.py)
+
+`examples/hw-wuji-02/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
 
 ## Try it
 
-In a local copy of a snapshot, change only its timestamp to an old value and confirm stale-state rejection. Do not alter a real controller's clock, limits or watchdog. Preserve read-only check failures.
+### Controlled comparison
+
+Paper-only comparison: keep identity, joint values and all limits fixed; increase only the hypothetical snapshot age across its declared stale window. Predict rejection and list the missing device evidence. Do not run a physical trial, change clocks/watchdogs or create a completion receipt. The lesson runner refuses scaffolded execution before a device operation.
 
 ## Recovery
 
-Stop without sending device commands if identity, disabled state, fault state, freshness or network isolation fails. Follow the vendor's E-stop and recovery procedure. Never automatically update firmware, enable torque, raise limits or bypass collision checks.
+Preserve failed readiness records and interrupted episode evidence. If identity, freshness, tracking, disabled/error/E-stop state or network isolation fails, remain blocked. Reconnection requires new read-only checks and any applicable local rearm; it never resumes physical motion. Follow the documented vendor recovery procedure without automatic firmware, torque, limit or watchdog changes. `pal course resume --json` inspects saved teaching state only.
 
 ## Checkpoint
 
-Completion criteria are currently unmet. Keep the lesson incomplete until an actual adapter, fresh evidence and applicable per-run approval exist. Personal state belongs under .local/; only publication evidence belongs in state/PUBLISHING.md.
+### Check understanding
+
+Why is a fresh disabled snapshot insufficient for motion? It checks one observed state; command transport, action-specific controller, physical limits and fresh per-run approval remain separate. Is the lesson complete after this paper calculation? No.
+
+Record preparation and unresolved gates locally. Keep the lesson incomplete until actual device/input evidence and applicable per-run approval exist. Stop here without physical commands.
 
 <!-- pal:navigation:start -->
 ## Next lesson

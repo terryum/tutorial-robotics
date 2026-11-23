@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [robot-hands concept chapter](../concepts/robot-hands.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Compare Wuji and Sharpa using measured model properties.
@@ -101,9 +103,19 @@ Worked calculation (not a measured run result): 20 / 24 ≈ 0.833 (illustrative 
 
 Practical connection: Match semantics by name and role, not equal indices.
 
+### From input to observation
+
+Before comparing different hands, inspect shared and different structure. Five fingertips do not imply identical joints, actuators or contacts. This lesson audits the input and geometric dimensions of Wuji and Sharpa.
+
 ## Code connection
 
 `examples/core-dexterity-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`hands.py`](../../../src/pai_lab/lessons/hands.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`hands.run` reads two `models.inventory` records and plots joint, actuator and fingertip counts as three rows. Use `comparison_dimensions` in `hand-comparison.json` to identify indices; inspect names, limits and mass in `comparison_model`. The ratio is min(njnt)/max(njnt); despite metric name shared_joint_ratio, it does not count a name intersection. A calculated 20/22≈0.9091 is a count ratio, not certification of 20 equivalent joints.
 
 ## Try it
 
@@ -116,6 +128,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+In a one-variable calculation, change only the larger joint count 22→24: 20/24≈0.8333. Audit seed does not change pinned structure. A smaller ratio does not establish worse hand performance.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -125,9 +141,15 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
 
 ```bash
-pal lesson review core-dexterity-01 --run-dir .local/runs/core-dexterity-01/baseline-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review core-dexterity-01 --run-dir .local/runs/core-dexterity-01/baseline-01 --notes "Replace with inspected names, units, structure, limits and concrete evidence." --json
 pal lesson finish core-dexterity-01 --run-dir .local/runs/core-dexterity-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Why can joint and actuator counts differ? Answer: Coupled or passive joints can differ. Question: Is ratio a dexterity score? Answer: It is structural. Retargeting next uses fingertip meaning and frame alignment.
+
+This structural audit is explicitly exempted by `evidence.comparison_errors` from a separate comparison run. The review command above passes only the baseline. Record actual audit evidence in notes; do not represent a paper calculation as an executed comparison artifact.
 
 <!-- pal:navigation:start -->
 ## Next lesson

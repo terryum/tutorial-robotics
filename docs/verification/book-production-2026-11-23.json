@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-23",
+  "source_baseline": "018bbb7a55acf612d56dd1f2b443d5aebfe823c8",
+  "lesson_pairs": 72,
+  "concept_pairs": 11,
+  "harness_revision": "80f8217b5b6d3f220a31f05f9c0adaf09dac40f4",
+  "checks": [
+    {
+      "name": "Full test suite",
+      "status": "passed",
+      "evidence": "230 passed; 2 optional skips; 8 subtests"
+    },
+    {
+      "name": "Post-guard teleop tests",
+      "status": "passed",
+      "evidence": "19 passed; missing-source skip and corruption propagation independently checked"
+    },
+    {
+      "name": "Generator / scoped Harness tests",
+      "status": "passed",
+      "evidence": "Authored-body preservation, byte idempotence, objective summaries, missing-input refusal, selective resume"
+    },
+    {
+      "name": "Ruff / mypy",
+      "status": "passed",
+      "evidence": "All checks passed; 77 source files checked by mypy"
+    },
+    {
+      "name": "Repository / release / public boundary",
+      "status": "passed",
+      "evidence": "72 catalog lessons and bilingual contracts, sources, links and boundaries"
+    },
+    {
+      "name": "Strict MkDocs / built-site language checks",
+      "status": "passed",
+      "evidence": "All paired page identities and both README entrance choices"
+    },
+    {
+      "name": "Harness import / skill structure",
+      "status": "passed",
+      "evidence": "25 pinned hashes; 5 roles, 12 skills"
+    },
+    {
+      "name": "Native Harness completion",
+      "status": "passed",
+      "evidence": "validate.py --project . --run book-v3 --complete: 0 completion errors"
+    },
+    {
+      "name": "Credential guard",
+      "status": "passed",
+      "evidence": "777 indexed files scanned before final prose/report; required pre-commit rescans staged bytes"
+    },
+    {
+      "name": "GPU / live input / physical acceptance",
+      "status": "not_run",
+      "evidence": "Existing verification scope retained; no new claims"
+    }
+  ],
+  "gpu_live_input_physical_acceptance": "not_run"
+}

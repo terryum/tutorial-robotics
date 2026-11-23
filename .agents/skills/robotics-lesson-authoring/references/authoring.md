@@ -1,0 +1,5 @@
+# Source-grounded teaching
+
+Read the runner's dispatch, called helpers and experiment acceptance checks. Name concrete arrays, CSV columns, units, JSON keys and timing of observations. Explain a numeric calculation before asking readers to interpret a graph. Keep calculation examples separate from existing measured publication results. Unsupported parameter changes become paper-only sensitivity questions. A finite run or falling training loss does not prove evaluation performance. A mock or contract does not implement ACT/VLA training. Hardware approval is fresh and per-run; a lesson scaffold cannot become execution through prose.
+
+Retain existing H2 structure. Place intuition and derived equations under How it works, actual source links under Code connection, measured-artifact reading under Observe/Expected, questions and short model answers under Checkpoint. Use relative links into committed source. Teach basic Python readers any math needed locally, and link prerequisite concept sections. Concepts should contain an example, source trace, interpretation, controlled comparison and self-check.

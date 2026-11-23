@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Verify immutable source revisions and model bytes.
@@ -100,9 +102,19 @@ Worked calculation (not a measured run result): 256 bits / 8 = 32 bytes.
 
 Practical connection: A changed mesh can alter collision without changing the robot name.
 
+### From input to observation
+
+The same robot name can refer to different meshes, inertia or joint files. A source revision identifies Git history, while file hashes identify the selected bytes. Keeping both lets another host check whether it loaded the same public model. These identities have no physical units such as frames, kg or m.
+
 ## Code connection
 
 `examples/core-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`models.provenance` reads the file list in `assets/model-lock.json`, compares actual SHA-256 values and rejects missing or changed bytes. `physics.run` collects receipts for FR3, Wuji, Enlight, G1, Sharpa and ALOHA. Read model, revision, license and files_digest in `source-pins.json` under `models`. A plotted 1 encodes a 40-character revision-string check, not 100% geometric or dynamic accuracy. The source-pin check is separate.
 
 ## Try it
 
@@ -115,6 +127,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+In a paper sensitivity check, hold everything fixed and suppose one mesh byte changes: hash equality must fail. Do not edit vendor files to try this. Changing seed should not change audited models, licenses or hashes.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -124,9 +140,15 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
 
 ```bash
-pal lesson review core-02 --run-dir .local/runs/core-02/baseline-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review core-02 --run-dir .local/runs/core-02/baseline-01 --notes "Replace with inspected names, units, structure, limits and concrete evidence." --json
 pal lesson finish core-02 --run-dir .local/runs/core-02/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does a matching hash prove physical accuracy? Answer: It proves byte identity. Question: Why read both revision and license? Answer: Version reproducibility and reuse conditions are separate. The next lesson compiles the models and inspects structure.
+
+This structural audit is explicitly exempted by `evidence.comparison_errors` from a separate comparison run. The review command above passes only the baseline. Record actual audit evidence in notes; do not represent a paper calculation as an executed comparison artifact.
 
 <!-- pal:navigation:start -->
 ## Next lesson

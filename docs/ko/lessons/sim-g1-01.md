@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: mobile-motion](../concepts/mobile-motion.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 G1 모션 모방 PPO를 학습하고 저장 checkpoint를 평가합니다.
@@ -92,9 +96,19 @@ $$
 
 실전 연결: 실제 학습은 가중치를 바꾸고 재로드해야 하며 짧은 smoke로 성공률을 보장하지 않습니다.
 
+### 입력에서 관측까지
+
+참조 모션을 추종하는 학습은 저장한 자세를 그대로 재생하는 Core 실험보다 강한 요구입니다. 정책이 관측에서 행동을 생성하고 GPU 환경이 보상을 반환합니다. 관측·행동 shape와 단위는 선택한 upstream task 설정에서 읽어야 하며 FR3의17/7 배열을 적용하지 않습니다.
+
 ## Code connection
 
 `examples/sim-g1-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/gpu.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`gpu.py`](../../../src/pai_lab/lessons/gpu.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`gpu.environment`는 CUDA를 확인하고 pinned Unitree task `Unitree-G1-Tracking-No-State-Estimation`을 불러옵니다. 준비된 motion_file이 필수이며 학습환경32개를 사용합니다. `gpu.run`은 initial.pt·policy.pt의 대응 floating tensor 변화 norm 중 최댓값을 `parameter_delta`로 저장하고 재로딩 후 추론합니다. `evaluation-actions.npz`는 시간×환경×행동 배열이며 실제 크기를 읽습니다. `evaluation_rewards`는 각 step의 환경 평균이고 `performance_verified=false`를 유지합니다.
 
 ## Try it
 
@@ -117,6 +131,10 @@ pal lesson compare sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --compa
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+samples64→96은 optimizer 반복8→12와 추론 길이64→96을 함께 바꿉니다. 이는 budget 입력 하나의 비교이며 순수 학습량 효과를 분리하지 않습니다. `variant`는 이 경로의 학습률로 사용되지 않습니다. 성능을 주장하려면 별도 고정 평가가 필요합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -129,6 +147,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --comparison-run-dir .local/runs/sim-g1-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-g1-01 --run-dir .local/runs/sim-g1-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: parameter_delta>0이면 걸을 수 있나요? 답: optimizer 실행 근거입니다. 질문: CPU로 같은 성공을 대체하나요? 답: 이 GPU 수업은 CUDA가 없으면 거부합니다. task pin·motion identity·보상·render와 남은 성능 기준을 기록합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Load six robot models and inspect their actual dimensions.
@@ -100,9 +102,19 @@ Worked calculation (not a measured run result): 3 position + 4 quaternion = 7; 3
 
 Practical connection: Do not index velocities using configuration addresses.
 
+### From input to observation
+
+Assuming every Python state-array length equals joint count fails for floating bases and multi-coordinate joints. nq counts configuration coordinates, nv velocity degrees of freedom, and nu actuator inputs. This lesson reads those distinctions from six compiled models. Equal counts do not establish equal action semantics.
+
 ## Code connection
 
 `examples/core-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`physics.run` uses `models.load` and `inventory` to save nq, nv, nu, joint_names, joint_ranges, site_names and mass_kg. `model-inventory.json` is keyed by model name. Distinguish qpos shape=(nq,), qvel shape=(nv,) and ctrl shape=(nu,). A free joint has 7 versus 6 because four quaternion values represent rotation. The graph compares nv; the scalar metric is the fraction of models with positive mass. Those are different summaries.
 
 ## Try it
 
@@ -115,6 +127,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+For a one-variable calculation, adding only a free base adds 7 configuration and 6 velocity coordinates. The actual audit keeps pinned models fixed, so seed changes should leave dimensions unchanged. Do not alter vendor models to make an existing hash check pass.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -124,9 +140,15 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
 
 ```bash
-pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --notes "Replace with inspected names, units, structure, limits and concrete evidence." --json
 pal lesson finish core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: May you assume nu=nq? Answer: Read actuator semantics first. Question: Do positive mass and successful compilation prove contact or hardware calibration? Answer: They establish structural checks only. Record one model-specific array shape and name mapping.
+
+This structural audit is explicitly exempted by `evidence.comparison_errors` from a separate comparison run. The review command above passes only the baseline. Record actual audit evidence in notes; do not represent a paper calculation as an executed comparison artifact.
 
 <!-- pal:navigation:start -->
 ## Next lesson

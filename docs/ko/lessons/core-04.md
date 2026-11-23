@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: simulation](../concepts/simulation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 실제 FR3 장면을 렌더링하고 카메라 결과를 확인합니다.
@@ -98,9 +100,19 @@ $$
 
 실전 연결: 빈 영상이 아니어도 도구와 바닥이 보이는지 확인해야 합니다.
 
+### 입력에서 관측까지
+
+렌더링은 모델·상태·카메라를 사람이 검토할 수 있는 픽셀로 연결합니다. 같은 자세라도 시점이 달라지면 가려지는 관절이 달라지므로, 그림과 수치 상태를 함께 읽어야 합니다. 360×480×3 배열의 첫 축은 행, 둘째는 열, 셋째는 RGB 채널이고 값은 uint8입니다.
+
 ## Code connection
 
 `examples/core-04/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`physics.run`은 FR3 홈 자세를 읽고 `runner.run_lesson`이 `experiment.render`로 frame.png를 만듭니다. `frame_positions_m`, `joint_names`, qpos와 그림의 도구 끝·지면·전체 팔을 대조합니다. 그래프는 관절 인덱스별 위치(rad)이며 카메라 이동 궤적이 아닙니다. 픽셀 표준편차가 0보다 크다는 검사와 의미 있는 구도는 다른 조건입니다. 현재 다음 탐색에는 선택 teleop 수업도 있지만 로봇 경로는 VR 없이 유지됩니다.
 
 ## Try it
 
@@ -123,6 +135,10 @@ pal lesson compare core-04 --run-dir .local/runs/core-04/baseline-01 --compariso
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+camera_azimuth만 135°→165°로 바꾸면 픽셀·가림은 달라지지만 관절 배열·mass·joint count는 같아야 합니다. 계산 예시로 시점 회전은 30°이며 0.5236 rad입니다. 물체 자세가 실제로 30° 회전했다고 해석하지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -135,6 +151,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-04 --run-dir .local/runs/core-04/baseline-01 --comparison-run-dir .local/runs/core-04/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-04 --run-dir .local/runs/core-04/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: headless이면 그림이 없나요? 답: offscreen graphics context로 렌더링합니다. 질문: 카메라 비교에서 물리 성능이 개선되었나요? 답: 가시성만 바뀌었습니다. 두 그림에서 같은 joint_names와 도구 끝을 찾아 설명합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

@@ -25,6 +25,10 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: robot-hands](../concepts/robot-hands.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
+ROS·GPU·Isaac·VLA의 연결은 [NVIDIA 생태계 실습 안내](../nvidia-ecosystem.md)를 참고합니다. 안내의 확장 활동과 이 수업의 실제 구현·검증 범위는 구분합니다.
+
 ## Learning goals
 
 고정된 Wuji MJLab 재배향 과제를 학습·평가합니다.
@@ -92,9 +96,19 @@ $$
 
 실전 연결: 실제 학습은 가중치를 바꾸고 재로드해야 하며 짧은 smoke로 성공률을 보장하지 않습니다.
 
+### 입력에서 관측까지
+
+손안 물체 재배향은 손 자세를 만드는 시너지와 달리 물체 상태와 접촉을 포함하는 학습 과제입니다. 어떤 손·물체·reward를 쓰는지는 vendor task가 정합니다. Beta2 실물 보정이나 촉각 sensor와 자동으로 같다고 가정하지 않습니다.
+
 ## Code connection
 
 `examples/sim-wuji-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/gpu.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`gpu.py`](../../../src/pai_lab/lessons/gpu.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`gpu.environment`는 pinned wuji-mjlab에서 `WujiHand_Reorient`를 등록하고 CUDA0에서32개 환경을 구성합니다. `gpu.run`은 짧은 optimizer·저장·reload 후 같은 환경 설정으로 추론합니다. `experiment.json`의 task·parameter_delta·policy_sha256·evaluation_frame_std와 `evaluation-actions.npz`를 대조합니다. reward의 단위와 행동 차원은 task 정의에서 읽습니다. `initial.pt`와 `policy.pt`가 있다는 것만으로 파지 성공률을 얻지 못하며 payload 성능 판정은 false입니다.
 
 ## Try it
 
@@ -117,6 +131,10 @@ pal lesson compare sim-wuji-01 --run-dir .local/runs/sim-wuji-01/baseline-01 --c
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+budget64→96은 학습8→12회와 평가96 step을 함께 정합니다. 추론 보상이 달라져도 학습 증가와 평가 구간 변화가 섞여 있습니다. 별도 평가 seed·조건을 고정하지 않고 일반적 개선을 주장하지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -129,6 +147,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review sim-wuji-01 --run-dir .local/runs/sim-wuji-01/baseline-01 --comparison-run-dir .local/runs/sim-wuji-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish sim-wuji-01 --run-dir .local/runs/sim-wuji-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: vendor checkpoint는 Beta2 실물 후보인가요? 답: embodiment·안전·센서 호환 검증이 추가로 필요합니다. 질문: nonblank evaluation.png는 성능 증명인가요? 답: 렌더링 근거입니다. 학습 mechanics와 물체 과제 성능을 구분합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

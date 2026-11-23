@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [reinforcement learning chapter](../concepts/reinforcement-learning.md). Separate “the weights changed” from “the policy reliably reaches new targets.” This lesson connects a short training and serialization path with independent evaluation.
+
 ## Learning goals
 
 Train, save and reload PPO on the actual FR3 reach environment.
@@ -90,21 +92,41 @@ python -m json.tool .local/runs/core-fr3-08/baseline-01/experiment.json
 
 ## How it works
 
-The same PPO implementation now sees the 17-value reach observation and emits seven Gaussian latent actions. tanh bounds the simulator command. The saved contract includes observation scaling and action semantics so deployment cannot silently reinterpret weights.
+### Observation, latent action and joint target
+
+The policy receives $o=[q-q_{home},\;0.1\dot q,\;10(x^*-x)]$, a length-17 array in this order. The first 7 values are joint displacements(rad), the next 7 are velocities(rad/s) multiplied by numerical scale 0.1, and the last 3 are world-frame position errors(m) multiplied by 10. These scales define the numerical input convention; distinguish them from the original sensor units.
+
+Clip each component to [-5, 5] and append bias 1 to form length-18 input $z$. The weights $W$ are 18×7. Training samples Gaussian latent action $u$, and the environment applies tanh.
 
 $$
-a=\tanh(W^T[o,1]),\qquad q^*=q+0.03a
+\mu=zW,\qquad u\sim\mathcal N(\mu,0.3^2I_7),\qquad
+q^*=\operatorname{clip}(q+0.03\tanh u,\;q_{min},q_{max}).
 $$
 
-Symbols, units and assumptions: a: normalized; q: rad; W uses the saved observation ordering/scaling.
+$u$ and $\tanh u$ are normalized actions; 0.03 has units rad. Worked calculation, not a measured result: if one component of $\tanh u$ is 0.5, its target increment is 0.015 rad. Evaluation uses $u=\mu$ without added noise, with the same transform and joint limits.
 
-Worked calculation (not a measured run result): a=0.5 → target increment 0.015 rad.
+### Separate learning checks from performance checks
 
-Practical connection: A changed observation scale changes the policy even when weights are unchanged.
+PPO uses GAE advantages and a surrogate objective clipping the probability ratio to [0.8, 1.2]. With `--samples 64`, there are 8 updates, each collecting 128 transitions and applying 4 actor updates. Here samples is not the total number of collected transitions. Neither the objective nor the reward curve must improve monotonically.
+
+The environment reward is $r=-\|x^*-x\|_2-0.001\sum_j u_j^2$. This numerical teaching reward combines distance and action cost; it is not a measurement of force or energy. Better reward can still accompany failure to hold a new target long enough.
 
 ## Code connection
 
-`examples/core-fr3-08/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+Connect `Reach.observation`, `Reach.step` and `ppo` in [`learning.py`](../../../src/pai_lab/lessons/learning.py) with the actual [`runner.py`](../../../src/pai_lab/lessons/runner.py) dispatch. `Reach.step` sets joint targets and performs 10 MuJoCo integration steps. `ppo` saves `policy.npz`, reloads it and checks array equality.
+
+[`arm.evaluate`](../../../src/pai_lab/lessons/arm.py) generates 20 new targets with evaluation seed 10007. This `Reach` environment truncates an episode at 64 control steps; the evaluation loop's maximum of 160 iterations does not mean this lesson runs 160-step episodes. Holding within 10 mm for 10 consecutive steps succeeds on one target; at least 16/20 targets must succeed for `performance_verified=true`. This is a simulation performance gate, not a hardware tolerance.
+
+### Each artifact answers a different question
+
+| Artifact | What to inspect |
+|---|---|
+| `experiment.json` | Positive `parameter_delta`, zero `reload_max_error`, and reward/clip fraction in `updates` |
+| `policy.npz` | 18×7 `weights`, length-18 `value_weights`, latent-action standard deviation `sigma` |
+| `policy-contract.json` | Observation 17, action 7, tanh, `training_scope=optimizer-smoke`, performance result |
+| `evaluation.json` | Per-target errors and `success`, aggregate `successes`, `hold_steps`, `hardware_tolerance=false` |
+
+Observation order and scales 0.1/10 are implementation conventions read here. The current `policy-contract.json` does not encode every component's scale, so that file alone does not establish a complete independent deployment contract.
 
 ## Try it
 
@@ -127,6 +149,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Report results in order
+
+`--variant 1.5` changes the actor learning rate in `weights += 0.01 * variant * gradient` to 0.015. Target range, σ and evaluation seed stay fixed. Inspect parameter change and reload equality first, training rewards second, and independent evaluation successes last. One pair with a shared seed cannot establish a general performance improvement.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -139,6 +165,16 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --comparison-run-dir .local/runs/core-fr3-08/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --json
 ```
+
+### Check your understanding
+
+1. How do latent action u and joint target q* differ in shape, units and transformation?
+2. Why can `parameters_updated=true`, `reload_exact=true` and `performance_verified=false` all be correct?
+3. Why do 15/20 successes or only 9 consecutive steps within 10 mm fail this gate?
+
+Report update count, weight change, reload error and independent successes separately. A short training execution is not a solved policy or readiness for physical operation.
+
+Answer guide: The latent action is a normalized length-7 array transformed by tanh, the 0.03 rad scale and joint limits into a target. Weight updates and exact reload verify execution; 16/20 successes and 10 consecutive steps define a separate performance gate. Missing either criterion leaves performance false.
 
 <!-- pal:navigation:start -->
 ## Next lesson

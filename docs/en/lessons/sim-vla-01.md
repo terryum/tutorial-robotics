@@ -25,6 +25,10 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [vla concept chapter](../concepts/vla.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
+See the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) for connections to ROS, GPU, Isaac and VLA. Distinguish its extension activities from this lesson's implemented and verified scope.
+
 ## Learning goals
 
 Fine-tune prepared SmolVLA weights on real local data and serve inference.
@@ -90,9 +94,19 @@ Worked calculation (not a measured run result): θ=1, η=0.01, gradient=2 → ne
 
 Practical connection: Real training must change weights and reload them; short smoke does not establish success rate.
 
+### From input to observation
+
+Real VLA fine-tuning needs processors for language/image/state inputs and postprocessors for actions. Copying weights alone does not guarantee equivalent behavior. This lesson uses prepared local data/checkpoints without filling gaps through automatic downloads.
+
 ## Code connection
 
 `examples/sim-vla-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/vla.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`vla.py`](../../../src/pai_lab/lessons/vla.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`vla.run` checks pinned LeRobot location and loads SmolVLA offline on CUDA. It uses batch_size2, action windows from chunk_size/fps and8 AdamW steps at samples64. Gradient norm is limited to10. After saving/reloading policy and both processors, loopback HTTP checks inference on the processed batch. Inspect `server-response.json`, `policy/`, loss, parameter_delta and action_shape. This is not independent held-out rollout evaluation; performance_verified stays false.
 
 ## Try it
 
@@ -115,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+variant1.5 changes only AdamW learning rate1e-4→1.5e-4. For example, fps30 and chunk_size16 give final action offset15/30=0.5 s(calculation). Keep batch, dataset and time window fixed; decreasing loss is not policy performance.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -127,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review sim-vla-01 --run-dir .local/runs/sim-vla-01/baseline-01 --comparison-run-dir .local/runs/sim-vla-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish sim-vla-01 --run-dir .local/runs/sim-vla-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does loopback response measure a remote model? Answer: It uses the reloaded local model. Question: Why save processors? Answer: To preserve normalization and action meaning. Report actual tensor shapes, loss, response and unperformed evaluation separately.
 
 <!-- pal:navigation:start -->
 ## Next lesson

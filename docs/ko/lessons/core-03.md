@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: simulation](../concepts/simulation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 여섯 로봇 모델을 로드하고 실제 차원을 검사합니다.
@@ -100,9 +102,19 @@ $$
 
 실전 연결: 위치 주소를 속도 배열 인덱스로 쓰면 안 됩니다.
 
+### 입력에서 관측까지
+
+Python 배열의 길이를 로봇의 관절 수와 무조건 같다고 가정하면 자유 베이스나 다중 좌표 관절에서 오류가 납니다. nq는 구성 좌표, nv는 속도 자유도, nu는 구동 입력 개수입니다. 이 수업은 여섯 모델에서 이 구분을 실제로 읽는 구조 검사이며, 같은 개수라고 같은 행동 의미가 생기는 것은 아닙니다.
+
 ## Code connection
 
 `examples/core-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`physics.run`은 `models.load`와 `inventory`를 통해 각 모델의 nq·nv·nu·joint_names·joint_ranges·site_names·mass_kg를 저장합니다. `model-inventory.json`은 모델 이름별 사전입니다. qpos shape=(nq,), qvel shape=(nv,), ctrl shape=(nu,)로 구분합니다. 자유 관절 하나의 7 대 6 예시는 quaternion이 네 값으로 회전을 나타내기 때문입니다. 그래프는 nv를 비교하고 scalar metric은 양의 질량을 가진 모델의 비율이므로 두 요약을 혼동하지 않습니다.
 
 ## Try it
 
@@ -115,6 +127,10 @@ $$
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+한 변수 계산으로 자유 베이스 유무만 바꾼 모델을 생각하면 nq에 7, nv에 6이 더해집니다. 실제 감사는 원본 모델을 고정하므로 seed를 바꿔도 차원이 같아야 합니다. vendor 모델을 바꾸어 기존 해시 검사를 통과시키지 않습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -124,9 +140,15 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
 
 ```bash
-pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
+pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --notes "검사한 이름·단위·구조·제한과 실제 근거를 자신의 값으로 적으세요." --json
 pal lesson finish core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: nu=nq를 가정해도 될까요? 답: actuator 의미를 먼저 읽어야 합니다. 질문: 양의 질량·컴파일 성공이 충돌·실물 보정을 증명하나요? 답: 구조 검사일 뿐입니다. 모델별 배열 크기와 이름 대응 하나를 기록합니다.
+
+이 구조 감사는 `evidence.comparison_errors`의 명시적 예외여서 별도 comparison run이 필수가 아닙니다. 위 review 명령은 baseline만 전달합니다. 종이 계산을 실행된 비교 산출물로 꾸미지 않고 실제로 확인한 감사 근거를 notes에 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

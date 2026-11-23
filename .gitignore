@@ -47,3 +47,10 @@ credentials.json
 RustDesk.toml
 RustDesk2.toml
 tailscaled.state
+
+# Local authoring evidence and native communications
+.harness/runs/
+_workspace/communications/
+.harness/plans/
+.harness/book-plan*.json
+.harness/lesson-partition.json

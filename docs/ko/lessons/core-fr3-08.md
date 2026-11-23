@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+[강화학습 개념](../concepts/reinforcement-learning.md)을 읽고 “가중치가 바뀌었다”와 “새 목표를 안정적으로 달성한다”를 별개의 주장으로 나누어 봅니다. 이 수업은 짧은 학습·직렬화 경로와 독립 평가를 연결합니다.
+
 ## Learning goals
 
 실제 FR3 도달 환경에서 PPO를 학습·저장·재로딩합니다.
@@ -90,21 +92,41 @@ python -m json.tool .local/runs/core-fr3-08/baseline-01/experiment.json
 
 ## How it works
 
-같은 PPO가 17차원 도달 관측을 받고 7차원 가우시안 잠재 행동을 냅니다. tanh로 시뮬레이터 지령을 제한합니다. 저장 계약에 관측 스케일과 행동 의미를 넣어 배포에서 가중치를 다르게 해석하지 않게 합니다.
+### 관측·잠재 행동·관절 목표
+
+정책의 입력은 $o=[q-q_{home},\;0.1\dot q,\;10(x^*-x)]$ 순서의 길이 17 배열입니다. 첫 7개는 관절 변위(rad), 다음 7개는 속도(rad/s)에 수치 스케일 0.1을 곱한 값, 마지막 3개는 세계 좌표계의 위치 오차(m)에 10을 곱한 값입니다. 이 스케일은 학습 입력의 수치 규약이며 원래 센서 단위와 구별합니다.
+
+각 성분을 [-5, 5]로 제한하고 바이어스 1을 붙인 길이 18의 입력 $z$를 만듭니다. 가중치 $W$의 크기는 18×7입니다. 학습 중에는 다음처럼 가우시안 잠재 행동 $u$를 표본화하고, 환경에서 tanh를 적용합니다.
 
 $$
-a=\tanh(W^T[o,1]),\qquad q^*=q+0.03a
+\mu=zW,\qquad u\sim\mathcal N(\mu,0.3^2I_7),\qquad
+q^*=\operatorname{clip}(q+0.03\tanh u,\;q_{min},q_{max}).
 $$
 
-기호·단위·조건: a: 정규화 값; q: rad; W는 저장된 관측 순서·배율 사용.
+$u$와 $\tanh u$는 정규화된 행동이고 0.03의 단위는 rad입니다. 계산 예시(측정값 아님): 한 성분의 $\tanh u=0.5$이면 목표 증분은 0.015 rad입니다. 평가에서는 잡음을 더하지 않고 $u=\mu$를 사용하지만 동일한 변환·관절 제한을 거칩니다.
 
-손으로 계산하는 예시(실행 측정값이 아님): a=0.5 → target increment 0.015 rad.
+### 학습 검사와 성능 검사를 나누기
 
-실전 연결: 가중치가 같아도 관측 배율을 바꾸면 정책 동작이 달라집니다.
+PPO는 GAE로 계산한 이점을 사용하고 확률비를 [0.8, 1.2]로 제한한 목적을 계산합니다. `--samples 64`일 때 업데이트는 8회, 각 rollout은 128 전이이고 actor 갱신은 rollout당 4회입니다. 이 수업에서 samples는 수집한 전체 전이 수가 아닙니다. 손실이나 보상 곡선 하나가 매번 좋아져야 한다는 조건은 없습니다.
+
+학습 환경의 보상은 $r=-\|x^*-x\|_2-0.001\sum_j u_j^2$입니다. 거리와 행동 비용을 수치적으로 결합한 교육용 보상이며 힘이나 에너지의 측정 단위가 아닙니다. 더 좋은 보상을 얻더라도 새 목표에서 거리 조건을 충분히 오래 유지하지 못할 수 있습니다.
 
 ## Code connection
 
-`examples/core-fr3-08/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+[`learning.py`](../../../src/pai_lab/lessons/learning.py)의 `Reach.observation`, `Reach.step`, `ppo`를 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 실제 분기와 연결합니다. `Reach.step`은 관절 목표를 설정하고 MuJoCo 적분을 10회 수행합니다. `ppo`는 가중치를 `policy.npz`로 저장한 뒤 재로딩하여 배열 일치를 검사합니다.
+
+[`arm.evaluate`](../../../src/pai_lab/lessons/arm.py)는 평가 난수 seed 10007로 20개의 새 목표를 생성합니다. 이 `Reach` 환경은 64 제어 단계에서 에피소드를 종료하므로 평가 루프의 최대 반복 수 160이 이 수업의 160단계 실행을 뜻하지 않습니다. 10 mm 이내를 연속 10단계 유지하면 한 목표의 성공이며, 16/20 이상이어야 `performance_verified`가 true입니다. 이 값은 시뮬레이션 목표 달성 판정이고 하드웨어 허용 오차가 아닙니다.
+
+### 산출물별로 답할 질문
+
+| 산출물 | 확인할 내용 |
+|---|---|
+| `experiment.json` | `parameter_delta`가 양수인가, `reload_max_error`가 0인가, `updates`의 보상·clip fraction은 어떤가 |
+| `policy.npz` | `weights` 18×7, `value_weights` 길이 18, 잠재 행동 표준편차 `sigma` |
+| `policy-contract.json` | 관측 17·행동 7·tanh·`training_scope=optimizer-smoke`, 성능 판정 |
+| `evaluation.json` | 목표별 오차와 `success`, 전체 `successes`, `hold_steps`, `hardware_tolerance=false` |
+
+관측 순서와 0.1·10 배율은 여기서 읽은 구현 규약입니다. 현재 `policy-contract.json`은 이 모든 성분별 배율을 담지 않으므로 그 파일만으로 독립 배포가 완성되었다고 설명하지 않습니다.
 
 ## Try it
 
@@ -127,6 +149,10 @@ pal lesson compare core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --c
 
 </details>
 
+### 결과를 쓰는 순서
+
+`--variant 1.5`는 `weights += 0.01 * variant * gradient`의 actor 학습률을 0.015로 바꿉니다. 환경 목표 범위·σ·평가 seed는 바꾸지 않습니다. 먼저 파라미터 변화량과 reload 일치를 확인하고, 다음으로 학습 보상, 마지막으로 독립 평가 성공 수를 비교합니다. 같은 seed의 한 쌍만으로 일반적인 성능 향상을 주장할 수 없습니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -139,6 +165,16 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --comparison-run-dir .local/runs/core-fr3-08/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-fr3-08 --run-dir .local/runs/core-fr3-08/baseline-01 --json
 ```
+
+### 이해 확인
+
+1. 잠재 행동 $u$와 실제 관절 목표 $q^*$의 크기·단위·변환은 어떻게 다른가요?
+2. `parameters_updated=true`, `reload_exact=true`, `performance_verified=false`가 동시에 나와도 모순이 아닌 이유는 무엇인가요?
+3. 15/20 성공이나 10 mm 이내 9단계 유지가 왜 이 평가 기준을 통과하지 못하나요?
+
+결과 보고에는 업데이트 수, 가중치 변화량, 재로딩 오차, 독립 평가 성공 수를 각각 적습니다. 짧은 학습 실행을 해결된 정책이나 실물 준비로 표현하지 않습니다.
+
+답의 기준: 잠재 행동은 길이 7의 정규화 배열이며 tanh·0.03 rad 배율·관절 제한을 거쳐 목표가 됩니다. 파라미터 갱신과 정확한 저장 복구는 실행 경로를 검증하고, 16/20 및 연속 10단계 조건은 별도 성능 기준입니다. 한 조건이라도 부족하면 성능 판정은 false입니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

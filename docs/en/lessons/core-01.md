@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Measure pendulum state and numerical energy drift.
@@ -92,9 +94,19 @@ Worked calculation (not a measured run result): |1.000003-1.000000|=0.000003 J.
 
 Practical connection: Energy drift detects integration error before controller tuning.
 
+### From input to observation
+
+Energy conservation is a first check on the numerical consistency of simulated motion. The model is a one-joint pendulum with a 1 kg distributed capsule mass and initial angle 0.35 rad. q and qdot are length-1 arrays; E sums MuJoCo kinetic and potential energy(J). Substituting point-mass inertia would analyze a different model.
+
 ## Code connection
 
 `examples/core-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`physics.pendulum` defines RK4 and a frictionless joint; `physics.run` integrates 10 times per saved sample and refreshes energy with `mj_forward`. `experiment.json` stores `state` rows [time_s,q,qdot] and integrator `dt_s`. In `trace.csv`, reference is E(0) and observed is E(t). Drift is the maximum absolute difference over saved samples, not just the final difference. With 64 samples and 0.002 s steps, final time is 1.28 s(calculation).
 
 ## Try it
 
@@ -117,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only the step to 0.004 s gives 0.04 s per sample and final time 2.56 s. The documented comparison varies one CLI input but also changes observed duration. Do not interpret terminal poses as states at the same time; inspect energy errors and axes.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -129,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-01 --run-dir .local/runs/core-01/baseline-01 --comparison-run-dir .local/runs/core-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-01 --run-dir .local/runs/core-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: How many integrations separate saved samples? Answer: 10. Question: Does small drift validate a controller or contact? Answer: It checks this unforced pendulum only. Report dt, final time and maximum drift(J) together.
 
 <!-- pal:navigation:start -->
 ## Next lesson

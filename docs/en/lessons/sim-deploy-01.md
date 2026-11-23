@@ -25,9 +25,13 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the prerequisite [concept chapter](../concepts/deployment-hardware.md) and [equipment progression](../equipment-stages.md). This lesson addresses: What evidence and hashes make a deployment candidate reproducible? Follow the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) where relevant; the actual producer below identifies which engine/framework this lesson uses.
+
 ## Learning goals
 
-Assemble a candidate from the actual FR3 PPO policy and its evidence.
+Packaging preserves the meaning of learned numbers across a process boundary.
+
+What evidence and hashes make a deployment candidate reproducible?
 
 ## Preflight
 
@@ -39,6 +43,8 @@ pal lesson check sim-deploy-01 --json
 ```
 
 ## Action
+
+Activate the prepared environment and use a fresh output directory. Preserve the returned run path; execution does not mark completion.
 
 ```bash
 pal lesson run sim-deploy-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-deploy-01/baseline-01 --json
@@ -78,44 +84,50 @@ On other systems, open the same PNG in your file manager. Read the raw values fr
 python -m json.tool .local/runs/sim-deploy-01/baseline-01/experiment.json
 ```
 
+### Reading the artifacts
+
+Read `sample_candidate/manifest.json`: policy path/hash, `files`, `test_vectors`, `observation_order`, `action_order`, `frame`, `rate_hz=50`, `rollback=command-sink`, `promotion=candidate-only` and `performance_verified=False`. `validate_candidate` also rejects paths outside the bundle and mismatched test-vector inference. The 50 Hz declaration is not an offline timing benchmark.
+
 ## How it works
 
-A reproducible bundle includes policy bytes, observation/action semantics, processor contract, lock hash, test vectors and rollback. The bundle remains candidate-only because optimizer smoke is not task-performance validation.
+### Intuition
+
+Packaging preserves the meaning of learned numbers across a process boundary. `deployment.run` consumes validated completed FR3 PPO evidence, copies the exact policy and source contract, constructs deterministic observation/action test vectors, then checks a candidate manifest. A bundle may be structurally valid while its policy lacks independent task performance.
+
+### Calculation and units
 
 $$
-e=\|\pi_{loaded}(o)-a_{expected}\|_{\infty}
+a=\tanh([\operatorname{clip}(o,-5,5),1]W)
 $$
 
-Symbols, units and assumptions: o and a use saved policy contract; normalized output unless declared otherwise.
+Observation o has 17 values, biased input has 18 and weights W have shape 18×7. Actions are normalized deltas; the simulator applies 0.03 rad per normalized unit. Worked calculation, not a policy measurement: pre-activation 0.5 gives tanh(0.5)≈0.462117. Hashes identify exact bytes, not physical safety.
 
-Worked calculation (not a measured run result): expected [0.1,0.2], loaded [0.1,0.2] → e=0.
-
-Practical connection: Checksum, input order and test vectors must refer to the same checkpoint.
+```python
+import numpy as np
+raw = 0.5
+assert np.isclose(np.tanh(raw), 0.46211715726000974)
+```
 
 ## Code connection
 
-`examples/sim-deploy-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/deployment.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+### Source trace
+
+[`src/pai_lab/lessons/deployment.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/deployment.py)
+
+`examples/sim-deploy-01/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
 
 ## Try it
 
-Seed: 7 → 8. Structural audits, fixed model views and deterministic inference can remain identical. A remote service may vary independently of this local seed; record that limitation.
+### Controlled comparison
+
+A supported comparison changes the documented random test-vector seed, keeping policy bytes and manifest contract fixed; test inputs can change while reload agreement remains exact. The producer ignores `variant`. Explain invariance rather than claiming better control from packaging.
 
 ```bash
-pal lesson run sim-deploy-01 --headless --samples 64 --output-dir .local/runs/sim-deploy-01/comparison-01 --seed 8 --json
-```
-
-Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
-
-```bash
+pal lesson run sim-deploy-01 --headless --seed 8 --samples 64 --output-dir .local/runs/sim-deploy-01/comparison-01 --json
+pal lesson check sim-deploy-01 --run-dir .local/runs/sim-deploy-01/baseline-01 --json
+pal lesson check sim-deploy-01 --run-dir .local/runs/sim-deploy-01/comparison-01 --json
 pal lesson compare sim-deploy-01 --run-dir .local/runs/sim-deploy-01/baseline-01 --comparison-run-dir .local/runs/sim-deploy-01/comparison-01 --output-dir .local/comparisons/sim-deploy-01/comparison-01 --json
 ```
-
-<details>
-<summary>Optional: what changes when the assumptions fail?</summary>
-
-Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
-
-</details>
 
 ## Recovery
 
@@ -123,10 +135,14 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+### Check understanding
+
+What survives a correct hash check? Byte identity. What does it not establish? Independent task performance, correct physical calibration or permission to command a device.
+
+Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
 
 ```bash
-pal lesson review sim-deploy-01 --run-dir .local/runs/sim-deploy-01/baseline-01 --comparison-run-dir .local/runs/sim-deploy-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review sim-deploy-01 --run-dir .local/runs/sim-deploy-01/baseline-01 --comparison-run-dir .local/runs/sim-deploy-01/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
 pal lesson finish sim-deploy-01 --run-dir .local/runs/sim-deploy-01/baseline-01 --json
 ```
 

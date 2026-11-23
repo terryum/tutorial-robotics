@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [reinforcement-learning concept chapter](../concepts/reinforcement-learning.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Use reset, observation, action, reward and episode boundaries for FR3 reach.
@@ -91,18 +93,28 @@ python -m json.tool .local/runs/core-fr3-07/baseline-01/experiment.json
 The observation concatenates seven position offsets, seven scaled velocities and three world-target errors. Seven bounded actions adjust joint position targets. A successful reach terminates; the 64-step time limit truncates. These meanings matter to later PPO bootstrapping.
 
 $$
-o=[q-q_0,\;s_v\dot q,\;x^*-x]\in\mathbb R^{17}
+o=[q-q_0,\;0.1\dot q,\;10(x^*-x)]\in\mathbb R^{17}
 $$
 
-Symbols, units and assumptions: q: rad; qdot: rad/s; x: world m; sv: chosen numeric scaling.
+Symbols, units and assumptions: q: rad; qdot: rad/s; x: world m; 0.1 and 10: component-specific numerical scales.
 
 Worked calculation (not a measured run result): 7 + 7 + 3 = 17.
 
 Practical connection: Termination and time-limit truncation need different value bootstrapping.
 
+### From input to observation
+
+An RL environment defines state, action, reward and episode endings together. Here the observation is [q-qhome,0.1qdot,10(x*-x)] of length 17; latent action has length 7. q uses rad, qdot rad/s and position error world-frame m, with numerical scales embedded in the input.
+
 ## Code connection
 
 `examples/core-fr3-07/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`learning.py`](../../../src/pai_lab/lessons/learning.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+The actual runner dispatches this ID to `learning.run`. `Reach` clips target q+0.03 tanh(action) and integrates 10 times; a scripted Jacobian controller converts its command into latent action using arctanh. In `transitions.json`, observation/action precede integration and next_observation follows it. Holding within 10 mm for 10 steps terminates; reaching 64 steps truncates. The distance-reduced check alone does not prove the success-hold condition.
 
 ## Try it
 
@@ -125,6 +137,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+variant 1.5 scales the command before clipping to [-0.9,0.9] and arctanh. For example, pre-limit 0.8 becomes 1.2 and is clipped to 0.9(calculation). Target increments may therefore not scale by 1.5; compare end flags alongside terminal distance.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -137,6 +153,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --comparison-run-dir .local/runs/core-fr3-07/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-fr3-07 --run-dir .local/runs/core-fr3-07/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Are the last 3 observation values raw m? Answer: They are errors scaled by 10. Question: Is timeout success? Answer: Distinguish truncated from terminated. Explain why PPO value bootstrapping needs that distinction.
 
 <!-- pal:navigation:start -->
 ## Next lesson

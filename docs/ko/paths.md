@@ -53,3 +53,28 @@ FR3의 기존 pin은 유지합니다. Shadow Hand·Stretch 3·Robotiq 2F-85는 �
 Enlight 실물 기준은 RDK 2.1 / v3E.1입니다. description의 v4 표기와 실물 호환성은 미확인 게이트입니다. Elements 검토 → 오프라인 재생 → sink → 읽기 전용 → live shadow → torque-disabled replay → 정확한 일회성 실행 카드 순으로 진행합니다. 일반 수업은 실물 명령을 보내지 않습니다. run-card executor에는 제조사 연결·enable API가 없으며 현장 어댑터에서 watchdog·timeout·정지·장비 식별·한계·툴 하중을 검증해야 합니다. 프로브·그리퍼가 없거나 검토되지 않으면 해당 실습은 대기합니다. [안전 지침](../07_SAFETY.md)을 따릅니다.
 
 설치된 Isaac 호스트에서는 `pal train run --engine physx --model fr3 --algorithm bc --epochs 64 --output-dir .local/train/physx-fr3 --json`을 사용합니다. 동일 엔진에서만 체크포인트를 재개합니다. [환경별 검증 결과](../verification/robot-paths-2026-11-08.md)를 확인하세요.
+
+## 경로를 읽는 방법
+
+공통 기초 다섯 수업에서 재현성·모델·상태·렌더링을 익힙니다. 매니퓰레이터는 관절/좌표계 이해에서 제어·학습·독립 평가로, 손 경로는 관절/시너지에서 접촉으로, 이동형 경로는 베이스와 팔의 좌표 합성으로 이어집니다. 각 수업의 선행 조건을 먼저 읽고 필요한 [개념 장](index.md#공통-개념-11장)으로 돌아오세요.
+
+Mac→WS 전환은 첫 필수 PhysX·ROS·GPU 수업의 실제 역량 요구에서 일어납니다. 경로를 끝내기 위해 필수 Isaac 수업을 건너뛸 수 없습니다. 실물 단계는 별도 도구·하중·안전 검토와 새로운 실행별 승인을 요구합니다. [장비 안내](equipment.md)를 먼저 확인하세요.
+
+아래는 `curriculum/paths.json`의 필수 순서입니다. 이는 카탈로그 전체 순서와 다를 수 있습니다. 실제 선택은 `pal course next --json`으로 확인하세요.
+
+### manipulator
+
+[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-fr3-01](lessons/core-fr3-01.md) → [core-fr3-02](lessons/core-fr3-02.md) → [core-fr3-03](lessons/core-fr3-03.md) → [core-fr3-04](lessons/core-fr3-04.md) → [core-fr3-05](lessons/core-fr3-05.md) → [core-fr3-06](lessons/core-fr3-06.md) → [core-fr3-09](lessons/core-fr3-09.md) → [sim-fr3-01](lessons/sim-fr3-01.md) → [core-rl-01](lessons/core-rl-01.md) → [core-fr3-07](lessons/core-fr3-07.md) → [core-fr3-08](lessons/core-fr3-08.md) → [core-fr3-10](lessons/core-fr3-10.md) → [sim-fr3-02](lessons/sim-fr3-02.md) → [sim-fr3-03](lessons/sim-fr3-03.md) → [sim-fr3-04](lessons/sim-fr3-04.md) → [core-enlight-01](lessons/core-enlight-01.md) → [core-enlight-02](lessons/core-enlight-02.md) → [core-enlight-03](lessons/core-enlight-03.md) → [core-enlight-04](lessons/core-enlight-04.md) → [core-enlight-05](lessons/core-enlight-05.md) → [sim-enlight-03](lessons/sim-enlight-03.md) → [sim-enlight-04](lessons/sim-enlight-04.md) → [sim-enlight-05](lessons/sim-enlight-05.md) → [sim-deploy-01](lessons/sim-deploy-01.md) → [hw-common-01](lessons/hw-common-01.md) → [hw-common-02](lessons/hw-common-02.md) → [sim-ros-01](lessons/sim-ros-01.md) → [sim-enlight-01](lessons/sim-enlight-01.md) → [hw-enlight-01](lessons/hw-enlight-01.md) → [hw-enlight-02](lessons/hw-enlight-02.md) → [hw-enlight-04](lessons/hw-enlight-04.md) → [hw-enlight-05](lessons/hw-enlight-05.md) → [hw-enlight-06](lessons/hw-enlight-06.md)
+
+### dexterous-hand
+
+[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-shadow-01](lessons/core-shadow-01.md) → [sim-shadow-01](lessons/sim-shadow-01.md)
+
+### mobile-manipulator
+
+[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-stretch3-01](lessons/core-stretch3-01.md) → [sim-stretch3-01](lessons/sim-stretch3-01.md)
+
+
+## 장비가 늘어나는 학습 순서
+
+[노트북 → GPU → 선택형 수집 장비 → 마지막 실물](equipment-stages.md) 순서로 읽으세요. [NVIDIA 경험 워크북](nvidia-ecosystem.md)은 Isaac Sim·Lab·Teleop/Capture·GR00T·ROS/배포를 실습과 검증 산출물로 연결합니다. XR·그리퍼·UMI는 필요한 후반 과제에서만 검토합니다.

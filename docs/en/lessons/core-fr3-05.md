@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [control-contact concept chapter](../concepts/control-contact.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Control a world-frame tool position using operational inertia.
@@ -100,9 +102,19 @@ Worked calculation (not a measured run result): 2 kg × 0.1 m/s² = 0.2 N; 0.5 m
 
 Practical connection: This translation-only controller omits full orientation and exact Jdot compensation.
 
+### From input to observation
+
+Moving the tool in a Cartesian direction requires coordinated joint motion. J is 3×7 and M is 7×7, so JM⁻¹Jᵀ is 3×3. Its regularized inverse describes effective mass for the requested acceleration. The lesson controls three translation axes, not three orientation axes.
+
 ## Code connection
 
 `examples/core-fr3-05/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+The task branch of `physics.arm_control` computes force toward world offset [0.03,0.02,0.01] m, then uses `jac.T @ force + data.qfrc_bias - 2 * data.qvel`. The compact equation above omits this last joint-velocity damping term; its coefficient 2 has units Nm s/rad. Final torque is clipped to joint-model limits. `task-space-response.csv` and `payload.final_error` report position error(m), while `torque_nm` holds joint torques.
 
 ## Try it
 
@@ -125,6 +137,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+variant 1.5 changes acceleration gain 120→180 s⁻² and its 2√gain damping together. Saturation and dynamics prevent predicting error as simply divided by 1.5. Compare a first-step calculation with the actual trace to explain that limit.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -137,6 +153,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --comparison-run-dir .local/runs/core-fr3-05/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: What does Jᵀ map? Answer: World translational force(N) into joint torque(Nm). Question: Does metric name pose_error mean full-pose control? Answer: Here it measures position only. Separate position error, joint torque and damping in your report.
 
 <!-- pal:navigation:start -->
 ## Next lesson

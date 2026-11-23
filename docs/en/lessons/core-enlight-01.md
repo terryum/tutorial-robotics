@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [kinematics concept chapter](../concepts/kinematics.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Build Enlight-L frames from the public vendor parameters.
@@ -58,7 +60,7 @@ Measured development example. Read both axis units and the reference/measured di
 
 ![core-enlight-01 measured plot](../../assets/examples/core-enlight-01-plot.png)
 
-Read eight body frames including world, seven joints, the flange site and total mass. This is a public simulation draft, not calibrated hardware.
+Read nine body frames including world, seven joints, the flange site and total mass. This is a public simulation draft, not calibrated hardware.
 
 Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
 
@@ -100,11 +102,21 @@ Worked calculation (not a measured run result): q=π/2 rad rotates local +x to l
 
 Practical connection: Fixed flange offsets matter when comparing vendor FK and tool sensors.
 
+### From input to observation
+
+Another seven-axis arm cannot reuse FR3 arrays merely because counts match. Enlight end position requires multiplying its own origins, axes and flange offset in chain order. Transforms are 4×4, q has length 7(rad), translations use m and rotation matrices are dimensionless.
+
 ## Code connection
 
 Visual OBJ files contain multiple objects. The local adapter retains every vertex/face in one derived object for MuJoCo and preserves the vendor files; collision geometry and full inertia remain separate.
 
 `examples/core-enlight-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`models.enlight_parameters` reads public YAML kinematics, inertia, limits and initial values; `enlight_xml` writes derived XML inside the run. Match `body_names`, `joint_names` and `frame_positions_m` in `enlight-frames.json`. The current generator creates 9 bodies: world, base_link and link1–7. nbody is not flange-site count; do not assume 8 frames from the frame_count metric name. Visual and collision geometry also serve different roles.
 
 ## Try it
 
@@ -117,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+In a paper comparison, changing only local flange offset changes tool position while upstream joint count stays fixed. The audit keeps the model fixed, so seed does not change transforms. Do not overwrite vendor data with physical calibration.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -126,9 +142,15 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
 
 ```bash
-pal lesson review core-enlight-01 --run-dir .local/runs/core-enlight-01/baseline-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review core-enlight-01 --run-dir .local/runs/core-enlight-01/baseline-01 --notes "Replace with inspected names, units, structure, limits and concrete evidence." --json
 pal lesson finish core-enlight-01 --run-dir .local/runs/core-enlight-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does nbody=9 mean 9 actuated joints? Answer: It includes world and fixed base. Question: Does XML generation validate RDK hardware? Answer: It produces a public simulation draft. Record names, axes and flange location before cross-format FK checks.
+
+This structural audit is explicitly exempted by `evidence.comparison_errors` from a separate comparison run. The review command above passes only the baseline. Record actual audit evidence in notes; do not represent a paper calculation as an executed comparison artifact.
 
 <!-- pal:navigation:start -->
 ## Next lesson

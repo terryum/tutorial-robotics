@@ -25,9 +25,13 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the prerequisite [concept chapter](../concepts/deployment-hardware.md) and [equipment progression](../equipment-stages.md). This lesson addresses: Which model and policy identities belong in a dexterity candidate? Follow the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) where relevant; the actual producer below identifies which engine/framework this lesson uses.
+
 ## Learning goals
 
-Reload the trained Wuji checkpoint and package measured evaluation.
+The dexterity candidate consumes an actual completed `sim-wuji-01` checkpoint, loads it into the same pinned registered vendor task in play mode, evaluates it, then copies exact policy bytes.
+
+Which model and policy identities belong in a dexterity candidate?
 
 ## Preflight
 
@@ -43,6 +47,8 @@ pal lesson check sim-wuji-02 --json
 ```
 
 ## Action
+
+Activate the prepared environment and use a fresh output directory. Preserve the returned run path; execution does not mark completion.
 
 ```bash
 pal lesson run sim-wuji-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-wuji-02/baseline-01 --json
@@ -78,44 +84,49 @@ On other systems, open the same PNG in your file manager. Read the raw values fr
 python -m json.tool .local/runs/sim-wuji-02/baseline-01/experiment.json
 ```
 
+### Reading the artifacts
+
+Read `candidate/manifest.json`: `task`, `policy_sha256`, `mean_reward`, `candidate_only=True`, `hardware_compatible=False`, `performance_verified=False`, `rollback=command-sink`. `evaluation-actions.npz` holds sampled actions and `evaluation.png` actual rendering. The finite/reload checks establish execution, not a solved in-hand task.
+
 ## How it works
 
-The candidate is evaluated in the same registered vendor task as training. Its checksum connects evaluation to exact policy bytes. Embodiment identity and physical calibration are separate gates, so a candidate must not silently become Beta 2 hardware-compatible.
+### Intuition
+
+The dexterity candidate consumes an actual completed `sim-wuji-01` checkpoint, loads it into the same pinned registered vendor task in play mode, evaluates it, then copies exact policy bytes. This is checkpoint reload and task rollout, not a new training run. A vendor task model is not automatically Beta 2 physical-hand equivalence.
+
+### Calculation and units
 
 $$
-e=\|\pi_{loaded}(o)-a_{expected}\|_{\infty}
+\bar r=\frac1N\sum_{i=1}^N r_i
 $$
 
-Symbols, units and assumptions: o and a use saved policy contract; normalized output unless declared otherwise.
+N is evaluation steps, r is vendor-task reward and the mean has task-defined score units. Action shape follows that vendor task, not a universal 20-joint array. Worked calculation, not policy evaluation: rewards [1,2,3] give mean 2.
 
-Worked calculation (not a measured run result): expected [0.1,0.2], loaded [0.1,0.2] → e=0.
-
-Practical connection: Checksum, input order and test vectors must refer to the same checkpoint.
+```python
+import numpy as np
+assert np.mean([1.0, 2.0, 3.0]) == 2.0
+```
 
 ## Code connection
 
-`examples/sim-wuji-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/gpu.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+### Source trace
+
+[`src/pai_lab/lessons/gpu.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/gpu.py)
+
+`examples/sim-wuji-02/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
 
 ## Try it
 
-Sample budget: 64 → 96. Training lessons derive optimizer iterations from this budget and evaluate for this many steps; candidate-only lessons change evaluation length.
+### Controlled comparison
+
+Change `samples` 64→96 with fixed checkpoint/seed/task. Only evaluation horizon changes here; no optimizer is called. Compare reward distributions over the declared horizon and keep model provenance visible. `variant` is unused for this candidate.
 
 ```bash
-pal lesson run sim-wuji-02 --headless --seed 7 --output-dir .local/runs/sim-wuji-02/comparison-01 --samples 96 --json
-```
-
-Change only the indicated seed, sample count or variant. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
-
-```bash
+pal lesson run sim-wuji-02 --headless --seed 7 --samples 96 --output-dir .local/runs/sim-wuji-02/comparison-01 --json
+pal lesson check sim-wuji-02 --run-dir .local/runs/sim-wuji-02/baseline-01 --json
+pal lesson check sim-wuji-02 --run-dir .local/runs/sim-wuji-02/comparison-01 --json
 pal lesson compare sim-wuji-02 --run-dir .local/runs/sim-wuji-02/baseline-01 --comparison-run-dir .local/runs/sim-wuji-02/comparison-01 --output-dir .local/comparisons/sim-wuji-02/comparison-01 --json
 ```
-
-<details>
-<summary>Optional: what changes when the assumptions fail?</summary>
-
-Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
-
-</details>
 
 ## Recovery
 
@@ -123,10 +134,14 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+### Check understanding
+
+Does a matching policy hash prove a better grasp? No; it identifies bytes. Why is `performance_verified` false? This short task rollout does not implement a task-solving performance gate.
+
+Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
 
 ```bash
-pal lesson review sim-wuji-02 --run-dir .local/runs/sim-wuji-02/baseline-01 --comparison-run-dir .local/runs/sim-wuji-02/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
+pal lesson review sim-wuji-02 --run-dir .local/runs/sim-wuji-02/baseline-01 --comparison-run-dir .local/runs/sim-wuji-02/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
 pal lesson finish sim-wuji-02 --run-dir .local/runs/sim-wuji-02/baseline-01 --json
 ```
 

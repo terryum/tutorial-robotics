@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [robot-hands concept chapter](../concepts/robot-hands.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Create bounded open, half and closed poses using a hand synergy.
@@ -100,9 +102,19 @@ Worked calculation (not a measured run result): s=0.5, α=0.8 rad → q=0.4 rad 
 
 Practical connection: A pose does not guarantee grasp force or object retention.
 
+### From input to observation
+
+A synergy represents many joints with fewer variables. Here one scalar amplitude constructs a 20-joint pose. Fingertips form a 5×3 world-position array(m); labels open, half and closed do not establish object retention.
+
 ## Code connection
 
 `examples/core-wuji-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`hands.py`](../../../src/pai_lab/lessons/hands.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`hands.run` assigns coefficient 0.3 when a joint name contains abd, otherwise 0.6. These numerical coefficients define reference angles in rad; amplitude and variant are dimensionless multipliers. For half at variant1, an unclipped flexion angle is 0.6×0.5=0.3 rad(calculation). Read `poses.<name>.qpos` and `tips_m` in `named-poses.json`; plotted pose norm is not one joint angle. Calling only `mj_forward` constructs poses kinematically.
 
 ## Try it
 
@@ -125,6 +137,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+variant1.5 can leave saturated joints unchanged, and fingertip changes are nonlinear. pose_count remains 3 because no new named pose was added, not because the synergy has no effect.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -137,6 +153,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-wuji-01 --run-dir .local/runs/core-wuji-01/baseline-01 --comparison-run-dir .local/runs/core-wuji-01/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-wuji-01 --run-dir .local/runs/core-wuji-01/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does q norm=1 rad mean every joint is at 1 rad? Answer: It summarizes a vector. Question: Is closed a successful grasp? Answer: There is no dynamic retention check. Compare one pre-clipping calculation with its stored angle.
 
 <!-- pal:navigation:start -->
 ## Next lesson

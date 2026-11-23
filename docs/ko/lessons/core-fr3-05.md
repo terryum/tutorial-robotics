@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: control-contact](../concepts/control-contact.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 작업 공간 관성을 사용해 월드 좌표의 말단 위치를 제어합니다.
@@ -100,9 +102,19 @@ $$
 
 실전 연결: 병진만 제어하며 전체 자세 제어와 정확한 Jdot 보상은 포함하지 않습니다.
 
+### 입력에서 관측까지
+
+말단을 직교 좌표 방향으로 움직이려면 여러 관절이 함께 반응해야 합니다. J는 3×7이고 M은 7×7이므로 JM⁻¹Jᵀ는 3×3입니다. 이를 정규화해 역으로 풀면 같은 가속도 목표에 필요한 유효 질량을 얻습니다. 이 수업은 위치 3축만 다루며 orientation 3축은 포함하지 않습니다.
+
 ## Code connection
 
 `examples/core-fr3-05/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`physics.arm_control`의 task branch는 세계 위치 오차 [0.03,0.02,0.01] m에서 힘을 계산하고 `jac.T @ force + data.qfrc_bias - 2 * data.qvel`을 적용합니다. 본문의 간단식에는 마지막 관절 속도 감쇠 항이 생략되어 있습니다. 그 계수 2의 단위는 Nm s/rad입니다. 최종 torque는 관절별 모델 한계로 잘립니다. `task-space-response.csv`와 `payload.final_error`는 위치 오차(m), `torque_nm`은 관절 토크입니다.
 
 ## Try it
 
@@ -125,6 +137,10 @@ pal lesson compare core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --c
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+variant 1.5는 가속도 이득 120→180 s⁻²와 2√gain 감쇠를 함께 바꿉니다. 동일 목표라도 포화·동역학 때문에 오차가 1/1.5가 된다고 예측할 수 없습니다. 첫 원시 계산과 실제 trace를 비교해 이 한계를 설명합니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -137,6 +153,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --comparison-run-dir .local/runs/core-fr3-05/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: Jᵀ는 무엇을 변환하나요? 답: 세계 병진 힘(N)을 관절 토크(Nm)로 옮깁니다. 질문: pose_error라는 metric 이름은 완전한 자세 제어인가요? 답: 여기서는 위치 오차만 뜻합니다. 위치 오차·관절 토크·감쇠 항을 구분해 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

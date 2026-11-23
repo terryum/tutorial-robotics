@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [robot-hands concept chapter](../concepts/robot-hands.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Retarget observed fingertip displacement and record the result.
@@ -105,9 +107,19 @@ Worked calculation (not a measured run result): position residual 0.01 m → squ
 
 Practical connection: Morphology differences leave residuals even with correct retargeting.
 
+### From input to observation
+
+Matching fingertip displacement is more meaningful than copying joint angles between hands. Align 5×3 fingertip point clouds at rest, then approximate the target within its joint bounds. Different morphology can leave residual error.
+
 ## Code connection
 
 `examples/core-dexterity-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`hands.py`](../../../src/pai_lab/lessons/hands.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`hands.run` uses SVD to align row-vector point clouds and a determinant correction to avoid reflection. `least_squares` concatenates 15 fingertip position residuals with 0.002(q-q0) posture terms. In the squared objective above, λ=(0.002)²=4e-6 m²/rad². Despite the name, `demonstrations.tip_error_m` stores this combined residual norm, not pure fingertip distance alone. qpos in `retargeted-motion.npz` follows the target hand joint order.
 
 ## Try it
 
@@ -130,6 +142,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only maximum source amplitude 0.5→0.75 rad can enlarge requested displacement, but joint bounds and a 25-evaluation budget prevent proportional residual changes. The trace reference is the initial combined residual, not zero.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -142,6 +158,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-dexterity-02 --run-dir .local/runs/core-dexterity-02/baseline-01 --comparison-run-dir .local/runs/core-dexterity-02/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-dexterity-02 --run-dir .local/runs/core-dexterity-02/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Is the metric fingertip RMS? Answer: It averages combined residual norms over poses. Question: May target qpos use Wuji order? Answer: Follow Sharpa names and bounds. Report initial/final residuals and constrained joints.
 
 <!-- pal:navigation:start -->
 ## Next lesson

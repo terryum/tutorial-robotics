@@ -1,12 +1,40 @@
 site_name: Tutorial Robotics
 site_description: Capability-first bilingual robotics learning platform
 repo_url: https://github.com/terryum/tutorial-robotics
+edit_uri: edit/main/docs/
 docs_dir: docs
+use_directory_urls: true
 theme:
   name: mkdocs
+nav:
+  - Home: index.md
+  - English:
+      - Learning map: en/index.md
+      - Reader guide: en/READER_GUIDE.md
+      - Learning paths: en/paths.md
+      - Equipment: en/equipment.md
+      - Equipment progression: en/equipment-stages.md
+      - NVIDIA workbook: en/nvidia-ecosystem.md
+      - All lesson goals: en/lessons.md
+  - 한국어:
+      - 학습 지도: ko/index.md
+      - 실행 안내: ko/READER_GUIDE.md
+      - 학습 경로: ko/paths.md
+      - 장비 안내: ko/equipment.md
+      - 장비 단계: ko/equipment-stages.md
+      - NVIDIA 워크북: ko/nvidia-ecosystem.md
+      - 전체 수업 목표: ko/lessons.md
+  - Reference:
+      - Safety: 07_SAFETY.md
+      - Sources: SOURCES.md
+      - Verification: verification/reader-experience.md
 strict: true
+hooks:
+  - scripts/mkdocs_hooks.py
 
 markdown_extensions:
+  - toc:
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode
   - pymdownx.arithmatex:
       generic: true
 extra_javascript:

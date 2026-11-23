@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: robot-hands](../concepts/robot-hands.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 관측한 손끝 변위를 리타게팅하고 결과를 기록합니다.
@@ -105,9 +107,19 @@ $$
 
 실전 연결: 정확히 retarget해도 형태 차이로 잔여 오차가 남습니다.
 
+### 입력에서 관측까지
+
+다른 손에는 관절각을 그대로 복사하기보다 손끝 변위를 대응시키는 편이 의미 있습니다. 다섯 손끝의 5×3 위치를 휴지 자세에서 정렬한 뒤, 목표 손의 관절 한계 안에서 근사합니다. 손 모양이 달라 잔차가 남을 수 있습니다.
+
 ## Code connection
 
 `examples/core-dexterity-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`hands.py`](../../../src/pai_lab/lessons/hands.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`hands.run`은 SVD로 행벡터 점군의 회전을 구하고 determinant 보정으로 반사를 피합니다. `least_squares` 잔차는 손끝 위치 차이 15개와 0.002(q-q0) 자세 항을 이어 붙입니다. 따라서 본문의 제곱 목적에서 λ=(0.002)²=4e-6 m²/rad²로 해석합니다. `demonstrations.tip_error_m`라는 이름도 이 결합 잔차 norm을 저장하므로 순수한 손끝 거리만은 아닙니다. `retargeted-motion.npz`의 qpos는 목표 손 관절 순서입니다.
 
 ## Try it
 
@@ -130,6 +142,10 @@ pal lesson compare core-dexterity-02 --run-dir .local/runs/core-dexterity-02/bas
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+입력 amplitude 한계만 0.5→0.75 rad로 바꾸면 목표 변위가 커질 수 있지만 bounds와 25회 평가 budget 때문에 잔차가 비례하지 않습니다. trace의 reference도 0 목표가 아니라 초기 결합 잔차입니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -142,6 +158,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-dexterity-02 --run-dir .local/runs/core-dexterity-02/baseline-01 --comparison-run-dir .local/runs/core-dexterity-02/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-dexterity-02 --run-dir .local/runs/core-dexterity-02/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 최종 metric이 손끝 RMS인가요? 답: 시간별 결합 residual norm의 평균입니다. 질문: 목표 qpos를 Wuji 순서로 적용해도 되나요? 답: Sharpa 이름·범위 계약을 따라야 합니다. 초기/최종 잔차와 포화 관절을 구별해 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

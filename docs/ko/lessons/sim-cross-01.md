@@ -25,9 +25,13 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+선행 [개념 장](../concepts/physx.md)과 [장비 확장 순서](../equipment-stages.md)를 읽는다. 이 수업의 질문: 두 물리 엔진을 비교하기 전에 어떤 조건을 맞춰야 하는가?필요한 경우 [NVIDIA 생태계 실습](../nvidia-ecosystem.md)을 참고하되, 이 수업이 쓰는 실제 엔진·프레임워크는 아래 생산자로 구별한다.
+
 ## Learning goals
 
-같은 입력에서 MuJoCo와 PhysX 관절 궤적을 비교합니다.
+같은 초기 상태와 적용 힘으로 실제 엔진 두 개를 비교한다.
+
+두 물리 엔진을 비교하기 전에 어떤 조건을 맞춰야 하는가?
 
 ## Preflight
 
@@ -41,6 +45,8 @@ pal lesson check sim-cross-01 --json
 ```
 
 ## Action
+
+준비된 환경을 활성화하고 새 출력 폴더를 쓴다. 반환 실행 경로를 보존하며 실행만으로 완료되지 않는다.
 
 ```bash
 pal lesson run sim-cross-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-cross-01/baseline-01 --json
@@ -76,44 +82,50 @@ open .local/runs/sim-cross-01/baseline-01/plot.png
 python -m json.tool .local/runs/sim-cross-01/baseline-01/experiment.json
 ```
 
+### 산출물 읽기
+
+`experiment.json` → `payload`의 `joint_order`, `isaac_joint_indices`, `states`, `state_rmse_rad`, `comparison`, `dt_s`, 카메라·깊이 필드를 확인한다. `isaac-observations.json`은 엔진 payload를 보존한다. `state_parity`는 RMS 0.15 rad 미만의 교육 기준이며 실물 허용 오차가 아니다. 스칼라뿐 아니라 대응된 관절 trace도 읽는다.
+
 ## How it works
 
-같은 공개 Wuji 손의 관절 위치·속도를 맞춰 시작합니다. 이름으로 대응시켜 2 ms 간격에 같은 토크를 적용합니다. 접촉·drive·solver 차이로 오차가 생길 수 있습니다. 일치 정도를 측정하며 학습 정책의 안전한 전이를 주장하지 않습니다.
+### 직관
+
+같은 초기 상태와 적용 힘으로 실제 엔진 두 개를 비교한다. `isaac.run`은 가져온 Wuji articulation을 effort 제어로 바꾸고 MuJoCo 구동기를 비활성화한 뒤 샘플마다 MuJoCo와 PhysX를 각각 한 스텝 진행한다. 관절 이름으로 PhysX 인덱스를 대응하며 그림이 비슷하다고 순서가 같지는 않다. 두 엔진의 자세를 직접 지정하는 것과 다른 동역학 비교다.
+
+### 계산과 단위
 
 $$
-RMSE=\sqrt{\frac1{NJ}\sum_{t,j}(q^{MJ}_{t,j}-q^{PX}_{t,j})^2}
+e=\sqrt{\frac{1}{Nn}\sum_{i=1}^N\sum_{j=1}^n(q^M_{ij}-q^P_{ij})^2}
 $$
 
-기호·단위·조건: N 표본; J 대응 관절; q rad; 초기 상태·토크·dt 동일.
+`states`는 이름 있는 회전 좌표 n개의 N개 샘플이며 rad 단위다. 스칼라도 rad다. 기준 물리 스텝은 0.002 s, 힘은 `0.002 * variant * sin(0.1*i)` N m이다. RMS는 관절·시간 평균이며 최대 오차가 아니다. 엔진 측정이 아닌 계산 예제에서 차이 [0.01, -0.01] rad의 RMS는 0.01 rad이다.
 
-손으로 계산하는 예시(실행 측정값이 아님): errors [0.01,-0.01] rad → RMSE=0.01 rad.
-
-실전 연결: 명령이 같아도 solver와 충돌 차이가 누적될 수 있습니다.
+```python
+import numpy as np
+difference_rad = np.array([0.01, -0.01])
+assert np.isclose(np.sqrt(np.mean(difference_rad**2)), 0.01)
+```
 
 ## Code connection
 
-`examples/sim-cross-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/isaac.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+### 소스 추적
+
+[`src/pai_lab/lessons/isaac.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/isaac.py)
+
+`examples/sim-cross-01/run.py`는 공통 runner로 위임하며 runner는 카탈로그 구현·역량을 확인한 뒤 분기한다. 위 소스가 여기의 양을 계산한다. 메타데이터 파일 이름만으로 계산 내용을 판단하면 안 된다.
 
 ## Try it
 
-두 시뮬레이터에 같은 토크 진폭 0.002 → 0.003 Nm를 적용합니다. 조명과 2 ms 적분 간격은 고정합니다.
+### 통제된 비교
+
+두 엔진의 힘을 함께 배율 조정하는 `variant`만 바꾸고 시드·소스·자세·샘플 수를 고정한다. 큰 힘은 드라이브·접촉 차이를 드러낼 수 있으며 일치 개선을 보장하지 않는다. 실제 Isaac 호스트가 필요하고 휴대형 대체 실행으로 PhysX를 검증할 수 없다.
 
 ```bash
-pal lesson run sim-cross-01 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-cross-01/comparison-01 --variant 1.5 --json
-```
-
-seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
-
-```bash
+pal lesson run sim-cross-01 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/sim-cross-01/comparison-01 --json
+pal lesson check sim-cross-01 --run-dir .local/runs/sim-cross-01/baseline-01 --json
+pal lesson check sim-cross-01 --run-dir .local/runs/sim-cross-01/comparison-01 --json
 pal lesson compare sim-cross-01 --run-dir .local/runs/sim-cross-01/baseline-01 --comparison-run-dir .local/runs/sim-cross-01/comparison-01 --output-dir .local/comparisons/sim-cross-01/comparison-01 --json
 ```
-
-<details>
-<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
-
-본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
-
-</details>
 
 ## Recovery
 
@@ -121,10 +133,14 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 
 ## Checkpoint
 
-명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
+### 이해 확인
+
+MuJoCo 구동기를 끄는 이유는? 추가 구동기 제어기가 힘 실험을 바꾸지 않게 하기 위해서다. RMS 0.15 rad 미만이면 실물이 안전한가? 아니다. 이 시뮬레이션 비교의 기준일 뿐이다.
+
+두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
 
 ```bash
-pal lesson review sim-cross-01 --run-dir .local/runs/sim-cross-01/baseline-01 --comparison-run-dir .local/runs/sim-cross-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
+pal lesson review sim-cross-01 --run-dir .local/runs/sim-cross-01/baseline-01 --comparison-run-dir .local/runs/sim-cross-01/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
 pal lesson finish sim-cross-01 --run-dir .local/runs/sim-cross-01/baseline-01 --json
 ```
 

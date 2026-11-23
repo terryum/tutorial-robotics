@@ -23,9 +23,13 @@
 
 This prepared runtime controls, observes and renders in PhysX. Execution is unverified on Mac. Import success alone does not pass this lesson.
 
+Read the prerequisite [concept chapter](../concepts/data-imitation.md) and [equipment progression](../equipment-stages.md). This lesson addresses: What must be preserved when collecting PhysX demonstrations for BC? Follow the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) where relevant; the actual producer below identifies which engine/framework this lesson uses.
+
 ## Learning goals
 
-BC splits thirty complete episodes 20/5/5 into train/validation/test. PPO uses actual arm rollouts with GAE and a clipped surrogate. The performance gate requires at least 16/20 independent targets within 10 mm for ten consecutive control steps. Short training may fail this gate; optimizer checks are reported separately. This is not a hardware tolerance.
+Behavioral cloning learns FR3's observation-to-action mapping from demonstrations generated on its own PhysX environment.
+
+What must be preserved when collecting PhysX demonstrations for BC?
 
 ## Preflight
 
@@ -35,11 +39,11 @@ Requires an Ubuntu NVIDIA GPU host with Isaac Sim installed. Run `pal setup veri
 
 ## Action
 
-```bash
-pal lesson run sim-fr3-02 --samples 64 --json
-```
+Activate the prepared environment and use a fresh output directory. Preserve the returned run path; execution does not mark completion.
 
-Save the returned run_dir as BASE. Execution alone does not mark completion.
+```bash
+pal lesson run sim-fr3-02 --headless --seed 7 --samples 64 --output-dir .local/runs/sim-fr3-02/baseline-01 --json
+```
 
 ## Expected
 
@@ -49,25 +53,50 @@ Inspect `physx-bc.json`, `trace.csv`, `plot.png` and `experiment.json`. The perf
 
 Read axes, units, initial/final error and extrema. Inspect rendering and compare named joints, groups and contacts in the payload with the measurements.
 
+### Reading the artifacts
+
+Inspect `policy.npz`, `training-contract.json`, `evaluation.json` and epoch checkpoints. Training identity binds model, source, engine, normalization, RNG, optimizer and data. `evaluation.json` records twenty independent target episodes (seed 10007), individual `errors_m` and successes. Success requires ten consecutive steps within 0.01 m; at least 16/20 is `performance_verified`. This is not hardware tolerance. Finite changed weights and exact reload may coexist with 0/20. The epoch plot is training action MSE; it is not the independent reach-error plot. PhysX observations/actions must originate in IsaacArm, not a substituted MuJoCo training environment.
+
 ## How it works
 
-BC splits thirty complete episodes 20/5/5 into train/validation/test. PPO uses actual arm rollouts with GAE and a clipped surrogate. The performance gate requires at least 16/20 independent targets within 10 mm for ten consecutive control steps. Short training may fail this gate; optimizer checks are reported separately. This is not a hardware tolerance.
+### Intuition
+
+Behavioral cloning learns FR3's observation-to-action mapping from demonstrations generated on its own PhysX environment. Thirty full episodes are split 20/5/5 into train/validation/test, so neighboring transitions never leak across those boundaries. The robot-specific expert solves damped IK; it does not import another arm's weights.
+
+### Calculation and units
+
+$$
+L=\frac{1}{Nd_a}\|XW-A\|_F^2,\qquad \Delta q=0.03\tanh(a)
+$$
+
+X has shape (N,18): 17 stored observation values plus bias. W is 18×7; A has N×7 expert pre-transform actions. Action MSE is in the chosen normalized-action scale squared. The simulator applies a bounded joint delta in rad. Worked calculation, not learned output: a=0.5 produces 0.03 tanh(0.5)≈0.0138635 rad.
+
+```python
+import numpy as np
+assert np.isclose(0.03 * np.tanh(0.5), 0.013863514717800292)
+```
 
 ## Code connection
 
-[`isaac_tasks.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/lessons/isaac_tasks.py)
+### Source trace
 
-`pai_lab.training` records checkpoints and independent evaluation.
+[`src/pai_lab/training.py`](https://github.com/terryum/tutorial-robotics/blob/main/src/pai_lab/training.py)
+
+`examples/sim-fr3-02/run.py` delegates to the common runner, which checks catalog implementation and capabilities before dispatch. The source above computes the quantities described here; metadata filenames do not establish the calculation by themselves.
+
+The [public robot-path verification](../../verification/robot-paths-2026-11-08.md) separates historical simulation evidence from unverified external/device execution.
 
 ## Try it
 
-Change only variant; keep the other conditions fixed.
+### Controlled comparison
+
+Keep model, seed, samples and independent target set fixed; change only `variant` 1→0.8, which sets learning rate 0.01→0.008. Compare training diagnostics and held-out rollout success separately. Keep old checkpoints immutable. Resume requires the same engine/data/source/configuration; increasing the total epoch target is a different explicit operation.
 
 ```bash
-pal lesson run sim-fr3-02 --samples 64 --variant 0.8 --json
-pal lesson check sim-fr3-02 --run-dir BASE --json
-pal lesson review sim-fr3-02 --run-dir BASE --comparison-run-dir COMPARISON --notes "measured comparison and interpretation"
-pal lesson finish sim-fr3-02 --run-dir BASE --json
+pal lesson run sim-fr3-02 --headless --seed 7 --samples 64 --variant 0.8 --output-dir .local/runs/sim-fr3-02/comparison-01 --json
+pal lesson check sim-fr3-02 --run-dir .local/runs/sim-fr3-02/baseline-01 --json
+pal lesson check sim-fr3-02 --run-dir .local/runs/sim-fr3-02/comparison-01 --json
+pal lesson compare sim-fr3-02 --run-dir .local/runs/sim-fr3-02/baseline-01 --comparison-run-dir .local/runs/sim-fr3-02/comparison-01 --output-dir .local/comparisons/sim-fr3-02/comparison-01 --json
 ```
 
 ## Recovery
@@ -76,7 +105,16 @@ Preserve interrupted evidence. `pal course pause`, `pal course resume` and `pal 
 
 ## Checkpoint
 
-Save explanation, baseline, comparison and next action, then stop after one lesson. Unverified tools or model compatibility keep the stage blocked.
+### Check understanding
+
+Why evaluate unseen targets after optimizer checks? Weight updates prove execution, while task success must be measured independently. Is 16/20 a physical robot acceptance criterion? No, it is this simulated reach task's gate.
+
+Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
+
+```bash
+pal lesson review sim-fr3-02 --run-dir .local/runs/sim-fr3-02/baseline-01 --comparison-run-dir .local/runs/sim-fr3-02/comparison-01 --notes "REPLACE with actual measured values and interpretation" --json
+pal lesson finish sim-fr3-02 --run-dir .local/runs/sim-fr3-02/baseline-01 --json
+```
 
 <!-- pal:navigation:start -->
 ## Next lesson

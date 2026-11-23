@@ -25,6 +25,8 @@
 
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
+먼저 [개념 교재: data-imitation](../concepts/data-imitation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
+
 ## Learning goals
 
 양팔 ALOHA 모델을 실행하고 ACT 형식의 batch를 만듭니다.
@@ -104,9 +106,19 @@ $$
 
 실전 연결: schema와 카메라 프레임만으로 ACT 학습을 완료한 것은 아닙니다.
 
+### 입력에서 관측까지
+
+action chunk는 하나의 시점에서 미래 여러 행동을 묶는 배열 계약입니다. 이 수업의 chunk는16×14이며 samples64이면 저장 actions는64×16×14입니다. 이 모양을 만든 것과 ACT 신경망을 학습한 것은 별개입니다.
+
 ## Code connection
 
 `examples/core-aloha-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/learning.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
+
+### 실제 코드와 산출물 읽기
+
+[`learning.py`](../../../src/pai_lab/lessons/learning.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
+
+`learning.run`은 모델의 ctrl home을 16행으로 복사하고 첫 actuator에 같은 sinusoidal offset을 넣습니다. 한 chunk의 미래16행은 현재 구현에서 서로 같고 `chunk[0]`만 실제로 적용합니다. 관측은 actuator의 joint 주소를 통해 읽은 위치이므로 모델의 전체 qpos 크기와 혼동하지 않습니다. `act-batch.npz`, `act-schema.json`의 shape·chunk_horizon·contract_only·ACT_trained와 observation.png를 연결합니다. 실제 MuJoCo 상태와 카메라는 사용하지만 ACT loss·optimizer는 없습니다.
 
 ## Try it
 
@@ -129,6 +141,10 @@ pal lesson compare core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01
 
 </details>
 
+### 바꾸기 전에 예측하기
+
+첫 actuator offset만0.05→0.075 rad로 바꾸면 chunk shape는 같고 값만 달라집니다. i=0에서는 sin0=0이라 두 조건 첫 chunk가 같습니다. 모든 시점이 같다고 결론 내리지 말고 비영 위상도 봅니다.
+
 ## Recovery
 
 capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
@@ -141,6 +157,10 @@ capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼�
 pal lesson review core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --comparison-run-dir .local/runs/core-aloha-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
 pal lesson finish core-aloha-01 --run-dir .local/runs/core-aloha-01/baseline-01 --json
 ```
+
+### 이해 확인과 답의 기준
+
+질문: 224값이 모두 독립적으로 예측되었나요? 답: 현재는 template 반복입니다. 질문: 그림이 있으면 ACT를 학습했나요? 답: contract_only=true,ACT_trained=false입니다. shape·행동 단위·실제 적용 행을 기록합니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

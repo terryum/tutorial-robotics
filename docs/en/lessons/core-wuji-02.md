@@ -25,6 +25,8 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [robot-hands concept chapter](../concepts/robot-hands.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
 ## Learning goals
 
 Read virtual contact forces at a Wuji fingertip.
@@ -98,15 +100,25 @@ $$
 \bar f_n=\frac1N\sum_{i=1}^{N}f_{n,i}
 $$
 
-Symbols, units and assumptions: fn: contact-frame N; N: number of sampled contacts.
+Symbols, units and assumptions: fn: contact-frame N; N: number of saved time samples; each fn is the sum of absolute contact-normal components at that time.
 
-Worked calculation (not a measured run result): contacts 2 N and 4 N → mean 3 N.
+Worked calculation (not a measured run result): time-sample force sums 2 N and 4 N → time mean 3 N.
 
 Practical connection: A collision contact is not a calibrated tactile taxel reading.
+
+### From input to observation
+
+Virtual contact measures forces produced by collision geometry and the physics solver. It does not model tactile taxels, electrical response or zero calibration. Despite its name, tactile-grid.csv is currently a scalar force trace over time, not a 2D tactile image.
 
 ## Code connection
 
 `examples/core-wuji-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/hands.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`hands.py`](../../../src/pai_lab/lessons/hands.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`hands.run` places a radius=0.012×variant m stimulus sphere at the second tip. At each time t, it selects contacts involving stimulus and computes F_t=Σ_c |f_contact,c[0]|, then averages across N saved times. N counts time samples, not contacts. Two time-sample sums of 2 N and 4 N average to 3 N(calculation). In `payload.contacts`, `position_world_m` is length 3; `force_contact_N` is a length-6 wrench whose first 3 entries are forces and last 3 torques. Distinguish the field name from actual N/Nm units.
 
 ## Try it
 
@@ -129,6 +141,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only radius 0.012→0.018 m can affect contact count, penetration and force. A 1.5× radius does not imply 1.5× force. Compare using the stimulus filter and time average.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -141,6 +157,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 --comparison-run-dir .local/runs/core-wuji-02/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-wuji-02 --run-dir .local/runs/core-wuji-02/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Do no-contact samples enter the average? Answer: They enter with zero sum. Question: Are all 6 force_contact_N entries in N? Answer: Torque entries use Nm. Also distinguish world contact positions from contact-frame wrenches.
 
 <!-- pal:navigation:start -->
 ## Next lesson

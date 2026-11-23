@@ -25,6 +25,10 @@ Read the Expected result first. Your task is to connect the measured values to t
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
+Read the [physx concept chapter](../concepts/physx.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
+
+See the [NVIDIA ecosystem workbook](../nvidia-ecosystem.md) for connections to ROS, GPU, Isaac and VLA. Distinguish its extension activities from this lesson's implemented and verified scope.
+
 ## Learning goals
 
 Measure RGB and depth observations while changing light intensity.
@@ -90,9 +94,19 @@ Worked calculation (not a measured run result): 360 × 480 = 172800 depth sample
 
 Practical connection: Camera convention and clipping must match downstream synthetic datasets.
 
+### From input to observation
+
+Policy images depend on camera, lighting and annotation conventions as well as scene geometry. RGB can change while geometric depth remains fixed. distance_to_camera measures camera distance(m), generally different from optical-axis z.
+
 ## Code connection
 
 `examples/sim-isaac-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/isaac.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
+
+### Read the actual producer and artifacts
+
+Compare [`isaac.py`](../../../src/pai_lab/lessons/isaac.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
+
+`isaac.run` creates a 480×360 render product from camera position(0.35,-0.45,0.3) looking at origin and attaches rgb/distance_to_camera annotators. After 8 orchestrator steps it saves `isaac-frame.png` and `camera-depth.npy`. Actual image_shape may include alpha; PNG uses the first 3 channels. `depth_finite_count` counts finite depth values, not necessarily all 172800 pixels. Scalar imported_joint_count is not camera quality.
 
 ## Try it
 
@@ -115,6 +129,10 @@ Choose one input in the equation and write its units. Inspect whether doubling i
 
 </details>
 
+### Predict before changing a value
+
+Changing only light1000→1500 with fixed camera/model predicts appearance changes and geometric invariance. Rendering/tone mapping need not multiply pixels by exactly1.5. Compare pixel_std, finite depths and foreground framing together.
+
 ## Recovery
 
 For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
@@ -127,6 +145,10 @@ Replace `--notes` with the concrete measurements and interpretation you observed
 pal lesson review sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --comparison-run-dir .local/runs/sim-isaac-02/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish sim-isaac-02 --run-dir .local/runs/sim-isaac-02/baseline-01 --json
 ```
+
+### Check understanding and answer guide
+
+Question: Does one finite depth mean all objects are visible? Answer: It is a minimum nonempty check. Question: Does lighting variation prove policy robustness? Answer: It establishes observation change only. Report camera position, size, distance units and timing.
 
 <!-- pal:navigation:start -->
 ## Next lesson

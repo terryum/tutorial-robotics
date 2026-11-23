@@ -1,0 +1,5 @@
+# Production packets and termination
+
+Each packet includes absolute project root, immutable input hashes, decisions, skill paths, exclusive output ownership, prerequisites, expected artifacts and acceptance criteria. Derive current lesson count from the catalog; partition every ID exactly once after pilots. Inputs are stable contracts; upstream drafts enter through dependencies, never missing speculative input paths. Concept chapter/term changes invalidate consumers.
+
+Record native IDs and actual tool observations separately from local task state. First spawn is idle until ID returned and start succeeds. Match significant messages with recorded/sent/received correlation events using communication.py. No fake IDs or native passes. Missing essential input prevents dependent start. A changed source input on resume invalidates only affected tasks and downstream dependencies. Keep previous artifacts intact. Stop only at complete required results or an explicit resumable blocker with evidence.
