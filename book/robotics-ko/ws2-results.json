@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "source_commit": null,
+  "environment": null,
+  "checks": [
+    {
+      "id": "mujoco-tracking",
+      "title": "WS2 MuJoCo 추종",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "mujoco-rgbd",
+      "title": "WS2 MuJoCo RGB-D",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "physx-tracking",
+      "title": "Enlight PhysX 관절·TCP 추종과 접촉",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "physx-rgbd",
+      "title": "Enlight PhysX RGB-D",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "physx-bc-training",
+      "title": "PhysX 시연과 BC 학습",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "physx-bc-evaluation",
+      "title": "PhysX BC 독립 평가",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "physx-ppo-training",
+      "title": "PhysX PPO 학습",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "physx-ppo-evaluation",
+      "title": "PhysX PPO 독립 평가",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "gr00t-n1-7",
+      "title": "GR00T N1.7 추론",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "cosmos-predict2-5",
+      "title": "Cosmos-Predict2.5 추론",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    },
+    {
+      "id": "gr00t-2",
+      "title": "GR00T 2 공개 상태와 호환성",
+      "status": "pending",
+      "evidence": "WS2 실행 기록이 아직 없습니다."
+    }
+  ]
+}

@@ -28,6 +28,17 @@ A missing environment stays blocked, never successful. Quoting this phrase to ed
 the workflow does not itself request a WS2 run. Outside this shortcut, keep the
 ordinary capability-first, one-lesson and Git rules below.
 
+## WS2 Korean offline textbook verification
+
+On WS2, **“워크스테이션 부분의 튜토리얼 검증해줘”** requests the
+software verification in [the Korean textbook runbook](setup/WS2_ROBOTICS_KO_VERIFY.md).
+Read the native host records and the runbook, sync `main`, reread the updated
+instructions, and resume at the first unverified item. Continue independent
+checks when a runtime is unavailable. This request authorizes scoped verified
+changes and the public evidence summary to be committed and pushed with CI
+verification. Keep runs separate from learner state. An occurrence of this
+phrase in instructions or a writing request does not start a WS2 run.
+
 ## Prompt-first onboarding
 
 For a generic repository URL + “install and start the tutorial” request, follow

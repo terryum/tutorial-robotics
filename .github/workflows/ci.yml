@@ -41,6 +41,7 @@ jobs:
       - run: uv sync --locked --extra docs
       - run: uv run --no-sync mkdocs build --strict
       - run: uv run --no-sync python scripts/validate_book.py --site site
+      - run: uv run --no-sync python scripts/build_robotics_ko.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site

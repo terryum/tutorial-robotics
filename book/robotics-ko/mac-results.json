@@ -1,0 +1,280 @@
+{
+  "host": {
+    "machine": "arm64",
+    "system": "Darwin",
+    "version": "27.2.1"
+  },
+  "lessons": {
+    "core-01": {
+      "artifact_sha256": "2553cc9468a9817f05cc42f883f52538b443257f6bd773534f3bbaf8d6870883",
+      "implementation_sha256": "41fffc8c135b8519aa2634586123dd5e28500049ec2305a5f155f748e7d2b9f9",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "metric": "energy_drift",
+        "unit": "joule",
+        "value": 6.510347816401918e-13
+      },
+      "status": "passed"
+    },
+    "core-04": {
+      "artifact_sha256": "767fe2c5aabbb2d089834334b3c93bba65e15eeb10b480f9e0fb96783779c910",
+      "implementation_sha256": "1cc73a38681033541b2ce7f69adda262f3ed156e8770c3761d8855a55f8eb216",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "metric": "rendered_joint_count",
+        "unit": "count",
+        "value": 7.0
+      },
+      "status": "passed"
+    },
+    "core-data-01": {
+      "artifact_sha256": "bff96e44f8a580170f92c3688ba0d3b439690db95d9ba93db30b4b3bd6ddab1a",
+      "implementation_sha256": "46330cc01882037ecada7e5f19ef87c38fa1b9dbf438ed718d83e4a3c1af8852",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "episodes": 8,
+        "metric": "transition_count",
+        "transitions": 512,
+        "unit": "count",
+        "value": 512.0
+      },
+      "status": "passed"
+    },
+    "core-enlight-02": {
+      "artifact_sha256": "aeb8c8ff43f4eecc0a97c49221e421c6f605a34b4ad77720a76d7b99f3a89002",
+      "implementation_sha256": "1a49f7fca5145293d8a3f7ccdfdcc6957c0d829c8be3bfe06ffb70bbba59bf37",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "metric": "max_fk_error",
+        "unit": "meter",
+        "value": 6.760705022789419e-16
+      },
+      "status": "passed"
+    },
+    "core-enlight-03": {
+      "artifact_sha256": "2becb33cd9593623823db7848d7f0c6e172137ed22dde0d706754e78bf2ad0c6",
+      "implementation_sha256": "705fadcc35513e26cbaadb40a0797f9303c6335d3c995cd8b7e3f2ea54064f41",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "engine": "MuJoCo",
+        "metric": "measured_result",
+        "tcp_rmse_m": 0.005192916916246038,
+        "unit": "meter",
+        "value": 0.005192916916246038
+      },
+      "status": "passed"
+    },
+    "core-enlight-04": {
+      "artifact_sha256": "b0ac89262db89f18e3d0a9ac15269efd4ff24e0c7b3c4922a76ac44cd46f3f72",
+      "implementation_sha256": "55952e866c9e029556aabfc27ca73646c6e06385832e5cf45ef8deaafe2299ba",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "epoch": 16,
+        "evaluation": {
+          "attempts": 20,
+          "passed": true,
+          "required_successes": 16,
+          "successes": 20
+        },
+        "metric": "measured_result",
+        "parameter_l1_change": 65.1531842132549,
+        "performance_verified": true,
+        "reload_error": 0.0,
+        "unit": "count",
+        "value": 20.0
+      },
+      "status": "passed"
+    },
+    "core-enlight-05": {
+      "artifact_sha256": "15f43ec026e05f8af24418b6284fde048faf39d32ca6f4d921572a0ca7b71864",
+      "implementation_sha256": "749c41abb9cc25fd86d907b0867c487a8f5200cde61275f5f70cc68e56e08520",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "epoch": 16,
+        "evaluation": {
+          "attempts": 20,
+          "passed": false,
+          "required_successes": 16,
+          "successes": 0
+        },
+        "metric": "measured_result",
+        "parameter_l1_change": 0.5133330775768771,
+        "performance_verified": false,
+        "reload_error": 0.0,
+        "unit": "count",
+        "value": 0.0
+      },
+      "status": "passed"
+    },
+    "core-fr3-04": {
+      "artifact_sha256": "08273118d6d1891801ddabf71c230816122916e7f41e2f7fc69f2fd99288226d",
+      "implementation_sha256": "64438cbea7446590ddb6da9432a7a8f2f55078824c2cdf79a8803938190a9a94",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "metric": "ik_residual",
+        "unit": "meter",
+        "value": 1.3877787807814457e-16
+      },
+      "status": "passed"
+    },
+    "core-fr3-05": {
+      "artifact_sha256": "425ff4da83eb8950bede98a85613395fab08d0c8c612ec858095463ad34070ad",
+      "implementation_sha256": "f82ab1f80be967616500387b02272db7764289a719e08de6b89de676e7da8ee5",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "metric": "pose_error",
+        "unit": "meter",
+        "value": 0.005603521253149652
+      },
+      "status": "passed"
+    },
+    "core-fr3-09": {
+      "artifact_sha256": "0eb25c7e71ac9d2491c9b61e1e6decb8d4ee5ec8476996e8450e64f97bba5670",
+      "implementation_sha256": "db77b14a5195d1e1d2a5649614815734668b583ab6c08c85067e992864683691",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "engine": "MuJoCo",
+        "metric": "measured_result",
+        "tcp_rmse_m": 0.006793248304008966,
+        "unit": "meter",
+        "value": 0.006793248304008966
+      },
+      "status": "passed"
+    },
+    "core-fr3-10": {
+      "artifact_sha256": "f6cddfc5aab469e2a63bb349fdf6a81f93701f18fb4b71342465a53adeedc35e",
+      "implementation_sha256": "0813b127539ee23b33cd008971900376cade162f6de9126e6a27f055924dcd12",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "epoch": 16,
+        "evaluation": {
+          "attempts": 20,
+          "passed": true,
+          "required_successes": 16,
+          "successes": 20
+        },
+        "metric": "measured_result",
+        "parameter_l1_change": 55.86909637941412,
+        "performance_verified": true,
+        "reload_error": 0.0,
+        "unit": "count",
+        "value": 20.0
+      },
+      "status": "passed"
+    },
+    "core-il-01": {
+      "artifact_sha256": "98ec2b6c951b83371fa4c366da91aeb47d1c59c978319195617cee422f4c433c",
+      "implementation_sha256": "31bb5804002e353a01ddd71a5b141eff8ffba99c8eaabad67b6fab51dd36d716",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "heldout_mse": 0.004970046967904974,
+        "metric": "loss_reduction",
+        "reload_max_error": 0.0,
+        "unit": "loss",
+        "value": 0.18645989951226155
+      },
+      "status": "passed"
+    },
+    "core-rl-01": {
+      "artifact_sha256": "78eb66f51db3aca13a70a4b43667e7ea0d8077ad187b2d707f10c30f0fe26be2",
+      "implementation_sha256": "4e9cac04068125c9a88ddbe6f3ee3f7d99644cbf54897398fb21f7e4e3c85db9",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "metric": "objective_gain",
+        "parameter_delta": 0.025147248591395034,
+        "performance_verified": false,
+        "reload_max_error": 0.0,
+        "unit": "reward",
+        "value": 0.12800980197494358
+      },
+      "status": "passed"
+    },
+    "core-teleop-01": {
+      "artifact_sha256": "eb6f8b21759a65465a0bf46601a5e840726e42c94be667bdbc8c90f21357d7d3",
+      "implementation_sha256": "4e281cf3bed89d0cd09869d62e6d16d6f72d26f76ae706ede578a12dfc5cf6bd",
+      "inputs": {
+        "samples": 64,
+        "seed": 7,
+        "variant": 1.0
+      },
+      "metrics": {
+        "metric": "accepted_previews",
+        "unit": "count",
+        "value": 192.0
+      },
+      "status": "passed"
+    },
+    "sim-enlight-03": {
+      "status": "blocked"
+    },
+    "sim-enlight-04": {
+      "status": "blocked"
+    },
+    "sim-enlight-05": {
+      "status": "blocked"
+    },
+    "sim-ros-01": {
+      "status": "blocked"
+    }
+  },
+  "schema_version": 1,
+  "software": {
+    "matplotlib": "3.11.1",
+    "mujoco": "3.12.0",
+    "numpy": "2.5.2",
+    "python": "3.12.13",
+    "scipy": "1.18.1"
+  }
+}
