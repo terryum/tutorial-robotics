@@ -23,7 +23,7 @@ def state(tmp_path, monkeypatch):
 
 
 @pytest.fixture
-def pendulums(tmp_path, state):
+def pendulums(tmp_path, state, native_macos_gl):
     missing = gaps(resolve_lesson("core-01"), prerequisites=False)
     if missing:
         pytest.skip("; ".join(missing))

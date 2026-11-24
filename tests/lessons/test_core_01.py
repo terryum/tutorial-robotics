@@ -11,10 +11,12 @@ from pai_lab.readiness import gaps
 from tests.lesson_contract import assert_contract
 
 
+@pytest.mark.usefixtures("native_macos_gl")
 def test_core_01_contract(tmp_path):
     assert_contract("core-01", tmp_path)
 
 
+@pytest.mark.usefixtures("native_macos_gl")
 def test_release_angle_changes_peak_with_synchronized_observations(tmp_path):
     missing = gaps(resolve_lesson("core-01"), prerequisites=False)
     if missing:
