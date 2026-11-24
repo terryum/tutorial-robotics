@@ -30,6 +30,8 @@ ros2_ws/log/
 .env.*
 !.env.example
 !.env.template
+services/book-feedback/.dev.vars*
+.wrangler/
 id_rsa*
 id_dsa*
 id_ecdsa*

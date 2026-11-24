@@ -93,18 +93,24 @@ python -m json.tool .local/runs/core-fr3-05/baseline-01/experiment.json
 The mass matrix M couples joint accelerations. Operational inertia Λ converts Cartesian acceleration into force; Jᵀ maps that force back to joint torque. This experiment controls translation only, not the complete six-dimensional pose.
 
 $$
-\Lambda=(JM^{-1}J^T+\lambda I)^{-1},\qquad\tau=J^T\Lambda a+c+g
+\Lambda=(JM^{-1}J^T+\lambda I)^{-1},\qquad\tau_{\mathrm{req}}=J^T\Lambda a+c+g-k_q\dot q
 $$
 
-Symbols, units and assumptions: Λ: effective kg; a: m/s²; J: m/rad; damping regularization λ has inverse-mass units.
+The effective mass $\Lambda$ is in kg, the requested linear acceleration $a$ is in m/s², and $J$ is in m/rad. The regularization $\lambda$ has inverse-mass units. Joint damping uses $k_q=2$ N·m·s/rad. The controller clips the requested torque $\tau_{\mathrm{req}}$ to each joint’s torque limits before applying it.
 
 Worked calculation (not a measured run result): 2 kg × 0.1 m/s² = 0.2 N; 0.5 m/rad × 0.2 N = 0.1 Nm.
 
 Practical connection: This translation-only controller omits full orientation and exact Jdot compensation.
 
-### From input to observation
+### How tool force becomes joint torque
 
-Moving the tool in a Cartesian direction requires coordinated joint motion. J is 3×7 and M is 7×7, so JM⁻¹Jᵀ is 3×3. Its regularized inverse describes effective mass for the requested acceleration. The lesson controls three translation axes, not three orientation axes.
+Pair a force $f$ (N) with the linear velocity $v$ (m/s) at the tool site, both expressed in world coordinates. Their dot product $f^\top v$ gives power in watts. On the joint side, the same power is $\tau_f^\top\dot q$, where $\tau_f$ is the joint torque contribution of this force. Substitute $v=J\dot q$, using the translational Jacobian $J$ at the same site and in the same frame.
+
+$$
+f^\top v=f^\top J\dot q=(J^\top f)^\top\dot q=\tau_f^\top\dot q.
+$$
+
+The equality holds for every joint velocity, so $\tau_f=J^\top f$. In the code, `jac.T @ force` multiplies a 7×3 matrix by a three-element force vector to get seven joint torques. Since $M$ is 7×7, $JM^{-1}J^\top$ is 3×3. Its regularized inverse gives the effective mass $\Lambda$ that converts the requested linear acceleration into a force. The recorded torque includes bias and joint damping, followed by clipping. See [the Jacobian and power](../concepts/control-contact.md#jacobian-power) for the expression that also includes moments.
 
 ## Code connection
 
@@ -114,7 +120,7 @@ Moving the tool in a Cartesian direction requires coordinated joint motion. J is
 
 Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
 
-The task branch of `physics.arm_control` computes force toward world offset [0.03,0.02,0.01] m, then uses `jac.T @ force + data.qfrc_bias - 2 * data.qvel`. The compact equation above omits this last joint-velocity damping term; its coefficient 2 has units Nm s/rad. Final torque is clipped to joint-model limits. `task-space-response.csv` and `payload.final_error` report position error(m), while `torque_nm` holds joint torques.
+The task branch of `physics.arm_control` computes force toward world offset [0.03,0.02,0.01] m, then uses `jac.T @ force + data.qfrc_bias - 2 * data.qvel`. Final torque is clipped to joint-model limits. `task-space-response.csv` and `payload.final_error` report position error(m), while `torque_nm` holds joint torques.
 
 ## Try it
 
@@ -156,7 +162,11 @@ pal lesson finish core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --js
 
 ### Check understanding and answer guide
 
-Question: What does Jᵀ map? Answer: World translational force(N) into joint torque(Nm). Question: Does metric name pose_error mean full-pose control? Answer: Here it measures position only. Separate position error, joint torque and damping in your report.
+**How does `payload.torque_nm` relate to `jac.T @ force`?**
+
+The relation $v=J\dot q$ and the equality of power give $J^\top f$, the joint torque contribution of the requested force at the site. The saved torque also includes bias and damping, followed by clipping to torque limits.
+
+Question: Does metric name pose_error mean full-pose control? Answer: Here it measures position only. Separate position error, joint torque and damping in your report.
 
 <!-- pal:navigation:start -->
 ## Next lesson

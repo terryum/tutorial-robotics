@@ -7,6 +7,7 @@
       "aliases": [
         "T00"
       ],
+      "diagnostic": true,
       "stage": "core",
       "track": "common",
       "order": 1,
@@ -58,9 +59,7 @@
         "numpy",
         "mujoco"
       ],
-      "prerequisites": [
-        "core-00"
-      ],
+      "prerequisites": [],
       "elective": false,
       "entrypoint": "examples/core-01/run.py",
       "check": "pal lesson check core-01",
@@ -101,7 +100,7 @@
         "mujoco"
       ],
       "prerequisites": [
-        "core-00"
+        "core-01"
       ],
       "elective": false,
       "entrypoint": "examples/core-02/run.py",
@@ -1116,7 +1115,6 @@
         "ros2-jazzy"
       ],
       "prerequisites": [
-        "core-00",
         "core-02"
       ],
       "elective": false,

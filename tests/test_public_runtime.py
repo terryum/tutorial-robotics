@@ -23,8 +23,10 @@ def test_doctor_json_and_tutorial_commands(capsys, monkeypatch, tmp_path) -> Non
     assert result["repository_errors"] == []
 
     assert main(["tutorial", "status"]) == 0
-    assert "core-00\tpending" in capsys.readouterr().out
+    output = capsys.readouterr().out
+    assert "core-01\tpending" in output
+    assert "core-00" not in output
     assert progress()["core-00"] == "implemented"
 
     assert main(["tutorial", "next"]) == 0
-    assert capsys.readouterr().out.startswith("id=core-00")
+    assert capsys.readouterr().out.startswith("id=core-01")

@@ -74,10 +74,10 @@ def test_progress_survives_cli_restart_and_new_learner_starts_empty(session, tmp
         assert result.returncode == 0, result.stdout + result.stderr
         return json.loads(result.stdout)
 
-    assert cli(session, "course", "next")["id"] == "core-00"
+    assert cli(session, "course", "next")["id"] == "core-01"
     assert not session.exists()  # Reading status must not initialize a learner.
     cli(session, "course", "init")
-    run = cli(session, "lesson", "run", "core-00", "--headless")
+    run = cli(session, "lesson", "run", "T00", "--headless")
     baseline = run["run_dir"]
     assert str(session / "runs") in baseline
     assert json.loads((session / "progress.json").read_text())["completed"] == {}
@@ -91,14 +91,15 @@ def test_progress_survives_cli_restart_and_new_learner_starts_empty(session, tmp
     complete = json.loads((session / "progress.json").read_text())["completed"]
     assert complete["core-00"]["completed_at"]
     assert json.loads((session / "session.json").read_text())["phase"] == "finished"
-    assert cli(session, "course", "list")[0]["status"] == "complete"
+    assert cli(session, "course", "list")[0]["id"] == "core-01"
+    assert cli(session, "course", "summary")["completed"] == 0
     assert all(row["id"] != "core-00" for row in cli(session, "course", "status"))
     assert cli(session, "course", "next")["id"] == "core-01"
     cli(session, "course", "init")
     assert json.loads((session / "progress.json").read_text())["completed"] == complete
 
     other = tmp_path / "new-learner"
-    assert cli(other, "course", "next")["id"] == "core-00"
+    assert cli(other, "course", "next")["id"] == "core-01"
     assert all(row["status"] == "pending" for row in cli(other, "course", "list"))
     assert not other.exists()
     assert json.loads((session / "progress.json").read_text())["completed"] == complete

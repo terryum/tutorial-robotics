@@ -77,6 +77,12 @@ assert np.isclose(r_m * (left_rad_s + right_rad_s) / 2, 0.02)
 assert r_m * (right_rad_s - left_rad_s) / separation_m == 0
 ```
 
+### How the base reaches a point to the side
+
+In the [motion-order calculation](../concepts/mobile-motion.md#differential-drive-motion-order), the base starts facing world $+x$. Turning $90^\circ$ counterclockwise and then driving forward 1 m takes it to $(0,1)$ m. Driving forward first leaves the base at $(1,0)$ m when it finishes turning. With no slip, the base can translate only along its current forward axis at any instant. Turning changes that axis and makes a position to the side of the starting pose reachable.
+
+MuJoCo computes the contacts that affect the base's motion. In the `payload` of `experiment.json`, use `actuator_names` to find the wheel columns in `commands`. Both wheel commands have the same sign in the initial forward phase and opposite signs in the turning phase. Inspect the matching row of `qpos` for the position and orientation of `base_link`. In this model the first three values are the world position in m, and the next four form the orientation quaternion. Read the world-frame TCP position from `tcp_positions_m`. It reflects both base and arm movement. The `contact_counts` field counts contacts across the scene. This count alone cannot determine whether the wheels slipped.
+
 ## Code connection
 
 ### Source trace
@@ -108,7 +114,9 @@ Preserve interrupted evidence. `pal course pause`, `pal course resume` and `pal 
 
 ### Check understanding
 
-Why not write the free-base quaternion into actuator controls? It is a state representation, not a wheel or arm action. Does base movement prove navigation? No; this is a small prescribed simulation schedule.
+Why not write the free-base quaternion into actuator controls? It is a state representation, not a wheel or arm action.
+
+How did the base and TCP move when the wheel commands had opposite signs? Compare the same rows of `qpos` and `tcp_positions_m`. An ideal turn in place changes just the base heading. The TCP can change position if it is offset from the rotation center or the arm moves. Check the position coordinates in `qpos` to see whether the simulated base translated.
 
 Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
 

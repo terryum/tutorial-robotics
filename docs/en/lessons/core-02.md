@@ -13,7 +13,7 @@
 | Legacy alias | `T02` |
 | Platforms | `macos-arm64, linux-x86_64` |
 | Capabilities | `python-3.12, numpy, mujoco` |
-| Prerequisites | `core-00` |
+| Prerequisites | `core-01` |
 | Safety | `simulation` |
 | Verification | `maintainer-checked` |
 | Implementation | `implemented` |
@@ -21,21 +21,21 @@
 
 ## Reader route
 
-Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
-
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
 Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
 
 ## Learning goals
 
-Verify immutable source revisions and model bytes.
+Check pinned source commits and model files. Change one byte in a memory copy and compare the SHA-256 values to detect changes even when the model keeps the same name.
 
 ## Preflight
 
-On a fresh checkout, run `sh bootstrap.sh --plan`, read the plan, then use `--apply`. Activate `source .venv/bin/activate` before these commands. If the run directory already exists, use a new suffix such as 02.
+### Predict before running
 
-Prepare the required public models once:
+Predict whether the two SHA-256 values will match if you change only the first byte and keep the file length and remaining bytes fixed.
+
+The agent prepares and verifies Core using the [reader guide](../READER_GUIDE.md#manual-setup). For direct execution, read the plan with `sh bootstrap.sh --plan` at the repository root and use `--apply` if setup is needed. Activate the environment with `source .venv/bin/activate`, then run the checks below. If a run directory already exists, choose a fresh suffix such as `02`. The first group of commands prepares the required public models.
 
 ```bash
 pal assets fetch mujoco-menagerie
@@ -48,7 +48,21 @@ pal host detect --json
 pal lesson check core-02 --json
 ```
 
+## How it works
+
+An annotated Git tag may point to a tag object. Pin the actual commit and hash the bytes of the selected model and license files. Let $b$ be the file bytes and $h$ their SHA-256 hash. Dividing 256 bits by 8 gives 32 bytes, represented by 64 hexadecimal digits. Identical file contents give the same hash. Use the check to detect changes in the file bytes. Changing a mesh file can affect contact or collision results even in the same pose.
+
+$$
+h=\operatorname{SHA256}(b)
+$$
+
+## Code connection
+
+[`examples/core-02/run.py`](../../../examples/core-02/run.py) calls [`runner.py`](../../../src/pai_lab/lessons/runner.py), which dispatches to [`physics.py`](../../../src/pai_lab/lessons/physics.py). [`models.provenance`](../../../src/pai_lab/lessons/models.py) verifies the SHA-256 of model files against `assets/model-lock.json` and rejects missing or changed files. `physics.run` reads pinned commits, licenses and aggregate file hashes for FR3, Wuji, Enlight, G1, Sharpa and ALOHA.
+
 ## Action
+
+The agent records the baseline with this command.
 
 ```bash
 pal lesson run core-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-02/baseline-01 --json
@@ -56,13 +70,9 @@ pal lesson run core-02 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
-Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+All six public model caches must match `assets/model-lock.json`. Download receipts live outside the checkout. In the measured example below, a 1 means the commit ID passes the 40-character length check. The complete source pin check runs separately.
 
 ![core-02 measured plot](../../assets/examples/core-02-plot.png)
-
-All six cached public model families must match assets/model-lock.json. Source cache receipts live beside checkouts. Never repair a vendor file in place.
-
-Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
 
 ```bash
 pal lesson check core-02 --run-dir .local/runs/core-02/baseline-01 --json
@@ -70,85 +80,44 @@ pal lesson check core-02 --run-dir .local/runs/core-02/baseline-01 --json
 
 ## Observe
 
-Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+Find `model`, `revision`, `license` and `files_digest` under `models` in `source-pins.json`. The commit ID identifies the loaded version, and the license states the terms for reuse. Verify the run with `lesson inspect`. The commands below also open the plot and raw values.
 
 ```bash
 pal lesson inspect core-02 --run-dir .local/runs/core-02/baseline-01 --json
 ```
 
-Open the plot on macOS (closing the image preserves the run):
-
 ```bash
 open .local/runs/core-02/baseline-01/plot.png
 ```
-
-On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
 
 ```bash
 python -m json.tool .local/runs/core-02/baseline-01/experiment.json
 ```
 
-## How it works
-
-A Git tag may name an annotated tag object, not a commit. Resolve the commit and hash every selected model file and license. SHA-256 detects changed bytes; it does not establish physical fidelity.
-
-$$
-h=\operatorname{SHA256}(b)
-$$
-
-Symbols, units and assumptions: b: file bytes; h: 32-byte digest, not a physical measurement.
-
-Worked calculation (not a measured run result): 256 bits / 8 = 32 bytes.
-
-Practical connection: A changed mesh can alter collision without changing the robot name.
-
-### From input to observation
-
-The same robot name can refer to different meshes, inertia or joint files. A source revision identifies Git history, while file hashes identify the selected bytes. Keeping both lets another host check whether it loaded the same public model. These identities have no physical units such as frames, kg or m.
-
-## Code connection
-
-`examples/core-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
-
-### Read the actual producer and artifacts
-
-Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
-
-`models.provenance` reads the file list in `assets/model-lock.json`, compares actual SHA-256 values and rejects missing or changed bytes. `physics.run` collects receipts for FR3, Wuji, Enlight, G1, Sharpa and ALOHA. Read model, revision, license and files_digest in `source-pins.json` under `models`. A plotted 1 encodes a 40-character revision-string check, not 100% geometric or dynamic accuracy. The source-pin check is separate.
-
 ## Try it
 
-This is an environment or structure audit. A seed change is not required. Compare names, units, prerequisites and the actual artifact; record specific findings in the review notes.
+The code reads the tracked `assets/sources.json` as bytes and applies XOR 1 to the first byte of a memory copy. The original file and vendor cache stay intact. One run stores both hash values under `hash_comparison` in `source-pins.json`. Read `byte_offset`, `original_byte` and `changed_byte`, then compare `original_sha256` and `changed_sha256`. This comparison uses the same seed and a single run.
 
-<details>
-<summary>Optional: what changes when the assumptions fail?</summary>
+The agent uses the command below to validate the run evidence and generate a result page. It opens the page in a separate window from the lesson and verifies the display. If a separate window is unavailable, it uses a result tab. With no screen control, it shares the actual measurements and any images supported in chat.
 
-Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
-
-</details>
-
-### Predict before changing a value
-
-In a paper sensitivity check, hold everything fixed and suppose one mesh byte changes: hash equality must fail. Do not edit vendor files to try this. Changing seed should not change audited models, licenses or hashes.
+```bash
+pal lesson present core-02 --run-dir .local/runs/core-02/baseline-01 --language en --json
+```
 
 ## Recovery
 
-For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
+On `capability-unavailable`, the agent reads `missing_capabilities` or `error` and explains how to prepare the required Python, model, platform or external stack. Rerun in a fresh directory once it is ready. Keep the failed `run.json` and measurements. System packages, drivers, CUDA, ROS, Isaac and large models require separate setup. Restore the pinned cache if a checksum fails. Keep vendor sources read-only.
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+What does a matching hash establish? Point to the field that reports the byte you changed in memory. In the next lesson, you will compile the models and check their actual structure.
+
+`lesson present` saves the result and the awaiting-comprehension phase. A new chat can resume from the same question and result. Once the learner has discussed the answer or asked to finish, the agent records actual observations and an interpretation in `--notes`, then records review and completion. Resolve and reverify any outstanding feedback first. Changed execution code or corrupt artifacts block completion.
 
 ```bash
 pal lesson review core-02 --run-dir .local/runs/core-02/baseline-01 --notes "Replace with inspected names, units, structure, limits and concrete evidence." --json
 pal lesson finish core-02 --run-dir .local/runs/core-02/baseline-01 --json
 ```
-
-### Check understanding and answer guide
-
-Question: Does a matching hash prove physical accuracy? Answer: It proves byte identity. Question: Why read both revision and license? Answer: Version reproducibility and reuse conditions are separate. The next lesson compiles the models and inspects structure.
-
-This structural audit is explicitly exempted by `evidence.comparison_errors` from a separate comparison run. The review command above passes only the baseline. Record actual audit evidence in notes; do not represent a paper calculation as an executed comparison artifact.
 
 <!-- pal:navigation:start -->
 ## Next lesson

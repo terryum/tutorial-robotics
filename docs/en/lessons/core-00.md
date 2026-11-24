@@ -17,11 +17,12 @@
 | Safety | `simulation` |
 | Verification | `maintainer-checked` |
 | Implementation | `implemented` |
+| Role | `on-demand diagnostic` |
 <!-- pal:metadata:end -->
 
 ## Reader route
 
-Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
+`core-00` (`T00`) is an explicit environment diagnostic. During ordinary installation, the agent verifies Core readiness and waits for your start reply before opening the [first pendulum lesson](core-01.md). Learning paths and progress totals exclude the diagnostic. Earlier completion and run records remain available.
 
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
@@ -96,7 +97,7 @@ Practical connection: A successful import does not prove rendering works.
 
 ### From input to observation
 
-The first input to a robotics lesson is a fact about its execution host, not a joint command. Distinguishing installed package names from successful capability probes prevents missing rendering, CUDA or ROS from being mistaken for a mathematical or policy error. Available/unavailable/unverified are categories; both latter states plot as 0. Plotted 1/0 encodes availability rather than a physical quantity or performance score.
+The diagnostic reads facts about the host that will run the experiment. Distinguishing installed package names from successful capability probes prevents missing rendering, CUDA or ROS from being mistaken for a mathematical or policy error. Available/unavailable/unverified are categories; both latter states plot as 0. Plotted 1/0 encodes availability rather than a physical quantity or performance score.
 
 ## Code connection
 
@@ -129,7 +130,7 @@ For capability-unavailable, prepare exactly the reported Python, model, platform
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Use these commands to record optional diagnostic review and completion. The records do not count toward learning progress.
 
 ```bash
 pal lesson review core-00 --run-dir .local/runs/core-00/baseline-01 --notes "Replace with inspected names, units, structure, limits and concrete evidence." --json

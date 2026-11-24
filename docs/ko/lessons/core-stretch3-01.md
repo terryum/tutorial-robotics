@@ -77,6 +77,12 @@ assert np.isclose(r_m * (left_rad_s + right_rad_s) / 2, 0.02)
 assert r_m * (right_rad_s - left_rad_s) / separation_m == 0
 ```
 
+### 옆으로 굴러갈 수 없어도 옆 위치에 도달하는 이유
+
+[운동 순서 계산](../concepts/mobile-motion.md#differential-drive-motion-order)에서 베이스가 월드 $+x$ 방향으로 출발하면, 반시계 방향으로 $90^\circ$ 회전한 뒤 1 m 전진할 때 $(0,1)$ m에 도착합니다. 전진을 먼저 하면 $(1,0)$ m에서 회전이 끝납니다. 미끄럼이 없다는 가정에서 순간적으로는 몸체 전방으로만 이동할 수 있지만, 회전으로 전방이 바뀌어 처음의 옆 위치에도 도달할 수 있습니다.
+
+MuJoCo는 접촉을 계산해 베이스를 움직입니다. `experiment.json`의 `payload`에서 `actuator_names`로 바퀴 명령 열을 찾고 `commands`의 두 바퀴가 같은 부호인 초기 전진 구간과 반대 부호인 회전 구간을 구별합니다. 같은 행의 `qpos`에서 `base_link`의 위치와 방향을 확인합니다. 이 모델에서는 첫 세 값이 월드 좌표계의 위치(m), 그다음 네 값이 방향 쿼터니언입니다. `tcp_positions_m`에서 월드 좌표계의 TCP 위치를 확인합니다. TCP에는 베이스와 팔 움직임이 함께 반영됩니다. `contact_counts`는 장면 전체의 접촉 수를 기록하며 바퀴의 미끄럼은 이 값만으로 판단하기 어렵습니다.
+
 ## Code connection
 
 ### 소스 추적
@@ -102,13 +108,15 @@ pal lesson compare core-stretch3-01 --run-dir .local/runs/core-stretch3-01/basel
 
 ## Recovery
 
-중단 시 기록을 보존합니다. `pal course pause`, `pal course resume`, `pal lesson run core-stretch3-01 --resume-from BASE --json`은 저장 상태를 확인하며 자동 동작을 재개하지 않습니다. 짧은 시뮬레이션은 새 run에서 재시작합니다. 학습 재개·호스트 이동은 [경로 안내](../paths.md)를 따릅니다.
+중단 시 기록을 보존합니다. `pal course pause`, `pal course resume`, `pal lesson run core-stretch3-01 --resume-from BASE --json`은 저장 상태를 확인하며 자동 동작을 재개하지 않습니다. 짧은 시뮬레이션은 새 run에서 재시작합니다. 학습 재개·호스트 이동은 [실행 안내](../READER_GUIDE.md#학습-중단재개와-호스트-이동)를 따릅니다.
 
 ## Checkpoint
 
 ### 이해 확인
 
-자유 베이스 쿼터니언을 구동기 제어에 쓰지 않는 이유는? 상태 표현이며 바퀴·팔 행동이 아니기 때문이다. 베이스 이동이 내비게이션을 증명하는가? 아니다. 작은 지정 시뮬레이션 일정이다.
+자유 베이스 쿼터니언을 구동기 제어에 쓰지 않는 이유는? 상태 표현이며 바퀴·팔 행동이 아니기 때문이다.
+
+바퀴 명령의 부호가 반대가 된 구간에서 베이스와 TCP가 어떻게 움직였나요? 같은 행의 `qpos`와 `tcp_positions_m`를 비교해 보세요. 이상적인 제자리 회전은 베이스의 방향만 바꾸지만, TCP는 회전 중심에서 떨어져 있거나 팔이 움직일 때 위치가 달라질 수 있습니다. 시뮬레이션에서 베이스가 실제로 이동했는지는 `qpos`의 위치 좌표로 확인합니다.
 
 두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
 

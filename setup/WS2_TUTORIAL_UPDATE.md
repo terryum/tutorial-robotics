@@ -20,7 +20,7 @@ WS2의 robotics 작업 공간 또는 `tutorial-robotics` / 비공개 overlay에�
 
 1. 현재 저장소와 상위 `AGENTS.md`, public `agent/workflow.md`.
 2. [구현·환경별 검증 기록](../docs/verification/robot-paths-2026-11-08.md),
-   [한글 학습 경로](../docs/ko/paths.md), `curriculum/catalog.json`,
+   [한국어 커리큘럼](../docs/ko/index.md), `curriculum/catalog.json`,
    `curriculum/paths.json`과 실행할 수업 문서.
 3. public `state/HOST_STATUS.md`와 해당 네이티브 OS 설치 기록:
    [Ubuntu](../docs/WS2_UBUNTU_INSTALLATION_STATUS.md) /

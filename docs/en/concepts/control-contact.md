@@ -38,9 +38,35 @@ The 15 N m limit above is an illustrative arithmetic limit, not the FR3 limit. [
 
 ## Gravity, coordinates and contact
 
-At rest a PD controller may retain error because its spring torque balances gravity. The gravity lesson adds `data.qfrc_bias`, MuJoCo's bias force term, which includes velocity-dependent effects as well as gravity. It is not a measured hardware gravity calibration. For Cartesian force $f$ in world coordinates, the translational Jacobian maps it into joint torque as $\tau=J^T f$: $J$ is 3×7 with units m/rad, $f$ is a three-vector in N. Task-space control also uses the mass matrix; it is not simply the same scalar PD law applied to Cartesian position.
+<a id="gravity-and-bias" name="gravity-and-bias"></a>
 
-Contact changes the problem: penetration and relative motion produce constraint forces. A useful dry-friction model is $\lVert f_t\rVert\leq\mu f_n$, with normal force $f_n\geq0$, tangential force $f_t$ in N and dimensionless friction coefficient $\mu$. This is an explanatory bound, not a claim that every simulator uses an identical friction solver. MuJoCo contact forces are expressed in a contact frame; the first component returned by `mj_contactForce` is normal force. The lesson sums absolute normal components only for the named probe/table pair. `normal_force_N` is simulation output, not a calibrated force sensor reading.
+### From holding torque to the equation of motion
+
+An arm held still in the air has $\dot q=\ddot q=0$. Ignoring contact and passive torque, the motors must supply the gravity term $g(q)$ at that configuration. As in the PD calculation above, position error produces proportional torque. Position error can persist when this torque alone balances gravity. When the arm moves or experiences an external load, additional terms enter the joint equation of motion.
+
+$$
+M(q)\ddot q+c(q,\dot q)+g(q)=\tau+\tau_{\mathrm{other}}.
+$$
+
+The 7×7 joint-space inertia matrix $M(q)$ (kg·m²) depends on the current configuration. Multiplying it by $\ddot q$ (rad/s²) gives the torque needed for joint acceleration. Off-diagonal terms describe how accelerating one joint can affect the torque needed at another. The term $c$ accounts for Coriolis and centrifugal effects, and $g$ accounts for gravity. Here $\tau$ is control torque, while $\tau_{\mathrm{other}}$ includes joint torques from contact, other external loads and passive effects. Each vector term in the equation of motion has units of N·m. [MuJoCo's equation of motion](https://mujoco.readthedocs.io/en/stable/computation/index.html#general-framework)
+
+The gravity-compensation lesson adds `data.qfrc_bias`, which contains $c+g$, to the PD request and then applies the joint torque limits. In the worked example above, at zero velocity and with 0.18 rad of error for one joint, adding 4 N·m of bias to the 21.6 N·m PD torque gives 25.6 N·m before clipping. With the same illustrative limits of ±15 N·m, both requests apply 15 N·m. This calculation shows how saturation can leave the applied torque unchanged when compensation is added.
+
+<a id="jacobian-power" name="jacobian-power"></a>
+
+### The Jacobian and power
+
+The translational Jacobian $J$ (3×7, m/rad) maps joint velocity $\dot q$ (rad/s) to linear velocity $v=J\dot q$ (m/s) at the tool site. A force $f$ (N) applied at the same site and expressed in the same frame contributes power $f^\top v$ (W). This equals joint-side power $\tau_f^\top\dot q$, so $f^\top J\dot q=\tau_f^\top\dot q$ for every $\dot q$, and the torque contribution is $\tau_f=J^\top f$. The lesson's task-space controller uses $M(q)$ and $J$ at the current configuration to calculate the force for a linear acceleration request.
+
+To include rotation, pack the force $f$ and the moment $m$ (N·m) about the same point into a six-element vector called a wrench. Express the linear velocity $v$ at that point and angular velocity $\omega$ (rad/s) in the same frame. The power is $f^\top v+m^\top\omega$. When a six-row Jacobian gives both velocities, match the order of its rows with that of the wrench components. When shifting the moment to a new reference point while keeping the axes fixed, add $r\times f$ to the original moment. Here $r$ points from the new reference point to the original one. [Modern Robotics on Jacobians and wrenches](https://modernrobotics.northwestern.edu/nu-gm-book-resource/5-2-statics-of-open-chains/)
+
+<a id="contact-force-and-friction" name="contact-force-and-friction"></a>
+
+### Contact forces and friction
+
+The compressive normal force $f_n\geq0$ acts perpendicular to the contact surface. The tangential force $f_t$ acts along the surface. Both have units of N. In the ideal Coulomb model, static friction can supply $\lVert f_t\rVert\leq\mu f_n$, with dimensionless friction coefficient $\mu$. Sliding occurs if preventing it would require more tangential force. In the single-coefficient model, sliding friction has magnitude $\mu f_n$ and acts opposite the relative sliding velocity. To apply this model to a grasp, use each admissible contact force to compute its moment about a common point on the object. This lets you check whether the contacts can counter the external force and moment together. [Modern Robotics on friction cones](https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-2-1-friction/)
+
+MuJoCo solves for constraint forces according to its contact model. The first component returned by `mj_contactForce` is the normal force in the contact frame. In the probe lesson, `normal_force_N` is the simulation's sum of absolute normal components for the named probe/table pair. [MuJoCo contact-force API](https://mujoco.readthedocs.io/en/stable/APIreference/APIfunctions.html#mj-contactforce)
 
 ## What to observe and change
 

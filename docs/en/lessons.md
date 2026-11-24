@@ -4,20 +4,21 @@
 </p>
 <!-- pal:language:end -->
 
-# Complete 72-lesson guide
+# Complete lesson guide
 
 Goal summaries come from each lesson's first `Learning goals` paragraph. Environments, prerequisite lessons and implementation status come from the catalog. Verification badges appear on the [learning map](index.md). `implemented` does not assert execution on this host or a policy performance pass. `scaffolded` lessons teach preparation and remain blocked without device evidence.
+
+For a standalone environment check, run the [`core-00` (`T00`) diagnostic](lessons/core-00.md). Diagnostic records are excluded from learning progress.
 
 [Equipment](equipment.md) · [Learning paths](paths.md) · [Concept chapters](index.md#eleven-common-concept-chapters)
 
 <!-- pal:goals:start -->
 | Lesson | Learning goal | Prerequisites | Platforms / capabilities | Implementation |
 |---|---|---|---|---|
-| [core-00](lessons/core-00.md) | Separate host readiness, local runs, and course completion. | — | macos-arm64, linux-x86_64; python-3.12 | `implemented` |
-| [core-01](lessons/core-01.md) | Measure pendulum state and numerical energy drift. | core-00 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [core-02](lessons/core-02.md) | Verify immutable source revisions and model bytes. | core-00 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [core-03](lessons/core-03.md) | Load six robot models and inspect their actual dimensions. | core-01, core-02 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [core-04](lessons/core-04.md) | Render the actual FR3 scene and inspect the camera result. | core-03 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-01](lessons/core-01.md) | Release a pendulum from two starting angles and compare how high it rises on the other side using MuJoCo replay and an angle plot. Use the same method to read a robot joint position at a particular time. | — | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-02](lessons/core-02.md) | Check pinned source commits and model files. Change one byte in a memory copy and compare the SHA-256 values to detect changes even when the model keeps the same name. | core-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-03](lessons/core-03.md) | Load six robot models in MuJoCo and compare the counts of position coordinates, velocity coordinates and actuators. Use these counts to choose the right array sizes and indices for joint state and control. | core-01, core-02 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-04](lessons/core-04.md) | View the same FR3 home pose from two camera azimuths. Learn to distinguish image changes due to arm motion from image changes due to camera motion. | core-03 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-teleop-01](lessons/core-teleop-01.md) | Learn a bimanual data contract without buying a headset. | core-04 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-fr3-01](lessons/core-fr3-01.md) | Map FR3 joints, bodies, actuators and the tool site. | core-04 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-fr3-02](lessons/core-fr3-02.md) | Apply bounded joint PD torque on the FR3 dynamics. | core-fr3-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
@@ -39,7 +40,7 @@ Goal summaries come from each lesson's first `Learning goals` paragraph. Environ
 | [core-il-01](lessons/core-il-01.md) | Fit behavioral cloning to the completed episode dataset. | core-data-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-aloha-01](lessons/core-aloha-01.md) | Run the dual-arm ALOHA model and build an ACT-shaped batch. | core-data-01, core-il-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-vla-01](lessons/core-vla-01.md) | Round-trip the explicitly mocked VLA protocol without a device. | core-data-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [sim-ros-01](lessons/sim-ros-01.md) | Exchange real ROS topics, service calls, actions and TF in an isolated domain. | core-00, core-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
+| [sim-ros-01](lessons/sim-ros-01.md) | Exchange real ROS topics, service calls, actions and TF in an isolated domain. | core-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
 | [sim-ros-02](lessons/sim-ros-02.md) | Bridge measured MuJoCo state into ROS JointState messages. | core-04, sim-ros-01 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
 | [sim-ros-03](lessons/sim-ros-03.md) | Record actual ROS messages and replay a rosbag2 database. | sim-ros-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
 | [sim-ros-04](lessons/sim-ros-04.md) | Inspect a common reset/observe/act/close interface over simulation and ROS. | sim-ros-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |

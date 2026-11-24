@@ -13,7 +13,7 @@
 | Legacy alias | `T02` |
 | Platforms | `macos-arm64, linux-x86_64` |
 | Capabilities | `python-3.12, numpy, mujoco` |
-| Prerequisites | `core-00` |
+| Prerequisites | `core-01` |
 | Safety | `simulation` |
 | Verification | `maintainer-checked` |
 | Implementation | `implemented` |
@@ -21,21 +21,21 @@
 
 ## Reader route
 
-이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
-
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
 먼저 [개념 교재: simulation](../concepts/simulation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
 
 ## Learning goals
 
-불변 소스 커밋과 실제 모델 파일의 바이트를 검증합니다.
+고정한 소스 커밋과 모델 파일이 같은지 확인합니다. 파일을 메모리에 복사해 한 바이트만 바꾸고 SHA-256 값을 비교하면, 모델 이름이 같아도 파일이 달라졌는지 알아낼 수 있습니다.
 
 ## Preflight
 
-처음이면 저장소 루트에서 `sh bootstrap.sh --plan`을 실행하고 계획을 읽은 뒤 `--apply`로 환경을 준비합니다. `source .venv/bin/activate` 후 아래 명령을 사용합니다. 이미 같은 이름의 실행 폴더가 있으면 02처럼 새 이름을 정합니다.
+### 실행 전에 예측하기
 
-필요한 공개 모델을 한 번 준비합니다:
+파일의 길이와 나머지 바이트가 같고 첫 바이트만 달라질 때, 두 SHA-256 값이 일치할지 예측하세요.
+
+에이전트는 [실행 안내](../READER_GUIDE.md#manual-setup)에 따라 Core 환경을 준비하고 확인합니다. 직접 실행할 때는 저장소 루트에서 `sh bootstrap.sh --plan`으로 계획을 읽고, 준비가 필요하면 `--apply`를 실행합니다. `source .venv/bin/activate`로 환경을 활성화한 뒤 아래 명령으로 준비 상태를 확인하세요. 이미 사용한 실행 폴더가 있으면 이름 끝에 `02`처럼 새 번호를 붙이세요. 아래 첫 명령 묶음으로 필요한 공개 모델을 준비합니다.
 
 ```bash
 pal assets fetch mujoco-menagerie
@@ -48,7 +48,21 @@ pal host detect --json
 pal lesson check core-02 --json
 ```
 
+## How it works
+
+Git의 주석이 달린 태그(annotated tag)는 커밋을 바로 가리키는 대신 태그 객체를 가리킬 수 있습니다. 실험에서는 실제 커밋을 고정하고, 선택한 모델과 라이선스 파일의 바이트를 해시로 확인합니다. $b$는 파일의 바이트열이고 $h$는 SHA-256 해시입니다. 계산하면 256비트는 32바이트이고, 16진수로는 64자리입니다. 같은 내용이 들어 있는 파일은 같은 해시를 갖습니다. 이 검사로 파일 바이트가 바뀌었는지 확인합니다. 메시 파일이 바뀌면 같은 자세에서도 접촉이나 충돌 결과가 달라질 수 있습니다.
+
+$$
+h=\operatorname{SHA256}(b)
+$$
+
+## Code connection
+
+[`examples/core-02/run.py`](../../../examples/core-02/run.py)에서 [`runner.py`](../../../src/pai_lab/lessons/runner.py)를 거쳐 [`physics.py`](../../../src/pai_lab/lessons/physics.py)로 이어집니다. [`models.provenance`](../../../src/pai_lab/lessons/models.py)는 `assets/model-lock.json`에 적힌 모델 파일의 SHA-256을 비교하고 누락되거나 바뀐 파일을 거부합니다. `physics.run`은 FR3·Wuji·Enlight·G1·Sharpa·ALOHA에서 고정 커밋과 라이선스, 파일 해시 집계값을 읽습니다.
+
 ## Action
+
+에이전트가 아래 명령으로 기준 실행을 기록합니다.
 
 ```bash
 pal lesson run core-02 --headless --seed 7 --samples 64 --output-dir .local/runs/core-02/baseline-01 --json
@@ -56,13 +70,9 @@ pal lesson run core-02 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
-실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+여섯 공개 모델 캐시가 `assets/model-lock.json`과 일치해야 합니다. 다운로드 영수증은 체크아웃 밖에 남습니다. 아래 예시 그래프에서 1은 커밋 ID 길이가 40자인지 검사한 결과입니다. 고정 소스 전체에 대한 검사와는 별개입니다.
 
 ![core-02 measured plot](../../assets/examples/core-02-plot.png)
-
-여섯 공개 모델 캐시가 assets/model-lock.json과 일치해야 합니다. 다운로드 영수증은 checkout 바깥에 저장합니다. vendor 파일을 직접 고쳐 통과시키지 않습니다.
-
-공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
 
 ```bash
 pal lesson check core-02 --run-dir .local/runs/core-02/baseline-01 --json
@@ -70,85 +80,44 @@ pal lesson check core-02 --run-dir .local/runs/core-02/baseline-01 --json
 
 ## Observe
 
-먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+`source-pins.json`의 `models`에서 `model`, `revision`, `license`, `files_digest`를 찾아보세요. 커밋 ID는 불러온 버전을, 라이선스는 재사용 조건을 알려 줍니다. `lesson inspect`로 실행 기록을 확인하고, 아래 명령으로 그래프와 원시 수치를 직접 열 수 있습니다.
 
 ```bash
 pal lesson inspect core-02 --run-dir .local/runs/core-02/baseline-01 --json
 ```
 
-Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
-
 ```bash
 open .local/runs/core-02/baseline-01/plot.png
 ```
-
-다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
 
 ```bash
 python -m json.tool .local/runs/core-02/baseline-01/experiment.json
 ```
 
-## How it works
-
-Git 태그는 커밋 대신 annotated tag 객체를 가리킬 수 있습니다. 실제 커밋을 고정하고 모델 파일과 라이선스의 SHA-256을 계산합니다. 해시는 바이트 변경을 감지하지만 물리 정확성을 입증하지는 않습니다.
-
-$$
-h=\operatorname{SHA256}(b)
-$$
-
-기호·단위·조건: b: 파일 바이트; h: 32바이트 해시; 물리량이 아닙니다.
-
-손으로 계산하는 예시(실행 측정값이 아님): 256 bits / 8 = 32 bytes.
-
-실전 연결: 로봇 이름이 같아도 메시가 바뀌면 충돌 결과가 달라집니다.
-
-### 입력에서 관측까지
-
-로봇 이름이 같아도 mesh·관성·관절 파일이 바뀌면 같은 실험이 아닙니다. source revision은 Git 이력의 식별자이고 파일 해시는 선택한 바이트의 식별자입니다. 둘을 함께 남겨야 다른 호스트에서 같은 공개 모델을 불러왔다고 검토할 수 있습니다. 이 식별값에는 좌표계·kg·m 같은 물리 단위가 없습니다.
-
-## Code connection
-
-`examples/core-02/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
-
-### 실제 코드와 산출물 읽기
-
-[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
-
-`models.provenance`는 `assets/model-lock.json`의 파일 목록을 읽어 실제 SHA-256과 비교하고 누락·변경을 거부합니다. `physics.run`은 FR3·Wuji·Enlight·G1·Sharpa·ALOHA의 receipt를 수집합니다. `source-pins.json`의 `models`에서 model·revision·license·files_digest를 읽습니다. 그래프의 1은 해당 revision 문자열 길이 40 검사의 표시이며, 모든 기하·동역학의 정확도 100%라는 뜻이 아닙니다. 전체 source pin 검사도 따로 수행됩니다.
-
 ## Try it
 
-이 수업은 구조·환경 조사입니다. seed를 바꾼 수치 실험을 요구하지 않습니다. 이름·단위·선수 조건과 실제 artifact를 대조하고, 발견한 항목을 review notes에 적습니다.
+코드는 저장소의 `assets/sources.json`을 바이트열로 읽고, 메모리에서 만든 복사본의 첫 바이트를 XOR 1로 바꿉니다. 원본 파일과 vendor 캐시는 그대로입니다. 한 번 실행하면 두 값이 `source-pins.json`의 `hash_comparison`에 함께 저장됩니다. 결과에서 `byte_offset`, `original_byte`, `changed_byte`로 바꾼 위치와 값을 확인하고 `original_sha256`과 `changed_sha256`을 대조하세요. 비교를 위해 seed를 바꾸거나 별도 실행을 만들 필요는 없습니다.
 
-<details>
-<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+에이전트가 아래 명령으로 실행 기록을 검증해 결과 페이지를 만듭니다. 에이전트는 교재와 별도 창에 페이지를 열고 표시를 확인합니다. 별도 창을 띄우기 어려우면 결과 탭을 사용합니다. 화면을 제어할 수 없는 환경에서는 실제 측정값과 채팅에서 표시할 수 있는 이미지를 보여 줍니다.
 
-본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
-
-</details>
-
-### 바꾸기 전에 예측하기
-
-오프라인 사고 실험에서 다른 조건을 고정하고 mesh 바이트 하나만 바뀌었다고 가정하면 해시 일치가 깨져야 합니다. 실제 vendor 파일을 수정해 시험하지 않습니다. seed 변경은 이 감사의 모델·license·해시를 바꾸지 않아야 합니다.
+```bash
+pal lesson present core-02 --run-dir .local/runs/core-02/baseline-01 --language ko --json
+```
 
 ## Recovery
 
-capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
+`capability-unavailable`이 반환되면 에이전트는 `missing_capabilities` 또는 `error`에서 어떤 Python·모델·플랫폼·외부 스택이 필요한지 확인해 조치 방법을 안내합니다. 준비가 끝나면 새 폴더에서 같은 실험을 실행하고, 실패한 `run.json`과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 별도 준비가 필요합니다. 체크섬 오류가 나면 vendor 파일을 직접 수정하지 말고 고정 캐시를 복구합니다.
 
 ## Checkpoint
 
-명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
+해시 일치로 어떤 사실을 확인할 수 있나요? 메모리에서 바꾼 바이트가 비교 결과의 어느 필드에 나타나는지 찾아보세요. 다음 수업에서는 파일을 읽어 모델을 컴파일하고 실제 구조를 확인합니다.
+
+`lesson present`를 실행하면 에이전트가 이해 확인 대기 상태와 결과를 저장합니다. 새 대화에서도 같은 질문과 결과에서 이어갈 수 있습니다. 답을 함께 확인하거나 독자가 완료를 요청한 뒤에만 에이전트가 실제 관찰과 설명을 `--notes`에 적어 검토와 완료를 기록합니다. 피드백에 해결이 필요한 문제가 있으면 먼저 수정하고 재검증합니다. 변경된 실행 코드나 손상된 산출물은 완료를 막습니다.
 
 ```bash
 pal lesson review core-02 --run-dir .local/runs/core-02/baseline-01 --notes "검사한 이름·단위·구조·제한과 실제 근거를 자신의 값으로 적으세요." --json
 pal lesson finish core-02 --run-dir .local/runs/core-02/baseline-01 --json
 ```
-
-### 이해 확인과 답의 기준
-
-질문: 해시 일치는 실물 정확성을 보장하나요? 답: 같은 바이트만 보장합니다. 질문: revision과 license를 함께 읽는 이유는 무엇인가요? 답: 재현할 버전과 재사용 조건이 별개이기 때문입니다. 다음 수업에서는 실제 모델을 컴파일해 구조를 검사합니다.
-
-이 구조 감사는 `evidence.comparison_errors`의 명시적 예외여서 별도 comparison run이 필수가 아닙니다. 위 review 명령은 baseline만 전달합니다. 종이 계산을 실행된 비교 산출물로 꾸미지 않고 실제로 확인한 감사 근거를 notes에 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

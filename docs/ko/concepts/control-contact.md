@@ -38,9 +38,35 @@ assert np.allclose(applied_nm, [15.0])
 
 ## 중력, 좌표계와 접촉
 
-정지 상태에서도 스프링 토크가 중력과 균형을 이루면 PD 오차가 남는다. 중력 보상 수업은 MuJoCo의 편향 힘 항인 `data.qfrc_bias`를 더한다. 이 항에는 중력뿐 아니라 속도에 따른 효과도 포함된다. 실물 중력 보정값을 측정한 것은 아니다. 월드 좌표계의 힘 $f$는 병진 자코비안으로 $\tau=J^T f$처럼 관절 토크로 변환한다. $J$는 3×7이고 단위는 m/rad, $f$는 N 단위의 3원소 벡터다. 작업 공간 제어에는 질량 행렬도 사용하므로, 관절 PD의 스칼라 식을 그대로 위치에 적용한 것과 다르다.
+<a id="gravity-and-bias" name="gravity-and-bias"></a>
 
-접촉에서는 침투와 상대 운동에 제약력이 생긴다. 설명에 유용한 건조 마찰 모델은 $\lVert f_t\rVert\leq\mu f_n$이다. $f_n\geq0$은 법선력, $f_t$는 접선력이며 단위는 N, 마찰계수 $\mu$는 무차원이다. 이는 개념적 경계이며 모든 시뮬레이터가 같은 마찰 풀이기를 쓴다는 뜻은 아니다. MuJoCo 접촉력은 접촉 좌표계로 표현되며 `mj_contactForce`의 첫 성분이 법선력이다. 수업은 이름으로 구분한 프로브·테이블 접촉쌍의 법선 성분 절댓값만 합한다. `normal_force_N`은 시뮬레이션 출력이며 보정된 힘 센서 측정값이 아니다.
+### 정지 토크에서 운동방정식으로
+
+팔을 공중에서 정지시키면 $\dot q=\ddot q=0$입니다. 접촉과 수동 토크를 무시하면 모터가 그 자세에서의 중력항 $g(q)$만큼 토크를 공급해야 합니다. 위 PD 계산처럼 오차가 비례 토크를 만들기 때문에, PD만으로 중력과 균형을 이루면 위치 오차가 남을 수 있습니다. 팔이 움직이거나 외부에서 힘을 받으면 관절 운동방정식에 항을 추가합니다.
+
+$$
+M(q)\ddot q+c(q,\dot q)+g(q)=\tau+\tau_{\mathrm{other}}.
+$$
+
+$M(q)$는 현재 자세에서의 7×7 관절 공간 관성 행렬 (kg·m²)입니다. $\ddot q$ (rad/s²)를 곱하면 관절 가속에 필요한 토크가 나옵니다. 비대각 성분은 한 관절의 가속이 다른 관절에 필요한 토크에도 영향을 줄 수 있음을 나타냅니다. $c$는 코리올리 및 원심 효과, $g$는 중력의 기여분입니다. $\tau$는 제어 토크이고, $\tau_{\mathrm{other}}$에는 접촉과 그 밖의 외력이 만드는 관절 토크, 수동 토크가 들어갑니다. 운동방정식의 각 벡터 항은 N·m입니다. [MuJoCo 운동방정식](https://mujoco.readthedocs.io/en/stable/computation/index.html#general-framework)
+
+중력 보상 수업은 $c+g$를 담은 `data.qfrc_bias`를 PD 요청값에 더하고 관절별 한계를 적용합니다. 위 계산처럼 어떤 관절에서 속도가 0이고 오차가 0.18 rad일 때, PD 토크 21.6 N·m에 편향력 4 N·m를 더하면 한계를 적용하기 전 25.6 N·m입니다. 같은 설명용 한계 ±15 N·m 안에서 두 경우의 적용값은 모두 15 N·m입니다. 이 계산은 포화 때문에 보상 항을 추가해도 실제로 적용한 토크가 그대로일 수 있음을 보여 줍니다.
+
+<a id="jacobian-power" name="jacobian-power"></a>
+
+### 자코비안과 일률
+
+병진 자코비안 $J$ (3×7, m/rad)는 관절 속도 $\dot q$ (rad/s)를 말단 사이트의 병진 속도 $v=J\dot q$ (m/s)로 바꿉니다. 같은 사이트에 작용하고 같은 좌표계로 표현한 힘 $f$ (N)는 $f^\top v$ (W)의 일률을 냅니다. 관절 쪽의 일률 $\tau_f^\top\dot q$와 같아야 하므로, 모든 $\dot q$에 대해 $f^\top J\dot q=\tau_f^\top\dot q$이고 토크 기여분은 $\tau_f=J^\top f$입니다. 수업의 작업 공간 제어기는 현재 자세에서의 $M(q)$와 $J$를 사용해 병진 가속도 요청에 해당하는 힘을 계산합니다.
+
+회전까지 다룰 때는 힘 $f$와 같은 점에 대한 모멘트 $m$ (N·m)를 렌치라는 6원소 벡터에 담습니다. 같은 점의 병진 속도 $v$와 각속도 $\omega$ (rad/s)를 같은 좌표계로 표현하면 일률은 $f^\top v+m^\top\omega$입니다. 6행 자코비안으로 두 속도를 함께 계산할 때는 자코비안의 행과 렌치 성분의 순서를 맞춥니다. 좌표축 방향을 유지하면서 모멘트의 기준점을 옮기려면, 새 기준점에서 기존 기준점까지의 벡터 $r$과 힘의 외적 $r\times f$를 기존 모멘트에 더합니다. [Modern Robotics의 자코비안과 렌치](https://modernrobotics.northwestern.edu/nu-gm-book-resource/5-2-statics-of-open-chains/)
+
+<a id="contact-force-and-friction" name="contact-force-and-friction"></a>
+
+### 접촉력과 마찰
+
+접촉면에 수직인 압축 법선력을 $f_n\geq0$, 접촉면을 따라 작용하는 접선력을 $f_t$라고 합니다. 둘 다 N 단위이며, 이상적인 쿨롱 모델에서 정지 마찰의 범위는 $\lVert f_t\rVert\leq\mu f_n$입니다. 마찰계수 $\mu$는 무차원입니다. 미끄러짐을 막는 데 이 범위를 넘는 힘이 필요하면 미끄럼이 일어납니다. 이때 단일 마찰계수를 쓰는 모델에서는 접선력 크기가 $\mu f_n$이며 상대 미끄럼 속도의 반대 방향으로 작용합니다. 파지에 이 식을 적용하려면 각 접촉점에서 허용되는 힘을 물체의 공통 기준점에서 모멘트로도 환산해, 외부 힘과 모멘트에 맞설 수 있는지 확인합니다. [Modern Robotics의 마찰 원뿔](https://modernrobotics.northwestern.edu/nu-gm-book-resource/12-2-1-friction/)
+
+MuJoCo는 접촉 모델에 따라 제약력을 풉니다. `mj_contactForce`가 반환하는 접촉 좌표계의 첫 성분은 법선력입니다. 프로브 수업의 `normal_force_N`은 지정한 프로브·테이블 접촉쌍의 법선 성분 절댓값을 합한 시뮬레이션 출력입니다. [MuJoCo 접촉력 API](https://mujoco.readthedocs.io/en/stable/APIreference/APIfunctions.html#mj-contactforce)
 
 ## 관찰과 한 변수 비교
 

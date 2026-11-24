@@ -72,6 +72,8 @@ def save_progress(progress: CourseProgress, path: Path | None = None) -> None:
 
 
 def select_lesson(lesson: Lesson, progress: CourseProgress) -> bool:
+    if lesson.diagnostic:
+        return False
     if progress.path:
         from pai_lab.paths import path_lessons
 

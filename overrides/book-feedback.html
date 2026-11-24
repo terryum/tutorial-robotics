@@ -1,0 +1,30 @@
+<section class="book-feedback" id="book-feedback" aria-labelledby="book-feedback-title">
+  <details>
+    <summary aria-labelledby="book-feedback-title" aria-describedby="book-feedback-intro">
+      <span id="book-feedback-title" class="book-feedback-title">튜토리얼 의견 보내기</span>
+      <span id="book-feedback-intro" class="book-feedback-intro">이 페이지에서 헷갈렸던 부분이나 개선할 점을 알려 주세요. 피드백은 공개 GitHub 이슈로 등록됩니다. Claude Code나 Codex에 “이런 피드백을 보내줘”라고 말해도 됩니다.</span>
+    </summary>
+    <form class="book-feedback-form" method="post" action="/api/book-feedback" data-page="docs/{{ page.file.src_uri|e }}" aria-describedby="book-feedback-contact">
+      <label for="book-feedback-message">피드백</label>
+      <textarea id="book-feedback-message" name="message" rows="4" maxlength="2000" required></textarea>
+      <div class="book-feedback-contacts">
+        <div>
+          <label for="book-feedback-github">GitHub 아이디 (선택)</label>
+          <input id="book-feedback-github" name="github" type="text" maxlength="40" spellcheck="false" aria-describedby="book-feedback-contact">
+        </div>
+        <div>
+          <label for="book-feedback-email">이메일 (선택)</label>
+          <input id="book-feedback-email" name="email" type="email" maxlength="254" autocomplete="email" aria-describedby="book-feedback-contact">
+        </div>
+      </div>
+      <p class="book-feedback-note" id="book-feedback-contact">GitHub 로그인 없이 보낼 수 있습니다. 입력한 GitHub 아이디는 이슈에 표시되며, 이메일은 답변용으로만 30일간 보관합니다.</p>
+      <div class="book-feedback-actions">
+        <button type="submit" class="btn btn-primary" disabled>피드백 보내기</button>
+        <a href="https://github.com/terryum/tutorial-robotics/issues/new">GitHub에서 직접 작성</a>
+      </div>
+      <p class="book-feedback-status" role="status"></p>
+      <noscript>이 양식을 사용하려면 JavaScript를 켜거나 GitHub에서 직접 작성하세요.</noscript>
+    </form>
+  </details>
+</section>
+<script src="{{ 'javascripts/book-feedback.js'|url }}" defer></script>

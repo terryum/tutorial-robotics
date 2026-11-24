@@ -10,7 +10,7 @@ def test_course_init_next_and_setup_plan_are_json(tmp_path, monkeypatch, capsys)
     assert main(["course", "init", "--through", "core", "--json"]) == 0
     assert json.loads(capsys.readouterr().out)["through"] == "core"
     assert main(["course", "next", "--json"]) == 0
-    assert json.loads(capsys.readouterr().out)["id"] == "core-00"
+    assert json.loads(capsys.readouterr().out)["id"] == "core-01"
 
     plan_path = tmp_path / "plan.json"
     assert main(["setup", "plan", "--stage", "core", "--out", str(plan_path), "--json"]) == 0
@@ -28,6 +28,24 @@ def test_course_init_next_and_setup_plan_are_json(tmp_path, monkeypatch, capsys)
         l.stage != "hardware" or l.id == "hw-common-01" for l in load_catalog()
     )
     assert all(item["hardware_free"] for item in runnable)
+    assert [item["id"] for item in runnable if item["diagnostic"]] == ["core-00"]
+
+
+def test_course_next_reports_missing_first_lesson_requirements(monkeypatch, capsys):
+    from pai_lab import cli
+
+    monkeypatch.setattr(
+        cli, "gaps", lambda lesson: ["capability mujoco"] if lesson.id == "core-01" else []
+    )
+    assert main(["course", "next", "--json"]) == 2
+    result = json.loads(capsys.readouterr().out)
+    assert result["blocked"] == [
+        {
+            "id": "core-01",
+            "incomplete_prerequisites": [],
+            "missing_capabilities": ["capability mujoco"],
+        }
+    ]
 
 
 def test_profile_plan_does_not_pull_unrelated_stacks(tmp_path, capsys) -> None:

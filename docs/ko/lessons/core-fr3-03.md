@@ -104,9 +104,11 @@ $$
 
 실전 연결: qfrc_bias는 중력과 속도 항을 포함하며 하중 오차는 보상 오차로 이어집니다.
 
-### 입력에서 관측까지
+### 정지한 팔에도 토크가 필요한 이유
 
-중력 아래 정지하려면 위치 오차를 만드는 PD 토크 외에 하중을 지탱하는 토크가 필요합니다. 모델이 예측한 bias를 미리 더하면 PD가 그 역할을 오차만으로 맡지 않아도 됩니다. 단, qfrc_bias는 정지 시 중력뿐 아니라 속도가 있을 때의 bias도 포함합니다.
+팔을 공중에 멈춰 두면 관절 속도와 가속도는 0입니다. 외력과 수동 토크를 무시하면, 이때 모터는 그 자세에서 중력을 버티는 데 필요한 토크 $g(q)$를 공급해야 합니다. PD만 쓰면 목표에서 조금 벗어나야 비례 항이 이 토크를 공급할 수 있습니다. 팔이 움직이면 위 식에서 $M(q)\ddot q$가 가속에 필요한 토크를 나타내고, $c(q,\dot q)$가 속도에 따른 코리올리 및 원심 효과를 나타냅니다. [정지 토크와 편향력](../concepts/control-contact.md#gravity-and-bias)에서 각 항을 확인할 수 있습니다.
+
+한 실행 안에서 PD 이득이 같은 두 분기의 최종 관절 오차 노름(rad)을 비교합니다. `experiment.json`의 `payload`에서 `without_compensation_error`와 `final_error`를 찾습니다. 두 번째 분기는 중력과 속도 항을 합친 `qfrc_bias`를 PD 요청값에 더한 뒤 관절별 토크 한계로 자릅니다. `control.csv`에서 같은 시각과 관절의 `requested_nm`과 `applied_nm`을 비교하면 보상 분기에서 포화가 작동한 시점을 찾을 수 있습니다.
 
 ## Code connection
 
@@ -158,7 +160,11 @@ pal lesson finish core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --js
 
 ### 이해 확인과 답의 기준
 
-질문: 보상 후 오차가 작으면 실물 payload가 맞나요? 답: 시뮬레이션 내부 모델 일치만 확인합니다. 질문: 전체 trace에 무보상 응답도 있나요? 답: 저장 trace는 보상 실행이며 무보상 최종값을 별도로 읽습니다. 두 최종 오차(rad)와 포화 여부를 근거로 설명합니다.
+질문: 보상 후 오차가 작으면 실물 payload가 맞나요? 답: 시뮬레이션 내부 모델 일치만 확인합니다.
+
+**한 실행에서 같은 PD 이득으로 비교할 두 최종 오차(rad)는 어디에 있으며, 보상 분기에서 토크가 제한됐는지 어떻게 확인하나요?**
+
+`payload.without_compensation_error`보다 `payload.final_error`가 작으면 같은 이득에서 보상 후 오차가 줄어든 것입니다. `control.csv`에서 같은 행의 `requested_nm`과 `applied_nm`이 다르면 그 관절의 토크가 포화된 것입니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

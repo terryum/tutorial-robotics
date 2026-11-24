@@ -104,9 +104,11 @@ Worked calculation (not a measured run result): 21.6 Nm PD + 4 Nm bias = 25.6 Nm
 
 Practical connection: qfrc_bias includes velocity terms as well as gravity; incorrect payload breaks compensation.
 
-### From input to observation
+### Why a stationary arm still needs torque
 
-Under gravity, holding still requires load-supporting torque in addition to error-driven PD torque. Adding model-predicted bias reduces the error needed for PD to support the load. qfrc_bias contains gravity at rest and velocity-dependent bias during motion.
+When the arm holds still in the air, its joint velocities and accelerations are zero. Ignoring external loads and passive torque, the motors must supply the torque $g(q)$ required to support the arm against gravity at that configuration. With PD alone, a small position error can provide that torque through the proportional term. Once the arm moves, $M(q)\ddot q$ in the equation above gives the torque needed for acceleration, and $c(q,\dot q)$ accounts for the velocity-dependent Coriolis and centrifugal effects. See [holding torque and bias](../concepts/control-contact.md#gravity-and-bias) for each term.
+
+Within one run, compare the two final joint error norms in radians at the same PD gains. Open `experiment.json` and read `without_compensation_error` and `final_error` from its `payload`. The second branch adds `qfrc_bias`, which combines gravity and velocity terms, to the PD request, then clips each joint to its torque limits. Compare `requested_nm` and `applied_nm` for the same time and joint in `control.csv` to find where the compensated branch reached saturation.
 
 ## Code connection
 
@@ -158,7 +160,11 @@ pal lesson finish core-fr3-03 --run-dir .local/runs/core-fr3-03/baseline-01 --js
 
 ### Check understanding and answer guide
 
-Question: Does low compensated error establish a correct real payload? Answer: Only simulation model consistency is checked. Question: Does the trace contain both responses? Answer: It stores the compensated run; read the other final value separately. Report both final errors(rad) and clipping evidence.
+Question: Does low compensated error establish a correct real payload? Answer: Only simulation model consistency is checked.
+
+**Where are the two final errors in radians at the same PD gains, and how can you tell if a joint torque was limited in the compensated branch?**
+
+If `payload.final_error` is smaller than `payload.without_compensation_error`, compensation reduced the error at those gains. Different values of `requested_nm` and `applied_nm` in the same row of `control.csv` indicate that joint's torque was clipped.
 
 <!-- pal:navigation:start -->
 ## Next lesson

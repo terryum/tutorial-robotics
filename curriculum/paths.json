@@ -5,7 +5,6 @@
       "title": "FR3 → Enlight simulation → Enlight hardware",
       "title_ko": "FR3 → Enlight 시뮬레이션 → Enlight 실물",
       "required": [
-        "core-00",
         "core-01",
         "core-02",
         "core-03",
@@ -50,7 +49,6 @@
       "title": "Shadow Hand → Wuji Hand 2 Beta 2",
       "title_ko": "Shadow Hand → Wuji Hand 2 Beta 2",
       "required": [
-        "core-00",
         "core-01",
         "core-02",
         "core-03",
@@ -68,7 +66,6 @@
       "title": "Stretch 3 → private Friday extension",
       "title_ko": "Stretch 3 → 비공개 Friday 확장",
       "required": [
-        "core-00",
         "core-01",
         "core-02",
         "core-03",

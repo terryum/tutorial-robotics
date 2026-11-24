@@ -102,9 +102,11 @@ Worked calculation (not a measured run result): μ=0.5, fn=10 N → tangential l
 
 Practical connection: Measured contact force depends on solver, friction and tool calibration.
 
-### From input to observation
+### Reading forces relative to the contact surface
 
-Friction changes the relationship between tangential load and normal load; normal force itself need not be proportional to friction coefficient. The experiment selects contacts between a spherical probe and a table. Do not assume the contact normal axis equals world z.
+The normal is perpendicular to the contact surface, and tangential directions lie along it. These directions are defined at each contact point. Their relation to the world axes depends on the surface orientation. In the ideal Coulomb model in [contact forces and friction](../concepts/control-contact.md#contact-force-and-friction), static friction can resist a tangential load up to $\mu f_n$. If preventing slip requires more tangential force, the surfaces slide. During sliding, friction points opposite the relative sliding velocity.
+
+At each sample, `normal_force_N` sums the absolute values of the local normal components for contacts between `contact_probe` and `contact_table`. A positive sum shows that this pair is under compressive load at that sample. To assess a grasp with several fingers, express the contact point locations, normal and tangential forces, and external forces and moments on the object in a common frame. You can then check whether the summed forces and moments about a common point on the object can resist the external load within the friction limits at each contact.
 
 ## Code connection
 
@@ -156,7 +158,11 @@ pal lesson finish core-fr3-06 --run-dir .local/runs/core-fr3-06/baseline-01 --js
 
 ### Check understanding and answer guide
 
-Question: Does contacts>0 prove probe/table contact? Answer: Inspect geom-name filtering. Question: Does equal normal force mean friction has no effect? Answer: This loading may not expose its effect. Explain the filter, force frame and per-sample sum.
+Question: Does contacts>0 prove probe/table contact? Answer: Inspect geom-name filtering.
+
+**If the two runs have similar `normal_force_N`, what more would you need to judge whether a grasp can resist slipping or turning?**
+
+The value gives the sum of normal components for the selected pair. You would need each contact point's location, the force direction and tangential components, the friction limits, and the external forces and moments on the object.
 
 <!-- pal:navigation:start -->
 ## Next lesson

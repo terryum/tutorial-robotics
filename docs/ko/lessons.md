@@ -4,20 +4,21 @@
 </p>
 <!-- pal:language:end -->
 
-# 전체 72개 수업 안내
+# 전체 수업 안내
 
-목표 요약은 각 수업의 `Learning goals` 첫 문단에서 가져옵니다. 환경·선행 수업·구현 상태는 카탈로그가 기준입니다. 검증 배지는 [학습 지도](index.md)의 표에서 확인하세요. `implemented`는 현재 호스트 실행 성공이나 정책 성능 통과를 뜻하지 않습니다. `scaffolded` 수업은 준비 교재이며 장비 근거가 없으면 차단 상태입니다.
+목표 요약은 각 수업의 `Learning goals` 첫 문단에서 가져옵니다. 환경·선행 수업·구현 상태는 카탈로그가 기준입니다. 검증 배지는 각 수업이나 GitHub의 [커리큘럼 표](index.md)에서 확인하세요. `implemented`는 현재 호스트 실행 성공이나 정책 성능 통과를 뜻하지 않습니다. `scaffolded` 수업은 준비 교재이며 장비 근거가 없으면 차단 상태입니다.
 
-[장비 안내](equipment.md) · [학습 경로](paths.md) · [개념 장](index.md#공통-개념-11장)
+환경을 별도로 점검할 때는 [`core-00`(`T00`) 진단](lessons/core-00.md)을 실행합니다. 진단 기록은 학습 진도에 포함하지 않습니다.
+
+[장비 안내](equipment.md) · [선택형 로봇 경로](index.md#optional-robot-paths) · [개념 장](index.md#공통-개념-11장)
 
 <!-- pal:goals:start -->
 | Lesson | Learning goal | Prerequisites | Platforms / capabilities | Implementation |
 |---|---|---|---|---|
-| [core-00](lessons/core-00.md) | 호스트 준비 상태, 로컬 실행 기록, 학습 완료를 구분합니다. | — | macos-arm64, linux-x86_64; python-3.12 | `implemented` |
-| [core-01](lessons/core-01.md) | 진자 상태와 수치 적분의 에너지 오차를 측정합니다. | core-00 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [core-02](lessons/core-02.md) | 불변 소스 커밋과 실제 모델 파일의 바이트를 검증합니다. | core-00 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [core-03](lessons/core-03.md) | 여섯 로봇 모델을 로드하고 실제 차원을 검사합니다. | core-01, core-02 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [core-04](lessons/core-04.md) | 실제 FR3 장면을 렌더링하고 카메라 결과를 확인합니다. | core-03 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-01](lessons/core-01.md) | 진자를 두 가지 시작 각도에서 놓고, MuJoCo가 기록한 재생 화면과 각도 그래프에서 반대편에 도달한 높이를 비교합니다. 로봇 관절의 움직임을 읽을 때도 같은 방식으로 위치 좌표와 관측 시각을 맞춰 봅니다. | — | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-02](lessons/core-02.md) | 고정한 소스 커밋과 모델 파일이 같은지 확인합니다. 파일을 메모리에 복사해 한 바이트만 바꾸고 SHA-256 값을 비교하면, 모델 이름이 같아도 파일이 달라졌는지 알아낼 수 있습니다. | core-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-03](lessons/core-03.md) | 여섯 로봇의 MuJoCo 모델을 불러와 위치 좌표, 속도 좌표, 구동기 수를 비교합니다. 관절이나 제어 입력을 배열에 넣을 때마다 알맞은 길이와 인덱스를 확인해야 합니다. | core-01, core-02 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
+| [core-04](lessons/core-04.md) | 같은 FR3 홈 자세를 서로 다른 카메라 방위각에서 봅니다. 팔이 움직여 화면이 바뀐 경우와 카메라가 움직여 화면이 바뀐 경우를 구분합니다. | core-03 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-teleop-01](lessons/core-teleop-01.md) | 헤드셋 구매 없이 양손 데이터 계약을 배운다. | core-04 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-fr3-01](lessons/core-fr3-01.md) | FR3 관절·링크·구동기와 말단 사이트를 연결합니다. | core-04 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-fr3-02](lessons/core-fr3-02.md) | FR3 동역학에 제한된 관절 PD 토크를 적용합니다. | core-fr3-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
@@ -39,7 +40,7 @@
 | [core-il-01](lessons/core-il-01.md) | 완료한 에피소드 데이터셋으로 행동 복제를 학습합니다. | core-data-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-aloha-01](lessons/core-aloha-01.md) | 양팔 ALOHA 모델을 실행하고 ACT 형식의 batch를 만듭니다. | core-data-01, core-il-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
 | [core-vla-01](lessons/core-vla-01.md) | 명시적인 모의 VLA 프로토콜을 장치 없이 왕복시킵니다. | core-data-01 | macos-arm64, linux-x86_64; python-3.12, numpy, mujoco | `implemented` |
-| [sim-ros-01](lessons/sim-ros-01.md) | 격리된 도메인에서 실제 ROS 토픽·서비스·액션·TF를 교환합니다. | core-00, core-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
+| [sim-ros-01](lessons/sim-ros-01.md) | 격리된 도메인에서 실제 ROS 토픽·서비스·액션·TF를 교환합니다. | core-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
 | [sim-ros-02](lessons/sim-ros-02.md) | 측정된 MuJoCo 상태를 ROS JointState 메시지로 연결합니다. | core-04, sim-ros-01 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
 | [sim-ros-03](lessons/sim-ros-03.md) | 실제 ROS 메시지를 기록하고 rosbag2 데이터베이스를 재생합니다. | sim-ros-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |
 | [sim-ros-04](lessons/sim-ros-04.md) | 시뮬레이션과 ROS의 공통 reset·observe·act·close 인터페이스를 확인합니다. | sim-ros-02 | ubuntu-24.04-x86_64; ros2-jazzy | `implemented` |

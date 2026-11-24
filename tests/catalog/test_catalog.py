@@ -19,7 +19,10 @@ def test_catalog_extends_original_lessons_and_has_closed_graph() -> None:
 
 
 def test_legacy_aliases_resolve_to_canonical_lessons() -> None:
-    assert resolve_lesson("T00").id == "core-00"
+    diagnostic = resolve_lesson("T00")
+    assert diagnostic.id == "core-00"
+    assert diagnostic.diagnostic
+    assert all("core-00" not in lesson.prerequisites for lesson in load_catalog())
     assert resolve_lesson("T38A").id == "hw-enlight-wuji-01"
     assert resolve_lesson("T42B").id == "hw-wuji-02"
 

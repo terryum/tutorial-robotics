@@ -27,6 +27,7 @@ def test_new_learner_summary_is_zero_and_does_not_spawn_helper(monkeypatch, caps
     value = json.loads(capsys.readouterr().out)
     assert value["completed"] == 0
     from pai_lab.paths import selected_lessons
+
     assert value["total"] == len(selected_lessons())
     assert value["sync"]["status"] == "disabled"
 
@@ -109,3 +110,47 @@ def test_shared_version_mismatch_is_review_not_lost_completion(monkeypatch):
     )
     assert "core-00" in load_progress().completed
     assert bridge.shared_gaps("core-00")
+
+
+def test_previous_core_contract_retains_shared_progress(monkeypatch):
+    from pai_lab.lessons.evidence import CORE_HISTORY
+
+    row = {
+        "id": "core-01",
+        "scope": "public",
+        "completed": True,
+        "needs_review": True,
+        "verified_digests": [CORE_HISTORY["core-01"][0]],
+    }
+    monkeypatch.setattr(bridge, "snapshot", lambda *args: {"lessons": [row]})
+    assert bridge.shared_gaps("core-01") == []
+    row["unresolved_feedback"] = True
+    assert bridge.shared_gaps("core-01") == [
+        "unresolved shared feedback; resume the originating environment"
+    ]
+
+
+def test_shared_summary_excludes_diagnostic_without_mutating_history(monkeypatch):
+    cached = {
+        "lessons": [
+            {"id": "core-00", "scope": "public", "stage": "core", "completed": True},
+            {"id": "core-01", "scope": "public", "stage": "core", "completed": False},
+            {"id": "private-example", "scope": "private", "stage": "private", "completed": True},
+        ],
+        "groups": {
+            "core": {"completed": 1, "total": 2, "percent": 50},
+            "private": {"completed": 1, "total": 1, "percent": 100},
+        },
+        "completed": 2,
+        "total": 3,
+        "verified_completed": 2,
+    }
+    monkeypatch.setattr(bridge, "snapshot", lambda *args: cached)
+    summary = bridge.summary()
+    assert [row["id"] for row in summary["lessons"]] == ["core-01", "private-example"]
+    assert (summary["completed"], summary["total"], summary["percent"]) == (1, 2, 50)
+    assert summary["verified_completed"] == 1
+    assert summary["groups"]["core"] == {"completed": 0, "total": 1, "percent": 0}
+    assert summary["groups"]["private"] == cached["groups"]["private"]
+    assert load_progress().completed["core-00"]["shared"]
+    assert len(cached["lessons"]) == 3

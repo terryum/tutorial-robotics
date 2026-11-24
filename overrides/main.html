@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block site_name %}
+  {% if page and page.file.src_uri.startswith("ko/") %}
+    {% set home = "ko/home/" if config.use_directory_urls else "ko/home.html" %}
+    <a class="navbar-brand" href="{{ home|url }}">{{ config.site_name }}</a>
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  {% if book %}<link href="{{ 'stylesheets/book-navigation.css'|url }}" rel="stylesheet">{% endif %}
+{% endblock %}
+
+{% block next_prev %}
+  {% if not book %}{{ super() }}{% endif %}
+{% endblock %}
+
+{% block content %}
+  {% if book %}
+    <div class="col-md-4 col-lg-3 book-sidebar-column" lang="ko">
+      {% include "book-sidebar.html" %}
+    </div>
+    <main class="col-md-8 col-lg-9 book-content" lang="ko">
+      {% if page.url == book.map.url %}
+        {% set map %}{% include "book-map.html" %}{% endset %}
+        {{ page.content|replace('<div id="book-learning-map"></div>', map) }}
+      {% else %}
+        {% include "content.html" %}
+      {% endif %}
+      {% if book_pagination and page.url != book.home.url %}
+        <nav class="book-pagination" aria-label="이전·다음 교재 페이지">
+          {% for rel, label, target in [('prev', '이전', book_pagination[0]), ('next', '다음', book_pagination[1])] %}
+            {% if target %}
+              <a class="book-{{ rel }}" rel="{{ rel }}" href="{{ target.url|url }}">
+                <span class="book-page-arrow" aria-hidden="true">{{ '←' if rel == 'prev' else '→' }}</span>
+                <span class="book-page-label">
+                  <span class="book-direction">{{ label }}</span>
+                  <span class="book-page-title">{{ target.title|e }}</span>
+                </span>
+              </a>
+            {% endif %}
+          {% endfor %}
+        </nav>
+      {% endif %}
+      {% include "book-feedback.html" %}
+    </main>
+  {% else %}
+    {{ super() }}
+  {% endif %}
+{% endblock %}

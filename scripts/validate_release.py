@@ -51,6 +51,13 @@ def main() -> int:
             ]
             if lesson.implementation == "implemented":
                 expected_headings.insert(expected_headings.index("## How it works"), "## Observe")
+            if lesson.id in {"core-01", "core-02", "core-03", "core-04"}:
+                for heading in ("## How it works", "## Code connection"):
+                    expected_headings.remove(heading)
+                    expected_headings.insert(expected_headings.index("## Action"), heading)
+            if lesson.id == "core-01":
+                expected_headings.remove("## Reader route")
+                expected_headings.insert(expected_headings.index("## Next lesson"), "## Further reading")
             if headings != expected_headings:
                 errors.append(f"{lesson.id}/{language}: heading parity mismatch")
     agent = (ROOT / ".agents/skills/tutorial-robotics/SKILL.md").read_text(encoding="utf-8")

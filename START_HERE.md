@@ -14,7 +14,7 @@ https://github.com/terryum/tutorial-robotics 이 레포를 받아서 설치해�
 
 에이전트는 기존 체크아웃이 있으면 재사용하고, 없으면 저장소를 받습니다. 저장소 지침을 읽고 실제 OS·환경을 확인한 뒤 최소 Core 설치 계획을 보여 주고 필요한 준비만 적용·검증합니다. 기존 `.venv`, 잠금 파일과 `.local/` 진도를 보존합니다. 현재 호스트에서 준비 검증을 통과한 기존 환경은 재설치하지 않습니다. 지원하지 않는 환경이나 설치 실패는 차단 사유와 다음 행동을 설명하며 준비 완료로 표시하지 않습니다.
 
-완료 기록이 없는 첫 학습자는 준비 검증이 끝나면 다음 안내를 받고, 에이전트는 **실제 사용자 응답을 기다립니다**. 기존 진도가 있으면 마지막 수업·단계를 알려 주고 이어갈지 묻습니다. 첫 수업으로 초기화하지 않습니다.
+완료했거나 진행 중인 학습 수업이 없으면 에이전트는 준비 검증을 마치고 다음 안내를 한 뒤 **사용자의 응답을 기다립니다**. 환경 진단만 마친 경우에도 첫 진자 수업부터 시작합니다. 저장한 학습 상태가 있으면 에이전트가 마지막 수업과 단계를 알려 주고 이어갈지 묻습니다.
 
 > 첫번째 튜토리얼을 띄울 준비가 되었습니다. 시작하시겠습니까?
 
@@ -24,7 +24,9 @@ https://github.com/terryum/tutorial-robotics 이 레포를 받아서 설치해�
 네, 첫번째 튜토리얼을 시작해줘.
 ```
 
-그제야 에이전트가 첫 수업 `core-00`의 현재 언어 GitHub 페이지를 열고 실행·검사·설명을 진행합니다. 브라우저 제어를 쓸 수 없으면 정확한 링크를 제공하며 열었다고 주장하지 않습니다. 결과·수식·코드를 연결하고 필요한 검토를 마친 뒤 한 수업에서 멈춥니다. 계속하려면 아래의 다음 수업 요청을 사용하세요.
+시작하겠다고 답하면 에이전트가 선택한 언어로 첫 수업 [진자 실험](docs/ko/lessons/core-01.md)을 엽니다. 학습자가 움직임을 예측하면 에이전트는 시작 각도만 바꿔 두 번 실행하고, 두 진자의 재생 화면과 각도 그래프를 별도 결과 창에 띄웁니다. 별도 창을 열 수 없으면 결과 탭을 쓰고, 화면을 제어할 수 없으면 지원되는 이미지와 측정값을 대화에 표시합니다. 에이전트는 이해 확인 질문에서 멈춥니다. 답을 함께 확인하거나 학습자가 완료를 요청하면 진도를 기록합니다.
+
+환경 점검은 설치 중에 마칩니다. 나중에 점검만 필요하면 [환경 진단 `core-00` (`T00`)](docs/ko/lessons/core-00.md)을 직접 실행할 수 있습니다.
 
 처음부터 특정 수업의 실행을 명시적으로 요청했다면 그 요청은 준비 후 해당 수업을 진행할 수 있는 별도 지시입니다. 일반적인 위 설치·시작 요청은 준비 후 시작 여부를 묻는 두 단계 흐름입니다.
 
@@ -76,7 +78,7 @@ https://github.com/terryum/tutorial-robotics Clone this repository, install it, 
 
 The agent reuses an existing checkout or clones the repository when needed. It reads the repository instructions, checks the actual OS/environment, shows the smallest Core setup plan, and applies/verifies only the needed preparation. It preserves `.venv`, the lockfile and `.local/` progress. An existing environment that passes readiness verification on this host is reused without reinstalling. Unsupported environments or failed setup remain blocked with a concrete next action rather than a readiness claim.
 
-For a fresh learner, after readiness verification the agent says the following and **waits for your actual reply**. With existing progress, it acknowledges the saved lesson/phase and asks whether to continue; it does not reset to lesson one.
+After verifying readiness, the agent gives the following invitation and **waits for your reply** if you have no completed or active learning lessons. If you have only run the host diagnostic, start with the pendulum. With saved learning progress, the agent identifies the last lesson and phase and offers to resume.
 
 > The first tutorial is ready to open. Would you like to start?
 
@@ -86,7 +88,9 @@ The first lesson and its browser tab have not started yet. When ready, reply:
 Yes, start the first tutorial.
 ```
 
-The agent then opens the first lesson `core-00` on GitHub in your selected language and runs, checks and explains it. If browser control is unavailable, it provides the exact link without claiming to open it. It connects results, equations and code, completes the required review, and stops after one lesson. Use the next-lesson prompt below to continue.
+When you reply to start, the agent opens the [first pendulum experiment](docs/en/lessons/core-01.md) in your selected language. After you predict the motion, it runs the experiment twice, changing only the release angle, and opens a separate results window with synchronized replay and an angle graph. If a separate window is unavailable, it uses a results tab. Without screen control, it shares supported images and measurements in chat. The agent stops at a comprehension question and records progress after confirming your answer or receiving your request to finish.
+
+Setup includes host checks. You can run the [on-demand host diagnostic `core-00` (`T00`)](docs/en/lessons/core-00.md) whenever you need it.
 
 An explicit request to run a particular lesson is separate authorization to proceed after readiness. The general install/start request above follows the two-step preparation and start invitation.
 

@@ -7,8 +7,63 @@ from typing import Any
 import numpy as np
 
 
+def pendulum_state_errors(
+    run_dir: Path, trace: np.ndarray, experiment: dict[str, Any]
+) -> list[str]:
+    parameters = experiment["parameters"]
+    payload = experiment["payload"]
+    state = np.asarray(payload["state"], dtype=float)
+    tips = np.asarray(payload["tip_positions_m"], dtype=float)
+    pivot = np.asarray(payload["pivot_position_m"], dtype=float)
+    gravity = np.asarray(payload["gravity_m_s2"], dtype=float)
+    if (
+        state.shape != (len(trace) + 1, 3)
+        or tips.shape != state.shape
+        or pivot.shape != (3,)
+        or gravity.shape != (3,)
+        or not all(np.isfinite(values).all() for values in (state, tips, pivot, gravity))
+    ):
+        return ["invalid pendulum replay coordinates"]
+
+    times, angles, velocities = state.T
+    timestep = parameters["timestep"]
+    if (
+        payload["dt_s"] != timestep
+        or not np.allclose(times, np.arange(len(times)) * 10 * timestep, atol=1e-10, rtol=1e-9)
+        or not np.array_equal(times[1:], trace[:, 0])
+        or times[-1] != payload["observation_time_s"]
+        or angles[0] != parameters["initial_angle_rad"]
+        or angles[0] != payload["initial_angle_rad"]
+        or velocities[0] != 0.0
+        or velocities[0] != payload["initial_angular_velocity_rad_s"]
+    ):
+        return ["pendulum state disagrees with recorded experiment inputs or observation window"]
+
+    offsets = tips - pivot
+    if not (
+        np.allclose(offsets[:, 0], -np.sin(angles), atol=1e-10)
+        and np.allclose(offsets[:, 1], 0.0, atol=1e-10)
+        and np.allclose(offsets[:, 2], -np.cos(angles), atol=1e-10)
+    ):
+        return ["pendulum site positions disagree with the one-meter hinge geometry"]
+
+    with np.load(run_dir / "replay.npz", allow_pickle=False) as saved:
+        if not (
+            np.array_equal(saved["time_s"], times)
+            and np.array_equal(saved["qpos"], angles[:, None])
+            and np.array_equal(saved["qvel"], velocities[:, None])
+        ):
+            return ["pendulum replay disagrees with recorded state"]
+    return []
+
+
 def measurement_errors(
-    identifier: str, run_dir: Path, trace: np.ndarray, experiment: dict[str, Any]
+    identifier: str,
+    run_dir: Path,
+    trace: np.ndarray,
+    experiment: dict[str, Any],
+    *,
+    legacy: bool = False,
 ) -> list[str]:
     payload = experiment["payload"]
     errors = []
@@ -53,6 +108,37 @@ def measurement_errors(
         drift = float(np.max(np.abs(trace[:, 2] - trace[:, 1])))
         if drift >= 1e-5 or not np.isclose(drift, experiment["metric"], atol=1e-14, rtol=1e-8):
             errors.append("pendulum energy drift inconsistent or exceeds tolerance")
+        if not legacy:
+            errors += pendulum_state_errors(run_dir, trace, experiment)
+    if identifier == "core-02" and not legacy:
+        from pai_lab.catalog import ROOT
+        from pai_lab.lessons.physics import source_hash_comparison
+
+        comparison = source_hash_comparison((ROOT / "assets/sources.json").read_bytes())
+        if (
+            payload["hash_comparison"] != comparison
+            or json.loads((run_dir / "source-pins.json").read_text()) != payload
+        ):
+            errors.append("one-byte SHA-256 comparison disagrees with the public source manifest")
+    if identifier == "core-03":
+        inventory = json.loads((run_dir / "model-inventory.json").read_text())
+        if inventory != payload or len(inventory) != len(trace):
+            errors.append("model inventory disagrees with the recorded experiment")
+        elif any(
+            type(model[key]) is not int or model[key] < 0 or model[key] != model["source"][key]
+            for model in inventory.values()
+            for key in ("nq", "nv", "nu")
+        ):
+            errors.append("invalid MuJoCo configuration, velocity, or actuator counts")
+    if identifier == "core-04" and not legacy:
+        with np.load(run_dir / "replay.npz", allow_pickle=False) as saved:
+            if (
+                not np.array_equal(saved["time_s"], payload["time_s"])
+                or not np.array_equal(saved["qpos"], payload["qpos"])
+                or not np.array_equal(saved["qvel"], payload["qvel"])
+                or not np.array_equal(saved["qpos"], trace[:, 2][None, :])
+            ):
+                errors.append("FR3 camera replay disagrees with the saved pose")
     if identifier == "core-fr3-04":
         jac = np.array(payload["analytic"])
         finite = np.array(payload["finite_difference"])

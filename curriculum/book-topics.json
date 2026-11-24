@@ -6,23 +6,23 @@
   ],
   "core-01": [
     "simulation",
-    "How does timestep affect a deterministic pendulum trace?",
-    "시간 간격은 결정론적 진자 궤적에 어떤 영향을 주는가?"
+    "Will releasing the pendulum at a larger angle make it rise higher on the opposite side?",
+    "같은 진자를 더 큰 각도에서 놓으면 반대편에서도 더 높이 올라갈까요?"
   ],
   "core-02": [
     "simulation",
-    "Why must robot sources be pinned and hashed?",
-    "로봇 소스의 리비전과 해시를 왜 고정해야 하는가?"
+    "How does changing one byte affect the SHA-256 digest of a pinned source file?",
+    "고정한 소스 파일에서 한 바이트를 바꾸면 SHA-256 해시는 어떻게 달라지나요?"
   ],
   "core-03": [
     "simulation",
-    "How can model dimensions and asset hashes reveal an invalid import?",
-    "모델 차원과 자산 해시로 잘못된 가져오기를 어떻게 찾는가?"
+    "Why can the position, velocity, and actuator counts differ within a loaded model?",
+    "불러온 모델에서 위치 좌표, 속도 좌표, 구동기 수가 서로 다른 이유는 무엇인가요?"
   ],
   "core-04": [
     "simulation",
-    "What can a deterministic rendering establish about a model?",
-    "결정론적 렌더링은 모델의 어떤 특성을 확인하는가?"
+    "What changes when the camera views the same FR3 pose from a different azimuth?",
+    "같은 FR3 자세를 다른 방위각에서 보면 화면에서 무엇이 달라지나요?"
   ],
   "core-fr3-01": [
     "kinematics",

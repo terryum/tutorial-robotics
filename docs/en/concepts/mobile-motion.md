@@ -50,6 +50,28 @@ $r$ is wheel radius in m, $L$ wheel separation in m, $\omega$ wheel angular velo
 
 The final phase creates a world target from the simulated gripper position and base forward axis. It corrects planar error with wheel commands and vertical error with lift. Read `groups`, `free_base`, `actuator_names`, `commands`, `tcp_positions_m`, `reach_target_m` and `reach_errors_m` in `experiment.json`. The plot changes interpretation from TCP height to reach error after the reach target exists; do not call the entire trace one stationary-goal error curve.
 
+<a id="differential-drive-motion-order" name="differential-drive-motion-order"></a>
+
+## Differential-drive motion depends on the order of moves
+
+Assume a level surface and wheels that roll without slipping. The body frame's $x$-axis points forward and its $y$-axis points left. Take the midpoint of the axle as the base position. Its instantaneous velocity in the body frame is $(v_{body},0)$ m/s. For heading $\psi$ measured counterclockwise from the world $x$-axis, the velocity in the world frame is
+
+$$
+\begin{bmatrix}\dot x\\\dot y\end{bmatrix}
+= v_{body}\begin{bmatrix}\cos\psi\\\sin\psi\end{bmatrix}.
+$$
+
+For a worked calculation, start at the origin facing world $+x$. Apply each move once: turn in place $90^\circ$ counterclockwise and travel 1 m straight ahead.
+
+| Order of moves | Final world position | Final heading |
+|---|---|---|
+| Turn, then drive forward | $(0,1)$ m | $90^\circ$ |
+| Drive forward, then turn | $(1,0)$ m | $90^\circ$ |
+
+After turning first, the world $x$ displacement is $(1\,\mathrm m)\cos 90^\circ=0$ and the world $y$ displacement is $(1\,\mathrm m)\sin 90^\circ=1\,\mathrm m$. The final point is to the left of the original base position as viewed from its starting heading. The base still drives along its own forward axis, with zero lateral velocity in the body frame. [Modern Robotics covers the wheel constraint and instantaneous velocity in more detail](https://modernrobotics.northwestern.edu/nu-gm-book-resource/13-3-1-modeling-of-nonholonomic-wheeled-mobile-robots/).
+
+In the [Stretch 3 lesson](../lessons/core-stretch3-01.md), MuJoCo computes wheel–floor contacts and updates the free base's state. The table is an idealized calculation comparing the two orders of motion. Use the run records to check how far and in what direction the base moved and where the TCP was.
+
 ## Comparison and evidence boundary
 
 For G1, change only `variant` to reduce amplitude while preserving sample count, seed and model. Expect smaller hinge displacement but still exact replay; that is the intended invariant. For Stretch, `variant` changes parts of the prescribed schedule and the resulting state, so treat it as the documented schedule experiment rather than one isolated controller-gain test. The [public report](../../verification/robot-paths-2026-11-08.md) describes modest reach-error reduction, not millimetre accuracy or a trained mobile policy.

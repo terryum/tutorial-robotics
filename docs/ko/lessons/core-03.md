@@ -21,21 +21,21 @@
 
 ## Reader route
 
-이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
-
 [터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
 
 먼저 [개념 교재: simulation](../concepts/simulation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
 
 ## Learning goals
 
-여섯 로봇 모델을 로드하고 실제 차원을 검사합니다.
+여섯 로봇의 MuJoCo 모델을 불러와 위치 좌표, 속도 좌표, 구동기 수를 비교합니다. 관절이나 제어 입력을 배열에 넣을 때마다 알맞은 길이와 인덱스를 확인해야 합니다.
 
 ## Preflight
 
-처음이면 저장소 루트에서 `sh bootstrap.sh --plan`을 실행하고 계획을 읽은 뒤 `--apply`로 환경을 준비합니다. `source .venv/bin/activate` 후 아래 명령을 사용합니다. 이미 같은 이름의 실행 폴더가 있으면 02처럼 새 이름을 정합니다.
+### 실행 전에 예측하기
 
-필요한 공개 모델을 한 번 준비합니다:
+바닥에 고정한 로봇 팔과 몸체가 자유롭게 움직이는 로봇을 비교하면 어느 쪽에서 위치 좌표 수와 속도 좌표 수가 다를까요?
+
+에이전트는 [실행 안내](../READER_GUIDE.md#manual-setup)에 따라 Core 환경을 준비하고 확인합니다. 직접 실행할 때는 저장소 루트에서 `sh bootstrap.sh --plan`으로 계획을 읽고, 준비가 필요하면 `--apply`를 실행합니다. `source .venv/bin/activate`로 환경을 활성화한 뒤 아래 명령으로 준비 상태를 확인하세요. 이미 사용한 실행 폴더가 있으면 이름 끝에 `02`처럼 새 번호를 붙이세요. 아래 첫 명령 묶음으로 필요한 공개 모델을 준비합니다.
 
 ```bash
 pal assets fetch mujoco-menagerie
@@ -48,7 +48,21 @@ pal host detect --json
 pal lesson check core-03 --json
 ```
 
+## How it works
+
+MuJoCo에서 `nq`는 위치 좌표 수, `nv`는 속도 좌표 수, `nu`는 구동기 수입니다. `qpos`, `qvel`, `ctrl`은 각각 길이가 `nq`, `nv`, `nu`인 1차원 배열입니다. 자유 관절 하나에는 이동을 나타내는 좌표 3개와 회전을 나타내는 단위 쿼터니언의 성분 4개를 써서 위치 좌표가 7개입니다. 선속도 성분 3개와 각속도 성분 3개를 써서 속도 좌표는 6개입니다. 모두 좌표나 구동기의 개수를 센 값입니다.
+
+$$
+n_q=7,\quad n_v=6\quad\text{(자유 관절 하나)}
+$$
+
+## Code connection
+
+[`examples/core-03/run.py`](../../../examples/core-03/run.py)에서 [`runner.py`](../../../src/pai_lab/lessons/runner.py)를 거쳐 [`physics.py`](../../../src/pai_lab/lessons/physics.py)로 이어집니다. [`models.load`와 `inventory`](../../../src/pai_lab/lessons/models.py)가 MuJoCo 모델을 읽고 이름별로 `nq`, `nv`, `nu`, `joint_names`, `joint_ranges`, `site_names`, `mass_kg`를 저장합니다. 고정한 vendor 파라미터로 생성한 Enlight 초안은 `enlight-draft.xml`에 남습니다.
+
 ## Action
+
+에이전트가 아래 명령으로 기준 실행을 기록합니다.
 
 ```bash
 pal lesson run core-03 --headless --seed 7 --samples 64 --output-dir .local/runs/core-03/baseline-01 --json
@@ -56,13 +70,9 @@ pal lesson run core-03 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
-실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
+FR3·Enlight·Wuji·Sharpa·G1·ALOHA 여섯 모델이 모두 로드되면 `model-inventory.json`에 실제로 읽은 차원이 저장됩니다. 아래 개발 실행 예시 그래프는 모델별 `nv`를 나타냅니다. 검사에서 따로 기록하는 스칼라 값은 질량이 양수인 모델의 비율입니다.
 
 ![core-03 measured plot](../../assets/examples/core-03-plot.png)
-
-FR3·Enlight·Wuji·Sharpa·G1·ALOHA의 관절 이름, 한계, 총질량, nq/nv/nu를 읽습니다. Enlight 로컬 초안은 고정된 vendor 파라미터로 생성됩니다.
-
-공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
 
 ```bash
 pal lesson check core-03 --run-dir .local/runs/core-03/baseline-01 --json
@@ -70,85 +80,44 @@ pal lesson check core-03 --run-dir .local/runs/core-03/baseline-01 --json
 
 ## Observe
 
-먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
+`model-inventory.json`에서 모델을 골라 관절 이름, 한계와 총질량을 찾아보세요. `lesson inspect`로 실행 기록을 확인하고, 아래 명령으로 그래프와 원시 수치를 직접 열 수 있습니다.
 
 ```bash
 pal lesson inspect core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
 
-Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
-
 ```bash
 open .local/runs/core-03/baseline-01/plot.png
 ```
-
-다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
 
 ```bash
 python -m json.tool .local/runs/core-03/baseline-01/experiment.json
 ```
 
-## How it works
-
-nq는 위치 좌표 수, nv는 속도 좌표 수입니다. 자유 관절은 위치 좌표 7개와 속도 좌표 6개를 갖습니다. nu는 구동기 수이므로 nq나 nv와 같을 필요가 없습니다.
-
-$$
-n_q=7,\quad n_v=6\quad\text{(one free joint)}
-$$
-
-기호·단위·조건: 개수는 무차원; quaternion의 크기는 1.
-
-손으로 계산하는 예시(실행 측정값이 아님): 3 position + 4 quaternion = 7; 3 linear + 3 angular = 6.
-
-실전 연결: 위치 주소를 속도 배열 인덱스로 쓰면 안 됩니다.
-
-### 입력에서 관측까지
-
-Python 배열의 길이를 로봇의 관절 수와 무조건 같다고 가정하면 자유 베이스나 다중 좌표 관절에서 오류가 납니다. nq는 구성 좌표, nv는 속도 자유도, nu는 구동 입력 개수입니다. 이 수업은 여섯 모델에서 이 구분을 실제로 읽는 구조 검사이며, 같은 개수라고 같은 행동 의미가 생기는 것은 아닙니다.
-
-## Code connection
-
-`examples/core-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
-
-### 실제 코드와 산출물 읽기
-
-[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
-
-`physics.run`은 `models.load`와 `inventory`를 통해 각 모델의 nq·nv·nu·joint_names·joint_ranges·site_names·mass_kg를 저장합니다. `model-inventory.json`은 모델 이름별 사전입니다. qpos shape=(nq,), qvel shape=(nv,), ctrl shape=(nu,)로 구분합니다. 자유 관절 하나의 7 대 6 예시는 quaternion이 네 값으로 회전을 나타내기 때문입니다. 그래프는 nv를 비교하고 scalar metric은 양의 질량을 가진 모델의 비율이므로 두 요약을 혼동하지 않습니다.
-
 ## Try it
 
-이 수업은 구조·환경 조사입니다. seed를 바꾼 수치 실험을 요구하지 않습니다. 이름·단위·선수 조건과 실제 artifact를 대조하고, 발견한 항목을 review notes에 적습니다.
+한 번 실행한 결과에서 고정 베이스 FR3와 자유 관절이 있는 G1을 골라 각각 `nq`, `nv`, `nu`를 비교합니다. 같은 검사 절차에서 읽을 모델만 바꿉니다. G1에서 위치 좌표 수가 속도 좌표 수보다 큰 이유를 자유 관절의 7 대 6 계산과 연결하세요. 로봇 두 대는 다른 관절도 갖고 있으므로 전체 개수의 차이를 자유 관절 하나의 영향으로 해석할 수는 없습니다. 비교를 위해 고정 모델이나 seed를 바꿀 필요는 없습니다.
 
-<details>
-<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
+에이전트가 아래 명령으로 실행 기록을 검증해 결과 페이지를 만듭니다. 에이전트는 교재와 별도 창에 페이지를 열고 표시를 확인합니다. 별도 창을 띄우기 어려우면 결과 탭을 사용합니다. 화면을 제어할 수 없는 환경에서는 실제 측정값과 채팅에서 표시할 수 있는 이미지를 보여 줍니다.
 
-본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
-
-</details>
-
-### 바꾸기 전에 예측하기
-
-한 변수 계산으로 자유 베이스 유무만 바꾼 모델을 생각하면 nq에 7, nv에 6이 더해집니다. 실제 감사는 원본 모델을 고정하므로 seed를 바꿔도 차원이 같아야 합니다. vendor 모델을 바꾸어 기존 해시 검사를 통과시키지 않습니다.
+```bash
+pal lesson present core-03 --run-dir .local/runs/core-03/baseline-01 --language ko --json
+```
 
 ## Recovery
 
-capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
+`capability-unavailable`이 반환되면 에이전트는 `missing_capabilities` 또는 `error`에서 어떤 Python·모델·플랫폼·외부 스택이 필요한지 확인해 조치 방법을 안내합니다. 준비가 끝나면 새 폴더에서 같은 실험을 실행하고, 실패한 `run.json`과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 별도 준비가 필요합니다. 체크섬 오류가 나면 vendor 파일을 직접 수정하지 말고 고정 캐시를 복구합니다.
 
 ## Checkpoint
 
-명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
+G1에서 `nq`와 `nv`가 다른 이유를 설명할 수 있나요? 두 모델의 `nu`를 읽고 각각 `ctrl` 배열의 길이를 말해 보세요. 컴파일 결과와 양의 질량은 구조를 확인하는 근거이며 충돌 성능과 실물 보정에는 별도 검증이 필요합니다.
+
+`lesson present`를 실행하면 에이전트가 이해 확인 대기 상태와 결과를 저장합니다. 새 대화에서도 같은 질문과 결과에서 이어갈 수 있습니다. 답을 함께 확인하거나 독자가 완료를 요청한 뒤에만 에이전트가 실제 관찰과 설명을 `--notes`에 적어 검토와 완료를 기록합니다. 피드백에 해결이 필요한 문제가 있으면 먼저 수정하고 재검증합니다. 변경된 실행 코드나 손상된 산출물은 완료를 막습니다.
 
 ```bash
 pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --notes "검사한 이름·단위·구조·제한과 실제 근거를 자신의 값으로 적으세요." --json
 pal lesson finish core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
-
-### 이해 확인과 답의 기준
-
-질문: nu=nq를 가정해도 될까요? 답: actuator 의미를 먼저 읽어야 합니다. 질문: 양의 질량·컴파일 성공이 충돌·실물 보정을 증명하나요? 답: 구조 검사일 뿐입니다. 모델별 배열 크기와 이름 대응 하나를 기록합니다.
-
-이 구조 감사는 `evidence.comparison_errors`의 명시적 예외여서 별도 comparison run이 필수가 아닙니다. 위 review 명령은 baseline만 전달합니다. 종이 계산을 실행된 비교 산출물로 꾸미지 않고 실제로 확인한 감사 근거를 notes에 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

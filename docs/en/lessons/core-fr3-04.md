@@ -102,6 +102,12 @@ Worked calculation (not a measured run result): J=0.5 m/rad, Δx=0.01 m, λ=0.00
 
 Practical connection: Near singularities a small Cartesian request can require large joint motion.
 
+### Different configurations can reach the same tip position
+
+In the [two-joint planar arm](../concepts/kinematics.md#configuration-and-clearance), both $(0,\pi/2)$ and $(\pi/2,-\pi/2)$ rad put the tip at $(1,1)$ m. The elbows are in different positions and only the first configuration overlaps the obstacle. With the arm stretched straight along world $+x$, small rotations of either joint move the tip only in $y$ to first order. A configuration where the Jacobian loses an independent direction of motion is singular.
+
+For FR3, compare the two world-frame 3×7 translational Jacobians in `analytic` and `finite_difference` to check how joint changes map to tip displacement at the home configuration. The last `ik_errors_m` value shows how close the tip was to the target just before the last joint update. Check clearance separately from the link geometry and placement. Compute orientation error from the current and target rotations as shown in the [relative rotation example](../concepts/kinematics.md#relative-rotation).
+
 ### The position function and its derivative
 
 Forward kinematics $x=f(q)$ maps a length-7 joint array(rad) into a length-3 end-effector position array(m). Here $x$ is `site_xpos[0]`, expressed in the world frame. This lesson does not solve full end-effector orientation or tool-frame velocity. Column $j$ of the translational Jacobian $J\in\mathbb{R}^{3\times7}$ is $\partial x/\partial q_j$, with units m/rad.
@@ -169,12 +175,12 @@ pal lesson finish core-fr3-04 --run-dir .local/runs/core-fr3-04/baseline-01 --js
 ### Check your understanding
 
 1. What do the second row and third column of the 3×7 array mean?
-2. Why is multiplying by $J^T$ alone different from solving the regularized system?
+2. If the last recorded `ik_errors_m` value is below 1 mm, what can you say about the target position and the arm's collision clearance? Use the two planar solutions to explain.
 3. If the Jacobian difference changes with ε but the IK curve does not, which code connection explains that result?
 
 State the frame, m/rad units, `analytic` array shape and final position residual.
 
-Answer guide: Row two is world-y displacement and column three describes the third joint's infinitesimal rotation. The regularized solve accounts for axis scaling and coupling. Epsilon is used only in the verification difference, so IK can produce the same residual from the same target and Jacobian function.
+Answer guide: Row two is world-y displacement and column three describes the third joint's infinitesimal rotation. A residual below 1 mm means the tip was within that distance of the target in the last sampled configuration. Different link placements can reach the same tip position, as the planar arm shows. Check the links and obstacles separately to determine clearance. Epsilon is used only in the verification difference, so IK can produce the same residual from the same target and Jacobian function.
 
 <!-- pal:navigation:start -->
 ## Next lesson

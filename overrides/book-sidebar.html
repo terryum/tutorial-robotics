@@ -1,0 +1,66 @@
+<nav class="book-sidebar" aria-label="교재 목차">
+  <details class="book-contents" open>
+    <summary>전체 목차</summary>
+    <ul class="book-outline">
+      {% for item in [book.home, book.map] %}
+        <li><a href="{{ item.url|url }}" {% if page.url == item.url %}aria-current="page"{% endif %}>{{ item.title }}</a></li>
+      {% endfor %}
+    </ul>
+    {% for key, stage in book.stages.items() %}
+      <details class="book-stage" data-stage="{{ key }}" {% if book_current and book_current.stage == key %}open{% endif %}>
+        <summary>{{ stage.title }}</summary>
+        {% for key, topic in stage.topics.items() %}
+          <details class="book-topic" data-topic="{{ key }}" {% if book_current and book_current.stage == stage.id and book_current.topic == key %}open{% endif %}>
+            <summary>{{ topic.title }}</summary>
+            <ul class="book-outline">
+              {% for lesson in topic.lessons %}
+                <li><a class="book-lesson" data-lesson="{{ lesson.id }}" href="{{ lesson.url|url }}" {% if page.url == lesson.url %}aria-current="page"{% endif %}>{{ lesson.title|e }}</a></li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% endfor %}
+      </details>
+    {% endfor %}
+    <details class="book-references" {% if book_current == book.diagnostic %}open{% endif %}>
+      <summary>참고 자료</summary>
+      <ul class="book-outline">
+        <li><a class="book-lesson" data-lesson="{{ book.diagnostic.id }}" href="{{ book.diagnostic.url|url }}" {% if book_current == book.diagnostic %}aria-current="page"{% endif %}>환경 진단 (core-00)</a></li>
+        <li><a href="{{ book.safety.url|url }}">{{ book.safety.title }}</a></li>
+        <li><a href="{{ book.sources.url|url }}">{{ book.sources.title }}</a></li>
+      </ul>
+    </details>
+  </details>
+  {% macro section_links(items) %}
+    <ul class="book-outline">
+      {% for item in items %}
+        <li><a href="{{ item.url }}">{{ item.title|e }}</a>
+          {% if item.children %}{{ section_links(item.children) }}{% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endmacro %}
+  {% for title in page.toc %}
+    {% if title.children %}
+      <details class="book-page-toc">
+        <summary>이 페이지에서</summary>
+        {% if page.url == book.map.url %}
+          <ul class="book-outline">
+            {% for key, stage in book.stages.items() %}
+              <li><a href="#stage-{{ key }}">{{ stage.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {{ section_links(title.children) }}
+      </details>
+    {% endif %}
+  {% endfor %}
+</nav>
+<script>
+  (() => {
+    const contents = document.querySelector(".book-contents");
+    const mobile = window.matchMedia("(max-width: 767.98px)");
+    const sync = () => { contents.open = !mobile.matches; };
+    sync();
+    mobile.addEventListener("change", sync);
+  })();
+</script>

@@ -10,7 +10,7 @@ The reading order increases equipment requirements. Catalog order remains stable
 
 | Phase | Minimum equipment | Experience and evidence | Transition |
 |---|---|---|---|
-| 1. Foundations | MacBook or a Windows/Linux laptop | Python, state, models and plots: core-00–core-04 | Explain units, coordinates and reproducibility |
+| 1. Foundations | MacBook or a Windows/Linux laptop | Python, state, models and plots: core-01–core-04 | Explain units, coordinates and reproducibility |
 | 2. Local robotics | A supported Core environment; no robot/XR gear | FR3 control/IK, Enlight models, Shadow/Wuji, Stretch, short PPO/BC, offline input | Inspect artifacts and distinguish execution from performance |
 | 3. GPU simulation | A verified remote or local NVIDIA workstation | Isaac Sim imports, PhysX, cameras, matched-engine comparison and learning | Genuine engine artifacts and independent evaluation |
 | 4. Optional human data | Workstation plus selected Quest 3, MANUS glove and/or VIVE tracker input | Read-only input → alignment → sink → simulated episodes | Live input validation distinct from synthetic replay |

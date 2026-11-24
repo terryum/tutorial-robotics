@@ -21,21 +21,21 @@
 
 ## Reader route
 
-Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
-
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
 Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
 
 ## Learning goals
 
-Load six robot models and inspect their actual dimensions.
+Load six robot models in MuJoCo and compare the counts of position coordinates, velocity coordinates and actuators. Use these counts to choose the right array sizes and indices for joint state and control.
 
 ## Preflight
 
-On a fresh checkout, run `sh bootstrap.sh --plan`, read the plan, then use `--apply`. Activate `source .venv/bin/activate` before these commands. If the run directory already exists, use a new suffix such as 02.
+### Predict before running
 
-Prepare the required public models once:
+Compare a robot arm fixed to the floor with a robot body free to move. Predict which one has different counts for position and velocity coordinates.
+
+The agent prepares and verifies Core using the [reader guide](../READER_GUIDE.md#manual-setup). For direct execution, read the plan with `sh bootstrap.sh --plan` at the repository root and use `--apply` if setup is needed. Activate the environment with `source .venv/bin/activate`, then run the checks below. If a run directory already exists, choose a fresh suffix such as `02`. The first group of commands prepares the required public models.
 
 ```bash
 pal assets fetch mujoco-menagerie
@@ -48,7 +48,21 @@ pal host detect --json
 pal lesson check core-03 --json
 ```
 
+## How it works
+
+In MuJoCo, `nq` counts position coordinates, `nv` counts velocity coordinates, and `nu` counts actuators. The one-dimensional arrays `qpos`, `qvel` and `ctrl` have lengths `nq`, `nv` and `nu` respectively. One free joint has 7 position coordinates: 3 translations and 4 entries of a unit quaternion. It has 6 velocity coordinates: 3 linear and 3 angular. Each quantity is a count.
+
+$$
+n_q=7,\quad n_v=6\quad\text{(one free joint)}
+$$
+
+## Code connection
+
+[`examples/core-03/run.py`](../../../examples/core-03/run.py) calls [`runner.py`](../../../src/pai_lab/lessons/runner.py), which dispatches to [`physics.py`](../../../src/pai_lab/lessons/physics.py). [`models.load` and `inventory`](../../../src/pai_lab/lessons/models.py) load each MuJoCo model and record `nq`, `nv`, `nu`, `joint_names`, `joint_ranges`, `site_names` and `mass_kg` by model name. The Enlight draft generated from pinned vendor parameters is saved in `enlight-draft.xml`.
+
 ## Action
+
+The agent records the baseline with this command.
 
 ```bash
 pal lesson run core-03 --headless --seed 7 --samples 64 --output-dir .local/runs/core-03/baseline-01 --json
@@ -56,13 +70,9 @@ pal lesson run core-03 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
-Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+When all six models load, `model-inventory.json` stores the measured dimensions for FR3, Enlight, Wuji, Sharpa, G1 and ALOHA. The measured development plot below compares `nv` by model. The check reports a separate scalar, the fraction of models with positive mass.
 
 ![core-03 measured plot](../../assets/examples/core-03-plot.png)
-
-Read joint names, limits, total mass and nq/nv/nu for FR3, Enlight, Wuji, Sharpa, G1 and ALOHA. Enlight's local draft is derived from pinned vendor parameters.
-
-Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
 
 ```bash
 pal lesson check core-03 --run-dir .local/runs/core-03/baseline-01 --json
@@ -70,85 +80,44 @@ pal lesson check core-03 --run-dir .local/runs/core-03/baseline-01 --json
 
 ## Observe
 
-Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+Find the model, joint names, joint limits and total mass in the corresponding entry in `model-inventory.json`. Verify the run with `lesson inspect`. The commands below also open the plot and raw values.
 
 ```bash
 pal lesson inspect core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
 
-Open the plot on macOS (closing the image preserves the run):
-
 ```bash
 open .local/runs/core-03/baseline-01/plot.png
 ```
-
-On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
 
 ```bash
 python -m json.tool .local/runs/core-03/baseline-01/experiment.json
 ```
 
-## How it works
-
-nq counts configuration coordinates; nv counts velocity coordinates. A free joint has seven position coordinates but six velocity coordinates. nu counts actuators, so it need not equal either nq or nv.
-
-$$
-n_q=7,\quad n_v=6\quad\text{(one free joint)}
-$$
-
-Symbols, units and assumptions: Counts are dimensionless; quaternion has unit norm.
-
-Worked calculation (not a measured run result): 3 position + 4 quaternion = 7; 3 linear + 3 angular = 6.
-
-Practical connection: Do not index velocities using configuration addresses.
-
-### From input to observation
-
-Assuming every Python state-array length equals joint count fails for floating bases and multi-coordinate joints. nq counts configuration coordinates, nv velocity degrees of freedom, and nu actuator inputs. This lesson reads those distinctions from six compiled models. Equal counts do not establish equal action semantics.
-
-## Code connection
-
-`examples/core-03/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
-
-### Read the actual producer and artifacts
-
-Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
-
-`physics.run` uses `models.load` and `inventory` to save nq, nv, nu, joint_names, joint_ranges, site_names and mass_kg. `model-inventory.json` is keyed by model name. Distinguish qpos shape=(nq,), qvel shape=(nv,) and ctrl shape=(nu,). A free joint has 7 versus 6 because four quaternion values represent rotation. The graph compares nv; the scalar metric is the fraction of models with positive mass. Those are different summaries.
-
 ## Try it
 
-This is an environment or structure audit. A seed change is not required. Compare names, units, prerequisites and the actual artifact; record specific findings in the review notes.
+Select the fixed-base FR3 and the free-joint G1 from the same run, then compare `nq`, `nv` and `nu`. The only change is the model you read through the same inspection procedure. Use the 7-to-6 calculation for a free joint to explain why G1 has more position coordinates than velocity coordinates. The robots have other different joints, so the free joint alone cannot explain the difference between the robots’ totals. Keep the pinned models and seed fixed.
 
-<details>
-<summary>Optional: what changes when the assumptions fail?</summary>
+The agent uses the command below to validate the run evidence and generate a result page. It opens the page in a separate window from the lesson and verifies the display. If a separate window is unavailable, it uses a result tab. With no screen control, it shares the actual measurements and any images supported in chat.
 
-Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
-
-</details>
-
-### Predict before changing a value
-
-For a one-variable calculation, adding only a free base adds 7 configuration and 6 velocity coordinates. The actual audit keeps pinned models fixed, so seed changes should leave dimensions unchanged. Do not alter vendor models to make an existing hash check pass.
+```bash
+pal lesson present core-03 --run-dir .local/runs/core-03/baseline-01 --language en --json
+```
 
 ## Recovery
 
-For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
+On `capability-unavailable`, the agent reads `missing_capabilities` or `error` and explains how to prepare the required Python, model, platform or external stack. Rerun in a fresh directory once it is ready. Keep the failed `run.json` and measurements. System packages, drivers, CUDA, ROS, Isaac and large models require separate setup. Restore the pinned cache if a checksum fails. Keep vendor sources read-only.
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+Why does G1 have different `nq` and `nv` values? Read `nu` for both models and give the length of each `ctrl` array. Compilation and positive mass verify structure. Collision behavior and real-world calibration require separate checks.
+
+`lesson present` saves the result and the awaiting-comprehension phase. A new chat can resume from the same question and result. Once the learner has discussed the answer or asked to finish, the agent records actual observations and an interpretation in `--notes`, then records review and completion. Resolve and reverify any outstanding feedback first. Changed execution code or corrupt artifacts block completion.
 
 ```bash
 pal lesson review core-03 --run-dir .local/runs/core-03/baseline-01 --notes "Replace with inspected names, units, structure, limits and concrete evidence." --json
 pal lesson finish core-03 --run-dir .local/runs/core-03/baseline-01 --json
 ```
-
-### Check understanding and answer guide
-
-Question: May you assume nu=nq? Answer: Read actuator semantics first. Question: Do positive mass and successful compilation prove contact or hardware calibration? Answer: They establish structural checks only. Record one model-specific array shape and name mapping.
-
-This structural audit is explicitly exempted by `evidence.comparison_errors` from a separate comparison run. The review command above passes only the baseline. Record actual audit evidence in notes; do not represent a paper calculation as an executed comparison artifact.
 
 <!-- pal:navigation:start -->
 ## Next lesson

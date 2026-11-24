@@ -32,9 +32,23 @@ pal course resume --json
 pal lesson run core-fr3-09 --resume-from BASE --json
 ```
 
-Say “매니퓰레이터 튜토리얼 실행해줘” or “Run the manipulator tutorial.” The agent selects this path while preserving completion history, inspects saved state, opens the current GitHub lesson in your selected language, runs one baseline and one comparison, explains the numerical results, checks and saves the review, then stops. Ask to continue for the next lesson. An unavailable required Isaac lesson blocks the path and reports the required host; it never completes the course by skipping it.
+Say “매니퓰레이터 튜토리얼 실행해줘” or “Run the manipulator tutorial.” The agent selects this path while preserving completion history, inspects saved state, opens the current GitHub lesson in your selected language, runs the baseline and comparison, and explains and verifies the results. In the common foundations, it records completion after discussing your comprehension answer or receiving your request to finish. Ask to continue for the next lesson. An unavailable required Isaac lesson blocks the path and reports the required host; it never completes the course by skipping it.
 
 Pause preserves the explanation, run, parameters and comparison. Resume first reports the saved phase and next action; it sends no robot command. A short interrupted simulation restarts in a fresh directory. Saved complete artifacts can still be reviewed. Feedback and personal progress integration keep their existing boundaries.
+
+<a id="geometry-reading-order" name="geometry-reading-order"></a>
+
+## Robot geometry reading order
+
+After the common foundations, follow this reading sequence on a laptop with a supported Core environment. To run an exercise, check its prerequisites and follow the order given by `pal course next --json`. Record progress on your selected robot path.
+
+1. [Configuration space and clearance](concepts/kinematics.md#configuration-and-clearance) → [FR3 model anatomy](lessons/core-fr3-01.md). See how one set of joint angles determines the shape of the whole arm.
+2. [Frame transforms and relative rotation](concepts/kinematics.md#relative-rotation) → [FR3 kinematics and inverse kinematics](lessons/core-fr3-04.md). Compare two configurations that reach the same point and identify the velocity described by the translational Jacobian.
+3. [Gravity and bias forces](concepts/control-contact.md#gravity-and-bias) → [FR3 gravity compensation](lessons/core-fr3-03.md). See how the torques that hold a stationary pose affect tracking error.
+4. [Jacobians and power](concepts/control-contact.md#jacobian-power) → [FR3 operational-space control](lessons/core-fr3-05.md). Map an end-effector force to joint torques.
+5. [Contact forces and friction](concepts/control-contact.md#contact-force-and-friction) → [FR3 contact and friction](lessons/core-fr3-06.md) → [FR3 trajectory tracking](lessons/core-fr3-09.md). Read forces in the contact frame and see why path tracking error and collision clearance need separate checks.
+6. [Order of differential-drive motions](concepts/mobile-motion.md#differential-drive-motion-order) → [Stretch 3 coordinated base and arm reaching](lessons/core-stretch3-01.md). Explain the final position from the body heading and the order of the motions.
+7. [Task symmetry](concepts/data-imitation.md#task-symmetry) → [FR3 behavioral cloning and independent reach evaluation](lessons/core-fr3-10.md). Follow observations and actions through the feedback loop and evaluate whether the policy reaches new targets.
 
 ## Training and host transfer
 
@@ -64,7 +78,7 @@ On an installed Isaac host, use `pal train run --engine physx --model fr3 --algo
 
 ## How to read a path
 
-The five common foundations teach reproducibility, models, state and rendering. The manipulator route builds from joints/frames into control, learning and independent evaluation. The hand route connects joints/synergies to contact. The mobile route composes base and arm coordinates. Check prerequisite lessons and return to the relevant [concept chapter](index.md#eleven-common-concept-chapters) when a new idea appears.
+All three paths begin at `core-01`. The four common foundations teach reproducibility, models, state and rendering. Run the [`core-00` (`T00`) environment diagnostic](lessons/core-00.md) separately when needed. The manipulator route builds from joints/frames into control, learning and independent evaluation. The hand route connects joints/synergies to contact. The mobile route composes base and arm coordinates. Check prerequisite lessons and return to the relevant [concept chapter](index.md#eleven-common-concept-chapters) when a new idea appears.
 
 Move from Mac to a capable WS at the first required PhysX, ROS or GPU lesson. Required Isaac work cannot be skipped to finish a path. Physical stages require separate tool/payload/safety review and fresh per-run approval. Read [equipment guidance](equipment.md) first.
 
@@ -72,15 +86,15 @@ Below is the required order from `curriculum/paths.json`, which can differ from 
 
 ### manipulator
 
-[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-fr3-01](lessons/core-fr3-01.md) → [core-fr3-02](lessons/core-fr3-02.md) → [core-fr3-03](lessons/core-fr3-03.md) → [core-fr3-04](lessons/core-fr3-04.md) → [core-fr3-05](lessons/core-fr3-05.md) → [core-fr3-06](lessons/core-fr3-06.md) → [core-fr3-09](lessons/core-fr3-09.md) → [sim-fr3-01](lessons/sim-fr3-01.md) → [core-rl-01](lessons/core-rl-01.md) → [core-fr3-07](lessons/core-fr3-07.md) → [core-fr3-08](lessons/core-fr3-08.md) → [core-fr3-10](lessons/core-fr3-10.md) → [sim-fr3-02](lessons/sim-fr3-02.md) → [sim-fr3-03](lessons/sim-fr3-03.md) → [sim-fr3-04](lessons/sim-fr3-04.md) → [core-enlight-01](lessons/core-enlight-01.md) → [core-enlight-02](lessons/core-enlight-02.md) → [core-enlight-03](lessons/core-enlight-03.md) → [core-enlight-04](lessons/core-enlight-04.md) → [core-enlight-05](lessons/core-enlight-05.md) → [sim-enlight-03](lessons/sim-enlight-03.md) → [sim-enlight-04](lessons/sim-enlight-04.md) → [sim-enlight-05](lessons/sim-enlight-05.md) → [sim-deploy-01](lessons/sim-deploy-01.md) → [hw-common-01](lessons/hw-common-01.md) → [hw-common-02](lessons/hw-common-02.md) → [sim-ros-01](lessons/sim-ros-01.md) → [sim-enlight-01](lessons/sim-enlight-01.md) → [hw-enlight-01](lessons/hw-enlight-01.md) → [hw-enlight-02](lessons/hw-enlight-02.md) → [hw-enlight-04](lessons/hw-enlight-04.md) → [hw-enlight-05](lessons/hw-enlight-05.md) → [hw-enlight-06](lessons/hw-enlight-06.md)
+[core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-fr3-01](lessons/core-fr3-01.md) → [core-fr3-02](lessons/core-fr3-02.md) → [core-fr3-03](lessons/core-fr3-03.md) → [core-fr3-04](lessons/core-fr3-04.md) → [core-fr3-05](lessons/core-fr3-05.md) → [core-fr3-06](lessons/core-fr3-06.md) → [core-fr3-09](lessons/core-fr3-09.md) → [sim-fr3-01](lessons/sim-fr3-01.md) → [core-rl-01](lessons/core-rl-01.md) → [core-fr3-07](lessons/core-fr3-07.md) → [core-fr3-08](lessons/core-fr3-08.md) → [core-fr3-10](lessons/core-fr3-10.md) → [sim-fr3-02](lessons/sim-fr3-02.md) → [sim-fr3-03](lessons/sim-fr3-03.md) → [sim-fr3-04](lessons/sim-fr3-04.md) → [core-enlight-01](lessons/core-enlight-01.md) → [core-enlight-02](lessons/core-enlight-02.md) → [core-enlight-03](lessons/core-enlight-03.md) → [core-enlight-04](lessons/core-enlight-04.md) → [core-enlight-05](lessons/core-enlight-05.md) → [sim-enlight-03](lessons/sim-enlight-03.md) → [sim-enlight-04](lessons/sim-enlight-04.md) → [sim-enlight-05](lessons/sim-enlight-05.md) → [sim-deploy-01](lessons/sim-deploy-01.md) → [hw-common-01](lessons/hw-common-01.md) → [hw-common-02](lessons/hw-common-02.md) → [sim-ros-01](lessons/sim-ros-01.md) → [sim-enlight-01](lessons/sim-enlight-01.md) → [hw-enlight-01](lessons/hw-enlight-01.md) → [hw-enlight-02](lessons/hw-enlight-02.md) → [hw-enlight-04](lessons/hw-enlight-04.md) → [hw-enlight-05](lessons/hw-enlight-05.md) → [hw-enlight-06](lessons/hw-enlight-06.md)
 
 ### dexterous-hand
 
-[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-shadow-01](lessons/core-shadow-01.md) → [sim-shadow-01](lessons/sim-shadow-01.md)
+[core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-shadow-01](lessons/core-shadow-01.md) → [sim-shadow-01](lessons/sim-shadow-01.md)
 
 ### mobile-manipulator
 
-[core-00](lessons/core-00.md) → [core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-stretch3-01](lessons/core-stretch3-01.md) → [sim-stretch3-01](lessons/sim-stretch3-01.md)
+[core-01](lessons/core-01.md) → [core-02](lessons/core-02.md) → [core-03](lessons/core-03.md) → [core-04](lessons/core-04.md) → [core-stretch3-01](lessons/core-stretch3-01.md) → [sim-stretch3-01](lessons/sim-stretch3-01.md)
 
 
 ## Progress from minimal equipment

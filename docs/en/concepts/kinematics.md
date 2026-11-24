@@ -19,6 +19,39 @@ $$
 
 Here $T_{AB}$ maps coordinates from frame B to frame A. The final homogeneous coordinate is 1 for points. A displacement has final coordinate 0, so translation does not affect it. Read transform direction before multiplying; matrix multiplication is ordered.
 
+<a id="relative-rotation" name="relative-rotation"></a>
+
+### Transform composition and relative rotation
+
+Suppose the origin of arm reference frame $A$ is at $(1,0,0)$ m in world frame $W$, and the axes of $A$ are rotated by $+\pi/2$ rad about world $z$. Tool frame $B$ has axes parallel to those of $A$ and an origin 1 m along the $+x$ direction of $A$. The origin of $B$ is therefore at $(1,1,0)$ m in world coordinates. With column vectors, apply the right-hand transform first in $T_{WB}=T_{WA}T_{AB}$. The transform $T_{AB}$ expresses the 1 m offset in $A$. Then $T_{WA}$ rotates it into world $+y$ and adds the world position of the arm reference. The frame used to express the tool offset determines its effect on the result.
+
+If the current and goal rotation matrices $R_{\mathrm{cur}}, R_{\mathrm{goal}}$ each map tool coordinates to world coordinates, the relative rotation $R_{\mathrm{err}}=R_{\mathrm{cur}}^\top R_{\mathrm{goal}}$ expresses the goal axes in the current tool frame. Since $R_{\mathrm{cur}}R_{\mathrm{err}}=R_{\mathrm{goal}}$, it gives the rotation to apply to the current orientation. Keep the tool origin fixed at the position above and set the goal orientation to $+\pi$ rad about world $z$. The position error is 0 m and the relative rotation is $+\pi/2$ rad about the current tool $z$ axis. These are worked calculations for interpreting rigid transforms. [Modern Robotics, chapters 2 and 3](https://modernrobotics.northwestern.edu/nu-gm-book-resource/foundations-of-robot-motion/)
+
+<a id="configuration-and-clearance" name="configuration-and-clearance"></a>
+
+## Configuration space and collision clearance
+
+For a fixed model, one joint-angle vector determines the position and orientation of every link. The set of possible robot configurations is the **configuration space**. Forward kinematics maps each configuration to a tip position. The set of those tip positions is the **position workspace**. Several points in configuration space can map to one point in the workspace.
+
+Fix the base at the origin in a plane and join two line segments of length $l=1$ m. Measure the first joint angle $q_1$ from world $+x$ and the second angle $q_2$ from the first link. Counterclockwise is positive and both angles use rad. The elbow $E$ and tip $P$ are given by
+
+$$
+E=l(\cos q_1,\sin q_1),\qquad P=E+l(\cos(q_1+q_2),\sin(q_1+q_2)).
+$$
+
+The obstacle is a disk centered at $C=(0.5,0)$ m with radius 0.1 m. Find the closest point to $C$ **on either link segment** and subtract the radius from its distance to $C$ to get collision clearance. Positive means separation, zero means contact, and negative means part of a segment is inside the disk. In this zero-thickness link calculation, both configurations reach the same tip position.
+
+| Joint angles $(q_1,q_2)$ (rad) | Elbow $E$ (m) | Tip $P$ (m) | Shortest distance from $C$ to the segments (m) | Clearance (m) |
+| --- | --- | --- | --- | --- |
+| $(0,\pi/2)$ | $(1,0)$ | $(1,1)$ | 0 | $-0.10$ |
+| $(\pi/2,-\pi/2)$ | $(0,1)$ | $(1,1)$ | 0.50 | $+0.40$ |
+
+The first configuration puts the first link through the center of the disk. In the second, the base origin is the point on the links closest to the center. The configurations are two solutions to the same position IK problem. The elbow lies in a different place in each, changing the collision clearance.
+
+### The middle of a path can collide with both endpoints clear
+
+Keep $q_2=0$ in the same scene and interpolate $q_1$ linearly from $-\pi/4$ rad to $+\pi/4$ rad. At both endpoints, the perpendicular projection of the obstacle center lands on the first link segment. The perpendicular distance is $0.5\sin(\pi/4)$ m, giving clearance of $0.5\sin(\pi/4)-0.10\approx+0.254$ m at each end. At the midpoint, $q_1=0$ places the first link through the center, giving clearance of $-0.10$ m. These are calculations for the planar model. Checking clearance along a robot path requires the collision geometry of each link, the obstacle locations, and a check between the endpoints. When checking samples, use a method that accounts for the intervals between them.
+
 ## The Jacobian is a local ruler
 
 Near one configuration, small joint changes produce approximately linear point changes:
@@ -34,6 +67,10 @@ J_{:,j}\approx\frac{f(q+\epsilon e_j)-f(q-\epsilon e_j)}{2\epsilon}.
 $$
 
 $e_j$ selects joint $j$, and $\epsilon=10^{-6}$ rad at baseline. Updating positions requires `mj_forward` before reading a site position; assigning `qpos` alone does not refresh derived geometry.
+
+### The motion direction lost at full extension
+
+At $(q_1,q_2)=(0,0)$ the planar arm's tip is at $(2,0)$ m. An infinitesimal rotation of either joint moves the tip only in the $y$ direction to first order. The translational Jacobian there is $J=\begin{bmatrix}0&0\\2&1\end{bmatrix}$ m/rad, and its columns point in the same direction, giving rank 1. Bending the elbow so the links are no longer collinear makes the two columns independent and allows tip velocity in both planar directions. A configuration where the number of independent velocity directions drops is a **singular configuration**. Damping reduces the size of numerical updates, but cannot restore the missing direction at that configuration. [Modern Robotics, section 5.3](https://modernrobotics.northwestern.edu/nu-gm-book-resource/5-3-singularities/)
 
 ## Inverse kinematics chooses a small joint update
 

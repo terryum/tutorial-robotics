@@ -8,7 +8,7 @@
 
 기초 Python 독자가 코드·수식·측정 결과를 함께 배우는 한영 로봇공학 교재입니다.
 한 수업의 직관 → 핵심 수식 → 코드 → 측정 결과 → 한 변수 비교 → 이해 확인을
-연결합니다. [한국어 학습 지도](docs/ko/index.md)에서 시작하세요.
+연결합니다. [한국어 커리큘럼](docs/ko/index.md)에서 시작하세요.
 
 ## 처음 시작하기
 
@@ -20,7 +20,7 @@ https://github.com/terryum/tutorial-robotics 이 레포를 받아서 설치해�
 
 에이전트는 기존 체크아웃이 있으면 재사용하고, 없으면 저장소를 받습니다. 저장소 지침을 읽고 실제 OS·환경을 확인한 뒤 최소 Core 설치 계획을 보여 주고 필요한 준비만 적용·검증합니다. 기존 `.venv`, 잠금 파일과 `.local/` 진도를 보존합니다. 현재 호스트에서 준비 검증을 통과한 기존 환경은 재설치하지 않습니다. 지원하지 않는 환경이나 설치 실패는 차단 사유와 다음 행동을 설명하며 준비 완료로 표시하지 않습니다.
 
-완료 기록이 없는 첫 학습자는 준비 검증이 끝나면 다음 안내를 받고, 에이전트는 **실제 사용자 응답을 기다립니다**. 기존 진도가 있으면 마지막 수업·단계를 알려 주고 이어갈지 묻습니다. 첫 수업으로 초기화하지 않습니다.
+완료했거나 진행 중인 학습 수업이 없으면 에이전트는 준비 검증을 마치고 다음 안내를 한 뒤 **사용자의 응답을 기다립니다**. 환경 진단만 마친 경우에도 첫 진자 수업부터 시작합니다. 저장한 학습 상태가 있으면 에이전트가 마지막 수업과 단계를 알려 주고 이어갈지 묻습니다.
 
 > 첫번째 튜토리얼을 띄울 준비가 되었습니다. 시작하시겠습니까?
 
@@ -30,7 +30,9 @@ https://github.com/terryum/tutorial-robotics 이 레포를 받아서 설치해�
 네, 첫번째 튜토리얼을 시작해줘.
 ```
 
-그제야 에이전트가 첫 수업 `core-00`의 현재 언어 GitHub 페이지를 열고 실행·검사·설명을 진행합니다. 브라우저 제어를 쓸 수 없으면 정확한 링크를 제공하며 열었다고 주장하지 않습니다. 결과·수식·코드를 연결하고 필요한 검토를 마친 뒤 한 수업에서 멈춥니다. 계속하려면 아래의 다음 수업 요청을 사용하세요.
+시작하겠다고 답하면 에이전트가 선택한 언어로 첫 수업 [진자 실험](docs/ko/lessons/core-01.md)을 엽니다. 학습자가 움직임을 예측하면 에이전트는 시작 각도만 바꿔 두 번 실행하고, 두 진자의 재생 화면과 각도 그래프를 별도 결과 창에 띄웁니다. 별도 창을 열 수 없으면 결과 탭을 쓰고, 화면을 제어할 수 없으면 지원되는 이미지와 측정값을 대화에 표시합니다. 에이전트는 이해 확인 질문에서 멈춥니다. 답을 함께 확인하거나 학습자가 완료를 요청하면 진도를 기록합니다.
+
+환경 점검은 설치 중에 마칩니다. 나중에 점검만 필요하면 [환경 진단 `core-00` (`T00`)](docs/ko/lessons/core-00.md)을 직접 실행할 수 있습니다.
 
 처음부터 특정 수업의 실행을 명시적으로 요청했다면 그 요청은 준비 후 해당 수업을 진행할 수 있는 별도 지시입니다. 일반적인 위 설치·시작 요청은 준비 후 시작 여부를 묻는 두 단계 흐름입니다.
 
@@ -97,20 +99,20 @@ Codex와 Claude Code는 같은 [학습 워크플로](agent/workflow.md)를 사�
 
 ## 학습 경로 선택
 
-먼저 공통 기초 `core-00`–`core-04`를 읽고 목적에 맞는 경로를 선택합니다.
+공통 기초 `core-01`–`core-04`에서 시작해 커리큘럼 순서대로 진행하세요. 관심 있는 로봇을 중심으로 실습하고 싶다면 선택형 경로를 이용할 수 있습니다.
 필요한 수학은 [공통 개념 11장](docs/ko/index.md#공통-개념-11장)에서 예제와 함께 설명합니다.
 
 | 목표 | 경로 | 첫 전문화 | 장비 전환점 |
 |---|---|---|---|
-| 팔 제어와 학습 | [매니퓰레이터](docs/ko/paths.md) | FR3 → 별도 학습한 Enlight | 실제 PhysX 후 별도로 승인하는 실물 준비 |
-| 정교한 손 조작 이해 | [로봇 손](docs/ko/paths.md) | Shadow Hand → Wuji | PhysX 후 장비 후속 단계 |
-| 베이스·팔 협응 | [이동형 매니퓰레이터](docs/ko/paths.md) | Stretch 3 | 로컬 MuJoCo 후 PhysX |
+| 팔 제어와 학습 | [매니퓰레이터](docs/ko/lessons/core-fr3-01.md) | FR3 → 별도 학습한 Enlight | 실제 PhysX 후 별도로 승인하는 실물 준비 |
+| 정교한 손 조작 이해 | [로봇 손](docs/ko/lessons/core-shadow-01.md) | Shadow Hand → Wuji | PhysX 후 장비 후속 단계 |
+| 베이스·팔 협응 | [이동형 매니퓰레이터](docs/ko/lessons/core-stretch3-01.md) | Stretch 3 | 로컬 MuJoCo 후 PhysX |
 
 [장비·환경 안내](docs/ko/equipment.md)는 맥북 로컬 실행과 WS 원격 실행을 나눕니다.
-맥북 독립 실행 대상은 Core 33개와 배포·오프라인 sink 2개입니다. 엔진 비교는
+맥북에서 Core 수업 32개와 환경 진단, 배포·오프라인 sink 수업 2개를 독립적으로 실행할 수 있습니다. 엔진 비교는
 별도로 생산한 실제 PhysX 근거가 필요합니다. WS1·WS2라는 이름이 아닌 실제
 Ubuntu·ROS·CUDA·Isaac·로봇 런타임 역량으로 실행 가능 여부를 판단합니다.
-[전체 72개 수업 안내](docs/ko/lessons.md)에서 목표·선행 조건·환경을 확인할 수 있습니다.
+[전체 71개 수업 안내](docs/ko/lessons.md)에서 목표·선행 조건·환경을 확인할 수 있습니다.
 
 ## 저장된 진도와 원격 개발
 
@@ -126,7 +128,7 @@ RustDesk·Tailscale·SSH/VS Code, tmux·체크포인트와 호스트별 검증�
 
 ## 근거와 완료의 범위
 
-전체는 Core 33개·Sim 27개·Hardware 12개입니다. Hardware 중 하나는 오프라인 sink이고
+학습 수업은 Core 32개, Sim 27개, Hardware 12개입니다. 카탈로그에는 별도로 Core 환경 진단 1개도 있습니다. Hardware 중 하나는 오프라인 sink이고
 나머지 11개는 골격만 구현되어 있습니다. `implemented`는 호스트 준비·정책 성능·실물
 승인을 뜻하지 않습니다. ACT 계약·VLA mock·최적화 실행·독립 평가·실물 준비를 구별합니다.
 필요한 외부 환경이 없으면 `capability-unavailable` 또는 기존 검증 배지를 유지합니다.
@@ -177,78 +179,77 @@ mkdocs build --strict
 <!-- pal:toc:start -->
 | # | ID / alias | English | 한국어 |
 |---:|---|---|---|
-| 1 | core-00 / T00 | [Repository bootstrap and host audit](docs/en/lessons/core-00.md) | [저장소 시작과 호스트 점검](docs/ko/lessons/core-00.md) |
-| 2 | core-01 / T01 | [Deterministic pendulum state and timestep](docs/en/lessons/core-01.md) | [결정론적 진자 상태와 시간 간격](docs/ko/lessons/core-01.md) |
-| 3 | core-02 / T02 | [Pinned public robot sources](docs/en/lessons/core-02.md) | [공개 로봇 소스 고정과 자산 매니페스트](docs/ko/lessons/core-02.md) |
-| 4 | core-03 / T03 | [Multi-model inspection and asset validation](docs/en/lessons/core-03.md) | [다중 모델 검사와 자산 검증](docs/ko/lessons/core-03.md) |
-| 5 | core-04 / T04 | [Unified viewer and deterministic rendering](docs/en/lessons/core-04.md) | [통합 뷰어와 결정론적 렌더링](docs/ko/lessons/core-04.md) |
-| 6 | core-teleop-01 /  | [Bimanual input, clutch and replay](docs/en/lessons/core-teleop-01.md) | [양손 입력·클러치·재생](docs/ko/lessons/core-teleop-01.md) |
-| 7 | core-fr3-01 / T05 | [FR3 model anatomy](docs/en/lessons/core-fr3-01.md) | [FR3 모델 구조](docs/ko/lessons/core-fr3-01.md) |
-| 8 | core-fr3-02 / T06 | [FR3 joint-space PD control](docs/en/lessons/core-fr3-02.md) | [FR3 관절 공간 PD 제어](docs/ko/lessons/core-fr3-02.md) |
-| 9 | core-fr3-03 / T07 | [FR3 gravity compensation and feedforward](docs/en/lessons/core-fr3-03.md) | [FR3 중력 보상과 피드포워드](docs/ko/lessons/core-fr3-03.md) |
-| 10 | core-fr3-04 / T08 | [FR3 kinematics, Jacobian, and inverse kinematics](docs/en/lessons/core-fr3-04.md) | [FR3 기구학, 자코비안과 역기구학](docs/ko/lessons/core-fr3-04.md) |
-| 11 | core-fr3-05 / T09 | [FR3 operational-space control](docs/en/lessons/core-fr3-05.md) | [FR3 작업 공간 제어](docs/ko/lessons/core-fr3-05.md) |
-| 12 | core-fr3-06 / T10 | [FR3 contact and friction laboratory](docs/en/lessons/core-fr3-06.md) | [FR3 접촉과 마찰 실험실](docs/ko/lessons/core-fr3-06.md) |
-| 13 | core-rl-01 / T23 | [Minimal continuous-action PPO](docs/en/lessons/core-rl-01.md) | [최소 연속 행동 PPO](docs/ko/lessons/core-rl-01.md) |
-| 14 | core-fr3-07 / T22 | [FR3 reach environment without ROS](docs/en/lessons/core-fr3-07.md) | [ROS 없는 FR3 도달 환경](docs/ko/lessons/core-fr3-07.md) |
-| 15 | core-fr3-08 / T24 | [PPO on FR3 reach](docs/en/lessons/core-fr3-08.md) | [FR3 도달 과제 PPO](docs/ko/lessons/core-fr3-08.md) |
-| 16 | core-enlight-01 / T08A | [Enlight description, frames, and kinematics](docs/en/lessons/core-enlight-01.md) | [Enlight 모델, 좌표계와 기구학](docs/ko/lessons/core-enlight-01.md) |
-| 17 | core-enlight-02 / T10A | [Enlight MuJoCo draft and cross-format validation](docs/en/lessons/core-enlight-02.md) | [Enlight MuJoCo 초안과 형식 간 검증](docs/ko/lessons/core-enlight-02.md) |
-| 18 | core-wuji-01 / T14 | [Wuji Hand 2 Beta 2 joints, poses, and synergies](docs/en/lessons/core-wuji-01.md) | [Wuji Hand 2 Beta 2 관절, 자세와 시너지](docs/ko/lessons/core-wuji-01.md) |
-| 19 | core-wuji-02 / T15 | [Wuji virtual tactile observation](docs/en/lessons/core-wuji-02.md) | [Wuji 가상 촉각 관측](docs/ko/lessons/core-wuji-02.md) |
-| 20 | core-dexterity-01 / T16 | [Wuji and Sharpa model comparison](docs/en/lessons/core-dexterity-01.md) | [Wuji와 Sharpa 모델 비교](docs/ko/lessons/core-dexterity-01.md) |
-| 21 | core-data-01 / T28 | [Episode dataset from MuJoCo](docs/en/lessons/core-data-01.md) | [MuJoCo 에피소드 데이터셋](docs/ko/lessons/core-data-01.md) |
-| 22 | core-dexterity-02 / T16A | [Hand retargeting and demonstration recording](docs/en/lessons/core-dexterity-02.md) | [손 리타게팅과 시연 기록](docs/ko/lessons/core-dexterity-02.md) |
-| 23 | core-g1-01 / T25 | [Unitree G1 playback and motion data](docs/en/lessons/core-g1-01.md) | [Unitree G1 재생과 모션 데이터](docs/ko/lessons/core-g1-01.md) |
-| 24 | core-il-01 / T29 | [Behavioral cloning baseline](docs/en/lessons/core-il-01.md) | [행동 복제 기준선](docs/ko/lessons/core-il-01.md) |
-| 25 | core-aloha-01 / T30 | [ALOHA simulation and ACT contract](docs/en/lessons/core-aloha-01.md) | [ALOHA 시뮬레이션과 ACT 계약](docs/ko/lessons/core-aloha-01.md) |
-| 26 | core-vla-01 / T32A | [VLA protocol and mock policy client](docs/en/lessons/core-vla-01.md) | [VLA 프로토콜과 모의 정책 클라이언트](docs/ko/lessons/core-vla-01.md) |
-| 27 | sim-ros-01 / T17 | [ROS 2 topics, QoS, services, actions, and TF](docs/en/lessons/sim-ros-01.md) | [ROS 2 토픽, QoS, 서비스, 액션과 TF](docs/ko/lessons/sim-ros-01.md) |
-| 28 | sim-ros-02 / T19 | [MuJoCo to ROS 2 bridge](docs/en/lessons/sim-ros-02.md) | [MuJoCo–ROS 2 브리지](docs/ko/lessons/sim-ros-02.md) |
-| 29 | sim-ros-03 / T20 | [Rosbag episode recording and deterministic replay](docs/en/lessons/sim-ros-03.md) | [rosbag 에피소드 기록과 결정론적 재생](docs/ko/lessons/sim-ros-03.md) |
-| 30 | sim-ros-04 / T21 | [Common embodiment API for simulation and ROS 2](docs/en/lessons/sim-ros-04.md) | [시뮬레이션과 ROS 2 공통 embodiment API](docs/ko/lessons/sim-ros-04.md) |
-| 31 | sim-g1-01 / T26 | [Unitree G1 GPU PPO and motion imitation](docs/en/lessons/sim-g1-01.md) | [Unitree G1 GPU PPO와 모션 모방](docs/ko/lessons/sim-g1-01.md) |
-| 32 | sim-wuji-01 / T27 | [Wuji in-hand PPO on GPU](docs/en/lessons/sim-wuji-01.md) | [Wuji GPU 손안 조작 PPO](docs/ko/lessons/sim-wuji-01.md) |
-| 33 | sim-vla-01 / T32C | [SmolVLA fine-tuning and policy server](docs/en/lessons/sim-vla-01.md) | [SmolVLA 미세조정과 정책 서버](docs/ko/lessons/sim-vla-01.md) |
-| 34 | sim-vla-02 / T32D | [Optional remote VLA inference](docs/en/lessons/sim-vla-02.md) | [선택형 원격 VLA 추론](docs/ko/lessons/sim-vla-02.md) |
-| 35 | sim-isaac-01 / T33 | [Import public robot assets into Isaac Sim](docs/en/lessons/sim-isaac-01.md) | [Isaac Sim 공개 로봇 자산 가져오기](docs/ko/lessons/sim-isaac-01.md) |
-| 36 | sim-isaac-02 / T34 | [Isaac camera, lighting, and synthetic data](docs/en/lessons/sim-isaac-02.md) | [Isaac 카메라, 조명과 합성 데이터](docs/ko/lessons/sim-isaac-02.md) |
-| 37 | sim-cross-01 / T35 | [MuJoCo to Isaac sim-to-sim validation](docs/en/lessons/sim-cross-01.md) | [MuJoCo–Isaac sim-to-sim 검증](docs/ko/lessons/sim-cross-01.md) |
-| 38 | sim-deploy-01 / T35A | [Candidate deployment bundle and promotion gate](docs/en/lessons/sim-deploy-01.md) | [후보 배포 번들과 승격 게이트](docs/ko/lessons/sim-deploy-01.md) |
-| 39 | sim-enlight-01 / T18 | [Enlight ROS 2 fake hardware](docs/en/lessons/sim-enlight-01.md) | [Enlight ROS 2 가상 하드웨어](docs/ko/lessons/sim-enlight-01.md) |
-| 40 | sim-enlight-02 / T41A | [Enlight contact-task simulation and candidate bundle](docs/en/lessons/sim-enlight-02.md) | [Enlight 접촉 과제 시뮬레이션과 후보 번들](docs/ko/lessons/sim-enlight-02.md) |
-| 41 | sim-wuji-02 / T42A | [Wuji dexterity candidate bundle](docs/en/lessons/sim-wuji-02.md) | [Wuji 정교 조작 후보 번들](docs/ko/lessons/sim-wuji-02.md) |
-| 42 | hw-common-01 / T35B | [Runtime bootstrap, offline replay, and command sink](docs/en/lessons/hw-common-01.md) | [런타임 시작, 오프라인 재생과 명령 차단](docs/ko/lessons/hw-common-01.md) |
-| 43 | hw-common-02 / T36 | [Real-hardware read-only integration gate](docs/en/lessons/hw-common-02.md) | [실물 하드웨어 읽기 전용 통합 게이트](docs/ko/lessons/hw-common-02.md) |
-| 44 | hw-fr3-01 /  | [FR3 read-only state, shadow, and approved low-risk motion](docs/en/lessons/hw-fr3-01.md) | [FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작](docs/ko/lessons/hw-fr3-01.md) |
-| 45 | hw-wuji-01 / T38 | [Wuji Beta 2 read-only adapter and tactile calibration](docs/en/lessons/hw-wuji-01.md) | [Wuji Beta 2 읽기 전용 어댑터와 촉각 보정](docs/ko/lessons/hw-wuji-01.md) |
-| 46 | hw-wuji-02 / T42B | [Wuji shadow and gated real evaluation](docs/en/lessons/hw-wuji-02.md) | [Wuji 섀도와 승인 기반 실물 평가](docs/ko/lessons/hw-wuji-02.md) |
-| 47 | hw-enlight-01 / T37 | [Enlight read-only adapter and low-risk validation](docs/en/lessons/hw-enlight-01.md) | [Enlight 읽기 전용 어댑터와 저위험 검증](docs/ko/lessons/hw-enlight-01.md) |
-| 48 | hw-enlight-02 / T37A | [Enlight system identification and MuJoCo calibration](docs/en/lessons/hw-enlight-02.md) | [Enlight 시스템 식별과 MuJoCo 보정](docs/ko/lessons/hw-enlight-02.md) |
-| 49 | hw-enlight-03 / T41B | [Enlight contact-task shadow and gated evaluation](docs/en/lessons/hw-enlight-03.md) | [Enlight 접촉 과제 섀도와 승인 기반 평가](docs/ko/lessons/hw-enlight-03.md) |
-| 50 | hw-enlight-wuji-01 / T38A | [Enlight and Wuji integrated read-only validation](docs/en/lessons/hw-enlight-wuji-01.md) | [Enlight와 Wuji 통합 읽기 전용 검증](docs/ko/lessons/hw-enlight-wuji-01.md) |
-| 51 | core-fr3-09 /  | [FR3 joint and TCP trajectory tracking](docs/en/lessons/core-fr3-09.md) | [FR3 관절·TCP 궤적 추종](docs/ko/lessons/core-fr3-09.md) |
-| 52 | core-fr3-10 /  | [FR3 demonstrations, BC and independent reach evaluation](docs/en/lessons/core-fr3-10.md) | [FR3 시연·BC와 독립 도달 평가](docs/ko/lessons/core-fr3-10.md) |
-| 53 | sim-fr3-01 /  | [FR3 PhysX joint and TCP control](docs/en/lessons/sim-fr3-01.md) | [FR3 PhysX 관절·TCP 제어](docs/ko/lessons/sim-fr3-01.md) |
-| 54 | sim-fr3-02 /  | [FR3 PhysX demonstrations and BC](docs/en/lessons/sim-fr3-02.md) | [FR3 PhysX 시연·BC](docs/ko/lessons/sim-fr3-02.md) |
-| 55 | sim-fr3-03 /  | [FR3 PhysX PPO and evaluation](docs/en/lessons/sim-fr3-03.md) | [FR3 PhysX PPO와 평가](docs/ko/lessons/sim-fr3-03.md) |
-| 56 | sim-fr3-04 /  | [FR3 matched-engine evidence comparison](docs/en/lessons/sim-fr3-04.md) | [FR3 동일 조건 엔진 증거 비교](docs/ko/lessons/sim-fr3-04.md) |
-| 57 | core-enlight-03 /  | [Enlight joint and TCP trajectory tracking](docs/en/lessons/core-enlight-03.md) | [Enlight 관절·TCP 궤적 추종](docs/ko/lessons/core-enlight-03.md) |
-| 58 | core-enlight-04 /  | [Enlight demonstrations, BC and independent evaluation](docs/en/lessons/core-enlight-04.md) | [Enlight 시연·BC와 독립 평가](docs/ko/lessons/core-enlight-04.md) |
-| 59 | core-enlight-05 /  | [Enlight PPO candidate and independent evaluation](docs/en/lessons/core-enlight-05.md) | [Enlight PPO 후보와 독립 평가](docs/ko/lessons/core-enlight-05.md) |
-| 60 | sim-enlight-03 /  | [Enlight PhysX joint and TCP control](docs/en/lessons/sim-enlight-03.md) | [Enlight PhysX 관절·TCP 제어](docs/ko/lessons/sim-enlight-03.md) |
-| 61 | sim-enlight-04 /  | [Enlight PhysX demonstrations and BC](docs/en/lessons/sim-enlight-04.md) | [Enlight PhysX 시연·BC](docs/ko/lessons/sim-enlight-04.md) |
-| 62 | sim-enlight-05 /  | [Enlight PhysX PPO and evaluation](docs/en/lessons/sim-enlight-05.md) | [Enlight PhysX PPO와 평가](docs/ko/lessons/sim-enlight-05.md) |
-| 63 | core-shadow-01 /  | [Shadow Hand joints, synergies and object contact](docs/en/lessons/core-shadow-01.md) | [Shadow Hand 관절·시너지·물체 접촉](docs/ko/lessons/core-shadow-01.md) |
-| 64 | sim-shadow-01 /  | [Shadow Hand PhysX introduction](docs/en/lessons/sim-shadow-01.md) | [Shadow Hand PhysX 입문](docs/ko/lessons/sim-shadow-01.md) |
-| 65 | core-stretch3-01 /  | [Stretch 3 base, arm and coordinated reach](docs/en/lessons/core-stretch3-01.md) | [Stretch 3 베이스·팔·협응 도달](docs/ko/lessons/core-stretch3-01.md) |
-| 66 | sim-stretch3-01 /  | [Stretch 3 PhysX introduction](docs/en/lessons/sim-stretch3-01.md) | [Stretch 3 PhysX 입문](docs/ko/lessons/sim-stretch3-01.md) |
-| 67 | hw-enlight-04 /  | [Enlight free-space joint and TCP execution cards](docs/en/lessons/hw-enlight-04.md) | [Enlight 자유공간 관절·TCP 실행 카드](docs/ko/lessons/hw-enlight-04.md) |
-| 68 | hw-enlight-05 /  | [Enlight probe plane-force preparation](docs/en/lessons/hw-enlight-05.md) | [Enlight 프로브 평면 힘 제어 준비](docs/ko/lessons/hw-enlight-05.md) |
-| 69 | hw-enlight-06 /  | [Enlight gripper pick-transfer-place preparation](docs/en/lessons/hw-enlight-06.md) | [Enlight 그리퍼 집기·이동·놓기 준비](docs/ko/lessons/hw-enlight-06.md) |
-| 70 | sim-teleop-01 /  | [Ubuntu VR installation and read-only input](docs/en/lessons/sim-teleop-01.md) | [Ubuntu VR 설치와 읽기 전용 입력](docs/ko/lessons/sim-teleop-01.md) |
-| 71 | sim-teleop-02 /  | [Spatial alignment and command sink](docs/en/lessons/sim-teleop-02.md) | [공간 정합과 command sink](docs/ko/lessons/sim-teleop-02.md) |
-| 72 | sim-enlight-06 /  | [Enlight arm teleoperation and collection](docs/en/lessons/sim-enlight-06.md) | [Enlight 팔 텔레오퍼레이션과 수집](docs/ko/lessons/sim-enlight-06.md) |
+| 1 | core-01 / T01 | [Deterministic pendulum state and timestep](docs/en/lessons/core-01.md) | [결정론적 진자 상태와 시간 간격](docs/ko/lessons/core-01.md) |
+| 2 | core-02 / T02 | [Pinned public robot sources](docs/en/lessons/core-02.md) | [공개 로봇 소스 고정과 자산 매니페스트](docs/ko/lessons/core-02.md) |
+| 3 | core-03 / T03 | [Multi-model inspection and asset validation](docs/en/lessons/core-03.md) | [다중 모델 검사와 자산 검증](docs/ko/lessons/core-03.md) |
+| 4 | core-04 / T04 | [Unified viewer and deterministic rendering](docs/en/lessons/core-04.md) | [통합 뷰어와 결정론적 렌더링](docs/ko/lessons/core-04.md) |
+| 5 | core-teleop-01 /  | [Bimanual input, clutch and replay](docs/en/lessons/core-teleop-01.md) | [양손 입력·클러치·재생](docs/ko/lessons/core-teleop-01.md) |
+| 6 | core-fr3-01 / T05 | [FR3 model anatomy](docs/en/lessons/core-fr3-01.md) | [FR3 모델 구조](docs/ko/lessons/core-fr3-01.md) |
+| 7 | core-fr3-02 / T06 | [FR3 joint-space PD control](docs/en/lessons/core-fr3-02.md) | [FR3 관절 공간 PD 제어](docs/ko/lessons/core-fr3-02.md) |
+| 8 | core-fr3-03 / T07 | [FR3 gravity compensation and feedforward](docs/en/lessons/core-fr3-03.md) | [FR3 중력 보상과 피드포워드](docs/ko/lessons/core-fr3-03.md) |
+| 9 | core-fr3-04 / T08 | [FR3 kinematics, Jacobian, and inverse kinematics](docs/en/lessons/core-fr3-04.md) | [FR3 기구학, 자코비안과 역기구학](docs/ko/lessons/core-fr3-04.md) |
+| 10 | core-fr3-05 / T09 | [FR3 operational-space control](docs/en/lessons/core-fr3-05.md) | [FR3 작업 공간 제어](docs/ko/lessons/core-fr3-05.md) |
+| 11 | core-fr3-06 / T10 | [FR3 contact and friction laboratory](docs/en/lessons/core-fr3-06.md) | [FR3 접촉과 마찰 실험실](docs/ko/lessons/core-fr3-06.md) |
+| 12 | core-rl-01 / T23 | [Minimal continuous-action PPO](docs/en/lessons/core-rl-01.md) | [최소 연속 행동 PPO](docs/ko/lessons/core-rl-01.md) |
+| 13 | core-fr3-07 / T22 | [FR3 reach environment without ROS](docs/en/lessons/core-fr3-07.md) | [ROS 없는 FR3 도달 환경](docs/ko/lessons/core-fr3-07.md) |
+| 14 | core-fr3-08 / T24 | [PPO on FR3 reach](docs/en/lessons/core-fr3-08.md) | [FR3 도달 과제 PPO](docs/ko/lessons/core-fr3-08.md) |
+| 15 | core-enlight-01 / T08A | [Enlight description, frames, and kinematics](docs/en/lessons/core-enlight-01.md) | [Enlight 모델, 좌표계와 기구학](docs/ko/lessons/core-enlight-01.md) |
+| 16 | core-enlight-02 / T10A | [Enlight MuJoCo draft and cross-format validation](docs/en/lessons/core-enlight-02.md) | [Enlight MuJoCo 초안과 형식 간 검증](docs/ko/lessons/core-enlight-02.md) |
+| 17 | core-wuji-01 / T14 | [Wuji Hand 2 Beta 2 joints, poses, and synergies](docs/en/lessons/core-wuji-01.md) | [Wuji Hand 2 Beta 2 관절, 자세와 시너지](docs/ko/lessons/core-wuji-01.md) |
+| 18 | core-wuji-02 / T15 | [Wuji virtual tactile observation](docs/en/lessons/core-wuji-02.md) | [Wuji 가상 촉각 관측](docs/ko/lessons/core-wuji-02.md) |
+| 19 | core-dexterity-01 / T16 | [Wuji and Sharpa model comparison](docs/en/lessons/core-dexterity-01.md) | [Wuji와 Sharpa 모델 비교](docs/ko/lessons/core-dexterity-01.md) |
+| 20 | core-data-01 / T28 | [Episode dataset from MuJoCo](docs/en/lessons/core-data-01.md) | [MuJoCo 에피소드 데이터셋](docs/ko/lessons/core-data-01.md) |
+| 21 | core-dexterity-02 / T16A | [Hand retargeting and demonstration recording](docs/en/lessons/core-dexterity-02.md) | [손 리타게팅과 시연 기록](docs/ko/lessons/core-dexterity-02.md) |
+| 22 | core-g1-01 / T25 | [Unitree G1 playback and motion data](docs/en/lessons/core-g1-01.md) | [Unitree G1 재생과 모션 데이터](docs/ko/lessons/core-g1-01.md) |
+| 23 | core-il-01 / T29 | [Behavioral cloning baseline](docs/en/lessons/core-il-01.md) | [행동 복제 기준선](docs/ko/lessons/core-il-01.md) |
+| 24 | core-aloha-01 / T30 | [ALOHA simulation and ACT contract](docs/en/lessons/core-aloha-01.md) | [ALOHA 시뮬레이션과 ACT 계약](docs/ko/lessons/core-aloha-01.md) |
+| 25 | core-vla-01 / T32A | [VLA protocol and mock policy client](docs/en/lessons/core-vla-01.md) | [VLA 프로토콜과 모의 정책 클라이언트](docs/ko/lessons/core-vla-01.md) |
+| 26 | sim-ros-01 / T17 | [ROS 2 topics, QoS, services, actions, and TF](docs/en/lessons/sim-ros-01.md) | [ROS 2 토픽, QoS, 서비스, 액션과 TF](docs/ko/lessons/sim-ros-01.md) |
+| 27 | sim-ros-02 / T19 | [MuJoCo to ROS 2 bridge](docs/en/lessons/sim-ros-02.md) | [MuJoCo–ROS 2 브리지](docs/ko/lessons/sim-ros-02.md) |
+| 28 | sim-ros-03 / T20 | [Rosbag episode recording and deterministic replay](docs/en/lessons/sim-ros-03.md) | [rosbag 에피소드 기록과 결정론적 재생](docs/ko/lessons/sim-ros-03.md) |
+| 29 | sim-ros-04 / T21 | [Common embodiment API for simulation and ROS 2](docs/en/lessons/sim-ros-04.md) | [시뮬레이션과 ROS 2 공통 embodiment API](docs/ko/lessons/sim-ros-04.md) |
+| 30 | sim-g1-01 / T26 | [Unitree G1 GPU PPO and motion imitation](docs/en/lessons/sim-g1-01.md) | [Unitree G1 GPU PPO와 모션 모방](docs/ko/lessons/sim-g1-01.md) |
+| 31 | sim-wuji-01 / T27 | [Wuji in-hand PPO on GPU](docs/en/lessons/sim-wuji-01.md) | [Wuji GPU 손안 조작 PPO](docs/ko/lessons/sim-wuji-01.md) |
+| 32 | sim-vla-01 / T32C | [SmolVLA fine-tuning and policy server](docs/en/lessons/sim-vla-01.md) | [SmolVLA 미세조정과 정책 서버](docs/ko/lessons/sim-vla-01.md) |
+| 33 | sim-vla-02 / T32D | [Optional remote VLA inference](docs/en/lessons/sim-vla-02.md) | [선택형 원격 VLA 추론](docs/ko/lessons/sim-vla-02.md) |
+| 34 | sim-isaac-01 / T33 | [Import public robot assets into Isaac Sim](docs/en/lessons/sim-isaac-01.md) | [Isaac Sim 공개 로봇 자산 가져오기](docs/ko/lessons/sim-isaac-01.md) |
+| 35 | sim-isaac-02 / T34 | [Isaac camera, lighting, and synthetic data](docs/en/lessons/sim-isaac-02.md) | [Isaac 카메라, 조명과 합성 데이터](docs/ko/lessons/sim-isaac-02.md) |
+| 36 | sim-cross-01 / T35 | [MuJoCo to Isaac sim-to-sim validation](docs/en/lessons/sim-cross-01.md) | [MuJoCo–Isaac sim-to-sim 검증](docs/ko/lessons/sim-cross-01.md) |
+| 37 | sim-deploy-01 / T35A | [Candidate deployment bundle and promotion gate](docs/en/lessons/sim-deploy-01.md) | [후보 배포 번들과 승격 게이트](docs/ko/lessons/sim-deploy-01.md) |
+| 38 | sim-enlight-01 / T18 | [Enlight ROS 2 fake hardware](docs/en/lessons/sim-enlight-01.md) | [Enlight ROS 2 가상 하드웨어](docs/ko/lessons/sim-enlight-01.md) |
+| 39 | sim-enlight-02 / T41A | [Enlight contact-task simulation and candidate bundle](docs/en/lessons/sim-enlight-02.md) | [Enlight 접촉 과제 시뮬레이션과 후보 번들](docs/ko/lessons/sim-enlight-02.md) |
+| 40 | sim-wuji-02 / T42A | [Wuji dexterity candidate bundle](docs/en/lessons/sim-wuji-02.md) | [Wuji 정교 조작 후보 번들](docs/ko/lessons/sim-wuji-02.md) |
+| 41 | hw-common-01 / T35B | [Runtime bootstrap, offline replay, and command sink](docs/en/lessons/hw-common-01.md) | [런타임 시작, 오프라인 재생과 명령 차단](docs/ko/lessons/hw-common-01.md) |
+| 42 | hw-common-02 / T36 | [Real-hardware read-only integration gate](docs/en/lessons/hw-common-02.md) | [실물 하드웨어 읽기 전용 통합 게이트](docs/ko/lessons/hw-common-02.md) |
+| 43 | hw-fr3-01 /  | [FR3 read-only state, shadow, and approved low-risk motion](docs/en/lessons/hw-fr3-01.md) | [FR3 읽기 전용 상태, 섀도와 승인된 저위험 동작](docs/ko/lessons/hw-fr3-01.md) |
+| 44 | hw-wuji-01 / T38 | [Wuji Beta 2 read-only adapter and tactile calibration](docs/en/lessons/hw-wuji-01.md) | [Wuji Beta 2 읽기 전용 어댑터와 촉각 보정](docs/ko/lessons/hw-wuji-01.md) |
+| 45 | hw-wuji-02 / T42B | [Wuji shadow and gated real evaluation](docs/en/lessons/hw-wuji-02.md) | [Wuji 섀도와 승인 기반 실물 평가](docs/ko/lessons/hw-wuji-02.md) |
+| 46 | hw-enlight-01 / T37 | [Enlight read-only adapter and low-risk validation](docs/en/lessons/hw-enlight-01.md) | [Enlight 읽기 전용 어댑터와 저위험 검증](docs/ko/lessons/hw-enlight-01.md) |
+| 47 | hw-enlight-02 / T37A | [Enlight system identification and MuJoCo calibration](docs/en/lessons/hw-enlight-02.md) | [Enlight 시스템 식별과 MuJoCo 보정](docs/ko/lessons/hw-enlight-02.md) |
+| 48 | hw-enlight-03 / T41B | [Enlight contact-task shadow and gated evaluation](docs/en/lessons/hw-enlight-03.md) | [Enlight 접촉 과제 섀도와 승인 기반 평가](docs/ko/lessons/hw-enlight-03.md) |
+| 49 | hw-enlight-wuji-01 / T38A | [Enlight and Wuji integrated read-only validation](docs/en/lessons/hw-enlight-wuji-01.md) | [Enlight와 Wuji 통합 읽기 전용 검증](docs/ko/lessons/hw-enlight-wuji-01.md) |
+| 50 | core-fr3-09 /  | [FR3 joint and TCP trajectory tracking](docs/en/lessons/core-fr3-09.md) | [FR3 관절·TCP 궤적 추종](docs/ko/lessons/core-fr3-09.md) |
+| 51 | core-fr3-10 /  | [FR3 demonstrations, BC and independent reach evaluation](docs/en/lessons/core-fr3-10.md) | [FR3 시연·BC와 독립 도달 평가](docs/ko/lessons/core-fr3-10.md) |
+| 52 | sim-fr3-01 /  | [FR3 PhysX joint and TCP control](docs/en/lessons/sim-fr3-01.md) | [FR3 PhysX 관절·TCP 제어](docs/ko/lessons/sim-fr3-01.md) |
+| 53 | sim-fr3-02 /  | [FR3 PhysX demonstrations and BC](docs/en/lessons/sim-fr3-02.md) | [FR3 PhysX 시연·BC](docs/ko/lessons/sim-fr3-02.md) |
+| 54 | sim-fr3-03 /  | [FR3 PhysX PPO and evaluation](docs/en/lessons/sim-fr3-03.md) | [FR3 PhysX PPO와 평가](docs/ko/lessons/sim-fr3-03.md) |
+| 55 | sim-fr3-04 /  | [FR3 matched-engine evidence comparison](docs/en/lessons/sim-fr3-04.md) | [FR3 동일 조건 엔진 증거 비교](docs/ko/lessons/sim-fr3-04.md) |
+| 56 | core-enlight-03 /  | [Enlight joint and TCP trajectory tracking](docs/en/lessons/core-enlight-03.md) | [Enlight 관절·TCP 궤적 추종](docs/ko/lessons/core-enlight-03.md) |
+| 57 | core-enlight-04 /  | [Enlight demonstrations, BC and independent evaluation](docs/en/lessons/core-enlight-04.md) | [Enlight 시연·BC와 독립 평가](docs/ko/lessons/core-enlight-04.md) |
+| 58 | core-enlight-05 /  | [Enlight PPO candidate and independent evaluation](docs/en/lessons/core-enlight-05.md) | [Enlight PPO 후보와 독립 평가](docs/ko/lessons/core-enlight-05.md) |
+| 59 | sim-enlight-03 /  | [Enlight PhysX joint and TCP control](docs/en/lessons/sim-enlight-03.md) | [Enlight PhysX 관절·TCP 제어](docs/ko/lessons/sim-enlight-03.md) |
+| 60 | sim-enlight-04 /  | [Enlight PhysX demonstrations and BC](docs/en/lessons/sim-enlight-04.md) | [Enlight PhysX 시연·BC](docs/ko/lessons/sim-enlight-04.md) |
+| 61 | sim-enlight-05 /  | [Enlight PhysX PPO and evaluation](docs/en/lessons/sim-enlight-05.md) | [Enlight PhysX PPO와 평가](docs/ko/lessons/sim-enlight-05.md) |
+| 62 | core-shadow-01 /  | [Shadow Hand joints, synergies and object contact](docs/en/lessons/core-shadow-01.md) | [Shadow Hand 관절·시너지·물체 접촉](docs/ko/lessons/core-shadow-01.md) |
+| 63 | sim-shadow-01 /  | [Shadow Hand PhysX introduction](docs/en/lessons/sim-shadow-01.md) | [Shadow Hand PhysX 입문](docs/ko/lessons/sim-shadow-01.md) |
+| 64 | core-stretch3-01 /  | [Stretch 3 base, arm and coordinated reach](docs/en/lessons/core-stretch3-01.md) | [Stretch 3 베이스·팔·협응 도달](docs/ko/lessons/core-stretch3-01.md) |
+| 65 | sim-stretch3-01 /  | [Stretch 3 PhysX introduction](docs/en/lessons/sim-stretch3-01.md) | [Stretch 3 PhysX 입문](docs/ko/lessons/sim-stretch3-01.md) |
+| 66 | hw-enlight-04 /  | [Enlight free-space joint and TCP execution cards](docs/en/lessons/hw-enlight-04.md) | [Enlight 자유공간 관절·TCP 실행 카드](docs/ko/lessons/hw-enlight-04.md) |
+| 67 | hw-enlight-05 /  | [Enlight probe plane-force preparation](docs/en/lessons/hw-enlight-05.md) | [Enlight 프로브 평면 힘 제어 준비](docs/ko/lessons/hw-enlight-05.md) |
+| 68 | hw-enlight-06 /  | [Enlight gripper pick-transfer-place preparation](docs/en/lessons/hw-enlight-06.md) | [Enlight 그리퍼 집기·이동·놓기 준비](docs/ko/lessons/hw-enlight-06.md) |
+| 69 | sim-teleop-01 /  | [Ubuntu VR installation and read-only input](docs/en/lessons/sim-teleop-01.md) | [Ubuntu VR 설치와 읽기 전용 입력](docs/ko/lessons/sim-teleop-01.md) |
+| 70 | sim-teleop-02 /  | [Spatial alignment and command sink](docs/en/lessons/sim-teleop-02.md) | [공간 정합과 command sink](docs/ko/lessons/sim-teleop-02.md) |
+| 71 | sim-enlight-06 /  | [Enlight arm teleoperation and collection](docs/en/lessons/sim-enlight-06.md) | [Enlight 팔 텔레오퍼레이션과 수집](docs/ko/lessons/sim-enlight-06.md) |
 <!-- pal:toc:end -->
 
 [교재 제작 검증과 남은 외부 환경 검사](docs/verification/book-production-2026-11-23.md).

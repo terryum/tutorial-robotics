@@ -43,6 +43,16 @@ The pendulum lesson trains on episodes 0–5 and holds out episodes 6–7. Do no
 
 For one-variable reasoning, change only the BC learning-rate multiplier with fixed input data, split, seed and step budget. Compare training loss, held-out MSE and reload agreement; for arms additionally inspect independent rollout success. Changing a chunk horizon would alter a different contract and must not be described as the same BC learning-rate experiment.
 
+<a id="task-symmetry" name="task-symmetry"></a>
+
+## Does rotating the scene preserve the task?
+
+Suppose you push an object along a straight line from the origin to $(1,0)$ m on an obstacle-free plane. Rotate the object and the goal $90^\circ$ counterclockwise about the world origin. The rotated goal is $(0,1)$ m. Rotate the world coordinates and goal displacement in the observation, along with the Cartesian motion command. The demonstration that pushes 1 m east now corresponds to pushing 1 m north. This calculation assumes the motion conditions and the success criterion are the same in both directions.
+
+Now place a fixed wall at $y=0.5$ m over $-0.25\le x\le 0.25$ m. The wall stays in place as the object rotates. Model the object as a point. The eastward path clears the wall, and the northward path meets it at $(0,0.5)$ m. Rotating the observations and commands together still changes which path is feasible, so the task lacks that rotational symmetry.
+
+[Independent FR3 reach evaluation](../lessons/core-fr3-10.md) runs the policy on separately sampled goals in the same simulated scene. It checks closed-loop reach on that separate goal sample. Using rotated demonstrations in a new scene with a fixed obstacle requires a separate check of collisions and success conditions.
+
 ## Check your understanding
 
 1. Why split by episode? Nearby steps share trajectories, so row-level mixing can leak nearly identical states into evaluation.

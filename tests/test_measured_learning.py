@@ -36,9 +36,18 @@ def test_pendulum_energy_is_computed_from_mujoco(tmp_path):
 
 def test_acceptance_recomputes_energy_instead_of_trusting_success_flag(tmp_path):
     from pai_lab.lessons.acceptance import measurement_errors
+    from pai_lab.lessons.observation import save_replay
+    from pai_lab.lessons.parameters import resolve_parameters
 
-    actual = run("core-01", tmp_path, 7, 64)
-    experiment = {"payload": actual.payload, "metric": actual.metric, "checks": {"passed": True}}
+    parameters = resolve_parameters("core-01", {}, 1.0)
+    actual = run("core-01", tmp_path, 7, 64, parameters=parameters)
+    save_replay(tmp_path, actual)
+    experiment = {
+        "payload": actual.payload,
+        "metric": actual.metric,
+        "checks": {"passed": True},
+        "parameters": parameters,
+    }
     trace = np.array(actual.rows)
     assert measurement_errors("core-01", tmp_path, trace, experiment) == []
     trace[-1, 2] += 0.01

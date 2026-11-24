@@ -32,6 +32,8 @@ def resolve_parameters(
     identifier: str, supplied: dict[str, float], variant: float
 ) -> dict[str, float]:
     contract = PARAMETERS.get(identifier, {})
+    if identifier == "core-01":
+        contract = {**contract, "initial_angle_rad": (0.35, -math.pi, math.pi, "rad")}
     if set(supplied) - set(contract):
         raise ValueError(
             f"{identifier}: supported named parameters: {', '.join(contract) or 'none'}"

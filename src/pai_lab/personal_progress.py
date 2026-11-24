@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from pai_lab.catalog import ROOT
+from pai_lab.catalog import ROOT, load_catalog
 from pai_lab.local import local_root, write_json
 
 _snapshots: dict[str, dict[str, Any]] = {}
@@ -127,13 +127,19 @@ def shared_gaps(identifier: str, *, root: Path = ROOT, scope: str = "public") ->
     if row is None:
         return None
     errors = []
-    if row.get("needs_review"):
-        errors.append("shared completion retained; current source version needs revalidation")
-    if scope == "public" and row.get("verified_digests"):
+    digests = row.get("verified_digests", [])
+    compatible_history = False
+    if scope == "public" and digests:
+        from pai_lab.lessons.evidence import CORE_HISTORY
         from pai_lab.lessons.runner import implementation_digest
 
-        if implementation_digest(identifier) not in row["verified_digests"]:
+        prior, current = CORE_HISTORY.get(identifier, ("", ""))
+        digest = implementation_digest(identifier)
+        compatible_history = prior in digests and current == digest
+        if digest not in digests and not compatible_history:
             errors.append("this checkout has changed; revalidate the lesson on this environment")
+    if row.get("needs_review") and not compatible_history:
+        errors.append("shared completion retained; current source version needs revalidation")
     if row.get("unresolved_feedback"):
         errors.append("unresolved shared feedback; resume the originating environment")
     return errors
@@ -143,13 +149,47 @@ def notify() -> None:
     exchange("sync")
 
 
+def _progress_counts(rows: list[dict[str, Any]]) -> dict[str, int | float]:
+    completed = sum(bool(row["completed"]) for row in rows)
+    return {
+        "completed": completed,
+        "total": len(rows),
+        "percent": 100 * completed / len(rows) if rows else 0,
+    }
+
+
+def _learning_summary(value: dict[str, Any]) -> dict[str, Any]:
+    diagnostics = {lesson.id: lesson.stage for lesson in load_catalog() if lesson.diagnostic}
+    rows = [
+        row for row in value["lessons"] if row["scope"] != "public" or row["id"] not in diagnostics
+    ]
+    if len(rows) == len(value["lessons"]):
+        return value
+    result = {**value, **_progress_counts(rows), "lessons": rows}
+    if groups := value.get("groups"):
+        filtered_groups = dict(groups)
+        for stage in groups.keys() & diagnostics.values():
+            stage_rows = [
+                row for row in rows if row["scope"] == "public" and row.get("stage") == stage
+            ]
+            filtered_groups[stage] = {**groups[stage], **_progress_counts(stage_rows)}
+        result["groups"] = filtered_groups
+    if "verified_completed" in value:
+        result["verified_completed"] = sum(
+            bool(row["completed"])
+            and bool(row.get("current_version_verified", not row.get("needs_review")))
+            for row in rows
+        )
+    return result
+
+
 def summary() -> dict[str, Any]:
     value = snapshot()
     if value is not None:
         from pai_lab.progress import load_progress
 
         if not load_progress().path:
-            return value
+            return _learning_summary(value)
     from pai_lab.paths import selected_lessons
     from pai_lab.progress import load_progress
     from pai_lab.readiness import completion_gaps
@@ -165,16 +205,13 @@ def summary() -> dict[str, Any]:
         }
         for lesson in selected_lessons()
     ]
-    count = sum(bool(row["completed"]) for row in rows)
     verified = sum(bool(row["completed"]) and not row["needs_review"] for row in rows)
     return {
         "schema_version": 1,
-        "completed": count,
+        **_progress_counts(rows),
         "verified_completed": verified,
         "path": load_progress().path,
         "path_complete": bool(rows) and verified == len(rows),
-        "total": len(rows),
-        "percent": 100 * count / len(rows) if rows else 0,
         "lessons": rows,
         "sync": {"status": "disabled"},
         "state_directory": str(local_root()),

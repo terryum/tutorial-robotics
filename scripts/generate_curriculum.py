@@ -15,6 +15,8 @@ def language_switch(text: str, path: Path, relative: Path) -> str:
     links = []
     for language, label in (("ko", "한국어"), ("en", "ENGLISH")):
         target = ROOT / "docs" / language / relative
+        if language == "en" and relative == Path("home.md"):
+            target = ROOT / "docs" / "index.md"
         if not target.is_file():
             raise FileNotFoundError(f"Missing translation: {target}")
         href = Path(os.path.relpath(target, path.parent)).as_posix()
@@ -71,6 +73,8 @@ def metadata(lesson: dict) -> str:
         "Verification": lesson["verification"],
         "Implementation": lesson["implementation"],
     }
+    if lesson.get("diagnostic"):
+        fields["Role"] = "on-demand diagnostic"
     return "| Field | Value |\n|---|---|\n" + "\n".join(
         f"| {key} | `{value}` |" for key, value in fields.items()
     )
@@ -98,6 +102,12 @@ def main() -> None:
         json.loads((ROOT / "curriculum/catalog.json").read_text())["lessons"],
         key=lambda row: row["order"],
     )
+    learning = [lesson for lesson in lessons if not lesson.get("diagnostic")]
+    numbers = {lesson["id"]: index for index, lesson in enumerate(learning, start=1)}
+    next_by_id = {
+        lesson["id"]: learning[index + 1] if index + 1 < len(learning) else None
+        for index, lesson in enumerate(learning)
+    }
     for language in ("en", "ko"):
         rows = [
             "| # | Lesson | Stage | Track | Verification |",
@@ -107,13 +117,13 @@ def main() -> None:
             "| Lesson | Learning goal | Prerequisites | Platforms / capabilities | Implementation |",
             "|---|---|---|---|---|",
         ]
-        for index, lesson in enumerate(lessons):
+        for lesson in lessons:
             path = ROOT / "docs" / language / "lessons" / f"{lesson['id']}.md"
             if not path.is_file():
                 raise FileNotFoundError(f"Author {path} before refreshing catalog metadata")
             title = lesson["title_ko"] if language == "ko" else lesson["title"]
             text = managed(path.read_text(), "metadata", metadata(lesson))
-            following = lessons[index + 1] if index + 1 < len(lessons) else None
+            following = learning[0] if lesson.get("diagnostic") else next_by_id[lesson["id"]]
             link = (
                 f"[{following['id']}](./{following['id']}.md)"
                 if following
@@ -132,8 +142,10 @@ def main() -> None:
                 ),
             )
             path.write_text(text)
+            if lesson.get("diagnostic"):
+                continue
             rows.append(
-                f"| {lesson['order']} | [{lesson['id']}](lessons/{lesson['id']}.md) — {title} | `{lesson['stage']}` | `{lesson['track']}` | `{lesson['verification']}` |"
+                f"| {numbers[lesson['id']]} | [{lesson['id']}](lessons/{lesson['id']}.md) — {title} | `{lesson['stage']}` | `{lesson['track']}` | `{lesson['verification']}` |"
             )
             summaries.append(
                 f"| [{lesson['id']}](lessons/{lesson['id']}.md) | {learning_goal(text)} | "
@@ -156,9 +168,9 @@ def main() -> None:
         if overview.exists():
             overview.write_text(managed(overview.read_text(), "goals", "\n".join(summaries)))
     rows = ["| # | ID / alias | English | 한국어 |", "|---:|---|---|---|"]
-    for lesson in lessons:
+    for lesson in learning:
         rows.append(
-            f"| {lesson['order']} | {lesson['id']} / {', '.join(lesson['aliases'])} | [{lesson['title']}](docs/en/lessons/{lesson['id']}.md) | [{lesson['title_ko']}](docs/ko/lessons/{lesson['id']}.md) |"
+            f"| {numbers[lesson['id']]} | {lesson['id']} / {', '.join(lesson['aliases'])} | [{lesson['title']}](docs/en/lessons/{lesson['id']}.md) | [{lesson['title_ko']}](docs/ko/lessons/{lesson['id']}.md) |"
         )
     for filename in ("README.md", "README.ko.md"):
         readme = ROOT / filename
@@ -169,6 +181,8 @@ def main() -> None:
         for path in (ROOT / "docs" / language).rglob("*.md"):
             relative = path.relative_to(ROOT / "docs" / language)
             path.write_text(language_switch(path.read_text(), path, relative))
+    home = ROOT / "docs" / "index.md"
+    home.write_text(language_switch(home.read_text(), home, Path("home.md")))
     for filename in ("README.md", "README.ko.md"):
         path = ROOT / filename
         if path.exists():

@@ -102,9 +102,11 @@ Worked calculation (not a measured run result): [0,0,0,1] maps to the transform 
 
 Practical connection: Sensor state must use the same joint names and frames as the display.
 
-### From input to observation
+### Joint configuration determines the shape of the whole robot
 
-Before control, identify which array component belongs to which joint. The seven-joint home qpos is a length-7 array; revolute positions and limits use rad. attachment_site is a reference point on the last link, not proof of calibration to a physical tool tip.
+Read `payload.joint_names` and `payload.joint_ranges` in `experiment.json` in the same order, then match the plotted home values to their joints. Both the seven revolute joints in home `qpos` and the corresponding model ranges use radians. With the model fixed, specifying all seven angles determines the positions and orientations of every link. That joint configuration is one point in **configuration space**.
+
+Find `attachment_site` in `payload.site_names`. It is a reference point on the last link whose world position varies with the joint angles. The set of world positions it can reach as the joints move within their ranges is the **position workspace**. Mapping a physical tool tip to this reference point requires separate tool calibration. See how configuration space and workspace are related in the [planar arm example with one tip position and different link configurations](../concepts/kinematics.md#configuration-and-clearance).
 
 ## Code connection
 
@@ -146,7 +148,9 @@ pal lesson finish core-fr3-01 --run-dir .local/runs/core-fr3-01/baseline-01 --js
 
 ### Check understanding and answer guide
 
-Question: Does the same index identify the same joint on another arm? Answer: Check names, axes and order. Question: Are attachment_site world and local coordinates identical? Answer: A transform relates them. Record one joint name, range and units before PD control.
+Does the same index identify the same joint on another arm? Check the names, axes and order for each model.
+
+Pick one joint name and range in rad from the record. If this joint alone moves within its range, what changes in configuration space, and how do you interpret the position of `attachment_site`? The corresponding component of the joint vector changes and the arm moves to a different point in configuration space. Forward kinematics gives the world position of `attachment_site` for that vector. A pair of joint limits alone does not give the range of world positions of this point. Record the name and range you observed before moving on to PD control.
 
 This structural audit is explicitly exempted by `evidence.comparison_errors` from a separate comparison run. The review command above passes only the baseline. Record actual audit evidence in notes; do not represent a paper calculation as an executed comparison artifact.
 

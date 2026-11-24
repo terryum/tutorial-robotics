@@ -76,6 +76,12 @@ assert np.isclose(0.012 * v, 0.0096)
 assert np.isclose(0.06 * v, 0.048)
 ```
 
+### Why the middle of a path needs checking
+
+In the [two-joint planar path calculation](../concepts/kinematics.md#configuration-and-clearance), hold the second joint at 0 rad and move the first from $-\pi/4$ rad to $+\pi/4$ rad. The links have about 0.254 m of clearance from the disk at both endpoints. At the midpoint, the first joint passes through 0 rad and the first link passes through the center of the disk, giving clearance of $-0.10$ m.
+
+FR3's `tcp_rmse_m` is the square root of the mean squared world-frame TCP position error during the circle-tracking phase in the second half. It summarizes how closely the robot tracked the target points, in metres. To determine collision clearance, check distances between link geometry and obstacles along the path. Use `contact_counts` and `contact_force_norms_N` to read detected contacts and summed normal forces at recorded samples. The minimum clearance along the entire path, including between samples, requires a separate check.
+
 ## Code connection
 
 ### Source trace
@@ -107,7 +113,9 @@ Preserve interrupted evidence. `pal course pause`, `pal course resume` and `pal 
 
 ### Check understanding
 
-Which quantity is in rad and which in m? Joint error versus TCP position error. Does tracking a FR3 circle establish transfer to another arm or hardware? No; it establishes this model/engine trajectory behavior only.
+Which recorded error is in rad and which is in m? Joint error is in rad and TCP position error is in m.
+
+Find the run with the lower `tcp_rmse_m`. Can this value tell you which run tracked the circle more accurately and which path had more collision clearance? `tcp_rmse_m` lets you compare the TCP position error in the second half. Just as the endpoint clearances in the planar example missed the midpoint collision, the minimum clearance for an FR3 path requires a separate link-to-obstacle distance check along the whole path.
 
 Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
 

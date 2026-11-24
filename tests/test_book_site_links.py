@@ -43,6 +43,9 @@ def test_raw_html_language_switch_round_trips_rendered_directories(tmp_path):
     lesson = tmp_path / "docs/ko/lessons/one.md"
     text = '<a href="../../en/lessons/one.md" lang="en">ENGLISH</a>'
     assert "../../../en/lessons/one/" in hook.render_language_links(text, lesson, tmp_path)
+    assert "../../en/lessons/one.html" in hook.render_language_links(
+        text, lesson, tmp_path, use_directory_urls=False
+    )
     index = tmp_path / "docs/en/index.md"
     text = '<a href="../ko/index.md" lang="ko">한국어</a>'
     assert 'href="../ko/"' in hook.render_language_links(text, index, tmp_path)

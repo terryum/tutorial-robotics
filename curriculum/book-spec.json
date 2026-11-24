@@ -50,16 +50,14 @@
     {
       "id": "core-01",
       "question": {
-        "en": "How does timestep affect a deterministic pendulum trace?",
-        "ko": "시간 간격은 결정론적 진자 궤적에 어떤 영향을 주는가?"
+        "en": "Will releasing the pendulum at a larger angle make it rise higher on the opposite side?",
+        "ko": "같은 진자를 더 큰 각도에서 놓으면 반대편에서도 더 높이 올라갈까요?"
       },
       "objectives": {
-        "en": "Measure pendulum state and numerical energy drift.",
-        "ko": "진자 상태와 수치 적분의 에너지 오차를 측정합니다."
+        "en": "Release a pendulum from two starting angles and compare how high it rises on the other side using MuJoCo replay and an angle plot. Use the same method to read a robot joint position at a particular time.",
+        "ko": "진자를 두 가지 시작 각도에서 놓고, MuJoCo가 기록한 재생 화면과 각도 그래프에서 반대편에 도달한 높이를 비교합니다. 로봇 관절의 움직임을 읽을 때도 같은 방식으로 위치 좌표와 관측 시각을 맞춰 봅니다."
       },
-      "prerequisites": [
-        "core-00"
-      ],
+      "prerequisites": [],
       "prerequisite_concepts": [
         "simulation"
       ],
@@ -100,15 +98,15 @@
     {
       "id": "core-02",
       "question": {
-        "en": "Why must robot sources be pinned and hashed?",
-        "ko": "로봇 소스의 리비전과 해시를 왜 고정해야 하는가?"
+        "en": "How does changing one byte affect the SHA-256 digest of a pinned source file?",
+        "ko": "고정한 소스 파일에서 한 바이트를 바꾸면 SHA-256 해시는 어떻게 달라지나요?"
       },
       "objectives": {
-        "en": "Verify immutable source revisions and model bytes.",
-        "ko": "불변 소스 커밋과 실제 모델 파일의 바이트를 검증합니다."
+        "en": "Check pinned source commits and model files. Change one byte in a memory copy and compare the SHA-256 values to detect changes even when the model keeps the same name.",
+        "ko": "고정한 소스 커밋과 모델 파일이 같은지 확인합니다. 파일을 메모리에 복사해 한 바이트만 바꾸고 SHA-256 값을 비교하면, 모델 이름이 같아도 파일이 달라졌는지 알아낼 수 있습니다."
       },
       "prerequisites": [
-        "core-00"
+        "core-01"
       ],
       "prerequisite_concepts": [
         "simulation"
@@ -149,12 +147,12 @@
     {
       "id": "core-03",
       "question": {
-        "en": "How can model dimensions and asset hashes reveal an invalid import?",
-        "ko": "모델 차원과 자산 해시로 잘못된 가져오기를 어떻게 찾는가?"
+        "en": "Why can the position, velocity, and actuator counts differ within a loaded model?",
+        "ko": "불러온 모델에서 위치 좌표, 속도 좌표, 구동기 수가 서로 다른 이유는 무엇인가요?"
       },
       "objectives": {
-        "en": "Load six robot models and inspect their actual dimensions.",
-        "ko": "여섯 로봇 모델을 로드하고 실제 차원을 검사합니다."
+        "en": "Load six robot models in MuJoCo and compare the counts of position coordinates, velocity coordinates and actuators. Use these counts to choose the right array sizes and indices for joint state and control.",
+        "ko": "여섯 로봇의 MuJoCo 모델을 불러와 위치 좌표, 속도 좌표, 구동기 수를 비교합니다. 관절이나 제어 입력을 배열에 넣을 때마다 알맞은 길이와 인덱스를 확인해야 합니다."
       },
       "prerequisites": [
         "core-01",
@@ -200,12 +198,12 @@
     {
       "id": "core-04",
       "question": {
-        "en": "What can a deterministic rendering establish about a model?",
-        "ko": "결정론적 렌더링은 모델의 어떤 특성을 확인하는가?"
+        "en": "What changes when the camera views the same FR3 pose from a different azimuth?",
+        "ko": "같은 FR3 자세를 다른 방위각에서 보면 화면에서 무엇이 달라지나요?"
       },
       "objectives": {
-        "en": "Render the actual FR3 scene and inspect the camera result.",
-        "ko": "실제 FR3 장면을 렌더링하고 카메라 결과를 확인합니다."
+        "en": "View the same FR3 home pose from two camera azimuths. Learn to distinguish image changes due to arm motion from image changes due to camera motion.",
+        "ko": "같은 FR3 홈 자세를 서로 다른 카메라 방위각에서 봅니다. 팔이 움직여 화면이 바뀐 경우와 카메라가 움직여 화면이 바뀐 경우를 구분합니다."
       },
       "prerequisites": [
         "core-03"
@@ -1318,7 +1316,6 @@
         "ko": "격리된 도메인에서 실제 ROS 토픽·서비스·액션·TF를 교환합니다."
       },
       "prerequisites": [
-        "core-00",
         "core-02"
       ],
       "prerequisite_concepts": [

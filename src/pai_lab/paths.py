@@ -29,6 +29,8 @@ def validate_paths() -> list[str]:
         for index, identifier in enumerate(required):
             if identifier not in catalog:
                 errors.append(f"{name}: unknown lesson {identifier}")
+            elif catalog[identifier].diagnostic:
+                errors.append(f"{name}: diagnostic cannot be required: {identifier}")
             elif not set(catalog[identifier].prerequisites) <= set(required[:index]):
                 errors.append(f"{name}: prerequisites must precede {identifier}")
     return errors
@@ -41,5 +43,9 @@ def selected_lessons() -> tuple[Any, ...]:
     catalog = load_catalog()
     if progress.path:
         by_id = {lesson.id: lesson for lesson in catalog}
-        return tuple(by_id[identifier] for identifier in path_lessons(progress.path))
+        return tuple(
+            by_id[identifier]
+            for identifier in path_lessons(progress.path)
+            if not by_id[identifier].diagnostic
+        )
     return tuple(lesson for lesson in catalog if select_lesson(lesson, progress))

@@ -35,6 +35,7 @@ class Lesson:
     verification: str
     safety_level: str
     implementation: str
+    diagnostic: bool = False
 
     @classmethod
     def from_dict(cls, value: dict[str, Any]) -> Lesson:
@@ -74,6 +75,7 @@ class Lesson:
                     else "implemented",
                 )
             ),
+            diagnostic=bool(value.get("diagnostic", False)),
         )
 
 
@@ -112,6 +114,7 @@ def validate_catalog() -> list[str]:
     ids = [lesson.id for lesson in lessons]
     aliases = [alias.lower() for lesson in lessons for alias in lesson.aliases]
     known = set(ids)
+    diagnostics = {lesson.id for lesson in lessons if lesson.diagnostic}
     if not lessons:
         errors.append("catalog must contain lessons")
     if len(set(ids)) != len(ids):
@@ -138,7 +141,9 @@ def validate_catalog() -> list[str]:
         for prerequisite in lesson.prerequisites:
             if prerequisite not in known:
                 errors.append(f"{lesson.id}: unknown prerequisite {prerequisite}")
-            elif load_catalog()[ids.index(prerequisite)].order >= lesson.order:
+            elif prerequisite in diagnostics:
+                errors.append(f"{lesson.id}: diagnostic cannot be a prerequisite: {prerequisite}")
+            elif lessons[ids.index(prerequisite)].order >= lesson.order:
                 errors.append(f"{lesson.id}: prerequisite is not earlier: {prerequisite}")
         for relative in (
             lesson.entrypoint,

@@ -1,9 +1,14 @@
+<!-- pal:language:start -->
+<p align="right">
+  <a href="ko/home.md" lang="ko">한국어</a> | <a href="index.md" lang="en">ENGLISH</a>
+</p>
+<!-- pal:language:end -->
+
 # Tutorial Robotics
 
-We recommend learning with **Codex or Claude Code**. Copy a prompt from the [English reader guide](en/READER_GUIDE.md) or [한국어 실행 안내](ko/READER_GUIDE.md); the agent reads this Markdown, prepares the minimum environment, and guides one lesson at a time.
+Read the book in your browser and use **Codex or Claude Code** to guide the experiments. The agent prepares the environment and guides one lesson at a time. See the [reader guide](en/READER_GUIDE.md) for more chat prompts.
 
-- [English curriculum](en/index.md)
-- [한국어 커리큘럼](ko/index.md)
+- [Learning map](en/index.md)
 - [Safety](07_SAFETY.md)
 - [Source pins](SOURCES.md)
 
@@ -13,10 +18,10 @@ For a first start, paste this into Codex or Claude Code:
 Clone https://github.com/terryum/tutorial-robotics, install it, and help me start the tutorial.
 ```
 
-The agent prepares and verifies the minimal Core environment, then asks before opening or running the first lesson. An unavailable environment stays blocked.
+The agent prepares and verifies the minimal Core environment, then asks before opening the [first pendulum lesson](en/lessons/core-01.md). If the environment is unavailable, the agent explains what needs attention.
 
-The book starts on a laptop, adds GPU simulation and optional human-data equipment, and studies real robot operation last. See [English equipment stages](en/equipment-stages.md) / [한국어 장비 단계](ko/equipment-stages.md) and the [English NVIDIA workbook](en/nvidia-ecosystem.md) / [한국어 NVIDIA 워크북](ko/nvidia-ecosystem.md).
+The book starts on a laptop, adds GPU simulation and optional equipment for collecting human demonstrations, and covers real robot operation last. See the [equipment stages](en/equipment-stages.md) and the [NVIDIA workbook](en/nvidia-ecosystem.md).
 
 ## Hardware setup and manuals
 
-[한국어 자료실](ko/setup/index.md) · [English library](en/setup/index.md)
+[Hardware reference library](en/setup/index.md)

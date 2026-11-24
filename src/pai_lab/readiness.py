@@ -77,8 +77,8 @@ def completion_gaps(identifier: str) -> list[str]:
     path = Path(entry["run_dir"])
     if not path.is_absolute():
         path = ROOT / path
-    errors = validate_run(identifier, path)
-    errors += validate_review(identifier, path)
+    errors = validate_run(identifier, path, history=True)
+    errors += validate_review(identifier, path, history=True)
     if pending(identifier):
         errors.append("unresolved feedback")
     return errors

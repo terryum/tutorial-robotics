@@ -6,6 +6,154 @@
 
 # core-01 — 결정론적 진자 상태와 시간 간격
 
+실행 환경이 준비됐는지 모르겠다면 아래 문장을 복사해 Codex 또는 Claude Code 대화창에 붙여 넣으세요.
+
+```text
+core-01을 실행할 수 있는지 Core 환경을 확인해줘.
+```
+
+로봇 팔의 어깨 관절 하나에 링크 하나를 매달고 모터 토크를 0으로 두면, 중력이 그 링크를 진자처럼 흔듭니다. 이 간단한 모델에서는 관절 각도를 어떻게 기록하고, 중력이 만든 움직임을 어떻게 읽는지 먼저 배울 수 있습니다. 나중에 FR3 로봇 팔에서는 여러 관절이 함께 움직이고, 목표 각도로 보내기 위해 모터 토크를 계산합니다.
+
+**같은 진자를 더 큰 각도에서 놓으면 반대편에서도 더 높이 올라갈까요?**
+
+<div class="core-01-pendulum" data-language="ko"></div>
+
+## Learning goals
+
+진자를 두 가지 시작 각도에서 놓고, MuJoCo가 기록한 재생 화면과 각도 그래프에서 반대편에 도달한 높이를 비교합니다. 로봇 관절의 움직임을 읽을 때도 같은 방식으로 위치 좌표와 관측 시각을 맞춰 봅니다.
+
+## Preflight
+
+### 실행 전에 예측하기
+
+수직 아래 방향을 0°로 잡습니다. 같은 진자를 한쪽으로 약 20° 또는 40° 기울인 뒤 정지 상태에서 놓는다고 생각하세요. 어느 쪽이 반대편에서 더 높이 올라갈까요?
+
+예측을 정한 뒤 **Action**의 대화 문장에 적고 두 실험을 한 번에 요청하세요.
+
+## How it works
+
+MuJoCo에서 `data.qpos[0]`은 아래로 늘어진 자세를 0으로 삼는 진자 관절의 각도 $q$이며 단위는 rad입니다. `data.qvel[0]`은 그 관절의 각속도 $\dot q$이며 단위는 rad/s입니다. 이 모델에는 회전 관절이 하나 있으므로 두 배열의 길이는 각각 1입니다.
+
+### 진자 한 개의 운동 방정식
+
+이 모델에서는 질량 $m=1\,\mathrm{kg}$이 캡슐 전체에 분포합니다. $I_H$는 관절 축에 대한 관성 모멘트(kg·m²), $\ell_c=0.5\,\mathrm m$는 축에서 질량중심까지의 거리입니다. 관절 각가속도를 $\ddot q$ (rad/s²), 중력가속도의 크기를 $g=9.81\,\mathrm{m/s^2}$, 모터 토크를 $\tau$ (N·m)라 하면, 마찰이 없는 관절은 다음 식을 따릅니다.
+
+$$
+I_H\ddot q + mg\ell_c\sin q = \tau,\qquad \tau=0\quad\text{(이 실험)}.
+$$
+
+양의 각도에서 놓으면 중력 토크 $-mg\ell_c\sin q$가 음의 방향으로 작용해 진자가 아래로 돌아옵니다. 두 실행에서 처음 각속도는 0 rad/s입니다. 진자 끝의 높이는 $z_{\mathrm{tip}}=z_H-L\cos q$입니다. $z_H=1.2\,\mathrm m$는 축의 높이, $L=1\,\mathrm m$는 축에서 진자 끝까지의 거리입니다. 반대편에서는 각도가 더 작을수록 $|q|$가 커집니다. 이 실험 범위에서는 각도 그래프에서 더 낮은 점이 실제로 더 높은 끝점에 해당합니다.
+
+마찰이 없어도 시작 각도가 커지면 한 번 왕복하는 데 더 오래 걸립니다. 주기가 각도와 거의 무관한 것은 작은 각도에서 $\sin q\approx q$로 볼 수 있기 때문입니다. 40°에서는 $\sin q$가 $q$보다 작아, 작은 각도 근사에서 예상한 것보다 각도에 비해 중력의 복원 토크가 작습니다.
+
+### 로봇 팔의 여러 관절로 확장하기
+
+고정된 베이스에 연결된 로봇 팔에서, 접촉과 마찰을 제외하면 같은 토크 균형을 모든 관절에 대해 함께 씁니다.
+
+$$
+M(\mathbf q)\ddot{\mathbf q}
++ C(\mathbf q,\dot{\mathbf q})\dot{\mathbf q}
++ \mathbf g(\mathbf q)
+= \boldsymbol{\tau}.
+$$
+
+$\mathbf q$는 관절 각도 벡터, $M$은 자세에 따라 달라지는 관성 행렬, $C\dot{\mathbf q}$는 관절 속도 때문에 생기는 관성 토크, $\mathbf g$는 중력을 상쇄하는 데 필요한 관절 토크입니다. $\boldsymbol{\tau}$는 모터가 가하는 관절 토크 벡터입니다. FR3의 관절은 7개라서 $\mathbf q$에는 각도 7개가 들어가고 $M$은 $7\times7$ 행렬입니다. 진자에서는 $M$이 $I_H$ 하나로 줄고 속도에 따른 관성 항은 0이며, 중력 항은 $mg\ell_c\sin q$ 하나입니다. [FR3 관절 공간 PD 제어](core-fr3-02.md)에서는 현재 각도와 목표 각도의 차이로 모터 토크를 만들고, [FR3 중력 보상](core-fr3-03.md)에서는 모델이 계산한 토크를 더해 추종 오차를 비교합니다.
+
+## Code connection
+
+[`examples/core-01/run.py`](../../../examples/core-01/run.py)에서 [`runner.py`](../../../src/pai_lab/lessons/runner.py)를 거쳐 [`physics.py`](../../../src/pai_lab/lessons/physics.py)로 이어집니다. 진자 모델은 RK4로 0.002 s씩 적분하며, 에이전트가 넘긴 `initial_angle_rad`가 첫 `qpos[0]` 값을 정합니다. `physics.run`은 표본마다 `mj_step`을 10번 호출하고 `mj_forward`로 에너지를 갱신합니다. 표본 간격은 0.020 s이고 64개 표본의 마지막 시각은 1.28 s입니다(계산).
+
+## Action
+
+대괄호 안에 예측을 적고 아래 문장을 Codex 또는 Claude Code에 한 번에 보내세요.
+
+```text
+제 예측은 [20° 또는 40°]에서 놓은 진자가 반대편에서 더 높이 올라간다는 거예요.
+core-01에서 진자를 20°(0.35 rad)와 40°(0.70 rad)에서 각각 놓아 비교해줘.
+시작 각도만 다르게 하고 두 실행을 검증한 뒤, 결과 페이지를 정지 상태로 열어줘.
+```
+
+에이전트가 0.35 rad를 기준으로 실행한 뒤 0.70 rad로 한 번 더 실행합니다. 두 경우 모두 모델, 중력, 초기 각속도, 적분 간격과 관측 시간은 같습니다.
+
+## Expected
+
+결과 페이지 왼쪽에는 0.35 rad, 오른쪽에는 0.70 rad에서 놓은 진자가 표시됩니다. 각도 그래프의 가로축은 관측 시각(s), 세로축은 수직 아래 방향을 0으로 잡은 각도(rad)입니다. 0선 아래에서 각 곡선이 처음 가장 낮아지는 곳이 반대편에서 가장 높이 올라간 표본입니다.
+
+## Observe
+
+`experiment.json`의 `state` 행은 `[time_s, q, qdot]` 순서입니다. `replay.npz`에는 $t=0$과 이후 표본의 `time_s`, `qpos`, `qvel`을 저장합니다. `trace.csv`에는 각 시각의 기준 에너지 $E(0)$과 측정 에너지 $E(t)$가 들어갑니다. 기록을 살펴보고 싶다면 대화창에 이렇게 요청하세요.
+
+```text
+기준 실험의 그래프를 보여주고, 저장된 기록에서 시간과 각도, 에너지의 축과 단위를 설명해줘.
+```
+
+## Try it
+
+결과 페이지는 처음에 정지해 있습니다. **재생**을 누르면 두 진자가 같은 시각을 기준으로 움직입니다. **0.85초**를 누르면 두 진자가 반대편 꼭짓점 사이의 같은 시각으로 이동해 멈춥니다. 화면에 표시되는 각도(rad)는 0.84초와 0.86초 사이를 보간한 값입니다. 같은 조작을 대화창에서 요청할 수도 있습니다.
+
+```text
+결과 페이지에서 두 진자를 재생해줘.
+```
+
+```text
+결과 페이지를 0.85초에 멈추고 두 진자의 각도를 비교해줘.
+```
+
+<details markdown="1">
+<summary>선택 심화 — 적분 간격과 에너지 오차</summary>
+
+마찰과 외부에서 가한 구동이 없으면 운동 에너지 $K$와 위치 에너지 $U$의 합 $E$는 일정합니다. 수치 적분에서 생기는 오차는 저장한 시각 전체에서 가장 큰 차이 $d$로 잽니다. $t$의 단위는 s이고 $K$, $U$, $E$, $d$의 단위는 J입니다. `pendulum-state.csv`와 `trace.csv`의 에너지 기록에서 $d$가 $10^{-5}$ J 미만인지 확인합니다.
+
+$$
+E=K+U,\qquad d=\max_t |E(t)-E(0)|
+$$
+
+손으로 계산하면 에너지가 1.000000 J에서 1.000003 J로 바뀐 표본의 절대 오차는 0.000003 J입니다. 이 값은 계산 예시입니다.
+
+아래는 기존 개발 실행의 에너지 그래프입니다. 결과 페이지의 각도 그래프와 세로축의 물리량과 단위가 다릅니다.
+
+![기준 에너지와 측정 에너지를 시간에 따라 비교한 그래프](../../assets/examples/core-01-plot.png)
+
+적분 간격을 0.002 s에서 0.004 s로 늘립니다. 표본 수가 64로 같으므로 표본 간격은 0.04 s, 관측 시간은 2.56 s입니다. 마지막 자세는 서로 다른 시각에서 측정했으므로 에너지 오차와 관측 시간을 함께 비교하세요. 이 단계에서는 시작 각도를 0.35 rad로 유지합니다.
+
+```text
+시작 각도를 0.35 rad로 유지하고 적분 간격만 0.004초로 바꿔 실행해줘. 기준 실행과 에너지 오차, 전체 관측 시간을 비교해줘.
+```
+
+</details>
+
+## Recovery
+
+실행이 중단되면 대화창에서 원인을 확인하세요.
+
+```text
+core-01이 어디서 막혔는지 확인하고, 기존 실행 기록을 보존한 채 다시 실행할 수 있는지 알려줘.
+```
+
+## Checkpoint
+
+그래프의 0선 아래에서 어느 곡선의 최솟값이 더 낮나요? 그 곡선에 해당하는 진자가 반대편에서 더 높이 올라갔다는 것을 재생 화면에서 어떻게 알 수 있나요?
+
+대괄호에 내 설명을 적어 대화창으로 보내세요. 에이전트가 측정 결과와 함께 답을 확인한 뒤 완료를 기록합니다.
+
+```text
+제 관찰은 [어느 시작 각도의 곡선이 더 낮았고, 재생 화면에서 무엇을 확인했는지]예요. 측정값과 맞는지 확인하고 수업을 마무리해줘.
+```
+
+그래프를 읽는 데 도움이 필요하면 이렇게 요청하세요.
+
+```text
+시작 각도와 첫 음의 최솟값이 그래프 어디에 있는지 결과를 보면서 설명해줘.
+```
+
+## Further reading
+
+적분 간격과 상태 기록을 더 살펴보고 싶다면 [시뮬레이션 개념 교재](../concepts/simulation.md)를 읽어 보세요.
+
+<details markdown="1">
+<summary>지원 환경과 검증 상태</summary>
+
+<!-- Canonical agent runner: pal lesson run core-01 -->
 <!-- pal:metadata:start -->
 | Field | Value |
 |---|---|
@@ -13,142 +161,13 @@
 | Legacy alias | `T01` |
 | Platforms | `macos-arm64, linux-x86_64` |
 | Capabilities | `python-3.12, numpy, mujoco` |
-| Prerequisites | `core-00` |
+| Prerequisites | `None` |
 | Safety | `simulation` |
 | Verification | `maintainer-checked` |
 | Implementation | `implemented` |
 <!-- pal:metadata:end -->
 
-## Reader route
-
-이 수업의 질문은 아래 목표를 실행 결과의 값과 연결해 설명할 수 있는가입니다. 먼저 Expected의 결과 기준을 읽고 실행한 뒤, 관찰·계산·코드를 순서대로 확인합니다.
-
-[터미널 준비·재개·결과 열기·카메라 조작](../READER_GUIDE.md)
-
-먼저 [개념 교재: simulation](../concepts/simulation.md)를 읽고, [장비를 늘리는 학습 순서](../equipment-stages.md)에서 이 수업의 실행 단계를 확인합니다.
-
-## Learning goals
-
-진자 상태와 수치 적분의 에너지 오차를 측정합니다.
-
-## Preflight
-
-처음이면 저장소 루트에서 `sh bootstrap.sh --plan`을 실행하고 계획을 읽은 뒤 `--apply`로 환경을 준비합니다. `source .venv/bin/activate` 후 아래 명령을 사용합니다. 이미 같은 이름의 실행 폴더가 있으면 02처럼 새 이름을 정합니다.
-
-```bash
-pal host detect --json
-pal lesson check core-01 --json
-```
-
-## Action
-
-```bash
-pal lesson run core-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-01/baseline-01 --json
-```
-
-## Expected
-
-실제 개발 실행의 예시입니다. 가로축·세로축의 단위와 기준/측정 곡선의 차이를 먼저 읽습니다. 개인 실행 결과는 별도 검사합니다.
-
-![core-01 measured plot](../../assets/examples/core-01-plot.png)
-
-측정 에너지와 초기값을 비교합니다. 최대 절대 오차는 1e-5 J 미만이어야 합니다. experiment.json에서 q와 qdot도 따로 읽습니다.
-
-공통 산출물은 summary.json, trace.csv, experiment.json, plot.png, run.json과 lesson-report.md입니다. 모델 수업에는 실제 frame.png 또는 외부 스택의 evaluation/isaac 이미지도 있습니다. 파일 크기만 보지 말고 그래프 축·단위·영상 구도를 직접 확인합니다.
-
-```bash
-pal lesson check core-01 --run-dir .local/runs/core-01/baseline-01 --json
-```
-
-## Observe
-
-먼저 metric의 단위, observed_first/observed_last, checks를 읽습니다. inspection은 검증된 파일만 읽고 종료하며 진도를 완료하지 않습니다.
-
-```bash
-pal lesson inspect core-01 --run-dir .local/runs/core-01/baseline-01 --json
-```
-
-Mac 결과 그래프 열기(창을 닫아도 실행 기록은 유지됩니다):
-
-```bash
-open .local/runs/core-01/baseline-01/plot.png
-```
-
-다른 OS의 파일 관리자에서는 같은 PNG를 엽니다. 원시 수치는 아래 JSON에 있습니다.
-
-```bash
-python -m json.tool .local/runs/core-01/baseline-01/experiment.json
-```
-
-## How it works
-
-MuJoCo는 q(rad)와 qdot(rad/s)를 적분합니다. 외력이 없는 강체 진자의 운동·위치 에너지 합은 일정하지만 수치 적분에는 오차가 생깁니다. 캡슐은 질량이 분포하므로 점질량 관성으로 계산하면 안 됩니다.
-
-$$
-E=K+U,\qquad d=\max_t |E(t)-E(0)|
-$$
-
-기호·단위·조건: K,U,E,d: J; t: s; 외력이 없고 마찰이 없는 모델.
-
-손으로 계산하는 예시(실행 측정값이 아님): |1.000003-1.000000|=0.000003 J.
-
-실전 연결: 제어기 조정 전에 적분 오차를 찾아냅니다.
-
-### 입력에서 관측까지
-
-에너지 보존은 시뮬레이터가 운동을 얼마나 일관되게 적분하는지 보는 출발점입니다. 모델은 1 kg 분포 질량 capsule의 단일 회전 관절이고 초기 각도는 0.35 rad입니다. q와 qdot은 길이 1 배열이며, E는 MuJoCo가 계산한 운동·위치 에너지의 합(J)입니다. 점질량 진자의 관성 공식을 그대로 대입하면 다른 모델을 분석하게 됩니다.
-
-## Code connection
-
-`examples/core-01/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. runner는 실행을 기록하고 실험 모듈이 실제 상태에서 수치를 계산합니다. `experiment.json`의 payload를 계산 코드와 대조합니다.
-
-### 실제 코드와 산출물 읽기
-
-[`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
-
-`physics.pendulum`은 RK4·마찰 없는 관절을 정의하고, `physics.run`은 표본마다 10회 적분한 뒤 `mj_forward`로 에너지를 갱신합니다. `experiment.json`의 `state` 행은 [time_s,q,qdot], `dt_s`는 적분 간격입니다. `trace.csv`의 기준은 E(0), 관찰값은 E(t)입니다. drift는 마지막 값만의 차이가 아니라 모든 저장 표본의 최대 절댓값 차이입니다. 64표본·0.002 s이면 마지막 시각은 1.28 s입니다(계산).
-
-## Try it
-
-적분 간격을 0.002 → 0.004 s로 바꿉니다. 표본 수가 같으므로 관찰 시간도 두 배가 됩니다. 같은 시각의 상태가 아니라 에너지 표류를 비교합니다.
-
-```bash
-pal lesson run core-01 --headless --seed 7 --samples 64 --output-dir .local/runs/core-01/comparison-01 --variant 2 --json
-```
-
-seed·표본 수·variant 중 위 명령의 한 값만 바꿉니다. 기본 결과와 비교 결과의 수치·형상·한계를 설명합니다. 차이가 없으면 해당 변수가 이 실험에서 불변인 이유를 설명하고 성능 개선으로 꾸미지 않습니다.
-
-```bash
-pal lesson compare core-01 --run-dir .local/runs/core-01/baseline-01 --comparison-run-dir .local/runs/core-01/comparison-01 --output-dir .local/comparisons/core-01/comparison-01 --json
-```
-
-<details>
-<summary>선택 심화: 가정이 깨지면 무엇이 달라질까요?</summary>
-
-본문 식의 입력 하나를 고르고 단위를 적습니다. 그 값이 두 배일 때 출력이 두 배인지, 포화·정규화·좌표 변환 때문에 다른지 코드에서 확인합니다. 다른 가정이나 모델까지 동시에 바꾸면 한 변수 비교가 아니므로 별도 실행으로 기록합니다.
-
 </details>
-
-### 바꾸기 전에 예측하기
-
-간격만 0.004 s로 바꾸면 표본당 0.04 s, 마지막 시각 2.56 s입니다. 기존 비교 명령은 간격이라는 한 CLI 입력을 바꾸지만 관찰 시간도 함께 바뀝니다. 두 최종 자세를 같은 시각의 상태로 해석하지 말고 에너지 오차와 각 축을 읽습니다.
-
-## Recovery
-
-capability-unavailable이면 missing 목록에 나온 Python·모델·플랫폼·외부 스택을 준비한 뒤 같은 수업을 새 폴더에서 재실행합니다. 실패한 run.json과 수치를 보존합니다. 시스템 패키지·드라이버·CUDA·ROS·Isaac·대형 모델은 자동 설치하지 않습니다. 체크섬 오류는 vendor 소스를 수정하지 말고 고정 캐시를 복구합니다.
-
-## Checkpoint
-
-명령을 그대로 복사하기 전에 `--notes`를 자신이 관찰한 구체적인 수치와 해석으로 바꿉니다. 접수된 [개선점]을 먼저 저장·수정·재검증합니다. 미해결 개선점, 변경된 실행 코드, 손상된 산출물은 완료를 막습니다. 실행만으로 진도가 완료되지 않습니다. 완료 후 여기서 멈춥니다.
-
-```bash
-pal lesson review core-01 --run-dir .local/runs/core-01/baseline-01 --comparison-run-dir .local/runs/core-01/comparison-01 --notes "측정 결과와 한 변수 비교를 설명하고 그래프와 렌더링을 확인했습니다." --json
-pal lesson finish core-01 --run-dir .local/runs/core-01/baseline-01 --json
-```
-
-### 이해 확인과 답의 기준
-
-질문: 한 표본 사이에 몇 번 적분하나요? 답: 10회입니다. 질문: drift가 작으면 제어기·접촉도 검증되었나요? 답: 무구동 진자의 수치 일관성만 확인했습니다. 비교 기록에는 dt·마지막 시각·최대 drift(J)를 함께 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

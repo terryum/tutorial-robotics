@@ -40,8 +40,9 @@ def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
     overview = tmp_path / "docs/en/lessons.md"
     overview.write_text(overview.read_text() + "\nAuthored overview sentinel.\n")
     # The summary must follow authored learning goals, including Markdown table escaping.
-    doc.write_text(
-        doc.read_text().replace(
+    first_lesson = tmp_path / "docs/en/lessons/core-01.md"
+    first_lesson.write_text(
+        first_lesson.read_text().replace(
             "## Learning goals\n\n", "## Learning goals\n\nA new goal with a | delimiter.\n\n", 1
         )
     )
@@ -59,6 +60,8 @@ def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
     assert "Authored learning map sentinel." in index.read_text()
     assert "Authored overview sentinel." in overview.read_text()
     assert "A new goal with a \\| delimiter." in overview.read_text()
+    assert "| [core-00]" not in overview.read_text()
+    assert "| 1 | [core-01]" in index.read_text()
     assert "Authored body sentinel." in doc.read_text()
     assert test.read_text() == "# authored test sentinel\n"
     assert entry.read_text() == "# authored entry sentinel\n"
@@ -80,10 +83,16 @@ def test_generator_preserves_authored_bodies_entrypoints_and_tests(tmp_path):
             for target_language, href in parser.links.items():
                 # Switching preserves chapter/guide identity and round-trips locally.
                 target = (path.parent / href).resolve()
-                assert target == tmp_path / "docs" / target_language / relative
+                expected = tmp_path / "docs" / target_language / relative
+                if target_language == "en" and relative.as_posix() == "home.md":
+                    expected = tmp_path / "docs/index.md"
+                assert target == expected
                 assert target.is_file()
             assert page.count("<!-- pal:language:start -->") == 1
             assert page.index('<p align="right">') < page.index("# ")
+    homepage = LanguageLinks()
+    homepage.feed((tmp_path / "docs/index.md").read_text())
+    assert homepage.links == {"ko": "ko/home.md", "en": "index.md"}
     for filename in ("README.md", "README.ko.md"):
         parser = LanguageLinks()
         parser.feed((tmp_path / filename).read_text().split("<!-- pal:language:end -->")[0])

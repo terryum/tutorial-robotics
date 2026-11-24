@@ -15,6 +15,10 @@ from pai_lab.training import latest_checkpoint, train, transfer_export, transfer
 
 def test_paths_have_closed_prerequisites_and_no_unrelated_manipulator_requirements():
     assert validate_paths() == []
+    for name in ("manipulator", "dexterous-hand", "mobile-manipulator"):
+        lessons = path_lessons(name)
+        assert lessons[:4] == ("core-01", "core-02", "core-03", "core-04")
+        assert "core-00" not in lessons
     required = path_lessons("manipulator")
     assert "sim-fr3-01" in required and "sim-enlight-05" in required
     assert not any("wuji" in i or "vla" in i or "g1" in i for i in required)
@@ -34,9 +38,11 @@ def test_init_preserves_old_completion_and_blocks_at_first_required_lesson(monke
     assert main(["course", "next", "--json"]) == 2
     result = json.loads(capsys.readouterr().out)
     assert len(result["blocked"]) == 1
+    assert result["blocked"][0]["id"] == "core-01"
     assert main(["course", "summary", "--json"]) == 0
     result = json.loads(capsys.readouterr().out)
     assert result["total"] == len(path_lessons("manipulator"))
+    assert result["completed"] == 0
 
 
 def test_pause_resume_preserves_explanation_and_does_not_execute(tmp_path):

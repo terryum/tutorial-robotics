@@ -10,7 +10,7 @@
 
 A simulator combines a model of the world with a numerical rule for advancing it. The model contains joint structure, geometry, mass, inertia, limits and integration settings. The state contains changing positions, velocities and other variables. MuJoCo separates `MjModel` from `MjData`; changing one joint's state does not change the robot's geometry definition.
 
-Begin with [host audit](../lessons/core-00.md), [pendulum stepping](../lessons/core-01.md), [pinned sources](../lessons/core-02.md), [model inspection](../lessons/core-03.md) and [rendering](../lessons/core-04.md). Python alone does not supply every runtime: the catalog distinguishes platform, dependencies, implementation status and verification. A valid picture does not establish correct dynamics.
+After the host checks in setup, begin with [pendulum stepping](../lessons/core-01.md), [pinned sources](../lessons/core-02.md), [model inspection](../lessons/core-03.md) and [rendering](../lessons/core-04.md). Use the [host audit](../lessons/core-00.md) when you need a separate diagnostic. Python alone does not supply every runtime: the catalog distinguishes platform, dependencies, implementation status and verification. A valid picture does not establish correct dynamics.
 
 For a simple revolute system, $q$ is position in rad and $v=\dot q$ is angular velocity in rad/s. A conceptual state is $s=[q,v]$. In a general robot `qpos` has `nq` elements while `qvel` has `nv`; these counts can differ because a free body's quaternion uses four position entries but three angular velocity entries. The actuator control vector has `nu` entries and is another separate object.
 
@@ -43,7 +43,7 @@ assert np.isclose(drift_j, 3e-6)
 
 The pendulum lesson makes ten `mj_step` calls per saved row, then calls `mj_forward` to refresh derived state and records the sample. At baseline one row spans 0.02 s. With 64 rows the simulated duration is 1.28 s. A wall-clock duration on your computer is different from simulated time. A plot's row number is also different from time unless its sampling schedule is known.
 
-For the documented one-variable comparison, double the integration step to 0.004 s while holding seed and sample count fixed. Saved rows now span 0.04 s and the total duration doubles. That comparison studies energy drift under the documented schedule; it does not isolate integration accuracy at equal elapsed time. To compare equal horizons, design a separate experiment and explicitly report its changed sampling schedule.
+The main comparison changes the release angle from 0.35 to 0.70 rad with the timestep and 1.28 s duration fixed. In the optional timestep experiment, double the integration step to 0.004 s while holding seed and sample count fixed. Saved rows now span 0.04 s and the total duration doubles. That comparison studies energy drift under the documented schedule; it does not isolate integration accuracy at equal elapsed time. To compare equal horizons, design a separate experiment and explicitly report its changed sampling schedule.
 
 ## Follow state and provenance into saved artifacts
 
@@ -63,4 +63,4 @@ Next connect joint positions to tool positions in [kinematics](kinematics.md), t
 
 ## Equipment progression
 
-Follow [equipment stages](../equipment-stages.md): laptop simulation first, a verified GPU runtime next, optional XR/glove/tracker/UMI collection after that, and physical robots last. The current catalog contains 72 lessons: Core 33, Sim 27 and Hardware 12. The original portable scope is 32 Core plus deployment and offline sink; optional `core-teleop-01` adds one dependency-light synthetic-input lesson, for 35 portable lesson targets. This count does not verify native Mac live VR acceptance. Eleven physical lessons and the live-input `sim-teleop-01` remain scaffolded; the offline sink is the implemented hardware-stage exception.
+Follow [equipment stages](../equipment-stages.md): laptop simulation first, a verified GPU runtime next, optional XR/glove/tracker/UMI collection after that, and physical robots last. The catalog lists 71 learning lessons and one Core diagnostic. The lesson counts are Core 32, Sim 27 and Hardware 12. The original portable scope is 32 Core plus deployment and offline sink; optional `core-teleop-01` adds one dependency-light synthetic-input lesson, for 35 portable lesson targets. This count does not verify native Mac live VR acceptance. Eleven physical lessons and the live-input `sim-teleop-01` remain scaffolded; the offline sink is the implemented hardware-stage exception.

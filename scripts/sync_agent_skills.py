@@ -20,6 +20,10 @@ def main() -> None:
     ):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
+    for name in ("bootstrap-host", "run-next-tutorial", "run-specific-tutorial"):
+        relative = Path("skills") / name / "SKILL.md"
+        source = ROOT / ".claude" / relative
+        (ROOT / ".agents" / relative).write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
     print("synchronized Codex and Claude skill wrappers")
 
 

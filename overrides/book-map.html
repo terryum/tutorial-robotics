@@ -1,0 +1,23 @@
+<ol class="book-map" aria-label="장비에 따른 학습 순서">
+  {% for key, stage in book.stages.items() %}
+    <li id="stage-{{ key }}">
+      <h2>{{ stage.title }}</h2>
+      <p>{{ stage.description }}</p>
+      {% if key == "hardware" %}
+        <p><a href="{{ book.safety.url|url }}">실물 로봇 안전 지침</a></p>
+      {% endif %}
+      <details class="book-stage" data-stage="{{ key }}">
+        <summary>수업과 장비 요구사항 보기</summary>
+        <ul class="book-map-lessons">
+          {% for lesson in stage.lessons %}
+            <li>
+              <a class="book-lesson" data-lesson="{{ lesson.id }}" href="{{ lesson.url|url }}">{{ lesson.title|e }}</a>
+              <small>{{ lesson.platforms|e }} · {{ lesson.capabilities|e }}</small>
+              {% if lesson.requirement %}<small>{{ lesson.requirement|e }}</small>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </details>
+    </li>
+  {% endfor %}
+</ol>

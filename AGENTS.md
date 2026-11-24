@@ -41,11 +41,11 @@ wait for the actual reply before opening/navigating or executing the first lesso
 Existing progress gets a resume invitation without reset. An enabled helper
 with missing/unverified/stale cache is unknown history, not a fresh learner; use
 the workflow's distinct history-check invitation and resolve registered history
-only after the actual start reply, before initializing/selecting core-00. The
+only after the actual start reply, before initializing/selecting core-01. The
 ready/skip-apply gate includes all declared Core imports plus plotting/image
 imports (NumPy, MuJoCo, gymnasium, SciPy, Matplotlib, Pillow), not only the three
 Core profile probes. An explicit T00 run
-request proceeds after readiness; a quoted prompt used for documentation does
+diagnostic request proceeds after readiness; a quoted prompt used for documentation does
 not execute onboarding. This preparation-only exception takes precedence over
 “open the lesson at start” below; ordinary learning, update routes and hardware
 rules remain unchanged. A fresh chat rereads disk state and readiness rather than
@@ -53,6 +53,8 @@ assuming a fresh learner or persisting cwd/activation. Do not rewrite global
 agent settings to discover a newly cloned checkout's local skills.
 
 ## Execution contract
+
+- Start the common learning sequence at `core-01`. Host checks belong to preparation and `core-00` / `T00` remains available as an on-demand diagnostic. Follow the shared workflow to present verified results and resume pending comprehension before recording course completion.
 
 - After lesson execution is authorized, start guided learning by opening the current lesson's GitHub page in the reader's language. The generic prompt-first preparation route above waits at its invitation before lesson navigation. Reuse that tutorial tab for subsequent lessons and reruns; follow `agent/workflow.md` for tab selection and unavailable-browser handling.
 - Initialize the lesson language from the conversation. Before subsequent navigation, preserve the language currently selected in the tutorial tab, including manual 한국어/ENGLISH switches; follow the language continuity rules in `agent/workflow.md`.

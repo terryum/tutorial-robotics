@@ -74,6 +74,12 @@ import numpy as np
 assert np.isclose(0.03 * np.tanh(0.5), 0.013863514717800292)
 ```
 
+### From policy actions to closed-loop evaluation
+
+In independent evaluation, the policy receives seven joint positions relative to the home pose, seven joint velocities scaled by 0.1, and three components of the world-frame goal-minus-TCP displacement scaled by 10. The evaluator clips these values to $[-5,5]$, appends a constant 1 and multiplies by the weight matrix to produce seven actions. The formula above turns the actions into joint increments in rad. Adding these increments to the current angles gives position targets, which are clipped to the joint limits. After ten physics steps, the evaluator builds the next observation from the joint state and the TCP position available in MuJoCo. Each action affects the policy's next input, so the evaluation runs in closed loop.
+
+Training action MSE measures how closely policy outputs match expert actions for the recorded observations. The training and held-out MSE calculations use the stored, scaled features directly, while independent rollout clips them as described above. The `validation_mse` and `test_mse` fields in `evaluation.json` measure the same kind of error on held-out demonstrations. To check independent reach for an episode, look for ten consecutive control steps at or below 0.01 m in its `errors_m`. Divide `successes` by 20 for the success rate. As the [task symmetry example](../concepts/data-imitation.md#task-symmetry) shows, changing the scene can change the success conditions. This evaluation tests new goals in the existing scene.
+
 ## Code connection
 
 ### Source trace
@@ -105,7 +111,9 @@ Preserve interrupted evidence. `pal course pause`, `pal course resume` and `pal 
 
 ### Check understanding
 
-Why evaluate unseen targets after optimizer checks? Weight updates prove execution, while task success must be measured independently. Is 16/20 a physical robot acceptance criterion? No, it is this simulated reach task's gate.
+Why calculate reach success separately when one run has lower training action MSE? For each run, read the final training MSE from the `observed` column of the final row in `trace.csv` and the number of successes from `successes` in `evaluation.json`. MSE measures deviation from expert actions on recorded observations. The success rate measures the fraction of episodes that satisfy the reach criterion as the policy acts and the state evolves.
+
+Is 16/20 a physical robot acceptance criterion? No, it is this simulated reach task's gate.
 
 Inspect actual values, axes and images from both runs. Replace the notes below with measured values and your interpretation, resolve feedback, then review/finish one lesson. Missing capability remains unavailable; a publication badge is not your local completion.
 

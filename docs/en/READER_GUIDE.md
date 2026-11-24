@@ -20,7 +20,7 @@ https://github.com/terryum/tutorial-robotics Clone this repository, install it, 
 
 The agent reuses an existing checkout or clones the repository when needed. It reads the repository instructions, checks the actual OS/environment, shows the smallest Core setup plan, and applies/verifies only the needed preparation. It preserves `.venv`, the lockfile and `.local/` progress. An existing environment that passes readiness verification on this host is reused without reinstalling. Unsupported environments or failed setup remain blocked with a concrete next action rather than a readiness claim.
 
-For a fresh learner, after readiness verification the agent says the following and **waits for your actual reply**. With existing progress, it acknowledges the saved lesson/phase and asks whether to continue; it does not reset to lesson one.
+If you have no completed or active learning lesson, the agent verifies readiness, gives the following invitation and **waits for your actual reply**. Learners with only a completed diagnostic also begin with the pendulum. If you have saved learning progress, the agent tells you the saved lesson and phase and asks whether to continue.
 
 > The first tutorial is ready to open. Would you like to start?
 
@@ -30,9 +30,9 @@ The first lesson and its browser tab have not started yet. When ready, reply:
 Yes, start the first tutorial.
 ```
 
-The agent then opens the first lesson `core-00` on GitHub in your selected language and runs, checks and explains it. If browser control is unavailable, it provides the exact link without claiming to open it. It connects results, equations and code, completes the required review, and stops after one lesson. Use the next-lesson prompt below to continue.
+After your reply, the agent opens the [first pendulum lesson `core-01`](lessons/core-01.md) on GitHub in your selected language. It compares two starting angles, shows the results and asks a comprehension question. If browser control is unavailable, it shares the lesson link.
 
-An explicit request to run a particular lesson is separate authorization to proceed after readiness. The general install/start request above follows the two-step preparation and start invitation.
+If you explicitly request a specific lesson, the agent verifies readiness and runs it. For a standalone environment check, request the [`core-00` (`T00`) diagnostic](lessons/core-00.md). Earlier `T00` records remain available. Diagnostics are excluded from learning progress.
 
 ## Prompts for learning sessions
 
@@ -81,9 +81,9 @@ Pause here and save the current lesson, explanation/comparison phase, run paths 
 
 The initial language follows your Codex/Claude Code conversation. Select **한국어 | ENGLISH** at the top right of any curriculum page to open the same chapter in the other language. The Next lesson link stays in that language. When you ask the agent to continue, it reads the current tutorial tab's language and keeps it for the next page and explanation. Switch again using the links or explicitly request a language change in chat. If the tab is closed, the agent restores the last language it observed.
 
-After you reply to start the first lesson, the agent opens the [T00 English GitHub lesson](https://github.com/terryum/tutorial-robotics/blob/main/docs/en/lessons/core-00.md). It creates one new tab if no tutorial tab exists, then navigates that same tutorial tab for subsequent lessons and reruns. Unrelated tabs stay untouched. If browser control is unavailable, the agent says so and provides the link for you to open manually.
+After you reply to start the first lesson, the agent opens the [English pendulum lesson on GitHub](https://github.com/terryum/tutorial-robotics/blob/main/docs/en/lessons/core-01.md). It creates one new tab if no tutorial tab exists, then navigates that same tutorial tab for subsequent lessons and reruns. Unrelated tabs stay untouched. If browser control is unavailable, the agent says so and provides the link for you to open manually.
 
-Keep the Codex/Claude Code conversation and terminal on one side and the GitHub lesson on the other. Follow the agent's pointers to Expected, Observe and How it works to connect measured results to the theory. Lessons with simulation replay use a separate viewer window. Opening the theory page alone does not start a simulation.
+Keep the Codex/Claude Code conversation and terminal on one side and the GitHub lesson on the other. Follow the agent's pointers to Expected, Observe and How it works to connect measured results to the theory. For a common foundation experiment, the agent opens the local result page in a separate window or result tab. Opening the theory page alone does not start a simulation.
 
 Git retrieves pinned sources. Python runs the experiments. uv installs locked dependencies into `.venv`. MuJoCo provides dynamics and rendering; NumPy performs numerical calculations.
 
@@ -123,7 +123,7 @@ pal course init --json
 pal course next --json
 ```
 
-Select one eligible lesson. Initializing does not erase completed records.
+Select one eligible lesson. New learners and learners who have only completed the environment diagnostic start at `core-01`. Initializing preserves existing `completed` records.
 
 </details>
 
@@ -135,7 +135,7 @@ Clearing the conversation or opening a new chat does not remove the same checkou
 https://github.com/terryum/tutorial-robotics I cleared the previous chat. Continue in the same existing checkout. Reread the repository instructions, curriculum/catalog.json and agent/workflow.md, then inspect .local/progress.json, .local/session.json, feedback and existing run evidence. Resume the last interrupted phase for one lesson without reinstalling, recloning or resetting progress.
 ```
 
-The agent rereads current files and the saved lesson/phase, then continues from existing explanation/comparison evidence. It does not reinstall or reset to lesson one. If multiple checkouts make the destination ambiguous, identify the existing path to use. Progress files do not substitute for readiness on another host.
+The agent rereads the saved lesson and phase, then continues from existing evidence. If comprehension is pending, it reopens the same result and asks the saved question. If multiple checkouts make the destination ambiguous, identify the existing path to use. Progress files do not substitute for readiness on another host.
 
 <details markdown="1">
 <summary>Direct queries in a new terminal</summary>
@@ -154,7 +154,7 @@ pal course list --json
 pal course next --json
 ```
 
-`list` shows completed and pending lessons; `next` shows the next eligible lesson.
+`list` shows completed and incomplete learning lessons. `next` shows the next lesson to run.
 The `status` command below shows only remaining or review-needed lessons.
 Running `pal course init` again preserves completed records.
 
@@ -180,12 +180,12 @@ On another host, prepare locked sources and rerun verify there. Copying progress
 
 After your start or next-lesson prompt, the agent handles this sequence while you inspect the evidence and ask questions. Finishing one lesson does not automatically start another.
 
-1. Read Expected and identify the first quantities and units to inspect.
-2. The agent executes the Action commands and inspects their results. `executed` is an experiment result, not learner completion.
-3. Use `lesson inspect` to validate and summarize artifacts. Open PNGs with macOS `open` or a file manager. A text editor can read CSV files.
-4. Calculate the worked example and locate corresponding values at the same timestamp in code and CSV.
-5. Change the single input in Try it and use `lesson compare`. Environment and structure audits can be reviewed without an artificial numeric comparison.
-6. The agent saves questions, verifies fixes, then records review and finish. Stop before the next lesson.
+1. Read what you will learn and why. Predict the result before changing an input.
+2. The agent traces the changed input and fixed conditions in the code, then runs the baseline under Action.
+3. The agent checks the artifacts and values with `lesson inspect`. Find the axes and units you will use to check your prediction.
+4. Change one input under Try it and read the effect. The hash and model dimension lessons record the comparison in a single run.
+5. For the common foundations, the agent builds a page from verified runs with `pal lesson present`, opens it in a separate window from the lesson, and confirms the results display. If a separate window is unavailable, it opens a result tab. The page stays open until you close it or the agent recognizes the window it opened and replaces the result in the next lesson. If screen control is unavailable, the agent shares actual measurements and any images supported in chat. You can also open PNGs with macOS `open` or a file manager and read CSVs in a text editor.
+6. The agent saves the result and question in the awaiting-comprehension phase. After discussing your answer or receiving your request to finish, it records progress with `lesson review` and `lesson finish`. Ask to start the next lesson when ready.
 
 If baseline-01 exists, choose baseline-02. Never overwrite earlier evidence. Keep failed run.json receipts. Press Ctrl-C in the terminal to interrupt a running process.
 

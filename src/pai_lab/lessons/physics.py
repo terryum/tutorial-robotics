@@ -33,6 +33,21 @@ def pendulum() -> tuple[Any, Any]:
     return model, data
 
 
+def source_hash_comparison(original: bytes) -> dict[str, str | int]:
+    import hashlib
+
+    changed = bytearray(original)
+    changed[0] ^= 1
+    return {
+        "path": "assets/sources.json",
+        "byte_offset": 0,
+        "original_byte": original[0],
+        "changed_byte": changed[0],
+        "original_sha256": hashlib.sha256(original).hexdigest(),
+        "changed_sha256": hashlib.sha256(changed).hexdigest(),
+    }
+
+
 def jacobian(model: Any, data: Any, site: int = 0) -> np.ndarray:
     jac = np.zeros((3, model.nv))
     mujoco.mj_jacSite(model, data, jac, None, site)
@@ -153,7 +168,9 @@ def run(
             {"python_3_12": "python-3.12" in host["capabilities"]},
         )
     if identifier == "core-02":
-        manifest = json.loads((ROOT / "assets/sources.json").read_text())
+        manifest_bytes = (ROOT / "assets/sources.json").read_bytes()
+        manifest = json.loads(manifest_bytes)
+        hashes = source_hash_comparison(manifest_bytes)
         receipts = [
             provenance(name) for name in ("fr3", "wuji", "enlight", "g1", "sharpa", "aloha")
         ]
@@ -163,25 +180,45 @@ def run(
         return Experiment(
             rows,
             float(np.mean([r[2] for r in rows])),
-            {"sources": manifest, "models": receipts},
-            {"source_pins": not check_sources()},
+            {"sources": manifest, "models": receipts, "hash_comparison": hashes},
+            {
+                "source_pins": not check_sources(),
+                "one_byte_changes_sha256": hashes["original_sha256"] != hashes["changed_sha256"],
+            },
         )
     if identifier == "core-01":
         model, data = pendulum()
         model.opt.timestep = parameters.get("timestep", model.opt.timestep * variant)
+        initial_angle = parameters.get("initial_angle_rad", float(data.qpos[0]))
+        data.qpos[0] = initial_angle
+        mujoco.mj_forward(model, data)
         initial_energy = float(data.energy.sum())
-        rows, states = [], []
+        initial_velocity = float(data.qvel[0])
+        pivot = data.xanchor[0].tolist()
+        rows = []
+        states = [[float(data.time), initial_angle, initial_velocity]]
+        tips = [data.site_xpos[0].tolist()]
         for _ in range(samples):
             for _ in range(10):
                 mujoco.mj_step(model, data)
             mujoco.mj_forward(model, data)
             rows.append((float(data.time), initial_energy, float(data.energy.sum())))
             states.append([float(data.time), float(data.qpos[0]), float(data.qvel[0])])
+            tips.append(data.site_xpos[0].tolist())
         drift = max(abs(row[2] - row[1]) for row in rows)
         return Experiment(
             rows,
             drift,
-            {"state": states, "dt_s": float(model.opt.timestep)},
+            {
+                "state": states,
+                "dt_s": float(model.opt.timestep),
+                "gravity_m_s2": model.opt.gravity.tolist(),
+                "initial_angle_rad": initial_angle,
+                "initial_angular_velocity_rad_s": initial_velocity,
+                "observation_time_s": float(data.time),
+                "pivot_position_m": pivot,
+                "tip_positions_m": tips,
+            },
             {"energy_drift_below_1e_5_J": drift < 1e-5},
             model,
             data,
@@ -205,6 +242,8 @@ def run(
     model, data, receipt = load(name, output)
     info = {**inventory(model), "source": receipt, "x_axis": "time_s"}
     files = ["enlight-draft.xml"] if name == "enlight" else []
+    if identifier == "core-04":
+        info.update(qpos=[data.qpos.tolist()], qvel=[data.qvel.tolist()], time_s=[float(data.time)])
     if identifier in {"core-04", "core-fr3-01", "core-enlight-01"}:
         rows = [(float(i), float(data.qpos[i]), float(data.qpos[i])) for i in range(model.nq)]
         info["frame_positions_m"] = data.xpos.tolist()

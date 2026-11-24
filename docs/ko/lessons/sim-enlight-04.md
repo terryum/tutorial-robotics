@@ -101,7 +101,7 @@ pal lesson compare sim-enlight-04 --run-dir .local/runs/sim-enlight-04/baseline-
 
 ## Recovery
 
-중단 시 기록을 보존합니다. `pal course pause`, `pal course resume`, `pal lesson run sim-enlight-04 --resume-from BASE --json`은 저장 상태를 확인하며 자동 동작을 재개하지 않습니다. 짧은 시뮬레이션은 새 run에서 재시작합니다. 학습 재개·호스트 이동은 [경로 안내](../paths.md)를 따릅니다.
+중단 시 기록을 보존합니다. `pal course pause`, `pal course resume`, `pal lesson run sim-enlight-04 --resume-from BASE --json`은 저장 상태를 확인하며 자동 동작을 재개하지 않습니다. 짧은 시뮬레이션은 새 run에서 재시작합니다. 학습 재개·호스트 이동은 [실행 안내](../READER_GUIDE.md#학습-중단재개와-호스트-이동)를 따릅니다.
 
 ## Checkpoint
 

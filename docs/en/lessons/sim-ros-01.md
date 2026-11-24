@@ -13,7 +13,7 @@
 | Legacy alias | `T17` |
 | Platforms | `ubuntu-24.04-x86_64` |
 | Capabilities | `ros2-jazzy` |
-| Prerequisites | `core-00, core-02` |
+| Prerequisites | `core-02` |
 | Safety | `simulation` |
 | Verification | `reader_test_required` |
 | Implementation | `implemented` |

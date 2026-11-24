@@ -216,6 +216,7 @@ def course_runnable(without_hardware: bool, json_output: bool) -> int:
                     else "core"
                 ),
                 "hardware_free": hardware_free,
+                "diagnostic": lesson.diagnostic,
                 "implementation": lesson.implementation,
                 "available_now": lesson.implementation == "implemented" and not missing,
                 "missing_capabilities": missing,
@@ -226,7 +227,8 @@ def course_runnable(without_hardware: bool, json_output: bool) -> int:
     else:
         for row in rows:
             state = "available" if row["available_now"] else "prepare"
-            print(f"{row['id']}\t{state}\t{row['profile']}\t{row['title']}")
+            diagnostic = " (diagnostic)" if row["diagnostic"] else ""
+            print(f"{row['id']}\t{state}\t{row['profile']}\t{row['title']}{diagnostic}")
     return 0
 
 
@@ -236,8 +238,9 @@ def next_lesson(json_output: bool) -> int:
     from pai_lab.session import resume
 
     session_path = local_root() / "session.json"
-    if session_path.exists() and json.loads(session_path.read_text()).get("phase") == "paused":
-        _emit({"eligible": False, "reason": "paused", "resume": resume()}, json_output)
+    phase = json.loads(session_path.read_text()).get("phase") if session_path.exists() else None
+    if phase in {"paused", "awaiting_comprehension"}:
+        _emit({"eligible": False, "reason": phase, "resume": resume()}, json_output)
         return 2
     for lesson in selected_lessons():
         if not select_lesson(lesson, progress) or (
@@ -254,7 +257,9 @@ def next_lesson(json_output: bool) -> int:
                     "missing_capabilities": missing,
                 }
             )
-            if progress.path:
+            if progress.path or (
+                lesson.stage == "core" and lesson.track == "common" and not lesson.elective
+            ):
                 break
             continue
         result = _lesson_row(lesson, progress)
@@ -326,6 +331,7 @@ def lesson_run_command(
         variant=variant,
         notes=None,
         comparison_run=None,
+        presentation=None,
     )
     personal_progress.notify()
     try:
@@ -357,7 +363,7 @@ def lesson_run_command(
             json_output,
         )
         return 2 if isinstance(error, (FileNotFoundError, ImportError)) else 1
-    update_session(lesson=lesson.id, run_dir=str(run_dir), phase="inspect")
+    update_session(lesson=lesson.id, run_dir=str(run_dir.resolve()), phase="inspect")
     payload = {
         "status": result.status,
         "lesson": lesson.id,
@@ -384,12 +390,23 @@ def lesson_check_command(identifier: str, json_output: bool, run_dir: Path | Non
 
 def lesson_finish_command(identifier: str, run_dir: Path, json_output: bool) -> int:
     from pai_lab.lessons.evidence import validate_review, validate_run
+    from pai_lab.session import resume
 
     lesson = resolve_lesson(identifier)
     errors = check_lesson(lesson.id) + gaps(lesson) + validate_run(lesson.id, run_dir)
     if feedback.pending(lesson.id) or personal_progress.shared_feedback(lesson.id):
         errors.append("unresolved feedback; inspect local feedback and shared summary")
     errors += validate_review(lesson.id, run_dir)
+    session_path = local_root() / "session.json"
+    session = json.loads(session_path.read_text()) if session_path.exists() else {}
+    phase = session.get("resume_phase") if session.get("phase") == "paused" else session.get("phase")
+    if phase == "awaiting_comprehension" and session.get("lesson") == lesson.id:
+        if session["run_dir"] != str(run_dir.resolve()):
+            errors.append("finish must use the baseline in the saved results page")
+        if not session.get("notes"):
+            errors.append("record the learner's response or completion request with pal lesson review")
+        if not errors:
+            errors += resume()["evidence_errors"]
     if errors:
         _emit({"status": "blocked", "lesson": lesson.id, "errors": errors}, json_output)
         return 2
@@ -413,6 +430,15 @@ def lesson_review_command(
 
     lesson = resolve_lesson(identifier)
     errors = comparison_errors(lesson.id, run_dir, comparison)
+    session_path = local_root() / "session.json"
+    session = json.loads(session_path.read_text()) if session_path.exists() else {}
+    phase = session.get("resume_phase") if session.get("phase") == "paused" else session.get("phase")
+    awaiting = phase == "awaiting_comprehension" and session.get("lesson") == lesson.id
+    if awaiting and (
+        session["run_dir"] != str(run_dir.resolve())
+        or session["comparison_run"] != (str(comparison.resolve()) if comparison else None)
+    ):
+        errors.append("review must use the runs in the saved results page")
     if not notes.strip():
         errors.append("explain the observed result and comparison")
     if errors:
@@ -430,7 +456,7 @@ def lesson_review_command(
     update_session(
         lesson=lesson.id,
         run_dir=str(run_dir.resolve()),
-        phase="reviewed",
+        phase="awaiting_comprehension" if awaiting else "reviewed",
         notes=notes,
         baseline_run=str(run_dir.resolve()),
         baseline_parameters=json.loads((run_dir / "experiment.json").read_text()).get(
@@ -445,6 +471,31 @@ def lesson_review_command(
     )
     personal_progress.notify()
     _emit({"status": "reviewed", "lesson": lesson.id}, json_output)
+    return 0
+
+
+def lesson_present_command(
+    identifier: str, run_dir: Path, comparison: Path | None, language: str, json_output: bool
+) -> int:
+    from pai_lab.lessons.presentation import present
+
+    try:
+        result = present(identifier, run_dir, comparison, language)
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, RuntimeError) as error:
+        _emit({"status": "blocked", "error": str(error)}, json_output)
+        return 2
+    baseline = str(run_dir.resolve())
+    update_session(
+        lesson=result["lesson"],
+        run_dir=baseline,
+        baseline_run=baseline,
+        comparison_run=str(comparison.resolve()) if comparison else None,
+        phase="awaiting_comprehension",
+        presentation=result,
+        notes=None,
+    )
+    personal_progress.notify()
+    _emit({"status": "awaiting_comprehension", **result}, json_output)
     return 0
 
 
@@ -542,6 +593,13 @@ def build_parser() -> argparse.ArgumentParser:
     review.add_argument("--comparison-run-dir", type=Path)
     review.add_argument("--notes", required=True)
     review.add_argument("--json", action="store_true")
+
+    present = lesson_commands.add_parser("present")
+    present.add_argument("lesson_id")
+    present.add_argument("--run-dir", type=Path, required=True)
+    present.add_argument("--comparison-run-dir", type=Path)
+    present.add_argument("--language", choices=("en", "ko"), default="en")
+    present.add_argument("--json", action="store_true")
 
     for operation in ("inspect", "compare", "view"):
         observation = lesson_commands.add_parser(operation)
@@ -671,7 +729,7 @@ def main(argv: list[str] | None = None) -> int:
 
             try:
                 course_value = pause() if args.course_command == "pause" else resume()
-                if args.course_command == "resume":
+                if args.course_command == "resume" and course_value["resume_available"]:
                     update_session(phase=course_value["resume_phase"])
                 _emit(course_value, args.json)
                 return 0
@@ -691,6 +749,10 @@ def main(argv: list[str] | None = None) -> int:
             return course_runnable(args.without_hardware, args.json)
         return course_list(args.course_command == "status", args.json)
     if args.command == "lesson":
+        if args.lesson_command == "present":
+            return lesson_present_command(
+                args.lesson_id, args.run_dir, args.comparison_run_dir, args.language, args.json
+            )
         if args.lesson_command in {"inspect", "compare", "view"}:
             from pai_lab.lessons.observation import compare_runs, inspect_run, replay
 

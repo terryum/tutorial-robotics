@@ -93,18 +93,24 @@ python -m json.tool .local/runs/core-fr3-05/baseline-01/experiment.json
 질량 행렬 M은 관절 가속도를 결합합니다. 작업 공간 관성 Λ는 직교 좌표 가속도를 힘으로 바꾸고 Jᵀ는 그 힘을 관절 토크로 변환합니다. 이 실험은 6차원 전체 자세가 아니라 위치만 제어합니다.
 
 $$
-\Lambda=(JM^{-1}J^T+\lambda I)^{-1},\qquad\tau=J^T\Lambda a+c+g
+\Lambda=(JM^{-1}J^T+\lambda I)^{-1},\qquad\tau_{\mathrm{req}}=J^T\Lambda a+c+g-k_q\dot q
 $$
 
-기호·단위·조건: Λ: 유효 kg; a: m/s²; J: m/rad; λ의 단위는 역질량.
+유효 질량 $\Lambda$의 단위는 kg, 병진 가속도 요청 $a$의 단위는 m/s², $J$의 단위는 m/rad입니다. 정규화 항 $\lambda$의 단위는 역질량입니다. 관절 감쇠 계수는 $k_q=2$ N·m·s/rad입니다. 제어기는 요청 토크 $\tau_{\mathrm{req}}$를 관절별 토크 한계 안으로 제한한 뒤 적용합니다.
 
 손으로 계산하는 예시(실행 측정값이 아님): 2 kg × 0.1 m/s² = 0.2 N; 0.5 m/rad × 0.2 N = 0.1 Nm.
 
 실전 연결: 병진만 제어하며 전체 자세 제어와 정확한 Jdot 보상은 포함하지 않습니다.
 
-### 입력에서 관측까지
+### 말단의 힘은 어떻게 관절 토크가 되는가
 
-말단을 직교 좌표 방향으로 움직이려면 여러 관절이 함께 반응해야 합니다. J는 3×7이고 M은 7×7이므로 JM⁻¹Jᵀ는 3×3입니다. 이를 정규화해 역으로 풀면 같은 가속도 목표에 필요한 유효 질량을 얻습니다. 이 수업은 위치 3축만 다루며 orientation 3축은 포함하지 않습니다.
+말단 사이트에서 월드 좌표계로 표현한 힘 $f$ (N)와 병진 속도 $v$ (m/s)를 짝지으면 일률 $f^\top v$ (W)를 구할 수 있습니다. 같은 일률을 관절 쪽에서 쓰면 $\tau_f^\top\dot q$입니다. 여기서 $\tau_f$는 이 힘에 해당하는 관절 토크 벡터입니다. 같은 사이트와 좌표계의 병진 자코비안 $J$에 대해 $v=J\dot q$를 대입하면 다음 관계를 얻습니다.
+
+$$
+f^\top v=f^\top J\dot q=(J^\top f)^\top\dot q=\tau_f^\top\dot q.
+$$
+
+이 식은 모든 관절 속도에 대해 성립하므로 $\tau_f=J^\top f$입니다. 코드에서 `jac.T @ force`는 7×3 행렬과 힘의 3원소 벡터를 곱해 관절 토크 7개를 구합니다. $M$은 7×7이므로 $JM^{-1}J^\top$은 3×3입니다. 그 행렬에 정규화 항을 더한 뒤 역행렬을 구하면 병진 가속도 요청을 힘으로 바꾸는 유효 질량 $\Lambda$를 얻습니다. 저장한 토크에는 이 힘의 기여분에 편향력과 관절 감쇠를 합하고 포화를 적용한 결과가 들어 있습니다. 회전 모멘트까지 포함한 표현은 [자코비안과 일률](../concepts/control-contact.md#jacobian-power)에서 확인할 수 있습니다.
 
 ## Code connection
 
@@ -114,7 +120,7 @@ $$
 
 [`physics.py`](../../../src/pai_lab/lessons/physics.py)와 [`runner.py`](../../../src/pai_lab/lessons/runner.py)의 dispatch를 대조합니다.
 
-`physics.arm_control`의 task branch는 세계 위치 오차 [0.03,0.02,0.01] m에서 힘을 계산하고 `jac.T @ force + data.qfrc_bias - 2 * data.qvel`을 적용합니다. 본문의 간단식에는 마지막 관절 속도 감쇠 항이 생략되어 있습니다. 그 계수 2의 단위는 Nm s/rad입니다. 최종 torque는 관절별 모델 한계로 잘립니다. `task-space-response.csv`와 `payload.final_error`는 위치 오차(m), `torque_nm`은 관절 토크입니다.
+`physics.arm_control`의 task branch는 세계 위치 오차 [0.03,0.02,0.01] m에서 힘을 계산하고 `jac.T @ force + data.qfrc_bias - 2 * data.qvel`을 적용합니다. 최종 torque는 관절별 모델 한계로 잘립니다. `task-space-response.csv`와 `payload.final_error`는 위치 오차(m), `torque_nm`은 관절 토크입니다.
 
 ## Try it
 
@@ -156,7 +162,11 @@ pal lesson finish core-fr3-05 --run-dir .local/runs/core-fr3-05/baseline-01 --js
 
 ### 이해 확인과 답의 기준
 
-질문: Jᵀ는 무엇을 변환하나요? 답: 세계 병진 힘(N)을 관절 토크(Nm)로 옮깁니다. 질문: pose_error라는 metric 이름은 완전한 자세 제어인가요? 답: 여기서는 위치 오차만 뜻합니다. 위치 오차·관절 토크·감쇠 항을 구분해 적습니다.
+**`payload.torque_nm`에 저장한 값과 `jac.T @ force`는 어떤 관계인가요?**
+
+$v=J\dot q$와 일률 관계에서 나온 $J^\top f$는 사이트에서 요청한 힘의 토크 기여분입니다. 저장값에는 편향력과 감쇠를 합한 뒤 토크 한계를 적용한 결과가 들어 있습니다.
+
+질문: pose_error라는 metric 이름은 완전한 자세 제어인가요? 답: 여기서는 위치 오차만 뜻합니다. 위치 오차·관절 토크·감쇠 항을 구분해 적습니다.
 
 <!-- pal:navigation:start -->
 ## Next lesson

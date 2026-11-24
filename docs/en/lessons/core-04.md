@@ -21,21 +21,21 @@
 
 ## Reader route
 
-Read the Expected result first. Your task is to connect the measured values to the learning goal, then explain the calculation and the code that produced them.
-
 [Terminal setup, resuming, opening results and camera controls](../READER_GUIDE.md)
 
 Read the [simulation concept chapter](../concepts/simulation.md), then locate this lesson in the [equipment progression](../equipment-stages.md).
 
 ## Learning goals
 
-Render the actual FR3 scene and inspect the camera result.
+View the same FR3 home pose from two camera azimuths. Learn to distinguish image changes due to arm motion from image changes due to camera motion.
 
 ## Preflight
 
-On a fresh checkout, run `sh bootstrap.sh --plan`, read the plan, then use `--apply`. Activate `source .venv/bin/activate` before these commands. If the run directory already exists, use a new suffix such as 02.
+### Predict before running
 
-Prepare the required public models once:
+Keep the joints fixed and imagine moving the camera around the robot. Predict which part of the base, elbow or tool tip will look different or be obscured.
+
+The agent prepares and verifies Core using the [reader guide](../READER_GUIDE.md#manual-setup). For direct execution, read the plan with `sh bootstrap.sh --plan` at the repository root and use `--apply` if setup is needed. Activate the environment with `source .venv/bin/activate`, then run the checks below. If a run directory already exists, choose a fresh suffix such as `02`. The first group of commands prepares the required public models.
 
 ```bash
 pal assets fetch mujoco-menagerie
@@ -46,7 +46,21 @@ pal host detect --json
 pal lesson check core-04 --json
 ```
 
+## How it works
+
+The renderer computes pixels from the model, joint state and camera. A `headless` run still needs an offscreen graphics context. The axes of RGB image $I$ are 360 rows, 480 columns, and 3 RGB channels with values from 0 to 255. That gives $360\times480\times3=518400$ channel values (calculated).
+
+$$
+I\in\{0,\ldots,255\}^{360\times480\times3}
+$$
+
+## Code connection
+
+[`examples/core-04/run.py`](../../../examples/core-04/run.py) calls [`runner.py`](../../../src/pai_lab/lessons/runner.py), which dispatches to [`physics.py`](../../../src/pai_lab/lessons/physics.py). `physics.run` reads the FR3 home pose and [`experiment.render`](../../../src/pai_lab/lessons/experiment.py) renders that pose from the specified camera azimuth. Match `frame_positions_m`, `joint_names` and saved `qpos` to the base and tool tip you see. `plot.png` shows joint angles in rad by joint index.
+
 ## Action
+
+The agent records the baseline with this command.
 
 ```bash
 pal lesson run core-04 --headless --seed 7 --samples 64 --output-dir .local/runs/core-04/baseline-01 --json
@@ -54,13 +68,9 @@ pal lesson run core-04 --headless --seed 7 --samples 64 --output-dir .local/runs
 
 ## Expected
 
-Measured development example. Read both axis units and the reference/measured difference first. Validate your own run separately.
+`frame.png` is the 480×360 RGB rendering, and `frame.pgm` is its grayscale representation. The pixel standard deviation check detects a blank image. Inspect the framing to see whether the base, elbow and tool tip are visible. The figure below is the joint position plot from an earlier measured development run.
 
 ![core-04 measured plot](../../assets/examples/core-04-plot.png)
-
-Open frame.png, a 480×360 MuJoCo RGB rendering, and frame.pgm, its grayscale representation. Identify the base, elbow and tool. Repeated host-stable rendering should depict the same pose.
-
-Common artifacts are summary.json, trace.csv, experiment.json, plot.png, run.json and lesson-report.md. Model lessons also produce frame.png or the external stack's evaluation/Isaac image. Inspect axes, units and camera framing, not only file size.
 
 ```bash
 pal lesson check core-04 --run-dir .local/runs/core-04/baseline-01 --json
@@ -68,93 +78,54 @@ pal lesson check core-04 --run-dir .local/runs/core-04/baseline-01 --json
 
 ## Observe
 
-Read the metric units, observed_first/observed_last and checks first. Inspection validates saved files, exits, and leaves completion unchanged.
+Locate the base, elbow and tool tip in the render. Repeating the same conditions on the same host should show the same pose. Verify the run with `lesson inspect`. The commands below also open the plot and raw values.
 
 ```bash
 pal lesson inspect core-04 --run-dir .local/runs/core-04/baseline-01 --json
 ```
 
-Open the plot on macOS (closing the image preserves the run):
-
 ```bash
 open .local/runs/core-04/baseline-01/plot.png
 ```
-
-On other systems, open the same PNG in your file manager. Read the raw values from this JSON:
 
 ```bash
 python -m json.tool .local/runs/core-04/baseline-01/experiment.json
 ```
 
-## How it works
-
-A model, state, camera and renderer jointly determine pixels. Headless means no interactive viewer; it still needs a functioning offscreen graphics context. Pixel variance rejects blank images but cannot establish a useful camera angle.
-
-$$
-I\in\{0,\ldots,255\}^{360\times480\times3}
-$$
-
-Symbols, units and assumptions: I: RGB uint8 image; axes: row, column, channel.
-
-Worked calculation (not a measured run result): 360 × 480 × 3 = 518400 channel values.
-
-Practical connection: A nonblank image still needs the tool and ground visible.
-
-### From input to observation
-
-Rendering connects model, state and camera to pixels a person can inspect. Changing the viewpoint changes occlusion even with identical joint state, so read images alongside numerical state. In a 360×480×3 uint8 array, axes are rows, columns and RGB channels.
-
-## Code connection
-
-`examples/core-04/run.py` → `src/pai_lab/lessons/runner.py` → `src/pai_lab/lessons/physics.py`. The runner records the execution; the experiment module computes measurements from actual state. Match `experiment.json` payload fields to the corresponding calculations.
-
-### Read the actual producer and artifacts
-
-Compare [`physics.py`](../../../src/pai_lab/lessons/physics.py) with dispatch in [`runner.py`](../../../src/pai_lab/lessons/runner.py).
-
-`physics.run` reads the FR3 home pose; `runner.run_lesson` produces frame.png through `experiment.render`. Match `frame_positions_m`, `joint_names` and qpos to the tool, ground and whole arm in the image. The plot shows position(rad) by joint index, not camera motion. Pixel variance and useful framing are separate conditions. Current navigation includes an optional teleop lesson; robot paths remain available without VR.
-
 ## Try it
 
-Change only camera azimuth from 135° to 165°. Joint state and numeric metrics stay fixed while the viewpoint in frame.png changes.
+Change only camera azimuth `camera_azimuth` from 135° to 165°. The angular change is 30°, or about 0.5236 rad (calculated). Keep the seed, sample count, model and pose fixed. Compare the two images side by side and locate the elbow and tool tip. Check that `qpos`, joint names, mass and joint count agree across the two runs to verify that the joint state was held fixed.
 
 ```bash
 pal lesson run core-04 --headless --samples 64 --output-dir .local/runs/core-04/comparison-01 --seed 7 --param camera_azimuth=165 --json
 ```
 
-Change only the named parameter indicated above. Explain differences in measurements, shape and limits. If results are invariant, explain why; do not invent a performance improvement.
+The agent uses the command below to validate the run evidence and generate a result page. It opens the page in a separate window from the lesson and verifies the display. If a separate window is unavailable, it uses a result tab. With no screen control, it shares the actual measurements and any images supported in chat.
+
+```bash
+pal lesson present core-04 --run-dir .local/runs/core-04/baseline-01 --comparison-run-dir .local/runs/core-04/comparison-01 --language en --json
+```
+
+The following command saves a joint-angle comparison plot and measurements to a separate directory.
 
 ```bash
 pal lesson compare core-04 --run-dir .local/runs/core-04/baseline-01 --comparison-run-dir .local/runs/core-04/comparison-01 --output-dir .local/comparisons/core-04/comparison-01 --json
 ```
 
-<details>
-<summary>Optional: what changes when the assumptions fail?</summary>
-
-Choose one input in the equation and write its units. Inspect whether doubling it doubles the output or whether clipping, normalization or coordinate transforms change that relationship. Changing another assumption or model at the same time needs a separate experiment.
-
-</details>
-
-### Predict before changing a value
-
-Changing only camera_azimuth from 135° to 165° changes pixels and occlusion while joint arrays, mass and joint count stay fixed. The viewpoint rotates 30°, approximately 0.5236 rad(calculation); the object itself has not rotated by 30°.
-
 ## Recovery
 
-For capability-unavailable, prepare exactly the reported Python, model, platform or external stack, then rerun this lesson in a new directory. Preserve the failed run.json and numerical evidence. Do not automatically install system packages, drivers, CUDA, ROS, Isaac or large models. Resolve checksum errors by restoring a pinned cache, never by editing vendor sources.
+On `capability-unavailable`, the agent reads `missing_capabilities` or `error` and explains how to prepare the required Python, model, platform or external stack. Rerun in a fresh directory once it is ready. Keep the failed `run.json` and measurements. System packages, drivers, CUDA, ROS, Isaac and large models require separate setup. Restore the pinned cache if a checksum fails. Keep vendor sources read-only.
 
 ## Checkpoint
 
-Replace `--notes` with the concrete measurements and interpretation you observed before running this command. Save, fix and reverify received feedback first. Unresolved feedback, changed execution code or corrupt artifacts block completion. Execution alone does not complete the lesson. Stop after finishing this lesson.
+Choose the same joint in both images. What changed, and which run evidence confirms that the joint held still? Explain how a `headless` run still produces an image. Teleoperation is an elective, and the robot paths can continue without VR.
+
+`lesson present` saves the result and the awaiting-comprehension phase. A new chat can resume from the same question and result. Once the learner has discussed the answer or asked to finish, the agent records actual observations and an interpretation in `--notes`, then records review and completion. Resolve and reverify any outstanding feedback first. Changed execution code or corrupt artifacts block completion.
 
 ```bash
 pal lesson review core-04 --run-dir .local/runs/core-04/baseline-01 --comparison-run-dir .local/runs/core-04/comparison-01 --notes "Explained measured results and one-variable comparison; inspected plots and renderings." --json
 pal lesson finish core-04 --run-dir .local/runs/core-04/baseline-01 --json
 ```
-
-### Check understanding and answer guide
-
-Question: Does headless mean no image? Answer: Rendering uses an offscreen graphics context. Question: Does the camera comparison improve physics performance? Answer: It changes visibility. Identify the same joint names and tool in both images.
 
 <!-- pal:navigation:start -->
 ## Next lesson

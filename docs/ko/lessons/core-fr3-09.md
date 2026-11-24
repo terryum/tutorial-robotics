@@ -76,6 +76,12 @@ assert np.isclose(0.012 * v, 0.0096)
 assert np.isclose(0.06 * v, 0.048)
 ```
 
+### 경로의 중간도 확인해야 하는 이유
+
+[2관절 평면 팔의 경로 계산](../concepts/kinematics.md#configuration-and-clearance)에서 둘째 관절을 0 rad에 두고 첫째 관절을 $-\pi/4$ rad에서 $+\pi/4$ rad까지 움직입니다. 두 끝에서는 링크와 원판 사이에 약 0.254 m의 여유가 있지만, 첫째 관절이 0 rad를 지나는 중간 자세에서는 첫 링크가 원판 중심을 지나므로 충돌 여유가 $-0.10$ m입니다.
+
+FR3의 `tcp_rmse_m`은 후반부 원 추종 단계에서 월드 좌표계 TCP 위치 오차의 제곱을 평균한 뒤 제곱근을 취한 값입니다. 이 값은 목표점들의 추종 품질을 m 단위로 요약합니다. 경로의 충돌 여유를 구하려면 경로를 따라 링크 형상과 주변 장애물까지의 거리를 별도로 확인해야 합니다. `contact_counts`와 `contact_force_norms_N`은 기록된 표본에서 감지한 접촉과 법선력 합을 읽는 데 씁니다. 표본 사이를 포함한 경로 전체의 최소 여유는 별도로 검증해야 합니다.
+
 ## Code connection
 
 ### 소스 추적
@@ -101,13 +107,15 @@ pal lesson compare core-fr3-09 --run-dir .local/runs/core-fr3-09/baseline-01 --c
 
 ## Recovery
 
-중단 시 기록을 보존합니다. `pal course pause`, `pal course resume`, `pal lesson run core-fr3-09 --resume-from BASE --json`은 저장 상태를 확인하며 자동 동작을 재개하지 않습니다. 짧은 시뮬레이션은 새 run에서 재시작합니다. 학습 재개·호스트 이동은 [경로 안내](../paths.md)를 따릅니다.
+중단 시 기록을 보존합니다. `pal course pause`, `pal course resume`, `pal lesson run core-fr3-09 --resume-from BASE --json`은 저장 상태를 확인하며 자동 동작을 재개하지 않습니다. 짧은 시뮬레이션은 새 run에서 재시작합니다. 학습 재개·호스트 이동은 [실행 안내](../READER_GUIDE.md#학습-중단재개와-호스트-이동)를 따릅니다.
 
 ## Checkpoint
 
 ### 이해 확인
 
-rad와 m인 양은 각각 무엇인가? 관절 오차와 TCP 위치 오차다. FR3 원 추종이 다른 팔·실물 전이를 보장하는가? 아니다. 이 모델·엔진의 궤적 동작만 확인한다.
+기록에서 관절 오차와 TCP 위치 오차의 단위는 각각 무엇인가요? 관절 오차는 rad, TCP 위치 오차는 m입니다.
+
+두 실행에서 `tcp_rmse_m`이 더 작은 쪽을 고릅니다. 이 값으로 어느 실행의 원 추종이 더 정확했는지, 그리고 어느 경로에 충돌 여유가 더 큰지 각각 판단할 수 있나요? `tcp_rmse_m`은 후반부 TCP 위치 오차를 비교할 근거입니다. 평면 팔 예제에서 경로 양 끝의 여유가 중간 자세의 충돌을 알려 주지 못했듯, FR3 경로의 최소 여유를 알려면 경로 전체에서 링크와 장애물 사이의 거리를 따로 확인해야 합니다.
 
 두 실행의 실제 값·축·그림을 확인한다. 아래 notes를 측정값·해석으로 바꾸고 피드백을 해소한 다음 수업 하나를 review/finish한다. 역량이 없으면 unavailable이며 공개 배지가 자신의 완료는 아니다.
 

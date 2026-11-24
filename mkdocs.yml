@@ -6,6 +6,9 @@ docs_dir: docs
 use_directory_urls: true
 theme:
   name: mkdocs
+  custom_dir: overrides
+  color_mode: auto
+  user_color_mode_toggle: true
 nav:
   - Home: index.md
   - English:
@@ -17,9 +20,9 @@ nav:
       - NVIDIA workbook: en/nvidia-ecosystem.md
       - All lesson goals: en/lessons.md
   - 한국어:
-      - 학습 지도: ko/index.md
+      - 홈: ko/home.md
+      - 커리큘럼: ko/index.md
       - 실행 안내: ko/READER_GUIDE.md
-      - 학습 경로: ko/paths.md
       - 장비 안내: ko/equipment.md
       - 장비 단계: ko/equipment-stages.md
       - NVIDIA 워크북: ko/nvidia-ecosystem.md
@@ -38,6 +41,9 @@ markdown_extensions:
       slugify: !!python/name:markdown.extensions.toc.slugify_unicode
   - pymdownx.arithmatex:
       generic: true
+extra_css:
+  - stylesheets/core-01-pendulum.css
 extra_javascript:
   - javascripts/math.js
+  - javascripts/core-01-pendulum.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js

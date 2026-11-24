@@ -23,6 +23,13 @@ class Languages(HTMLParser):
             self.links[attributes["lang"]] = attributes.get("href", "")
 
 
+def built_page(site: Path, docs: Path, source: Path, flat: bool) -> Path:
+    output = site / source.relative_to(docs).with_suffix(".html")
+    if flat or source.name == "index.md":
+        return output
+    return output.with_suffix("") / "index.html"
+
+
 def validate(site: Path | None = None) -> list[str]:
     errors = []
     catalog = json.loads((ROOT / "curriculum/catalog.json").read_text())["lessons"]
@@ -44,40 +51,41 @@ def validate(site: Path | None = None) -> list[str]:
                 errors.append(f"{language}/{row['id']}: missing prerequisite-concept link")
             if not re.search(r"^### ", text, re.MULTILINE):
                 errors.append(f"{language}/{row['id']}: missing authored explanation subsections")
-        for path in base.rglob("*.md"):
-            links = Languages()
-            links.feed(path.read_text())
-            if set(links.links) != {"en", "ko"}:
-                errors.append(f"{path.relative_to(ROOT)}: missing paired language choice")
-                continue
-            relative = path.relative_to(base)
-            for target_language, href in links.links.items():
-                expected = ROOT / "docs" / target_language / relative
-                if (path.parent / unquote(href)).resolve() != expected:
-                    errors.append(
-                        f"{path.relative_to(ROOT)}: language switch changes page identity"
-                    )
-            if site:
-                output = site / language / relative.with_suffix("")
-                output = (
-                    output.parent / "index.html"
-                    if relative.name == "index.md"
-                    else output / "index.html"
-                )
-                parser = Languages()
-                parser.feed(output.read_text())
-                for target_language, href in parser.links.items():
-                    destination = (output.parent / unquote(urlsplit(href).path)).resolve()
-                    if destination.is_dir():
-                        destination /= "index.html"
-                    expected = site / target_language / relative.with_suffix("")
-                    expected = (
-                        expected.parent / "index.html"
-                        if relative.name == "index.md"
-                        else expected / "index.html"
-                    )
-                    if destination != expected.resolve() or not destination.is_file():
-                        errors.append(f"{output}: broken rendered language switch {href}")
+    docs = ROOT / "docs"
+    homes = {"en": docs / "index.md", "ko": docs / "ko/home.md"}
+    flat = site is not None and (site / "ko/home.html").is_file()
+    for path in (homes["en"], *(docs / "en").rglob("*.md"), *(docs / "ko").rglob("*.md")):
+        if path in homes.values():
+            translations = homes
+        else:
+            relative = path.relative_to(docs).parts[1:]
+            translations = {
+                language: docs.joinpath(language, *relative) for language in ("en", "ko")
+            }
+
+        links = Languages()
+        links.feed(path.read_text())
+        if set(links.links) != {"en", "ko"}:
+            errors.append(f"{path.relative_to(ROOT)}: missing paired language choice")
+            continue
+        for language, href in links.links.items():
+            if (path.parent / unquote(href)).resolve() != translations[language]:
+                errors.append(f"{path.relative_to(ROOT)}: language switch changes page identity")
+        if site:
+            output = built_page(site, docs, path, flat)
+            parser = Languages()
+            parser.feed(output.read_text())
+            if set(parser.links) != {"en", "ko"}:
+                errors.append(f"{output}: missing rendered language choice")
+            for language, href in parser.links.items():
+                destination = (output.parent / unquote(urlsplit(href).path)).resolve()
+                if destination.is_dir():
+                    destination /= "index.html"
+                if (
+                    destination != built_page(site, docs, translations[language], flat)
+                    or not destination.is_file()
+                ):
+                    errors.append(f"{output}: broken rendered language switch {href}")
     for filename in ("README.md", "README.ko.md"):
         links = Languages()
         links.feed((ROOT / filename).read_text())

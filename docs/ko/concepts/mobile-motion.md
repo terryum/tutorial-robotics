@@ -50,6 +50,28 @@ $r$는 바퀴 반지름(m), $L$은 바퀴 간격(m), $\omega$는 바퀴 각속�
 
 마지막 단계에서는 시뮬레이션 그리퍼 위치와 베이스 전방 축에서 월드 목표를 만든다. 바퀴로 평면 오차를, 리프트로 수직 오차를 수정한다. `experiment.json`의 `groups`, `free_base`, `actuator_names`, `commands`, `tcp_positions_m`, `reach_target_m`, `reach_errors_m`를 읽는다. 그래프는 도달 목표가 생기기 전에는 TCP 높이, 이후에는 도달 오차를 표시하므로 전체 trace를 하나의 고정 목표 오차 곡선으로 부르면 안 된다.
 
+<a id="differential-drive-motion-order" name="differential-drive-motion-order"></a>
+
+## 차동구동은 움직이는 순서에 따라 도착점이 달라진다
+
+평평한 바닥에서 바퀴가 미끄러지지 않는다고 가정합니다. 몸체 좌표계의 $x$축은 베이스 전방, $y$축은 왼쪽입니다. 바퀴 축의 중점을 베이스 위치로 잡으면 이 점의 순간 속도는 몸체 좌표계에서 $(v_{body},0)$ m/s입니다. 월드 $x$축에서 반시계 방향으로 잰 헤딩이 $\psi$라면 월드 좌표계에서의 속도는 다음과 같습니다.
+
+$$
+\begin{bmatrix}\dot x\\\dot y\end{bmatrix}
+= v_{body}\begin{bmatrix}\cos\psi\\\sin\psi\end{bmatrix}.
+$$
+
+원점에서 월드 $+x$ 방향을 바라보는 베이스에 제자리에서 반시계 방향으로 $90^\circ$ 회전하는 동작과 전방으로 1 m 이동하는 동작을 각각 한 번씩 적용하는 계산입니다.
+
+| 운동 순서 | 월드 도착점 | 최종 헤딩 |
+|---|---|---|
+| 회전 후 전진 | $(0,1)$ m | $90^\circ$ |
+| 전진 후 회전 | $(1,0)$ m | $90^\circ$ |
+
+회전 후 전진하면 월드 $x$ 방향 변위는 $(1\,\mathrm m)\cos 90^\circ=0$, 월드 $y$ 방향 변위는 $(1\,\mathrm m)\sin 90^\circ=1\,\mathrm m$입니다. 출발할 때 베이스 왼쪽에 있던 위치에 도달합니다. 전진 동안 베이스는 자신의 전방으로 움직이므로 몸체 좌표계의 옆방향 속도는 계속 0입니다. 바퀴 구속과 순간 속도는 [Modern Robotics의 차륜 이동 로봇 설명](https://modernrobotics.northwestern.edu/nu-gm-book-resource/13-3-1-modeling-of-nonholonomic-wheeled-mobile-robots/)에서 이어서 볼 수 있습니다.
+
+[Stretch 3 수업](../lessons/core-stretch3-01.md)에서는 MuJoCo가 바퀴와 바닥의 접촉을 계산하고 자유 베이스의 상태를 갱신합니다. 위 표는 운동 순서를 비교한 이상적인 계산입니다. 실행에서 베이스가 움직인 방향과 거리, TCP 위치는 기록으로 확인합니다.
+
 ## 비교와 근거 범위
 
 G1에서는 샘플 수·시드·모델을 유지하고 `variant`만 바꿔 진폭을 줄인다. 힌지 변위는 작아져도 정확한 재생은 유지될 수 있으며 이것이 의도된 불변이다. Stretch에서는 `variant`가 지정 일정 일부와 결과 상태를 바꾸므로, 단일 제어 이득 시험이 아니라 문서의 일정 실험으로 해석한다. [공개 보고서](../../verification/robot-paths-2026-11-08.md)는 작은 도달 오차 감소를 설명하며 mm 정확도나 학습된 이동 정책을 주장하지 않는다.

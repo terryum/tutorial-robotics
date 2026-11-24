@@ -1,8 +1,10 @@
 # Optional personal progress bridge
 
-`pal course summary --json` reports the entire current catalog, including electives.
-Existing `course list/status/next` JSON stays unchanged for unregistered learners.
-A fresh learner starts at zero; these commands perform no Git/network operations.
+`pal course summary --json` reports progress for the selected course or named path.
+Progress summaries and default lesson selection exclude the `core-00` (`T00`)
+environment diagnostic. Existing diagnostic records remain in local history.
+A fresh learner starts at zero. Without an enabled bridge, these commands perform
+no Git or network operations.
 
 A learner can explicitly enable an external, trusted helper in ignored
 `.local/personal-progress.json`:
