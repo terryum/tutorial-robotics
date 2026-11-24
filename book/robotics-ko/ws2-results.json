@@ -1,73 +1,127 @@
 {
   "schema_version": 1,
-  "source_commit": null,
-  "environment": null,
+  "source_commit": "550a35b593c2ce5024912ad77a0dac88505bcd34",
+  "environment": "Ubuntu 24.04.5 LTS x86_64, Linux 6.17.0-1033-oem, Python 3.12.3, RTX 5090 32,607 MiB / NVIDIA 595.99.02, MuJoCo 3.12.0, ROS 2 Jazzy, Isaac Sim 6.1.0.0 및 PyTorch 2.11.0+cu128. Enlight 리비전 77dd8d8ec4c48a06778ac3886569c9d24e7a977a, 파일 지문 93cbb2d01823c31b0fde34027a9cb2340dd42b4bae1f76c52c8f05cac3bb11d2.",
   "checks": [
     {
       "id": "mujoco-tracking",
       "title": "WS2 MuJoCo 추종",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "passed",
+      "evidence": "시드 7, 256스텝, 월드 좌표, 제어 주기 20 ms. 첫 관절 이동 범위 0.11333 rad, 전반부 관절 RMSE 0.01628 rad, 후반부 TCP RMSE 5.193 mm (기준 20 mm 미만). trace.csv SHA-256 c01d839b614a9b36d046ef69252377970a8559e5c30ef6efaf5b37ebfce86c23."
     },
     {
       "id": "mujoco-rgbd",
       "title": "WS2 MuJoCo RGB-D",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "passed",
+      "evidence": "RGB 240×320×3, 깊이 240×320, 유효 깊이 76,800픽셀. 광축 깊이 최솟값·중앙값·최댓값 0.452807 / 0.900000 / 0.900000 m. 기준 자세 관절·TCP 오차 0. RGB SHA-256 5b3375ab48ca1b7b3bae045b821fefadc35cacc3079c1787565c19ebbdc28527, 깊이 SHA-256 a4ebf7f965d67e5e494cc6826ebcb1c85e0d7dd467a38c863d1393863d1d4b6c."
     },
     {
       "id": "physx-tracking",
       "title": "Enlight PhysX 관절·TCP 추종과 접촉",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "현재 Isaac Sim 설치가 Omniverse Kit EULA 동의를 요구하여 초기화 전 차단됐습니다."
     },
     {
       "id": "physx-rgbd",
       "title": "Enlight PhysX RGB-D",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "현재 Isaac Sim 설치가 Omniverse Kit EULA 동의를 요구하여 초기화 전 차단됐습니다."
     },
     {
       "id": "physx-bc-training",
       "title": "PhysX 시연과 BC 학습",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "현재 Isaac Sim 설치가 Omniverse Kit EULA 동의를 요구하여 초기화 전 차단됐습니다."
     },
     {
       "id": "physx-bc-evaluation",
       "title": "PhysX BC 독립 평가",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "현재 Isaac Sim 설치가 Omniverse Kit EULA 동의를 요구하여 초기화 전 차단됐습니다."
     },
     {
       "id": "physx-ppo-training",
       "title": "PhysX PPO 학습",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "현재 Isaac Sim 설치가 Omniverse Kit EULA 동의를 요구하여 초기화 전 차단됐습니다."
     },
     {
       "id": "physx-ppo-evaluation",
       "title": "PhysX PPO 독립 평가",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "현재 Isaac Sim 설치가 Omniverse Kit EULA 동의를 요구하여 초기화 전 차단됐습니다."
     },
     {
       "id": "gr00t-n1-7",
       "title": "GR00T N1.7 추론",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "WS2의 기존 설치·캐시에서 공식 체크아웃, 호환 가중치와 공개 DROID 입력 세트를 확인하지 못했습니다."
     },
     {
       "id": "cosmos-predict2-5",
       "title": "Cosmos-Predict2.5 추론",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "WS2의 기존 설치·캐시에서 공식 Image2World 체크아웃, 호환 가중치와 고정 입력 세트를 확인하지 못했습니다."
     },
     {
       "id": "gr00t-2",
       "title": "GR00T 2 공개 상태와 호환성",
-      "status": "pending",
-      "evidence": "WS2 실행 기록이 아직 없습니다."
+      "status": "blocked",
+      "evidence": "2026-11-24 NVIDIA 연구 페이지 확인 결과, 코드 공개 예정은 12월입니다. 로컬 추론 호환성은 검증 대기입니다."
+    },
+    {
+      "id": "core-ros-installation",
+      "title": "Core·Jazzy·Isaac 설치 확인",
+      "status": "passed",
+      "evidence": "Core 필수 import 및 Core·ROS·Isaac 프로필 확인. CUDA 행렬 연산과 Jazzy 로컬 토픽·reset 서비스·Fibonacci 액션·TF 확인."
+    },
+    {
+      "id": "mujoco-bc",
+      "title": "MuJoCo BC와 에피소드 분할",
+      "status": "passed",
+      "evidence": "16회 학습, 가중치 L1 변화량 65.1532, 재로딩 오차 0. 독립 목표 20/20 성공. 공유 에피소드 수는 프레임 분할 25개, 에피소드 분할 0개."
+    },
+    {
+      "id": "mujoco-ppo-training",
+      "title": "MuJoCo PPO 갱신",
+      "status": "passed",
+      "evidence": "16회 갱신, 가중치 L1 변화량 0.513333, 재로딩 오차 0."
+    },
+    {
+      "id": "mujoco-ppo-evaluation",
+      "title": "MuJoCo PPO 독립 평가",
+      "status": "failed",
+      "evidence": "시드 10007 독립 목표 0/20 성공. 10 mm 이내 10스텝 연속 유지 목표가 최소 16개 필요합니다."
+    },
+    {
+      "id": "mujoco-pick",
+      "title": "MuJoCo 작업대 집기",
+      "status": "passed",
+      "evidence": "기준·RGB-D 집기에서 약 82.3 mm 상승 및 배치 오차 각각 0.235, 0.677 mm. 저마찰 비교에서는 양면 접촉을 유지한 채 들기 실패."
+    },
+    {
+      "id": "lqr",
+      "title": "LQR과 PD 비교",
+      "status": "passed",
+      "evidence": "입력 가중치 0.1에서 정착 0.66초 및 비용 11.9172 (PD 2.12초, 21.1855). 가중치 0.5에서 정착 0.88초, 최대 토크 0.604 N·m."
+    },
+    {
+      "id": "kalman",
+      "title": "칼만 필터와 관측 누락",
+      "status": "passed",
+      "evidence": "누락 25샘플과 0샘플 확인. 25샘플 누락 시 각도 RMSE는 칼만 0.00875 rad, 예측만 사용하면 0.09404 rad."
+    },
+    {
+      "id": "q-learning",
+      "title": "격자 Q-learning",
+      "status": "passed",
+      "evidence": "미끄럼 확률 0.10 → 0.30에서 시작 행동 동 → 북, 기준 수익 0.72465 → 0.51864. 두 조건의 학습 시드 3개씩 기준 오차 0.02 이내."
+    },
+    {
+      "id": "offline-exercises",
+      "title": "팔·SLAM·합성 XR",
+      "status": "passed",
+      "evidence": "팔 운동학·동역학·피드백과 우회 경로 확인. 큰 장애물에서 목표 자세가 여유 기준 미달로 차단됨. SLAM 위치 RMSE 2.67 mm. 합성 XR 차단 사례 4개 통과."
     }
   ]
 }
