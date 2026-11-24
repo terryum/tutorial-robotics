@@ -6,7 +6,7 @@ import argparse
 import base64
 import json
 import re
-from html import escape
+from html import escape, unescape
 from pathlib import Path
 
 import markdown
@@ -73,6 +73,13 @@ def chapter_html(chapter: str, body: str) -> str:
         extension_configs={"toc": {"slugify": slug, "baselevel": 2}},
         output_format="html5",
     )
+    fragment = re.sub(
+        r'<p><img alt="([^"]+)" src="figures/([a-z0-9.-]+)"></p>',
+        lambda match: figure(match[2], unescape(match[1])),
+        fragment,
+    )
+    for slug in CHAPTERS:
+        fragment = fragment.replace(f'href="{slug}.md#', f'href="#{slug}--')
     return fragment.replace("<table>", '<div class="table-scroll"><table>').replace(
         "</table>", "</table></div>"
     )

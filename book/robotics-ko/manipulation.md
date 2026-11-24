@@ -88,6 +88,26 @@ python scripts/verify_robotics_ko.py lessons core-enlight-04 core-enlight-05 --o
 python scripts/verify_robotics_ko.py lessons core-enlight-04 --variant 0.8 --output-dir outputs/robotics-ko/learning-low-rate
 ```
 
+### 시연을 어떻게 나누느냐에 따라 달라지는 검증
+
+**예측.** 연속한 두 프레임은 관측과 전문가 행동이 서로 비슷합니다. 각 프레임을 독립 표본처럼 섞으면, 검증 프레임에 바로 이웃한 학습 프레임이 몇 개의 시연에서 나올지 예상해 보세요.
+
+**코드와 입력.** 위 `lessons` 명령이 만든 `outputs/robotics-ko/learning/lessons.json`에서 `core-enlight-04`의 `run_dir`을 읽어 실행 폴더를 찾습니다. `bc_split.py`는 해당 실행의 `demonstrations.json`에서 `episode`와 `split`을 읽습니다. 원래 학습·검증용 시연의 프레임만 모아 시드 7로 무작위로 섞은 뒤, 원래와 같은 프레임 수로 나눕니다. 두 방식 각각에서 학습·검증 에피소드 ID의 교집합 크기를 셉니다. 테스트 시연 5개는 두 방식 모두 이 비교에서 빼 둡니다. [분할 검산 코드](https://github.com/terryum/tutorial-robotics/blob/main/examples/robotics_ko/bc_split.py)
+
+```bash
+book_run=outputs/robotics-ko/learning
+bc_run=$(python -c 'import json, sys; print(json.load(open(sys.argv[1]))["lessons"]["core-enlight-04"]["run_dir"])' "$book_run/lessons.json")
+python examples/robotics_ko/bc_split.py --run-dir "$book_run/$bc_run"
+```
+
+**결과.** Mac 실행에서 학습 532프레임과 검증 134프레임을 유지했습니다. 프레임 단위 분할은 시연 25개를 양쪽에 포함했습니다. 기존 에피소드 단위 분할은 학습 시연 20개와 검증 시연 5개가 겹치지 않았습니다. 행동 복제 정책의 기존 `evaluation.json`에서 `validation_mse`는 **0.04854**, `test_mse`는 **0.06400**이었습니다. 이 값은 관절 증분으로 변환하기 전 7개 행동 성분의 제곱 오차를 프레임과 성분에 걸쳐 평균한 값입니다. 같은 파일의 독립 목표 평가에서는 **20/20**에 도달했습니다. 분할 검산은 중복만 세므로 프레임 단위로 다시 학습했을 때 MSE가 얼마나 달라질지는 별도 실험이 필요합니다.
+
+**이해 확인.** 검증 MSE가 작더라도 폐루프 성공률을 따로 읽는 이유는 무엇일까요? MSE는 주어진 시연 상태에서 행동을 비교합니다. 폐루프 평가는 정책이 만든 다음 상태를 다시 관측하므로 여러 단계에 걸쳐 누적된 오차까지 반영합니다.
+
+### 읽기 사례 · 시연의 시간표와 실행 제약
+
+Moon 등의 사전 공개 논문은 시연 경로를 따라 실행 속도의 분포를 학습하고, 선택한 분위수로 경로를 언제 지날지 정합니다. 이렇게 시간을 조정한 시연으로 시각·언어·행동 정책을 미세조정합니다. 실행 중에는 정책이 낸 행동 묶음과 속도를 최적 제어기가 받아 로봇 한계 안에서 현재 계획에 이어 붙입니다. 논문 그림 2를 읽으며 정책이 제안하는 것과 제어기가 지켜야 하는 조건을 적어 보세요. 앞에서 다룬 진자 LQR은 모델과 비용에서 이득을 구했고, 이 사례의 실행 제어기는 여러 시점의 경로와 제약을 함께 다룹니다. [Retiming Robot Demonstrations with a Learned Speed Prior](https://arxiv.org/abs/2610.32676)
+
 ## Isaac Sim에서 같은 초기 상태로 비교하기
 
 **현장 확인 대기.** 워크스테이션에서 Enlight의 같은 초기 관절 자세, 월드 TCP 목표, 제어 간격을 사용해 PhysX에서 추종을 재실행합니다. 양쪽에서 이름이 같은 관절을 대응시키고, TCP 오차와 카메라 RGB·깊이 배열의 해상도, 좌표계, 무효 픽셀, 깊이 단위를 함께 확인합니다. 조명·재질과 깊이의 정의가 다른 경우 차이를 먼저 기록해야 영상이나 점군의 차이를 해석할 수 있습니다. Isaac의 결과를 기록하는 순서와 통과 기준은 워크스테이션 실습에서 이어집니다. 시뮬레이션 간 비교의 다음 질문은 목표 자세, 마찰, 카메라 보정값을 각각 독립적으로 바꿨을 때 어느 지표가 가장 민감하게 반응하는지입니다.
