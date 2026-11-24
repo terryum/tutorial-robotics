@@ -100,8 +100,15 @@ def test_pendulum_results_and_comprehension_resume(pendulums, capsys):
     assert "core-01" in load_progress().completed
     assert resume()["resume_phase"] == "finished"
     capsys.readouterr()
-    assert main(["course", "next", "--json"]) == 0
-    assert json.loads(capsys.readouterr().out)["id"] == "core-02"
+    core_02_gaps = gaps(resolve_lesson("core-02"), prerequisites=False)
+    next_status = main(["course", "next", "--json"])
+    next_result = json.loads(capsys.readouterr().out)
+    if core_02_gaps:
+        assert next_status == 2
+        assert next_result["reason"] == "no-eligible-lesson"
+    else:
+        assert next_status == 0
+        assert next_result["id"] == "core-02"
 
 
 def test_pendulum_peak_shortcut_uses_first_complete_opposite_swing():
